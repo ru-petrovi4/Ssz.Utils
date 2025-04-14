@@ -30,8 +30,6 @@ namespace Ssz.Dcs.CentralServer
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddResourceMonitoring();
-
             services.AddGrpc(options =>
             {
                 options.EnableDetailedErrors = true;
@@ -72,7 +70,7 @@ namespace Ssz.Dcs.CentralServer
                 options.OperationFilter<SwaggerOperationFilter>();
             });
 
-            services.AddSingleton<ServerWorkerBase, ServerWorker>();
+            services.AddSingleton<DataAccessServerWorkerBase, ServerWorker>();
             services.AddSingleton<AddonsManager>();
 
             services.AddTransient<DcsCentralServer>();
@@ -88,12 +86,15 @@ namespace Ssz.Dcs.CentralServer
 
             app.UseRouting();
             //app.UseJsonApi();
+
+#if DEBUG
             app.UseSwagger(); // http://localhost:60060/swagger/v1/swagger.json
             app.UseSwaggerUI(options =>
             {
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
                 //options.RoutePrefix = string.Empty;
             }); // http://localhost:60060/swagger    
+#endif
 
             app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true }); // For NETSTANDARD2.0 Clients
 

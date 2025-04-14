@@ -1,0 +1,227 @@
+﻿<!--<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+        x:Class="Cdt.Operator.Addons.Generic.Controls.Trends.Settings.SettingsWindow"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d" Title="Варианты" Height="435.75" Width="450" Topmost="True" ResizeMode="NoResize"
+        >
+    <Window.Resources>
+        <Style x:Key="CheckBoxWithCenteredBulledStyle" TargetType="{x:Type CheckBox}">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+            <Setter Property="Background" Value="#F4F4F4" />
+            <Setter Property="BorderBrush" Value="#8E8F8F" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="FocusVisualStyle">
+                <Setter.Value>
+                    <Style>
+                        <Setter Property="Control.Template">
+                            <Setter.Value>
+                                <ControlTemplate>
+                                    <Rectangle Margin="1" SnapsToDevicePixels="true"
+                                               Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                                               StrokeThickness="1" StrokeDashArray="1 2" />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type CheckBox}">
+                        <Grid HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              Margin="{TemplateBinding Padding}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <BulletDecorator Background="Transparent" SnapsToDevicePixels="true"
+                                             VerticalAlignment="Center">
+                                <BulletDecorator.Bullet>
+                                    <Themes:BulletChrome BorderBrush="{TemplateBinding BorderBrush}"
+                                                         Background="{TemplateBinding Background}"
+                                                         IsChecked="{TemplateBinding IsChecked}"
+                                                         RenderMouseOver="{TemplateBinding IsMouseOver}"
+                                                         RenderPressed="{TemplateBinding IsPressed}" />
+                                </BulletDecorator.Bullet>
+                            </BulletDecorator>
+                            <ContentPresenter RecognizesAccessKey="True"
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              Grid.Column="1"
+                                              Margin="4,0,0,0" />
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="HasContent" Value="true">
+                                <Setter Property="FocusVisualStyle">
+                                    <Setter.Value>
+                                        <Style>
+                                            <Setter Property="Control.Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate>
+                                                        <Rectangle Margin="14,0,0,0" SnapsToDevicePixels="true"
+                                                                   Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                                                                   StrokeThickness="1" StrokeDashArray="1 2" />
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Padding" Value="4,0,0,0" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground"
+                                        Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="RadioButtonWithBulletToTheRightStyle" TargetType="{x:Type RadioButton}">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+            <Setter Property="Background" Value="#F4F4F4" />
+            <Setter Property="BorderBrush" Value="#8E8F8F" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RadioButton}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              Margin="{TemplateBinding Padding}" RecognizesAccessKey="True"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                            <BulletDecorator Background="Transparent" Grid.Column="1" Margin="4,0,0,0"
+                                             VerticalAlignment="Center">
+                                <BulletDecorator.Bullet>
+                                    <Themes:BulletChrome BorderBrush="{TemplateBinding BorderBrush}"
+                                                         Background="{TemplateBinding Background}"
+                                                         IsChecked="{TemplateBinding IsChecked}" IsRound="true"
+                                                         RenderMouseOver="{TemplateBinding IsMouseOver}"
+                                                         RenderPressed="{TemplateBinding IsPressed}" />
+                                </BulletDecorator.Bullet>
+                            </BulletDecorator>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="HasContent" Value="true">
+                                <Setter Property="FocusVisualStyle">
+                                    <Setter.Value>
+                                        <Style>
+                                            <Setter Property="Control.Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate>
+                                                        <Rectangle Margin="14,0,0,0" SnapsToDevicePixels="true"
+                                                                   Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                                                                   StrokeThickness="1" StrokeDashArray="1 2" />
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Padding" Value="4,0,0,0" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground"
+                                        Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TabControl>
+            <TabItem Header="Цвета Событий" IsEnabled="False" />
+            <TabItem Header="Время События" IsEnabled="False" />
+            <TabItem Header="Статус" IsEnabled="False" />
+            <TabItem Header="Свойства Шрифта" IsEnabled="False" />
+            <TabItem Header="Свойства Графика" IsSelected="True">
+                <Grid>
+                    <GroupBox Header="Коорд Сетка" HorizontalAlignment="Left" Margin="32,19,0,0"
+                              VerticalAlignment="Top" Height="117" Width="97">
+                        <StackPanel Orientation="Vertical" Margin="5">
+                            <RadioButton Content="Нет" Height="16" GroupName="coordGridType" Margin="2"
+                                         IsEnabled="False" />
+                            <RadioButton Content="X" Height="16" GroupName="coordGridType" Margin="2"
+                                         IsEnabled="False" />
+                            <RadioButton Content="Y" Height="16" GroupName="coordGridType" Margin="2"
+                                         IsEnabled="False" />
+                            <RadioButton Content="X и Y" Height="16" GroupName="coordGridType" Margin="2"
+                                         IsChecked="True" />
+                        </StackPanel>
+                    </GroupBox>
+                    <CheckBox Content="Показывать Метки Оси Y?" HorizontalAlignment="Left" Margin="162,33,0,0"
+                              VerticalAlignment="Top"
+                              IsEnabled="False" />
+                    <CheckBox Content="Маркировать Точки Данных?" HorizontalAlignment="Left" Margin="162,66,0,0"
+                              VerticalAlignment="Top"
+                              IsEnabled="False" />
+                    <CheckBox HorizontalAlignment="Left" Margin="162,97,0,0" VerticalAlignment="Top" Width="193"
+                              Style="{StaticResource CheckBoxWithCenteredBulledStyle}"
+                              IsEnabled="False">
+                        <TextBlock TextWrapping="Wrap" Text="Выводить предыдущий График при запуске?"
+                                   VerticalAlignment="Center" />
+                    </CheckBox>
+                    <GroupBox Header="Изменение Цветов Графиков" HorizontalAlignment="Left" Margin="32,141,0,10"
+                              Width="355">
+                        <Grid>
+                            <RadioButton Content="Предустн" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                         Margin="20,10,0,0"
+                                         HorizontalContentAlignment="Right" Width="85"
+                                         Style="{DynamicResource RadioButtonWithBulletToTheRightStyle}"
+                                         GroupName="colorSelectionType"
+                                         x:Name="btnUsePredefinedPresets"
+                                         Checked="onUsePredefinedPresetsChecked" />
+                            <RadioButton Content="Ручной" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                         Margin="20,31,0,0"
+                                         HorizontalContentAlignment="Right" Width="85"
+                                         Style="{DynamicResource RadioButtonWithBulletToTheRightStyle}"
+                                         IsChecked="True"
+                                         GroupName="colorSelectionType"
+                                         x:Name="btnUseCustomPreset"
+                                         Checked="onUseCustomPresetChecked" />
+                            <ComboBox Margin="127,8,10,0" VerticalAlignment="Top"
+                                      IsEnabled="{Binding IsChecked, ElementName=btnUsePredefinedPresets}"
+                                      ItemsSource="{Binding ColorPresets}"
+                                      SelectedItem="{Binding SelectedPreset}"
+                                      DisplayMemberPath="Name" />
+                            <Rectangle Margin="127,35,10,10" Fill="{Binding CustomPreset.PlotBackground}"
+                                       MouseLeftButtonUp="onPlotBackgroundRectangleClicked"
+                                       IsEnabled="{Binding IsChecked, ElementName=btnUseCustomPreset}" />
+                            <Rectangle Margin="155,50,38,25" Fill="{Binding CustomPreset.PlotAreaBackground}"
+                                       MouseLeftButtonUp="onPlotAreaBackgroundRectangleClicked"
+                                       IsEnabled="{Binding IsChecked, ElementName=btnUseCustomPreset}" />
+                            <Button Content="Тест" HorizontalAlignment="Left" Margin="30,66,0,0"
+                                    VerticalAlignment="Top" Width="75"
+                                    IsEnabled="{Binding IsChecked, ElementName=btnUseCustomPreset}"
+                                    Click="onTestClicked" />
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Row="1"
+                    Margin="0, 5, 0, 0">
+            <Button Content="OK" Margin="2" Width="73"
+                    Click="onOkClicked" />
+            <Button Content="Отмена" Margin="2" Width="73"
+                    Click="onCancelClicked" />
+            <Button Content="Применить" Margin="2" Width="73" x:Name="btnApply"
+                    Click="onApplyClicked" />
+            <Button Content="Справка" Margin="2" Width="73"
+                    IsEnabled="False" />
+        </StackPanel>
+    </Grid>
+</Window>-->

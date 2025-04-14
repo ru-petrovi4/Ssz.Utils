@@ -9,11 +9,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Ssz.Utils;
-using Microsoft.Extensions.Diagnostics.ResourceMonitoring;
+using Ssz.Utils.Diagnostics;
+using System.Diagnostics;
 
 namespace Ssz.Dcs.CentralServer
 {
-    public partial class ServerWorker : ServerWorkerBase
+    public partial class ServerWorker : DataAccessServerWorkerBase
     {
         #region private functions        
 
@@ -58,7 +59,7 @@ namespace Ssz.Dcs.CentralServer
                             continue;
                         }
 
-                        serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+                        serverContext.AddCallbackMessage(new LongrunningPassthroughCallbackMessage
                         {
                             JobId = jobProgress.JobId,
                             ProgressPercent = 100,
@@ -78,8 +79,9 @@ namespace Ssz.Dcs.CentralServer
 
             if (nowUtc - _last_GC_CleanUpDateTimeUtc > TimeSpan.FromMinutes(5))
             {
-                ResourceUtilization resourceUtilization = ResourceMonitor.GetUtilization(TimeSpan.FromSeconds(1));
-                if (resourceUtilization.MemoryUsedPercentage > 90)
+                ComputerInfo computerInfo = new();
+
+                if ((float)Process.GetCurrentProcess().WorkingSet64 / (float)computerInfo.TotalPhysicalMemory > 0.9f)
                     throw new OperationCanceledException();
                 
                 _last_GC_CleanUpDateTimeUtc = nowUtc; // Because long-running operation.                

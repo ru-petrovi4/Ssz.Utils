@@ -29,7 +29,7 @@ namespace Ssz.Operator.Core.Addons
     {
         #region public functions
 
-        public const string SszOperatorVersionConst = @"1";
+        public const string CoreLibraryVersionConst = @"1";
 
         [Browsable(false)] public abstract Guid Guid { get; }
 
@@ -51,7 +51,7 @@ namespace Ssz.Operator.Core.Addons
         [DsCategory(ResourceStrings.SystemCategory)]
         [DsDisplayName(ResourceStrings.AddonBaseSszOperatorVersion)]
         [PropertyOrder(3)]
-        public abstract string SszOperatorVersion { get; }
+        public abstract string CoreLibraryVersion { get; }
 
         [DsCategory(ResourceStrings.SystemCategory)]
         [DsDisplayName(ResourceStrings.AddonBaseDllFileFullName)]

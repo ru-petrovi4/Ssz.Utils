@@ -314,7 +314,8 @@ namespace Ssz.Operator.Core.ControlsDesign
                 foreach (DsShapeBase dsShape in dsShapes)
                 {
                     var newDsShapeView = DsShapeViewFactory.New(dsShape, null);
-                    if (newDsShapeView is null) continue;
+                    if (newDsShapeView is null) 
+                        continue;
                     newDsShapeView.Initialize(null);
 
                     DesignDsShapeView newDesignDsShapeView = DesignDsShapeViewFactory.New(newDsShapeView, this);

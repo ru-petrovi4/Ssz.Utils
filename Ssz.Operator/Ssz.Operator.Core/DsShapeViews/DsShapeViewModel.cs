@@ -206,15 +206,15 @@ namespace Ssz.Operator.Core.DsShapeViews
             }
         }
 
-
         public DsShapeBase DsShape { get; private set; }
-
 
         public event Action<string?> DsShapeChanged = delegate { };
 
-
-        public void Initialize(PlayDrawingViewModel? playDrawingViewModel)
+        public override void Initialize(object? param_)
         {
+            base.Initialize(param_);
+
+            PlayDrawingViewModel? playDrawingViewModel = param_ as PlayDrawingViewModel;
             if (playDrawingViewModel is not null)
             {
                 _playDrawingViewModel = playDrawingViewModel;

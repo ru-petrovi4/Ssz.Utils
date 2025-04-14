@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.Dcs.CentralServer.Common.EntityFramework
 {
-    [Resource]
+    //[Resource]
     public class ProcessModelingSession : Identifiable<Int64>
     {
         #region public functions        

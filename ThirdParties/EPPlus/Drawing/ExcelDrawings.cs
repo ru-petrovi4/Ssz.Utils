@@ -35,7 +35,7 @@ using System.Text;
 using System.Xml;
 using System.Collections;
 using System.IO;
-using System.DrawingCore;
+using System.Drawing;
 using System.Linq;
 using OfficeOpenXml.Drawing.Chart;
 using OfficeOpenXml.Table.PivotTable;
@@ -508,8 +508,7 @@ namespace OfficeOpenXml.Drawing
             draw.DeleteMe();
             for (int i = Index + 1; i < _drawings.Count; i++)
             {
-                if (_drawingNames.ContainsKey(_drawings[i].Name))
-                    _drawingNames[_drawings[i].Name]--;
+                _drawingNames[_drawings[i].Name]--;
             }
             _drawingNames.Remove(draw.Name);
             _drawings.Remove(draw);

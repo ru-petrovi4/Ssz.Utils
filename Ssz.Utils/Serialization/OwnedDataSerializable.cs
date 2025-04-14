@@ -35,7 +35,7 @@ namespace Ssz.Utils.Serialization
                 {
                     Serializer.Serialize(memoryStream, this);
 
-                    writer.Write(memoryStream.ToArray());
+                    writer.WriteArray(memoryStream.ToArray());
                 }
             }
         }

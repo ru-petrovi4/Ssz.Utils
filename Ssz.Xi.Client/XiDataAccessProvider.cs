@@ -300,7 +300,9 @@ namespace Ssz.Xi.Client
                 SszConverter converter = valueSubscriptionObj.Converter ?? SszConverter.Empty;
                 resultValues =
                     converter.ConvertBack(value.ValueAsObject(),
-                        valueSubscriptionObj.ChildValueSubscriptionsList.Count, LoggersSet);
+                        valueSubscriptionObj.ChildValueSubscriptionsList.Count, 
+                        null,
+                        LoggersSet);
                 if (resultValues.Length == 0)
                     return Task.FromResult(ResultInfo.GoodResultInfo);
             }
@@ -482,7 +484,7 @@ namespace Ssz.Xi.Client
 
             var taskCompletionSource = new TaskCompletionSource<Task<uint>>();
 
-            WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
             {                
                 IDispatcher? сallbackDispatcher = CallbackDispatcher;
                 Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackActionDispatched;
@@ -1083,7 +1085,7 @@ namespace Ssz.Xi.Client
                 foreach (var childValueSubscription in ChildValueSubscriptionsList)
                     values.Add(childValueSubscription.ValueStatusTimestamp.Value.ValueAsObject());
                 SszConverter converter = Converter ?? SszConverter.Empty;
-                var convertedValue = converter.Convert(values.ToArray(), Ssz.Utils.Logging.LoggersSet.Empty);
+                var convertedValue = converter.Convert(values.ToArray(), null, Ssz.Utils.Logging.LoggersSet.Empty);
                 if (convertedValue == SszConverter.DoNothing) return;
                 ValueSubscription.Update(new ValueStatusTimestamp(new Any(convertedValue), StatusCodes.Good,
                     DateTime.UtcNow));

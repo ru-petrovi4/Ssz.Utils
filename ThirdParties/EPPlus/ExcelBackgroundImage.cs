@@ -34,7 +34,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using System.DrawingCore;
+using System.Drawing;
 using System.IO;
 using OfficeOpenXml.Drawing;
 using OfficeOpenXml.Packaging;
@@ -88,7 +88,7 @@ namespace OfficeOpenXml
                 }
                 else
                 {
-#if NET5_0_OR_GREATER
+#if (Core)
                     var img=ImageCompat.GetImageAsByteArray(value);
 #else
                     ImageConverter ic = new ImageConverter();
@@ -147,7 +147,7 @@ namespace OfficeOpenXml
             var relID = GetXmlNodeString(BACKGROUNDPIC_PATH);
             if (relID != "")
             {
-#if NET5_0_OR_GREATER
+#if (Core)
                 var img=ImageCompat.GetImageAsByteArray(Image);
 #else
                 var ic = new ImageConverter();

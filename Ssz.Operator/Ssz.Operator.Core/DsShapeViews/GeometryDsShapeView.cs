@@ -46,7 +46,7 @@ namespace Ssz.Operator.Core.DsShapeViews
                 DsShapeViewModel.GeometryEditingMode,
                 dsShape.WidthInitialNotRounded, dsShape.HeightInitialNotRounded, dsShape.StrokeThickness);
             _path.Data = geometry;
-            if (geometry is PathGeometry)
+            if (geometry is PathGeometry) // Geometry editing mode
             {
                 if (!(Content is Canvas))
                 {
@@ -155,7 +155,6 @@ namespace Ssz.Operator.Core.DsShapeViews
                     break;
             }
         }
-
 
         protected override void OnDsShapeChanged(string? propertyName)
         {

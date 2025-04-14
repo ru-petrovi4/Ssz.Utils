@@ -1,0 +1,15 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:core="clr-namespace:Ssz.Operator.Core"
+             x:Class="Ssz.Operator.Core.BrowserPlayWindow">	
+	<Grid RowDefinitions="Auto,*" Background="#FFD3E3FD">
+		<StackPanel Name="WindowHeaderStackPanel" Height="20"  Orientation="Horizontal" HorizontalAlignment="Right" x:DataType="core:BrowserPlayWindowViewModel" IsVisible="{Binding IsNotRootWindow}">
+			<Button Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="22" Click="CloseButton_OnClick">X</Button>
+		</StackPanel>
+		<ContentControl Grid.Row="1" Name="MainContentConrol" />
+		<Canvas Grid.Row="1" Name="FaceplatesCanvas" />
+	</Grid>	
+</UserControl>

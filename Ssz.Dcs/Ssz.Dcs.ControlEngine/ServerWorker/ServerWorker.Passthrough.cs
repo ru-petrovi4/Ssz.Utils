@@ -14,7 +14,7 @@ using System.Linq;
 
 namespace Ssz.Dcs.ControlEngine
 {
-    public partial class ServerWorker : ServerWorkerBase
+    public partial class ServerWorker : DataAccessServerWorkerBase
     {
         #region public functions
         
@@ -81,7 +81,7 @@ namespace Ssz.Dcs.ControlEngine
             {
                 await Device.SaveStateAsync(arg + DsFilesStoreConstants.ControlEngineStateFileExtension);
 
-                serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+                serverContext.AddCallbackMessage(new LongrunningPassthroughCallbackMessage
                 {
                     JobId = jobId,
                     ProgressPercent = 100,
@@ -91,7 +91,7 @@ namespace Ssz.Dcs.ControlEngine
             catch (Exception ex)
             {
                 Logger.LogError(ex, "SaveState Failed.");
-                serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+                serverContext.AddCallbackMessage(new LongrunningPassthroughCallbackMessage
                 {
                     JobId = jobId,
                     ProgressPercent = 100,
@@ -116,7 +116,7 @@ namespace Ssz.Dcs.ControlEngine
 
                 await Device.LoadStateAsync(arg + DsFilesStoreConstants.ControlEngineStateFileExtension);                
 
-                serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+                serverContext.AddCallbackMessage(new LongrunningPassthroughCallbackMessage
                 {
                     JobId = jobId,
                     ProgressPercent = 100,
@@ -126,7 +126,7 @@ namespace Ssz.Dcs.ControlEngine
             catch (Exception ex)
             {
                 Logger.LogError(ex, "LoadState Failed.");
-                serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+                serverContext.AddCallbackMessage(new LongrunningPassthroughCallbackMessage
                 {
                     JobId = jobId,
                     ProgressPercent = 100,
@@ -143,7 +143,7 @@ namespace Ssz.Dcs.ControlEngine
             {
                 await Device.StepAsync(new Any(arg).ValueAsUInt32(false));
 
-                serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+                serverContext.AddCallbackMessage(new LongrunningPassthroughCallbackMessage
                 {
                     JobId = jobId,
                     ProgressPercent = 100,
@@ -153,7 +153,7 @@ namespace Ssz.Dcs.ControlEngine
             catch (Exception ex)
             {
                 Logger.LogError(ex, "Step Failed.");
-                serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+                serverContext.AddCallbackMessage(new LongrunningPassthroughCallbackMessage
                 {
                     JobId = jobId,
                     ProgressPercent = 100,

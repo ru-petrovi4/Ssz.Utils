@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Grpc.Core;
+using EventIdResult = Ssz.Utils.DataAccess.EventIdResult;
+using EventId = Ssz.Utils.DataAccess.EventId;
 
 namespace Ssz.Dcs.ControlEngine
 {
@@ -15,7 +17,7 @@ namespace Ssz.Dcs.ControlEngine
     {
         #region construction and destruction
         
-        public ProcessEventList(ServerWorkerBase serverWorker, ILogger logger, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
+        public ProcessEventList(DataAccessServerWorkerBase serverWorker, ILogger logger, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
             : base(serverWorker, serverContext, listClientAlias, listParams)
         {
             _logger = logger;            
@@ -38,11 +40,8 @@ namespace Ssz.Dcs.ControlEngine
         #region public functions
 
         public override List<EventIdResult> AckAlarms(string operatorName, string comment,
-                                                               IEnumerable<Ssz.DataAccessGrpc.ServerBase.EventId> eventIdsToAck)
+                                                               IEnumerable<EventId> eventIdsToAck)
         {
-            var eventIdsToAckArray = eventIdsToAck.Select(e => e.ToEventId()).ToArray();
-
-            
             return eventIdsToAck.Select(e => new EventIdResult { StatusCode = (uint)StatusCode.OK, EventId = e }).ToList();
         }
 

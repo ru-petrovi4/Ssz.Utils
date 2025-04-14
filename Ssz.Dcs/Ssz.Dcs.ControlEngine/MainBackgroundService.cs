@@ -26,7 +26,7 @@ namespace Ssz.Dcs.ControlEngine
             ILogger<MainBackgroundService> logger, 
             IConfiguration configuration, 
             IServiceProvider serviceProvider, 
-            ServerWorkerBase serverWorker,
+            DataAccessServerWorkerBase serverWorker,
             IHostLifetime hostLifetime)
         {
             Logger = logger;
@@ -156,7 +156,7 @@ namespace Ssz.Dcs.ControlEngine
 
         #region private fields
 
-        private readonly ServerWorkerBase _serverWorker;
+        private readonly DataAccessServerWorkerBase _serverWorker;
 
         private readonly IHostLifetime _hostLifetime;
 

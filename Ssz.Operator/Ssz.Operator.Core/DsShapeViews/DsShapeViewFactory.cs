@@ -184,7 +184,7 @@ namespace Ssz.Operator.Core.DsShapeViews
             if (CommonDsShapeViews.TryGetValue(dsShapeTypeGuid, out factory)) return factory(dsShape, frame);
 
             // try to dynamically load dsShape view from addons            
-            return AddonsHelper.NewDsShapeView(dsShape, frame);
+            return AddonsManager.NewDsShapeView(dsShape, frame);
         }
 
         #endregion

@@ -1,0 +1,33 @@
+﻿<!--<Window x:Class="Cdt.Operator.Addons.Generic.Controls.Trends.AxisConfiguration.AxisConfigurationWindow"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        Height="178.571" Width="350"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance axisConfiguration:AxisConfigurationDesignData, IsDesignTimeCreatable=True}"
+        Title="{Binding Title}" Topmost="True" ResizeMode="NoResize">
+    <Grid>
+        <TextBlock HorizontalAlignment="Left" Margin="19,34,0,0" TextWrapping="Wrap" Text="Верхний Предел Y:"
+                   VerticalAlignment="Top" />
+        <TextBlock HorizontalAlignment="Left" Margin="19,62,0,0" TextWrapping="Wrap" Text="Нижний Предел Y:"
+                   VerticalAlignment="Top" />
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="128,31,0,0" TextWrapping="Wrap"
+                 Text="{Binding Maximum}"
+                 VerticalAlignment="Top" Width="86"
+                 HorizontalContentAlignment="Right" />
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="128,59,0,0" TextWrapping="Wrap"
+                 Text="{Binding Minimum}"
+                 VerticalAlignment="Top" Width="86"
+                 HorizontalContentAlignment="Right" />
+        <Button Content="OK" HorizontalAlignment="Left" Margin="259,15,0,0" VerticalAlignment="Top" Width="75"
+                Click="onOkButtonClicked" />
+        <Button Content="Отмена" HorizontalAlignment="Left" Margin="259,43,0,0" VerticalAlignment="Top" Width="75"
+                Click="onCancelButtonClicked" />
+        <TextBlock HorizontalAlignment="Left" Margin="34,87,0,0" TextWrapping="Wrap"
+                   Text="Внимание. Изменения, выполненные здесь приведут к изменению сконфигурированных Вами пределов шкалы Y"
+                   VerticalAlignment="Top"
+                   Width="254" />
+
+    </Grid>
+</Window>-->

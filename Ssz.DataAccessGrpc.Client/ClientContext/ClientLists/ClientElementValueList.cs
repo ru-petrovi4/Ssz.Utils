@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Ssz.Utils;
 using Ssz.DataAccessGrpc.Client.ClientListItems;
-using Ssz.DataAccessGrpc.ServerBase;
+using Ssz.DataAccessGrpc.Common;
 using Ssz.Utils.DataAccess;
 using System.IO;
 using Ssz.Utils.Serialization;
@@ -36,6 +36,36 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         #endregion
 
         #region public functions
+
+        public static List<(uint, ValueStatusTimestamp)> GetElementValues(ReadOnlyMemory<byte> fullElementValuesCollection)
+        {
+            List<(uint, ValueStatusTimestamp)> elementValues = new(1000);
+
+            using (var stream = fullElementValuesCollection.AsStream())
+            using (var reader = new SerializationReader(stream))
+            {
+                using (Block block = reader.EnterBlock())
+                {
+                    switch (block.Version)
+                    {
+                        case 1:
+                            int count = reader.ReadInt32();
+                            for (int index = 0; index < count; index += 1)
+                            {
+                                uint alias = reader.ReadUInt32();
+                                ValueStatusTimestamp vst = new();
+                                vst.DeserializeOwnedData(reader, null);
+                                elementValues.Add((alias, vst));
+                            }
+                            break;
+                        default:
+                            throw new BlockUnsupportedVersionException();
+                    }
+                }
+            }
+
+            return elementValues;
+        }
 
         /// <summary>
         /// 
@@ -120,8 +150,8 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
             }
 
             var failedItems = new List<ClientElementValueListItem>();
-            AliasResult[] failedAliasResults = await Context.WriteElementValuesAsync(ListServerAlias, fullElementValuesCollection);
-            foreach (AliasResult failedAliasResult in failedAliasResults)
+            Common.AliasResult[] failedAliasResults = await Context.WriteElementValuesAsync(ListServerAlias, fullElementValuesCollection);
+            foreach (Common.AliasResult failedAliasResult in failedAliasResults)
             {
                 if (ListItemsManager.TryGetValue(failedAliasResult.ClientAlias, out ClientElementValueListItem? item))
                 {
@@ -136,7 +166,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// 
         /// </summary>
         /// <returns></returns>
-        public async Task<ClientElementValueListItem[]> PollElementValuesChangesAsync()
+        public async Task<ClientElementValueListItem[]?> PollElementValuesChangesAsync()
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueList.");
 
@@ -164,40 +194,34 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                 var fullElementValuesCollection = ProtobufHelper.Combine(_incompleteElementValuesCollections);
                 _incompleteElementValuesCollections.Clear();
 
-                var changedListItems = new List<ClientElementValueListItem>();
+                List<(uint, ValueStatusTimestamp)>? elementValues = GetElementValues(fullElementValuesCollection);
 
-                using (var stream = fullElementValuesCollection.AsStream())
-                using (var reader = new SerializationReader(stream))
-                {
-                    using (Block block = reader.EnterBlock())
-                    {
-                        switch (block.Version)
-                        {
-                            case 1:
-                                int count = reader.ReadInt32();
-                                for (int index = 0; index < count; index += 1)
-                                {
-                                    uint alias = reader.ReadUInt32();
-                                    ValueStatusTimestamp vst = new();
-                                    vst.DeserializeOwnedData(reader, null);
-
-                                    ClientElementValueListItem? item;
-                                    ListItemsManager.TryGetValue(alias, out item);
-                                    if (item is not null)
-                                    {
-                                        item.Update(vst);
-                                        changedListItems.Add(item);
-                                    }
-                                }
-                                break;
-                            default:
-                                throw new BlockUnsupportedVersionException();
-                        }
-                    }                    
-                }
-
-                return changedListItems.ToArray();
+                return OnElementValuesCallback(elementValues);
             }
+        }
+
+        public ClientElementValueListItem[]? OnElementValuesCallback(List<(uint, ValueStatusTimestamp)>? elementValues)
+        {
+            if (Disposed)
+                throw new ObjectDisposedException("Cannot access a disposed ClientElementValueList.");
+
+            if (elementValues is null)
+                return null;
+
+            var changedListItems = new List<ClientElementValueListItem>();
+
+            foreach (var it in elementValues)
+            {
+                ClientElementValueListItem? item;
+                ListItemsManager.TryGetValue(it.Item1, out item);
+                if (item is not null)
+                {
+                    item.Update(it.Item2);
+                    changedListItems.Add(item);
+                }
+            }
+
+            return changedListItems.ToArray();
         }
 
         /// <summary>

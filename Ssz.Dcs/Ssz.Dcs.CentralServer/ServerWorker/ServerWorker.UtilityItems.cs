@@ -16,7 +16,7 @@ using System.Text;
 
 namespace Ssz.Dcs.CentralServer
 {
-    public partial class ServerWorker : ServerWorkerBase
+    public partial class ServerWorker : DataAccessServerWorkerBase
     {
         #region public functions
         
@@ -24,7 +24,7 @@ namespace Ssz.Dcs.CentralServer
 
         public void AddUtilityElementValueListItem(UtilityElementValueListItem listItem, string clientWorkstationName)
         {
-            string id = listItem.ElementId + @"@" + clientWorkstationName;            
+            string id = GetUtilityItemsKey(listItem.ElementId, clientWorkstationName);            
             if (!_utilityItems.TryGetValue(id, out UtilityItem? utilityItem))
             {
                 utilityItem = new UtilityItem(listItem.ElementId, clientWorkstationName);
@@ -40,7 +40,7 @@ namespace Ssz.Dcs.CentralServer
         
         public void RemoveUtilityElementValueListItem(UtilityElementValueListItem listItem, string clientWorkstationName)
         {
-            string id = listItem.ElementId + @"@" + clientWorkstationName;
+            string id = GetUtilityItemsKey(listItem.ElementId, clientWorkstationName);
             if (!_utilityItems.TryGetValue(id, out UtilityItem? utilityItem))
             {
                 return;
@@ -158,6 +158,9 @@ namespace Ssz.Dcs.CentralServer
 
         private void DoWorkCentralServerUtilityItems(DateTime nowUtc, CancellationToken cancellationToken)
         {
+            CaseInsensitiveDictionary<List<string?>> clientsCsvFileData = 
+                _addonsManager.Addons.OfType<DcsCentralServerAddon>().Single().CsvDb.GetData(DcsCentralServerAddon.ClientsCsvFileName);
+
             UtilityItem[] centralServerUtilityItems = _utilityItems.Values
                     .Where(mi => String.Equals(mi.ElementId, DataAccessConstants.UtilityItem_CentralServer, StringComparison.InvariantCultureIgnoreCase)).ToArray();
 
@@ -173,7 +176,7 @@ namespace Ssz.Dcs.CentralServer
             {
                 foreach (var i in _additionalCentralServerInfosCollection.Values)
                 {
-                    i.ClientWorkstationNames.Clear();
+                    i.ClientWorkstationsGroups.Clear();
                 }
 
                 foreach (var centralServerUtilityItem in centralServerUtilityItems)
@@ -182,7 +185,7 @@ namespace Ssz.Dcs.CentralServer
                     AdditionalCentralServerInfo? additionalCentralServerInfo = _additionalCentralServerInfosCollection.Values
                             .FirstOrDefault(i => String.Equals(i.ServerAddress, currentCentralServerAddress, StringComparison.InvariantCultureIgnoreCase));
                     if (additionalCentralServerInfo is not null)
-                        additionalCentralServerInfo!.ClientWorkstationNames.Add(centralServerUtilityItem.ClientWorkstationName);
+                        additionalCentralServerInfo!.ClientWorkstationsGroups.Add(GetClientWorkstationsGroup(centralServerUtilityItem.ClientWorkstationName, clientsCsvFileData));
                 }
 
                 foreach (var centralServerUtilityItem in centralServerUtilityItems)
@@ -196,17 +199,28 @@ namespace Ssz.Dcs.CentralServer
                         int minClientWorkstationsCount = Int32.MaxValue;
                         foreach (var i in _additionalCentralServerInfosCollection.Values)
                         {
-                            if (i.ClientWorkstationNames.Count < minClientWorkstationsCount)
+                            if (i.ClientWorkstationsGroups.Count < minClientWorkstationsCount)
                             {
                                 additionalCentralServerInfo = i;
-                                minClientWorkstationsCount = i.ClientWorkstationNames.Count;
+                                minClientWorkstationsCount = i.ClientWorkstationsGroups.Count;
                             }
                         }
-                        additionalCentralServerInfo!.ClientWorkstationNames.Add(centralServerUtilityItem.ClientWorkstationName);
+                        additionalCentralServerInfo!.ClientWorkstationsGroups.Add(GetClientWorkstationsGroup(centralServerUtilityItem.ClientWorkstationName, clientsCsvFileData));
                         centralServerUtilityItem.UpdateValue(additionalCentralServerInfo.ServerAddress, nowUtc);
                     }
                 }
             }
+        }
+
+        private string GetClientWorkstationsGroup(string clientWorkstationName, CaseInsensitiveDictionary<List<string?>> clientsCsvFileData)
+        {            
+            string clientWorkstationsGroup = @"default";
+            foreach (var kvp in clientsCsvFileData)
+            {
+                if (kvp.Value.Skip(1).Any(v => String.Equals(v, clientWorkstationName, StringComparison.InvariantCultureIgnoreCase)))
+                    clientWorkstationsGroup = kvp.Key;
+            }
+            return clientWorkstationsGroup;
         }
 
         private void DoWorkCentralServersUtilityItems(DateTime nowUtc, CancellationToken cancellationToken)
@@ -225,6 +239,14 @@ namespace Ssz.Dcs.CentralServer
             }
         }
 
+        private string GetUtilityItemsKey(string elementId, string clientWorkstationName)
+        {
+            if (String.Equals(elementId, DataAccessConstants.UtilityItem_CentralServer, StringComparison.InvariantCultureIgnoreCase))
+                return elementId + "@" + clientWorkstationName;
+            
+            return elementId;
+        }
+
         #endregion
 
         #region private fields       
@@ -232,7 +254,7 @@ namespace Ssz.Dcs.CentralServer
         private volatile bool _utilityItemsDoWorkNeeded;
 
         /// <summary>
-        ///     [elementId@clientWorkstationName, UtilityItem]
+        ///     [id, UtilityItem]
         /// </summary>
         private readonly CaseInsensitiveDictionary<UtilityItem> _utilityItems = new(256);        
 
@@ -291,7 +313,7 @@ namespace Ssz.Dcs.CentralServer
                 }    
             }
 
-            #endregion
+            #endregion            
 
             #region private fields
 

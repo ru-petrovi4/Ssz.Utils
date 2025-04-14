@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Ssz.Utils;
 using Ssz.DataAccessGrpc.Client.Managers;
-using Ssz.DataAccessGrpc.ServerBase;
+using Ssz.DataAccessGrpc.Common;
 using Ssz.Utils.DataAccess;
 using System.Threading.Tasks;
 using Ssz.DataAccessGrpc.Client.ClientLists;
@@ -58,7 +58,7 @@ namespace Ssz.DataAccessGrpc.Client
         public override async Task<ElementValuesJournal[]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId? calculation, CaseInsensitiveDictionary<string?>? params_, object[] valueSubscriptionsCollection)
         {
             var taskCompletionSource = new TaskCompletionSource<ElementValuesJournal[]?>();
-            WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
             {
                 try
                 {
@@ -78,7 +78,7 @@ namespace Ssz.DataAccessGrpc.Client
         public override async Task<List<Utils.DataAccess.EventMessagesCollection>?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
         {
             var taskCompletionSource = new TaskCompletionSource<List<Utils.DataAccess.EventMessagesCollection>?>();
-            WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
             {
                 ClientEventList? clientEventList =
                     _clientEventListManager.GetRelatedClientEventList(OnClientEventListManager_EventMessagesCallbackInternal);
@@ -87,7 +87,7 @@ namespace Ssz.DataAccessGrpc.Client
 
                 try
                 {
-                    if (clientEventList.Disposed) return;
+                    if (clientEventList.Disposed) return;                    
 
                     var result = await clientEventList.ReadEventMessagesJournalAsync(firstTimestampUtc, secondTimestampUtc, params_);
                     foreach (var eventMessagesCollection in result)

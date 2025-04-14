@@ -137,7 +137,7 @@ namespace Ssz.Operator.Core.Commands
                 SetModeToAutoCommand,
                 SetModeToCascadeCommand,
             };
-            commands.AddRange(AddonsHelper.GetCommands());
+            commands.AddRange(AddonsManager.GetCommands());
             return commands;
         }
 
@@ -203,7 +203,7 @@ namespace Ssz.Operator.Core.Commands
                 case SetModeToCascadeCommand:
                     return new GenericDsCommandOptions();
                 default:
-                    return AddonsHelper.NewDsCommandOptionsObject(commandString);
+                    return AddonsManager.NewDsCommandOptionsObject(commandString);
             }
         }
 

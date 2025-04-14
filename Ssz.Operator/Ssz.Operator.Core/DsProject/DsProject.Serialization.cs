@@ -73,7 +73,7 @@ namespace Ssz.Operator.Core
 
                 AddonsCollection.WriteAddonsOwenedDataToFiles();
 
-                _actuallyUsedAddonsInfo = AddonsHelper.GetAddonsInfo(GetUsedAddonGuids());
+                _actuallyUsedAddonsInfo = AddonsManager.GetAddonsInfo(GetUsedAddonGuids());
                 writer.Write(_actuallyUsedAddonsInfo);
 
                 writer.Write(DefaultDsPageSize);
@@ -122,7 +122,7 @@ namespace Ssz.Operator.Core
                             if (_desiredAdditionalAddonsInfo is not null)
                                 foreach (GuidAndName guidAndName in _desiredAdditionalAddonsInfo)
                                 {
-                                    var latestNameToDisplay = AddonsHelper.GetAddonName(guidAndName.Guid);
+                                    var latestNameToDisplay = AddonsManager.GetAddonName(guidAndName.Guid);
                                     if (!string.IsNullOrWhiteSpace(latestNameToDisplay))
                                         guidAndName.Name = latestNameToDisplay;
                                 }
@@ -134,13 +134,13 @@ namespace Ssz.Operator.Core
                         if (Mode != DsProjectModeEnum.WebPlayMode)
                             foreach (GuidAndName guidAndName in _actuallyUsedAddonsInfo)
                             {
-                                var latestNameToDisplay = AddonsHelper.GetAddonName(guidAndName.Guid);
+                                var latestNameToDisplay = AddonsManager.GetAddonName(guidAndName.Guid);
                                 if (!string.IsNullOrWhiteSpace(latestNameToDisplay))
                                     guidAndName.Name = latestNameToDisplay;
                             }
 
                         string[] unSupportedAddonsNameToDisplays =
-                            AddonsHelper.GetNotInAddonsCollection(_actuallyUsedAddonsInfo);
+                            AddonsManager.GetNotInAddonsCollection(_actuallyUsedAddonsInfo);
                         if (unSupportedAddonsNameToDisplays.Length > 0 && Review)
                         {
                             string message = Resources.DsProjectFileOpenErrorAddonIsNotFound + @" ";
@@ -151,7 +151,7 @@ namespace Ssz.Operator.Core
                         }
 
                         unSupportedAddonsNameToDisplays =
-                            AddonsHelper.GetNotInAddonsCollection(_desiredAdditionalAddonsInfo);
+                            AddonsManager.GetNotInAddonsCollection(_desiredAdditionalAddonsInfo);
                         if (unSupportedAddonsNameToDisplays.Length > 0)
                         {
                             string message = Resources.DsProjectFileOpenWarningAddonIsNotFound + @" ";

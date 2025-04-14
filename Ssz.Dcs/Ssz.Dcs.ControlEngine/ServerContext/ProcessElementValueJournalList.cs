@@ -22,7 +22,7 @@ namespace Ssz.Dcs.ControlEngine
         /// <summary>
         ///     Constructs a new instance of the <see cref="WorkingDataJournalList" /> class.
         /// </summary>
-        public ProcessElementValuesJournalList(ServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
+        public ProcessElementValuesJournalList(DataAccessServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
 			: base(serverWorker, serverContext, listClientAlias, listParams)
 		{            
         }
@@ -35,7 +35,7 @@ namespace Ssz.Dcs.ControlEngine
             DateTime firstTimeStampUtc,
             DateTime secondTimeStampUtc,
             uint numValuesPerAlias,
-            Ssz.DataAccessGrpc.ServerBase.TypeId calculation,
+            Ssz.Utils.DataAccess.TypeId calculation,
             CaseInsensitiveDictionary<string?> params_,
             List<uint> serverAliases)
         {

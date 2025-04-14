@@ -47,7 +47,7 @@ using OfficeOpenXml.Utils;
 using OfficeOpenXml.FormulaParsing;
 using OfficeOpenXml.FormulaParsing.LexicalAnalysis;
 using OfficeOpenXml.Packaging.Ionic.Zip;
-using System.DrawingCore;
+using System.Drawing;
 using OfficeOpenXml.Style;
 using OfficeOpenXml.Compatibility;
 

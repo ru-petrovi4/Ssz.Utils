@@ -34,7 +34,7 @@ using System.Linq;
 using System.Text;
 
 using OfficeOpenXml.ConditionalFormatting;
-using System.DrawingCore;
+using System.Drawing;
 
 namespace OfficeOpenXml.ConditionalFormatting.Contracts
 {

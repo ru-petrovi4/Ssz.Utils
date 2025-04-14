@@ -75,7 +75,7 @@ namespace Ssz.Dcs.ControlEngine
 
             var parameters = new List<object>();
             if (UserFriendlyLogger != null) parameters.Add(UserFriendlyLogger);
-            if (_dataDirectoryInfo != null) parameters.Add(_dataDirectoryInfo);
+            if (_dataDirectoryInfo != null) parameters.Add(_dataDirectoryInfo.FullName);
             if (_dispatcher != null) parameters.Add(_dispatcher);            
             CsvDb = ActivatorUtilities.CreateInstance<CsvDb>(serviceProvider, parameters.ToArray());
             CsvDb.CsvFileChanged += OnCsvDb_CsvFileChanged;
@@ -261,7 +261,7 @@ namespace Ssz.Dcs.ControlEngine
                 SaveModules(blockFileFullName, modules);  
             }
 
-            CsvDb.LoadData();
+            CsvDb.LoadCsvFileInfos();
             CsvDb.EnableRaisingEvents = true;
             var t = FileSystemWatchersEnableRaisingEventsAsync();
         }
@@ -305,6 +305,8 @@ namespace Ssz.Dcs.ControlEngine
 
         public async Task LoadStateAsync(string filePathRelativeToProcessDrectory)
         {
+            _deviceDsBlock.MODEL_TIME_MS.Value.Set(0);
+
             if (_processDirectoryInfo is null || !_processDirectoryInfo.Exists) return;
 
             var fileInfo = new FileInfo(Path.Combine(_processDirectoryInfo.FullName, filePathRelativeToProcessDrectory));

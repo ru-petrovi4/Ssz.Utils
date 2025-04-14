@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.Dcs.CentralServer.Common.EntityFramework
 {
-    [Resource]
+    //[Resource]
     public class ScenarioResult : Identifiable<Int64>, IOwnedDataSerializable
     {
         #region public functions        

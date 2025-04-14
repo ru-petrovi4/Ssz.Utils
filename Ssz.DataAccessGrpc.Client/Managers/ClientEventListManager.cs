@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Ssz.Utils;
-using Ssz.DataAccessGrpc.ServerBase;
+using Ssz.DataAccessGrpc.Common;
 using Microsoft.Extensions.Logging;
 using Ssz.DataAccessGrpc.Client.ClientLists;
 using Ssz.DataAccessGrpc.Client.ClientListItems;

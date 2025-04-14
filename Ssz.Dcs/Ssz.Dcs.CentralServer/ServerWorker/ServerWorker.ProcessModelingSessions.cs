@@ -25,7 +25,7 @@ using Ssz.Utils.Addons;
 
 namespace Ssz.Dcs.CentralServer
 {
-    public partial class ServerWorker : ServerWorkerBase
+    public partial class ServerWorker : DataAccessServerWorkerBase
     {
         #region public functions        
 
@@ -137,12 +137,13 @@ namespace Ssz.Dcs.CentralServer
                         if (dbEnity_ProcessModelingSession is not null)
                             processModelingSession.DbEnity_ProcessModelingSessionId = dbEnity_ProcessModelingSession.Id;
                     }                    
-                }
+                }                
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex, @"dbContext error.");
             }
+            Logger.LogInformation($"Process modeling session initiated. Instructor workstation: {clientWorkstationName}");
 
             return processModelingSession.ProcessModelingSessionId;
         }        
@@ -177,7 +178,7 @@ namespace Ssz.Dcs.CentralServer
             }
 
             var tasks = new List<Task>();
-            foreach (CentralServer.EngineSession engineSession in processModelingSession.EngineSessions)
+            foreach (EngineSession engineSession in processModelingSession.EngineSessions)
             {
                 try
                 {
@@ -204,7 +205,7 @@ namespace Ssz.Dcs.CentralServer
                 {
                     var engineSession = processModelingSession.EngineSessions[collectionIndex];
                     processModelingSession.EngineSessions.RemoveAt(collectionIndex);
-                    engineSession.Dispose();
+                    engineSession.DataAccessProviderGetter_Addon.Close();
                 }
 
                 bool utilityItemsProcessingNeeded = false;
@@ -270,7 +271,7 @@ namespace Ssz.Dcs.CentralServer
 
                         DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon = GetNewInitializedDataAccessProviderAddon(
                             _serviceProvider,
-                            $"http://localhost:60080/SimcodePlatServer/ServerDiscovery",
+                            $"http://localhost:60080/PlatServer/ServerDiscovery",
                             systemName,
                             new CaseInsensitiveDictionary<string?> { { @"XiSystem", systemName } },
                             ThreadSafeDispatcher);
@@ -348,15 +349,15 @@ namespace Ssz.Dcs.CentralServer
                     processModelDsFilesStoreDirectory.PathRelativeToRootDirectory,
                     DsFilesStoreConstants.InstructorDataDirectoryName));
 
-                if (processModelingSession.InitiatorClientApplicationName != DataAccessConstants.Instructor_ClientApplicationName)
+                if (processModelingSession.InitiatorClientApplicationName != DataAccessConstants.Instructor_ClientApplicationName) // Production
                 {
                     Generate_PrepareAndRunInstructorExe_SystemEvent(processModelingSession.InitiatorClientWorkstationName, processModelingSession);
                 }
-                else
+                else // Debug only
                 {
                     // Only update Instructor.Data directory.
                     Generate_DownloadChangedFiles_SystemEvent(processModelingSession.InitiatorClientWorkstationName, jobId,
-                        Path.Combine(processModelDsFilesStoreDirectory.PathRelativeToRootDirectory, DsFilesStoreConstants.InstructorDataDirectoryName),
+                        processModelDsFilesStoreDirectory.InvariantPathRelativeToRootDirectory + "/" + DsFilesStoreConstants.InstructorDataDirectoryName,
                         true);
                 }
 
@@ -364,22 +365,22 @@ namespace Ssz.Dcs.CentralServer
                     ehi.ProcessModelNames.Contains(@"*", StringComparer.InvariantCultureIgnoreCase) ||
                     ehi.ProcessModelNames.Contains(processModelingSession.ProcessModelName, StringComparer.InvariantCultureIgnoreCase)
                 );
-                EnginesHostInfo? enginesHostInfo = enginesHostInfosCollection
+                processModelingSession.EnginesHostInfo = enginesHostInfosCollection
                     .FirstOrDefault(ehi => String.Equals(ehi.WorkstationName, processModelingSession.InitiatorClientWorkstationName, StringComparison.InvariantCultureIgnoreCase));
-                if (enginesHostInfo is null)
+                if (processModelingSession.EnginesHostInfo is null)
                 {
                     int minEnginesCount = Int32.MaxValue;
                     foreach (var ehi in enginesHostInfosCollection)
                     {
                         if (ehi.EnginesCount < minEnginesCount)
                         {
-                            enginesHostInfo = ehi;
+                            processModelingSession.EnginesHostInfo = ehi;
                             minEnginesCount = ehi.EnginesCount;
                         }
                     }
                 }
-                if (enginesHostInfo is null)
-                    enginesHostInfo = _localEnginesHostInfo;
+                if (processModelingSession.EnginesHostInfo is null)
+                    processModelingSession.EnginesHostInfo = _localEnginesHostInfo;
 
                 // Launch DscEngine 
 
@@ -391,7 +392,7 @@ namespace Ssz.Dcs.CentralServer
 
                 string engineSessionId = Guid.NewGuid().ToString();
 
-                Generate_LaunchEngine_SystemEvent(enginesHostInfo.WorkstationName, processModelingSession, DsFilesStoreDirectoryType.ControlEngineBin, DsFilesStoreDirectoryType.ControlEngineData, @"", engineSessionId);
+                Generate_LaunchEngine_SystemEvent(processModelingSession.EnginesHostInfo.WorkstationName, processModelingSession, DsFilesStoreDirectoryType.ControlEngineBin, DsFilesStoreDirectoryType.ControlEngineData, @"", engineSessionId);
 
                 DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon = GetNewInitializedDataAccessProviderAddon(
                         _serviceProvider,
@@ -416,14 +417,14 @@ namespace Ssz.Dcs.CentralServer
                         var systemNameBase = Path.GetFileNameWithoutExtension(mvDsFileInfo.Name);                        
                         string xiSystemName = systemNameBase + @"." + engineSessionId;
 
-                        Generate_LaunchEngine_SystemEvent(enginesHostInfo.WorkstationName, processModelingSession, DsFilesStoreDirectoryType.PlatInstructorBin, DsFilesStoreDirectoryType.PlatInstructorData, mvDsFileInfo.Name, xiSystemName);
+                        Generate_LaunchEngine_SystemEvent(processModelingSession.EnginesHostInfo.WorkstationName, processModelingSession, DsFilesStoreDirectoryType.PlatInstructorBin, DsFilesStoreDirectoryType.PlatInstructorData, mvDsFileInfo.Name, xiSystemName);
 
                         DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon2;
-                        if (String.Equals(enginesHostInfo.WorkstationName, @"localhost", StringComparison.InvariantCultureIgnoreCase))
+                        if (String.Equals(processModelingSession.EnginesHostInfo.WorkstationName, @"localhost", StringComparison.InvariantCultureIgnoreCase))
                         {
                             dataAccessProviderGetter_Addon2 = GetNewInitializedDataAccessProviderAddon(
                                 _serviceProvider,
-                                $"http://localhost:60080/SimcodePlatServer/ServerDiscovery",
+                                $"http://localhost:60080/PlatServer/ServerDiscovery",
                                 xiSystemName,
                                 new CaseInsensitiveDictionary<string?> { { @"XiSystem", xiSystemName } },
                                 ThreadSafeDispatcher);
@@ -432,7 +433,7 @@ namespace Ssz.Dcs.CentralServer
                         {
                             dataAccessProviderGetter_Addon2 = GetNewInitializedDataAccessProviderAddon(
                                 _serviceProvider,
-                                $"https://{enginesHostInfo.WorkstationName}:60060",
+                                $"https://{processModelingSession.EnginesHostInfo.WorkstationName}:60060",
                                 DataAccessConstants.PlatformXiProcessModelingSessionId + xiSystemName,
                                 new CaseInsensitiveDictionary<string?>(),
                                 ThreadSafeDispatcher);
@@ -451,7 +452,7 @@ namespace Ssz.Dcs.CentralServer
             Task.Run(async () =>
             {
                 var isConnectedEventWaitHandles = new List<EventWaitHandle>();
-                foreach (CentralServer.EngineSession engineSession in processModelingSession.EngineSessions)
+                foreach (EngineSession engineSession in processModelingSession.EngineSessions)
                 {
                     isConnectedEventWaitHandles.Add(engineSession.DataAccessProvider.IsConnectedEventWaitHandle);
                 }
@@ -460,7 +461,7 @@ namespace Ssz.Dcs.CentralServer
                     WaitHandle.WaitAll(isConnectedEventWaitHandles.ToArray());
                 });
 
-                serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+                serverContext.AddCallbackMessage(new LongrunningPassthroughCallbackMessage
                 {
                     JobId = jobId,
                     ProgressPercent = 100,
@@ -475,7 +476,7 @@ namespace Ssz.Dcs.CentralServer
         private string ProcessModelingSession_DownloadChangedFiles_LongrunningPassthrough(ServerContext serverContext, ReadOnlyMemory<byte> dataToSend)
         {
             string?[] csvLine = CsvHelper.ParseCsvLine(@",", Encoding.UTF8.GetString(dataToSend.Span));
-            string directoryPathsRelativeToRootDirectory = CsvHelper.FormatForCsv(@",", csvLine.Skip(1));            
+            string invariantDirectoryPathsRelativeToRootDirectory = CsvHelper.FormatForCsv(@",", csvLine.Skip(1));            
             ProcessModelingSession processModelingSession = GetProcessModelingSession(csvLine[0]);
 
             string jobId = Guid.NewGuid().ToString();
@@ -487,7 +488,8 @@ namespace Ssz.Dcs.CentralServer
             jobProgress.ProgressSubscribers.Add(serverContext);
             _jobProgressesCollection.Add(jobId, jobProgress);
 
-            Generate_DownloadChangedFiles_SystemEvent(processModelingSession.InitiatorClientWorkstationName, jobId, directoryPathsRelativeToRootDirectory, false);
+            Generate_DownloadChangedFiles_SystemEvent(processModelingSession.InitiatorClientWorkstationName, @"", invariantDirectoryPathsRelativeToRootDirectory, false);
+            Generate_DownloadChangedFiles_SystemEvent(processModelingSession.EnginesHostInfo!.WorkstationName, jobId, invariantDirectoryPathsRelativeToRootDirectory, false);
 
             return jobId;
         }
@@ -495,7 +497,7 @@ namespace Ssz.Dcs.CentralServer
         private string ProcessModelingSession_UploadChangedFiles_LongrunningPassthrough(ServerContext serverContext, ReadOnlyMemory<byte> dataToSend)
         {
             string?[] csvLine = CsvHelper.ParseCsvLine(@",", Encoding.UTF8.GetString(dataToSend.Span));
-            string directoryPathsRelativeToRootDirectory = CsvHelper.FormatForCsv(@",", csvLine.Skip(1));
+            string invariantDirectoryPathsRelativeToRootDirectory = CsvHelper.FormatForCsv(@",", csvLine.Skip(1));
             ProcessModelingSession processModelingSession = GetProcessModelingSession(csvLine[0]);
 
             string jobId = Guid.NewGuid().ToString();
@@ -507,7 +509,8 @@ namespace Ssz.Dcs.CentralServer
             jobProgress.ProgressSubscribers.Add(serverContext);
             _jobProgressesCollection.Add(jobId, jobProgress);
 
-            Generate_UploadChangedFiles_SystemEvent(processModelingSession.InitiatorClientWorkstationName, jobId, directoryPathsRelativeToRootDirectory);
+            Generate_UploadChangedFiles_SystemEvent(processModelingSession.InitiatorClientWorkstationName, @"", invariantDirectoryPathsRelativeToRootDirectory);
+            Generate_UploadChangedFiles_SystemEvent(processModelingSession.EnginesHostInfo!.WorkstationName, jobId, invariantDirectoryPathsRelativeToRootDirectory);
 
             return jobId;
         }        
@@ -543,8 +546,16 @@ namespace Ssz.Dcs.CentralServer
 
             public string ProcessModelingSessionId { get; }
 
+            /// <summary>
+            ///     Production DataAccessConstants.Launcher_ClientApplicationName.
+            ///     Debug only DataAccessConstants.Instructor_ClientApplicationName
+            /// </summary>
             public string InitiatorClientApplicationName { get; }
 
+            /// <summary>            
+            ///     Production WorkstationName of DataAccessConstants.Launcher_ClientApplicationName.
+            ///     Debug only WorkstationName of DataAccessConstants.Instructor_ClientApplicationName
+            /// </summary>
             public string InitiatorClientWorkstationName { get; }
 
             public string ProcessModelName { get; }
@@ -559,7 +570,9 @@ namespace Ssz.Dcs.CentralServer
 
             public long? DbEnity_ProcessModelingSessionId { get; set; }
 
-            public ObservableCollection<CentralServer.EngineSession> EngineSessions { get; } = new();            
+            public ObservableCollection<EngineSession> EngineSessions { get; } = new();
+
+            public EnginesHostInfo? EnginesHostInfo { get; set; }
 
             /// <summary>
             ///     See ProcessModelingSessionConstants
@@ -628,7 +641,7 @@ namespace Ssz.Dcs.CentralServer
 //    var platInstructorEngineSession = new PlatInstructor_TrainingEngineSession(
 //        _serviceProvider,
 //        ThreadSafeDispatcher,
-//        "http://" + targetWorkstationName + ":60080/SimcodePlatServer/ServerDiscovery",
+//        "http://" + targetWorkstationName + ":60080/PlatServer/ServerDiscovery",
 //        @"",
 //        new CaseInsensitiveDictionary<string?>());
 //    processModelingSession.EngineSessions.Add(platInstructorEngineSession);

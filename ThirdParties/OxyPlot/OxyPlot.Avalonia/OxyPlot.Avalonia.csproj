@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>Oxyplot.Avalonia</PackageId>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Description>OxyPlot is a plotting library for .NET. This is a support library for OxyPlot to work with AvaloniaUI.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>OxyPlot contributors</Copyright>
+    <PackageProjectUrl>http://oxyplot.org/</PackageProjectUrl>    
+    <PackageTags>plotting plot charting chart</PackageTags>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/oxyplot/oxyplot.git</RepositoryUrl>
+    <VersionPrefix>2.1.2</VersionPrefix>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup> 
+
+  <ItemGroup>
+    <Compile Update="**\*.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <AvaloniaResource Include="**\*.xaml">
+      <SubType>Designer</SubType>
+    </AvaloniaResource>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Include="**\*.xaml;Assets\*" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+    <PackageReference Include="Avalonia" Version="11.2.7" />    
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\OxyPlot.Core\OxyPlot.Core.csproj" />
+  </ItemGroup>
+</Project>

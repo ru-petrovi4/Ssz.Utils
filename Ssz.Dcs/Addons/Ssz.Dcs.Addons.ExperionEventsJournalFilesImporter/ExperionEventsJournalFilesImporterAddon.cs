@@ -11,6 +11,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Frozen;
 
 namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
 {
@@ -69,12 +70,14 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
 
             var elementIdsMap = ActivatorUtilities.CreateInstance<ElementIdsMap>(ServiceProvider);
             elementIdsMap.Initialize(CsvDb.GetData(ElementIdsMap.StandardMapFileName), CsvDb.GetData(ElementIdsMap.StandardTagsFileName), CsvDb);
-            elementIdsMap.CommonEventMessageFieldsToAdd[@"EventsSource"] = ExperionEventsSource;
-            elementIdsMap.CommonEventMessageFieldsToAdd[@"SourceAddonInstanceId"] = InstanceId;            
+            var commonEventMessageFieldsToAdd = new CaseInsensitiveDictionary<string?>(elementIdsMap.CommonEventMessageFieldsToAdd);
+            commonEventMessageFieldsToAdd[@"EventsSource"] = ExperionEventsSource;
+            commonEventMessageFieldsToAdd[@"SourceAddonInstanceId"] = InstanceId;            
             foreach (var kvp in NameValueCollectionHelper.Parse(OptionsSubstituted.TryGetValue(DataAccessProviderGetter_CommonEventMessageFieldsToAdd_OptionName)))
             {
-                elementIdsMap.CommonEventMessageFieldsToAdd[kvp.Key] = kvp.Value;
+                commonEventMessageFieldsToAdd[kvp.Key] = kvp.Value;
             }
+            elementIdsMap.CommonEventMessageFieldsToAdd = commonEventMessageFieldsToAdd.ToFrozenDictionary(StringComparer.InvariantCultureIgnoreCase);
 
             dataAccessProvider.Initialize(elementIdsMap,                
                 @"",

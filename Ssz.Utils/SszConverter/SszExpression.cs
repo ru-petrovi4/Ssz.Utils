@@ -43,10 +43,10 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="dataSourceValues"></param>
         /// <param name="userValue"></param>
-        /// <param name="logger"></param>
-        /// <param name="userFriendlyLogger"></param>
+        /// <param name="stringFormat"></param>
+        /// <param name="loggersSet"></param>
         /// <returns></returns>
-        public object? Evaluate(object?[]? dataSourceValues, object? userValue, ILoggersSet loggersSet)
+        public object? Evaluate(object?[]? dataSourceValues, object? userValue, string? stringFormat, ILoggersSet loggersSet)
         {
             if (!IsValidInternal)
                 return null;
@@ -92,7 +92,7 @@ namespace Ssz.Utils
                         v => new Any(v).ValueAsBoolean(false))
                     .ToArray();
                 sDataSourceValues = dataSourceValues.Select(
-                        v => new Any(v).ValueAsString(true))
+                        v => new Any(v).ValueAsString(true, stringFormat))
                     .ToArray();
             }
 

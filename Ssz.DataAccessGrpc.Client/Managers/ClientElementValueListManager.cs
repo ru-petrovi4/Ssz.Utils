@@ -212,15 +212,17 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// </summary>
         public async Task<object[]?> PollChangesAsync()
         {
-            if (DataAccessGrpcList is null || DataAccessGrpcList.Disposed) return null;
+            if (DataAccessGrpcList is null || DataAccessGrpcList.Disposed) 
+                return null;
             try
             {
                 var changedClientObjs = new List<object>();
-                ClientElementValueListItem[] changedClientElementValueListItems = await DataAccessGrpcList.PollElementValuesChangesAsync();
+                ClientElementValueListItem[]? changedClientElementValueListItems = await DataAccessGrpcList.PollElementValuesChangesAsync();
+                if (changedClientElementValueListItems is null)
+                    return null;
                 foreach (ClientElementValueListItem dataGrpcElementValueListItem in changedClientElementValueListItems)
                 {
-                    var o = dataGrpcElementValueListItem.Obj as DataAccessGrpcListItemWrapper;
-                    if (o is null) throw new InvalidOperationException();
+                    var o = (DataAccessGrpcListItemWrapper)dataGrpcElementValueListItem.Obj!;                    
                     foreach (var clientObjectInfo in o.ClientObjectInfosCollection)
                     {
                         if (clientObjectInfo.ClientObj is not null)
@@ -353,7 +355,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
         /*
         /// <summary>
-        ///     Reads current value from cache, not remote ServerBase.
+        ///     Reads current value from cache, not remote Common.
         /// </summary>
         public Any TryRead(string id)
         {

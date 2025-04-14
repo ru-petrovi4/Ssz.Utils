@@ -71,9 +71,12 @@ namespace Ssz.Utils
 		/// <param name="propertyName">The property that needs to raise the PropertyChanged notification</param>		
         protected virtual void OnPropertyChanged(string propertyName)
         {
-            if (propertyName is not null) VerifyPropertyName(propertyName);
+#if DEBUG
+			if (propertyName is not null && !propertyName.StartsWith("[") && propertyName != "Item" && !propertyName.StartsWith("Item["))
+				VerifyPropertyName(propertyName);
+#endif
 
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
 		/// <summary>

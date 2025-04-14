@@ -58,7 +58,7 @@ namespace Ssz.Operator.Core.VisualEditors.AddonsCollectionEditor
                 if (Addon is not null)
                 {
                     string result = @"Addon Version: " + Addon.Version + "\n";
-                    result += @"Ssz.Operator.Play Version: " + Addon.SszOperatorVersion + "\n";
+                    result += @"Ssz.Operator.Play Version: " + Addon.CoreLibraryVersion + "\n";
                     result += @"Full Path: " + Addon.DllFileFullName;
                     return result;
                 }

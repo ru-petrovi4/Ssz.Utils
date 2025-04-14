@@ -10,7 +10,19 @@ using System.Threading.Tasks;
 
 namespace Ssz.Utils.Logging
 {
-    public class UserFriendlyLogger : SszLoggerBase
+    public class UserFriendlyLogger : UserFriendlyLogger<object>
+    {
+        #region construction and destruction
+
+        public UserFriendlyLogger(Action<LogLevel, EventId, string> writeLineAction) :
+            base(writeLineAction)
+        {            
+        }
+
+        #endregion
+    }
+
+    public class UserFriendlyLogger<T> : SszLoggerBase, ILogger<T>
     {
         #region construction and destruction
 
@@ -23,7 +35,7 @@ namespace Ssz.Utils.Logging
 
         #region public functions
 
-        public static IUserFriendlyLogger Empty { get; } = new UserFriendlyLogger((logLevel, eventId, line) => { });
+        public static IUserFriendlyLogger Empty { get; } = new UserFriendlyLogger<object>((logLevel, eventId, line) => { });
 
         public LogLevel LogLevel { get; set; } = LogLevel.Trace;
 
@@ -44,7 +56,7 @@ namespace Ssz.Utils.Logging
                 return;
 
             string line = $"{logLevel,-11} {DateTime.Now:O}";
-            if (eventId.Id != 0) 
+            if (eventId.Id != 0)
                 line += $" ID: {eventId.Id}";
             line += " ";
             lock (SyncRoot)
@@ -61,7 +73,7 @@ namespace Ssz.Utils.Logging
             }
             Exception? ex = exception;
             if (ex is not null)
-            {                
+            {
                 line += "  Exception: " + ex.Message;
             }
 

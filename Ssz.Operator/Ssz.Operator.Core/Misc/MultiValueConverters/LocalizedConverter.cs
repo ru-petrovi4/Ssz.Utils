@@ -78,9 +78,9 @@ namespace Ssz.Operator.Core.MultiValueConverters
 
             var firstTrue =
                 DataSourceToUiStatements.FirstOrDefault(
-                    s => ObsoleteAnyHelper.ConvertTo<bool>(s.Condition.Evaluate(values, null), false));
+                    s => ObsoleteAnyHelper.ConvertTo<bool>(s.Condition.Evaluate(values, null, Format), false));
             if (firstTrue is not null)
-                evaluatedValue = firstTrue.Value.Evaluate(values, null);
+                evaluatedValue = firstTrue.Value.Evaluate(values, null, Format);
             else
                 evaluatedValue = values[0];
 
@@ -124,9 +124,9 @@ namespace Ssz.Operator.Core.MultiValueConverters
                 if (paramNum >= 0 && paramNum < targetTypes.Length)
                     if (!conditionResults[paramNum])
                     {
-                        if (ObsoleteAnyHelper.ConvertTo<bool>(statement.Condition.Evaluate(_dataSourceValues, value), false))
+                        if (ObsoleteAnyHelper.ConvertTo<bool>(statement.Condition.Evaluate(_dataSourceValues, value, Format), false))
                         {
-                            resultValues[paramNum] = statement.Value.Evaluate(_dataSourceValues, value);
+                            resultValues[paramNum] = statement.Value.Evaluate(_dataSourceValues, value, Format);
                             conditionResults[paramNum] = true;
                         }                        
                     }

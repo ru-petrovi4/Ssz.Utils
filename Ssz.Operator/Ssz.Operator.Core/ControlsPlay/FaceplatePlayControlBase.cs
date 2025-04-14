@@ -37,11 +37,7 @@ namespace Ssz.Operator.Core.ControlsPlay
             PlayDsPageDrawingViewbox?.Dispose();
 
             PlayDsPageDrawingViewbox =
-                new PlayDsPageDrawingViewbox(DsPageDrawing, PlayWindow.MainFrame);
-
-            PlayWindow.PlayControlWrapper.Width = DsPageDrawing.Width;
-            PlayWindow.PlayControlWrapper.Height = DsPageDrawing.Height;
-            ((Window)PlayWindow).SizeToContent = SizeToContent.WidthAndHeight;
+                new PlayDsPageDrawingViewbox(DsPageDrawing, PlayWindow.MainFrame);            
         }
 
         #endregion

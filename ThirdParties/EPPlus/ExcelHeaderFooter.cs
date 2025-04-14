@@ -33,7 +33,7 @@
 using System;
 using System.Xml;
 using System.Text.RegularExpressions;
-using System.DrawingCore;
+using System.Drawing;
 using System.Collections.Generic;
 using OfficeOpenXml.Drawing.Vml;
 using System.IO;
@@ -127,7 +127,7 @@ namespace OfficeOpenXml
             string id = ValidateImage(Alignment);
 
             //Add the image
-#if NET5_0_OR_GREATER
+#if (Core)
             var img=ImageCompat.GetImageAsByteArray(Picture);
 #else
             ImageConverter ic = new ImageConverter();
@@ -164,7 +164,7 @@ namespace OfficeOpenXml
 
             string contentType = ExcelPicture.GetContentType(PictureFile.Extension);
             var uriPic = XmlHelper.GetNewUri(_ws._package.Package, "/xl/media/" + PictureFile.Name.Substring(0, PictureFile.Name.Length-PictureFile.Extension.Length) + "{0}" + PictureFile.Extension);
-#if NET5_0_OR_GREATER
+#if (Core)
             var imgBytes=ImageCompat.GetImageAsByteArray(Picture);
 #else
             var ic = new ImageConverter();

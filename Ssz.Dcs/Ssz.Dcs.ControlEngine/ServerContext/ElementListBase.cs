@@ -7,6 +7,8 @@ using Ssz.Utils;
 using Grpc.Core;
 using System.Threading.Tasks;
 using System.Threading;
+using AliasResult = Ssz.Utils.DataAccess.AliasResult;
+using ListItemInfo = Ssz.Utils.DataAccess.ListItemInfo;
 
 namespace Ssz.Dcs.ControlEngine
 {
@@ -21,7 +23,7 @@ namespace Ssz.Dcs.ControlEngine
         /// <summary>
         ///   Constructs a new instance of the <see cref = "ElementListBase" /> class.
         /// </summary>
-        public ElementListBase(ServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
+        public ElementListBase(DataAccessServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
             : base(serverWorker, serverContext, listClientAlias, listParams)
         {            
         }

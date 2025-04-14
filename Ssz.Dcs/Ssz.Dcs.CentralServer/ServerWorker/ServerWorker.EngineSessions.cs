@@ -14,7 +14,7 @@ using System.Threading;
 
 namespace Ssz.Dcs.CentralServer
 {
-    public partial class ServerWorker : ServerWorkerBase
+    public partial class ServerWorker : DataAccessServerWorkerBase
     {
         #region public functions
 
@@ -23,11 +23,11 @@ namespace Ssz.Dcs.CentralServer
         /// </summary>
         /// <param name="serverContext"></param>
         /// <returns></returns>
-        public ObservableCollection<CentralServer.EngineSession> GetEngineSessions(ServerContext serverContext)
+        public ObservableCollection<EngineSession> GetEngineSessions(ServerContext serverContext)
         {
             string systemNameToConnect = serverContext.SystemNameToConnect;
             if (systemNameToConnect == @"")
-                return new ObservableCollection<CentralServer.EngineSession>(); // Utility context                                                           
+                return new ObservableCollection<EngineSession>(); // Utility context                                                           
 
             if (String.Equals(systemNameToConnect, DataAccessConstants.Dcs_SystemName, StringComparison.InvariantCultureIgnoreCase))
             {
@@ -37,7 +37,7 @@ namespace Ssz.Dcs.CentralServer
             {
                 ProcessModelingSession? processModelingSession = GetProcessModelingSessionOrNull(systemNameToConnect);
                 if (processModelingSession is null)
-                    return new ObservableCollection<CentralServer.EngineSession>(); // Unknown systemNameToConnect
+                    return new ObservableCollection<EngineSession>(); // Unknown systemNameToConnect
 
                 return processModelingSession.EngineSessions;
             }

@@ -1,0 +1,76 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>	
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	<Platforms>AnyCPU</Platforms>
+  </PropertyGroup>
+ 
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+ 
+  <ItemGroup>
+    <AvaloniaXaml Remove="Views\ControlsCommon\Trends\GenericTrends\AxisConfiguration\AxisConfigurationWindow.axaml" />
+    <AvaloniaXaml Remove="Views\ControlsCommon\Trends\GenericTrends\PlotConfiguration\AssignTrendToVariableWindow.axaml" />
+    <AvaloniaXaml Remove="Views\ControlsCommon\Trends\GenericTrends\PlotConfiguration\PlotConfigurationWindow.axaml" />
+    <AvaloniaXaml Remove="Views\ControlsCommon\Trends\GenericTrends\PlotConfiguration\TrendConfigurationWindow.axaml" />
+    <AvaloniaXaml Remove="Views\ControlsCommon\Trends\GenericTrends\Settings\SettingsWindow.axaml" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.2.6" />
+    <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.2.6" />
+    <PackageReference Include="Avalonia.Svg.Skia" Version="11.2.0.2" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.6" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.6" />
+    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+    <PackageReference Include="Avalonia.Diagnostics" Version="11.2.6">
+      <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
+      <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Avalonia.Xaml.Interactions" Version="11.2.0.14" />
+    <PackageReference Include="Classic.Avalonia.Theme" Version="11.2.0.7" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+	<PackageReference Include="MessageBox.Avalonia" Version="3.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Ssz.DataAccessGrpc.Client\Ssz.DataAccessGrpc.Client.csproj" />
+    <ProjectReference Include="..\..\Ssz.Utils.Avalonia\Ssz.Utils.Avalonia.csproj" />
+    <ProjectReference Include="..\..\Ssz.Utils\Ssz.Utils.csproj" />
+    <ProjectReference Include="..\..\ThirdParties\Egorozh.ColorPicker\AvaloniaUI\Egorozh.ColorPicker.Avalonia.Dialog\Egorozh.ColorPicker.Avalonia.Dialog.csproj" />
+    <ProjectReference Include="..\..\ThirdParties\OxyPlot\OxyPlot.Avalonia\OxyPlot.Avalonia.csproj" />
+    <ProjectReference Include="..\..\ThirdParties\OxyPlot\OxyPlot.Core\OxyPlot.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\OperatorUIResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>OperatorUIResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Views\ControlsCommon\Trends\GenericTrends\GenericTrendsPlotView.axaml.cs">
+      <DependentUpon>GenericTrendsPlotView.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\OperatorUIResources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>OperatorUIResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>	
+	
+</Project>

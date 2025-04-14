@@ -16,7 +16,7 @@ namespace Ssz.Dcs.CentralServer
     {
         #region construction and destruction
 
-        public MainBackgroundService(ILogger<MainBackgroundService> logger, ServerWorkerBase serverWorker)
+        public MainBackgroundService(ILogger<MainBackgroundService> logger, DataAccessServerWorkerBase serverWorker)
         {
             Logger = logger;
             _serverWorker = serverWorker;
@@ -65,7 +65,7 @@ namespace Ssz.Dcs.CentralServer
 
         #region private fields
 
-        private readonly ServerWorkerBase _serverWorker;
+        private readonly DataAccessServerWorkerBase _serverWorker;
 
         #endregion        
     }

@@ -1,0 +1,141 @@
+﻿<trends:TrendsPlotView x:Class="Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends.GenericTrendsPlotView"
+                          xmlns="https://github.com/avaloniaui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                          xmlns:oxy="using:OxyPlot.Avalonia"                          
+                          xmlns:trends="using:Ssz.Operator.Core.ControlsCommon.Trends"
+						  xmlns:genericTrends="using:Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends"
+                          mc:Ignorable="d"
+                          d:DesignHeight="300" d:DesignWidth="300"
+                          >
+    <trends:TrendsPlotView.Resources>
+        <!-- Used in code, don't delete this -->
+        <ControlTemplate x:Key="ZoomRectangleTemplate">
+            <Rectangle StrokeThickness="1" Stroke="#FFA29FA0" StrokeDashArray="2,2" />
+        </ControlTemplate>
+        
+        <!-- Used in code, don't delete this -->
+        <ControlTemplate x:Key="CompletedZoomRectangleTemplate">
+            <Rectangle StrokeThickness="0" Fill="Black" Opacity="0.25" />
+        </ControlTemplate>        
+
+        <!--<trends:StartDateConverter x:Key="StartDateConverter" />-->
+
+        <ControlTheme x:Key="SliderThumb" TargetType="Thumb">
+          <!-- <Setter Property="Cursor" Value="SizeWE" />
+          <Setter Property="IsHitTestVisible" Value="False" />-->
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Thumb">
+                        <Grid>
+                            <Line StrokeThickness="2"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Stretch"                                      
+                                      Stretch="Fill"
+                                      StrokeLineCap="Square"                                      
+                                      Stroke="#FFC1C288" />
+							              <genericTrends:ValuesControl x:Name="ValuesControl" Width="2" />
+                        </Grid>                        
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </ControlTheme>
+
+		<ControlTheme x:Key="RulerSliderStyle" TargetType="Slider">
+			<Setter Property="Focusable" Value="False" />			
+			<!--<Setter Property="IsMoveToPointEnabled" Value="false" />-->
+			<Setter Property="Minimum" Value="0" />
+			<Setter Property="Maximum" Value="100" />
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="Slider">
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="*" MinHeight="{TemplateBinding MinHeight}" />
+								<RowDefinition Height="Auto" />
+							</Grid.RowDefinitions>
+							<!--
+                            <Rectangle StrokeThickness="0" Grid.RowSpan="3" />-->
+							<Track Grid.Row="1" x:Name="PART_Track" Margin="0,0,0,0">
+								<Track.Thumb>
+									<Thumb Theme="{StaticResource SliderThumb}" />
+								</Track.Thumb>
+							</Track>
+						</Grid>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</ControlTheme>
+
+    </trends:TrendsPlotView.Resources>
+    <trends:TrendsPlotView.Template>
+        <ControlTemplate TargetType="trends:TrendsPlotView">            
+            <Grid>                            
+                <oxy:Plot Padding="50,15,50,5"
+                              x:Name="Plot"
+                              LayoutUpdated="Plot_OnLayoutUpdated">
+                  <oxy:Plot.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Header="Убрать все" Click="OnRemoveAllRulers" />
+                    </ContextMenu>
+                  </oxy:Plot.ContextMenu>
+                  <oxy:Plot.Background>
+                    <SolidColorBrush Color="White" />
+                  </oxy:Plot.Background>
+                  <oxy:Plot.DefaultTrackerTemplate>
+                    <ControlTemplate />
+                  </oxy:Plot.DefaultTrackerTemplate>                    
+                    <oxy:Plot.Axes>
+                        <oxy:DateTimeAxis Position="Bottom" x:Name="XAxis"
+                                          AxislineThickness="3"
+                                          TickStyle="Inside"
+                                          TicklineColor="#FF3E3E3E"
+                                          MajorGridlineColor="#FF3E3E3E"
+                                          MajorTickSize="9"
+                                          MinorTickSize="5"
+                                          MajorGridlineStyle="Dash"                                          
+                                          IsPanEnabled="False"
+                                          IsZoomEnabled="False"
+                                          StringFormat="HH:mm:ss" />
+                        <oxy:LinearAxis Position="Left" x:Name="YAxis"
+                                          AxislineThickness="3"
+                                          TickStyle="Inside"
+                                          TicklineColor="#FF3E3E3E"
+                                          MajorGridlineColor="#FF3E3E3E"
+                                          Minimum="0"
+                                          Maximum="100"
+                                          MajorTickSize="9"
+                                          MinorTickSize="3"
+                                          MajorStep="10"
+                                          MinorStep="2.5"
+                                          MajorGridlineStyle="Dash"                                          
+                                          IsPanEnabled="False"
+                                          IsZoomEnabled="False"
+                                          StringFormat="F02" />
+                    </oxy:Plot.Axes>
+                </oxy:Plot>
+
+                <!--
+                <Border Grid.Row="1" Background="{Binding Background, ElementName=Plot}"
+                        Margin="-1">
+                    <TextBlock
+                        Text="{Binding Minimum, ElementName=XAxis, Converter={StaticResource StartDateConverter}}"
+                        HorizontalAlignment="Left"
+                        Margin="10,0,0,0" />
+                </Border>-->
+
+                <ScrollBar Orientation="Horizontal"
+                           Value="0" Maximum="100" ViewportSize="2"
+                           x:Name="HorizontalScrollBar" IsVisible="False" />
+
+                <Canvas>
+                    <Grid x:Name="AdditionalGrid"                                        
+                          MinWidth="104" MinHeight="21">
+                    </Grid>
+                </Canvas>                
+            </Grid>
+        </ControlTemplate>
+    </trends:TrendsPlotView.Template>
+</trends:TrendsPlotView>

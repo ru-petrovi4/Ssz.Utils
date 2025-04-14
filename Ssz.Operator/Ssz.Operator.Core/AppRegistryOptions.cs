@@ -157,7 +157,7 @@ namespace Ssz.Operator.Core
             {
                 var skSimcodeSszOperatorDsProject =
                     Registry.CurrentUser.OpenSubKey(SszOperatorSubKeyString + @"\" +
-                                                    DsProject.Instance!.DsProjectFileFullName!.Replace(Path.PathSeparator, '_'));
+                                                    DsProject.Instance!.DsProjectFileFullName!.Replace(Path.DirectorySeparatorChar, '_'));
 
                 if (skSimcodeSszOperatorDsProject is null) return null;
 
@@ -221,7 +221,7 @@ namespace Ssz.Operator.Core
 
         private static string GetDsProjectRegistryKeyString()
         {
-            return DsProject.Instance.DsProjectFileFullName?.Replace(Path.PathSeparator, '_') ?? @"";
+            return DsProject.Instance.DsProjectFileFullName?.Replace(Path.DirectorySeparatorChar, '_') ?? @"";
         }
 
         #endregion

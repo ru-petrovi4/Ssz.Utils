@@ -26,7 +26,7 @@ namespace Ssz.Utils.Wpf.Converters
 
         public object? Convert(object[] values, Type? targetType, object? parameter, CultureInfo culture)
         {            
-            return new SszExpression(Expression).Evaluate(values, null, LoggersSet.Empty);
+            return new SszExpression(Expression).Evaluate(values, null, parameter as string, LoggersSet.Empty);
         }
 
         public object[]? ConvertBack(object? value, Type[] targetTypes, object? parameter, CultureInfo culture)

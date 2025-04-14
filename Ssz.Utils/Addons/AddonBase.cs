@@ -20,6 +20,11 @@ namespace Ssz.Utils.Addons
         #region public functions
 
         /// <summary>
+        ///     Is addon contains resource monitoring data.
+        /// </summary>
+        public const string ParamName_IsResourceMonitoringAddon = @"IsResourceMonitoringAddon";
+
+        /// <summary>
         ///     Addon options .csv file name.
         /// </summary>
         public const string OptionsCsvFileName = @"options.csv";
@@ -139,16 +144,16 @@ namespace Ssz.Utils.Addons
 
         public event EventHandler? Closed;
 
-        public virtual AddonStatus GetAddonStatus()
+        public virtual Task<AddonStatus> GetAddonStatusAsync()
         {
-            return new AddonStatus
+            return Task.FromResult(new AddonStatus
             {
                 AddonGuid = Guid,
                 AddonIdentifier = Identifier,
                 AddonInstanceId = InstanceId,
                 LastWorkTimeUtc = LastWorkTimeUtc,
                 StateCode = AddonStateCodes.STATE_OPERATIONAL
-            };
+            });
         }
 
         /// <summary>

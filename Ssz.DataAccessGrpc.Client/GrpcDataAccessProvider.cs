@@ -6,7 +6,7 @@ using System.Net;
 using System.Threading;
 using Ssz.Utils;
 using Ssz.DataAccessGrpc.Client.Managers;
-using Ssz.DataAccessGrpc.ServerBase;
+using Ssz.DataAccessGrpc.Common;
 using Microsoft.Extensions.Logging;
 using Ssz.Utils.DataAccess;
 using Grpc.Net.Client;
@@ -18,6 +18,7 @@ using static Ssz.DataAccessGrpc.Client.Managers.ClientElementValueListManager;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Diagnostics.SymbolStore;
 using Microsoft.Extensions.Configuration;
+using System.Runtime.InteropServices;
 
 namespace Ssz.DataAccessGrpc.Client
 {
@@ -121,14 +122,28 @@ namespace Ssz.DataAccessGrpc.Client
             _cancellationTokenSource = new CancellationTokenSource();
             var cancellationToken = _cancellationTokenSource.Token;
 
-            var taskCompletionSource = new TaskCompletionSource<int>();
-            var workingThread = new Thread(async () => 
-            { 
-                await WorkingTaskMainAsync(cancellationToken);
-                taskCompletionSource.SetResult(0);
-            });
-            _workingTask = taskCompletionSource.Task;
-            workingThread.Start();
+            bool isBrowser = false;
+#if NET5_0_OR_GREATER
+            if (OperatingSystem.IsBrowser())
+                isBrowser = true;
+#endif
+            if (isBrowser)
+            {
+                _workingTask = Task.Run(async () =>
+                    await WorkingTaskMainAsync(cancellationToken)
+                );
+            }
+            else
+            {
+                var taskCompletionSource = new TaskCompletionSource<int>();
+                var workingThread = new Thread(async () =>
+                {
+                    await WorkingTaskMainAsync(cancellationToken);
+                    taskCompletionSource.SetResult(0);
+                });
+                _workingTask = taskCompletionSource.Task;
+                workingThread.Start();
+            }
 
             foreach (ValueSubscriptionObj valueSubscriptionObj in _valueSubscriptionsCollection.Values)
             {
@@ -147,7 +162,7 @@ namespace Ssz.DataAccessGrpc.Client
 
             var taskCompletionSource = new TaskCompletionSource<object?>();
 
-            WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
             {
                 try
                 {
@@ -280,7 +295,7 @@ namespace Ssz.DataAccessGrpc.Client
                 try
                 {
                     await _clientElementValueListManager.SubscribeAsync(_clientContextManager, CallbackDispatcher,
-                    OnElementValuesCallback, Options.UnsubscribeValueListItemsFromServer, Options.ElementValueListCallbackIsEnabled, ct);
+                        OnElementValuesCallback, Options.UnsubscribeValueListItemsFromServer, Options.ElementValueListCallbackIsEnabled, ct);
                     object[]? changedValueSubscriptions = await _clientElementValueListManager.PollChangesAsync();
                     taskCompletionSource.SetResult(changedValueSubscriptions is not null ? changedValueSubscriptions.OfType<IValueSubscription>().ToArray() : null);
                 }
@@ -352,6 +367,7 @@ namespace Ssz.DataAccessGrpc.Client
                     converter.ConvertBack(
                         value.ValueAsObject(),
                         valueSubscriptionObj.ChildValueSubscriptionsList.Count,
+                        null,
                         LoggersSet);
                 if (resultValues.Length == 0)
                     return ResultInfo.GoodResultInfo;
@@ -481,26 +497,41 @@ namespace Ssz.DataAccessGrpc.Client
             if (!_clientContextManager.ContextIsOperational)
                 throw new ConnectionDoesNotExistException();            
 
-            WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
             {
+                ReadOnlyMemory<byte> returnData;
                 try
                 {
-                    ReadOnlyMemory<byte> returnData = await _clientContextManager.PassthroughAsync(recipientPath, passthroughName, dataToSend);
-                    callbackAction(returnData);
+                    returnData = await _clientContextManager.PassthroughAsync(recipientPath, passthroughName, dataToSend);                    
                 }
                 catch (RpcException ex)
                 {
                     LoggersSet.Logger.LogError(ex, ex.Status.Detail);
-                    callbackAction(ReadOnlyMemory<byte>.Empty);
+                    returnData = ReadOnlyMemory<byte>.Empty;
                 }
-                catch (ConnectionDoesNotExistException ex)
+                catch (ConnectionDoesNotExistException)
                 {
-                    callbackAction(ReadOnlyMemory<byte>.Empty);
+                    returnData = ReadOnlyMemory<byte>.Empty;
                 }
                 catch (Exception ex)
                 {
                     LoggersSet.Logger.LogError(ex, "Passthrough exception.");
-                    callbackAction(ReadOnlyMemory<byte>.Empty);
+                    returnData = ReadOnlyMemory<byte>.Empty;
+                }
+
+                var сallbackDispatcher = CallbackDispatcher;
+                if (сallbackDispatcher is not null)
+                {
+                    try
+                    {
+                        сallbackDispatcher.BeginInvoke(ct =>
+                        {
+                            callbackAction(returnData);
+                        });
+                    }
+                    catch (Exception)
+                    {
+                    }
                 }
             });
         }
@@ -520,7 +551,7 @@ namespace Ssz.DataAccessGrpc.Client
 
             var taskCompletionSource = new TaskCompletionSource<ReadOnlyMemory<byte>>();
 
-            WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
             {                
                 try
                 {
@@ -594,7 +625,7 @@ namespace Ssz.DataAccessGrpc.Client
             var taskCompletionSource = new TaskCompletionSource<Task<uint>>();
 
             // Do not use BeginExclusiveInvoke() because long running task
-            WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
             {
                 IDispatcher? сallbackDispatcher = CallbackDispatcher;
                 Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackActionDispatched;
@@ -746,6 +777,7 @@ namespace Ssz.DataAccessGrpc.Client
                             ClientWorkstationName, 
                             SystemNameToConnect, 
                             ContextParams, 
+                            Options.DataAccessServerWorker,
                             Options.DangerousAcceptAnyServerCertificate,
                             CallbackDispatcher);
 
@@ -834,7 +866,7 @@ namespace Ssz.DataAccessGrpc.Client
         #endregion
 
         #region private functions
-
+        
         private async Task WorkingTaskMainAsync(CancellationToken cancellationToken)
         {
             if (!IsInitialized)
@@ -1106,7 +1138,7 @@ namespace Ssz.DataAccessGrpc.Client
 
         #region private fields        
 
-        private Task<int>? _workingTask;
+        private Task? _workingTask;
 
         private CancellationTokenSource? _cancellationTokenSource;        
 
@@ -1184,7 +1216,7 @@ namespace Ssz.DataAccessGrpc.Client
                     values.Add(childValueSubscription?.ValueStatusTimestamp.Value.ValueAsObject());
                 }
                 SszConverter converter = Converter ?? SszConverter.Empty;                
-                var convertedValue = converter.Convert(values.ToArray(), Ssz.Utils.Logging.LoggersSet.Empty);
+                var convertedValue = converter.Convert(values.ToArray(), null, Ssz.Utils.Logging.LoggersSet.Empty);
                 if (convertedValue == SszConverter.DoNothing) return;
                 ValueSubscription.Update(new ValueStatusTimestamp(new Any(convertedValue), StatusCodes.Good,
                     DateTime.UtcNow));

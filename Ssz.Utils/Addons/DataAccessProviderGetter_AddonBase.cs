@@ -2,6 +2,7 @@ using Ssz.Utils;
 using Ssz.Utils.Addons;
 using Ssz.Utils.DataAccess;
 using System;
+using System.Threading.Tasks;
 
 namespace Ssz.Utils.Addons
 {
@@ -40,39 +41,39 @@ namespace Ssz.Utils.Addons
 
         public bool IsAddonsPassthroughSupported { get; protected set; }        
 
-        public override AddonStatus GetAddonStatus()
+        public override Task<AddonStatus> GetAddonStatusAsync()
         {
             if (!IsInitialized)
-                return new AddonStatus
+                return Task.FromResult(new AddonStatus
                 {
                     AddonGuid = Guid,
                     AddonIdentifier = Identifier,
                     AddonInstanceId = InstanceId,
                     StateCode = AddonStateCodes.STATE_INITIALIZING,
                     Label = Properties.Resources.Addon_STATE_INITIALIZING
-                };
+                });
 
             if (DataAccessProvider is null)
-                return new AddonStatus
+                return Task.FromResult(new AddonStatus
                 {
                     AddonGuid = Guid,
                     AddonIdentifier = Identifier,
                     AddonInstanceId = InstanceId,
                     StateCode = AddonStateCodes.STATE_NOT_OPERATIONAL,
                     Label = Properties.Resources.Addon_STATE_NOT_OPERATIONAL_DataAccessProviderIsNull
-                };
+                });
 
             if (!DataAccessProvider.IsConnected)
-                return new AddonStatus
+                return Task.FromResult(new AddonStatus
                 {
                     AddonGuid = Guid,
                     AddonIdentifier = Identifier,
                     AddonInstanceId = InstanceId,
                     StateCode = AddonStateCodes.STATE_NOT_OPERATIONAL,
                     Label = Properties.Resources.Addon_STATE_NOT_OPERATIONAL_DataAccessProviderIsNotConnected
-                };
+                });
 
-            return new AddonStatus
+            return Task.FromResult(new AddonStatus
             {
                 AddonGuid = Guid,
                 AddonIdentifier = Identifier,
@@ -80,7 +81,7 @@ namespace Ssz.Utils.Addons
                 LastWorkTimeUtc = LastWorkTimeUtc,
                 StateCode = AddonStateCodes.STATE_OPERATIONAL,
                 Label = Properties.Resources.Addon_STATE_OPERATIONAL_DataAccessProviderIsConnected
-            };
+            });
         }        
     }
 }

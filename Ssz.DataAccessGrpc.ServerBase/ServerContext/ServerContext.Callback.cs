@@ -2,12 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
+using Ssz.DataAccessGrpc.Common;
 using Ssz.Utils;
 using Ssz.Utils.DataAccess;
 using Ssz.Utils.Serialization;
@@ -22,9 +24,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
     {
         #region public functions
 
-        public void SetResponseStream(IServerStreamWriter<CallbackMessage> responseStream)
+        public void SetResponseStream(object responseStream)
         {
-            _responseStream = responseStream;
+            _responseStreamWriter = (IServerStreamWriter<CallbackMessage>)responseStream;
         }
 
         /// <summary>
@@ -33,7 +35,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <param name="contextStatusMessage"></param>
         public void AddCallbackMessage(ContextStatusMessage contextStatusMessage)
         {
-            if (Disposed || _responseStream is null)
+            if (Disposed || _responseStreamWriter is null)
                 return;
 
             lock (_messagesSyncRoot)
@@ -48,7 +50,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <param name="elementValuesCallbackMessage"></param>
         public void AddCallbackMessage(ElementValuesCallbackMessage elementValuesCallbackMessage)
         {
-            if (Disposed || _responseStream is null)
+            if (Disposed || _responseStreamWriter is null)
                 return;
 
             lock (_messagesSyncRoot)
@@ -63,7 +65,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <param name="eventMessagesCallbackMessage"></param>
         public void AddCallbackMessage(EventMessagesCallbackMessage eventMessagesCallbackMessage)
         {
-            if (Disposed || _responseStream is null)
+            if (Disposed || _responseStreamWriter is null)
                 return;
 
             lock (_messagesSyncRoot)
@@ -78,7 +80,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <param name="longrunningPassthroughCallbackMessage"></param>
         public void AddCallbackMessage(LongrunningPassthroughCallbackMessage longrunningPassthroughCallbackMessage)
         {
-            if (Disposed || _responseStream is null)
+            if (Disposed || _responseStreamWriter is null)
                 return;
 
             lock (_messagesSyncRoot)
@@ -87,17 +89,13 @@ namespace Ssz.DataAccessGrpc.ServerBase
             }
         }
 
-        #endregion
-
-        #region internal functions
-
         /// <summary>
         /// 
         /// </summary>
         /// <param name="listServerAlias"></param>
         /// <param name="isEnabled"></param>
         /// <returns></returns>
-        internal void EnableListCallback(uint listServerAlias, ref bool isEnabled)
+        public void EnableListCallback(uint listServerAlias, ref bool isEnabled)
         {
             ServerListRoot? serverList;
 
@@ -136,7 +134,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 }                
             }
 
-            _responseStream = null;
+            _responseStreamWriter = null;
 
             Logger.LogDebug(@"ServerContext Callback Thread Exit");
         }
@@ -162,7 +160,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 _longrunningPassthroughCallbackMessagesCollection = new List<LongrunningPassthroughCallbackMessage>();
             }
 
-            if (_responseStream is not null)
+            if (_responseStreamWriter is not null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -181,7 +179,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                             {
                                 StateCode = contextStatusMessage.StateCode
                             };
-                            await _responseStream.WriteAsync(callbackMessage);
+                            await _responseStreamWriter.WriteAsync(callbackMessage);
                         }
                         finally
                         {
@@ -207,7 +205,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                             {
                                 ElementValuesCallback = elementValuesCallback
                             };
-                            await _responseStream.WriteAsync(callbackMessage);
+                            await _responseStreamWriter.WriteAsync(callbackMessage);
                         }
                     }
                 }
@@ -229,7 +227,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                             {
                                 EventMessagesCallback = eventMessagesCallback
                             };
-                            await _responseStream.WriteAsync(callbackMessage);
+                            await _responseStreamWriter.WriteAsync(callbackMessage);
                         }
                     }
                 }
@@ -247,7 +245,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                         Logger.LogDebug("_responseStream.WriteAsync(callbackMessage)");
                         var callbackMessage = new CallbackMessage
                         {
-                            LongrunningPassthroughCallback = new LongrunningPassthroughCallback
+                            LongrunningPassthroughCallback = new Common.LongrunningPassthroughCallback
                             {
                                 JobId = longrunningPassthroughCallbackMessage.JobId,
                                 ProgressPercent = longrunningPassthroughCallbackMessage.ProgressPercent,
@@ -256,7 +254,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                                 StatusCode = longrunningPassthroughCallbackMessage.StatusCode,
                             }
                         };
-                        await _responseStream.WriteAsync(callbackMessage);
+                        await _responseStreamWriter.WriteAsync(callbackMessage);
                     }
                 }
             }
@@ -266,7 +264,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         #region private fields
 
-        private IServerStreamWriter<CallbackMessage>? _responseStream;
+        private IServerStreamWriter<CallbackMessage>? _responseStreamWriter;
 
         private readonly Task _callbackWorkingTask;        
 
@@ -280,89 +278,6 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         private List<LongrunningPassthroughCallbackMessage> _longrunningPassthroughCallbackMessagesCollection = new();
 
-        #endregion
-
-        public class ContextStatusMessage
-        {
-            /// <summary>
-            /// 
-            /// </summary>
-            public uint StateCode;
-        }
-
-        public class ElementValuesCallbackMessage
-        {
-            #region public functions            
-
-            public uint ListClientAlias;
-
-            public readonly Dictionary<uint, ValueStatusTimestamp> ElementValues = new Dictionary<uint, ValueStatusTimestamp>();
-
-            public List<ElementValuesCallback> SplitForCorrectGrpcMessageSize()
-            {
-                byte[] fullElementValuesCollection;
-                using (var memoryStream = new MemoryStream(1024))
-                { 
-                    using (var writer = new SerializationWriter(memoryStream))
-                    {
-                        using (writer.EnterBlock(1))
-                        {
-                            writer.Write(ElementValues.Count);
-                            foreach (var kvp in ElementValues)
-                            {
-                                uint serverAlias = kvp.Key;
-                                ValueStatusTimestamp valueStatusTimestamp = kvp.Value;
-
-                                writer.Write(serverAlias);                                
-                                valueStatusTimestamp.SerializeOwnedData(writer, null);
-                            }
-                        }                        
-                    }                    
-                    fullElementValuesCollection = memoryStream.ToArray();
-                }
-
-                List<ElementValuesCallback> list = new();
-                foreach (DataChunk elementValuesCollection in ProtobufHelper.SplitForCorrectGrpcMessageSize(fullElementValuesCollection))
-                {
-                    var elementValuesCallback = new ElementValuesCallback();
-                    elementValuesCallback.ListClientAlias = ListClientAlias;
-                    elementValuesCallback.ElementValuesCollection = elementValuesCollection;
-                    list.Add(elementValuesCallback);
-                }
-                return list;
-            }
-
-            #endregion
-        }
-
-        public class EventMessagesCallbackMessage
-        {
-            #region public functions
-
-            public uint ListClientAlias;
-
-            public List<EventMessage> EventMessages = new();
-
-            public CaseInsensitiveDictionary<string?>? CommonFields;            
-
-            public List<EventMessagesCallback> SplitForCorrectGrpcMessageSize()
-            {
-                List<EventMessagesCallback> result = new();
-                foreach (EventMessagesCollection eventMessagesCollection in ProtobufHelper.SplitForCorrectGrpcMessageSize(EventMessages, CommonFields))
-                {
-                    var eventMessagesCallback = new EventMessagesCallback();
-                    eventMessagesCallback.ListClientAlias = ListClientAlias;
-                    eventMessagesCallback.EventMessagesCollection = eventMessagesCollection;
-                    result.Add(eventMessagesCallback);
-                }
-                return result;
-            }
-
-            #endregion
-        }
-
-        public class LongrunningPassthroughCallbackMessage : Ssz.Utils.DataAccess.LongrunningPassthroughCallback
-        {            
-        }
-    }
+        #endregion                
+    }    
 }

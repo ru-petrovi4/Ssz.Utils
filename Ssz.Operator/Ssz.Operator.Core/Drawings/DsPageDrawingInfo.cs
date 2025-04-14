@@ -102,7 +102,7 @@ namespace Ssz.Operator.Core.Drawings
                         Mark = reader.ReadInt32();
 
                         reader.ReadOwnedData(DsPageTypeInfo, context);
-                        DsPageTypeObject = AddonsHelper.NewDsPageTypeObject(DsPageTypeInfo.Guid);
+                        DsPageTypeObject = AddonsManager.NewDsPageTypeObject(DsPageTypeInfo.Guid);
                         reader.ReadNullableOwnedData(DsPageTypeObject, context);
                         break;
                     case 3:
@@ -120,7 +120,7 @@ namespace Ssz.Operator.Core.Drawings
 
                         ExcludeFromTagSearch = reader.ReadBoolean();
                         reader.ReadOwnedData(DsPageTypeInfo, context);
-                        DsPageTypeObject = AddonsHelper.NewDsPageTypeObject(DsPageTypeInfo.Guid);
+                        DsPageTypeObject = AddonsManager.NewDsPageTypeObject(DsPageTypeInfo.Guid);
                         reader.ReadNullableOwnedData(DsPageTypeObject, context);
                         break;
                     default:

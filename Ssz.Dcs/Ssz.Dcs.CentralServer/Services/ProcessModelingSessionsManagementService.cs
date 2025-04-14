@@ -16,7 +16,7 @@ namespace Ssz.Dcs.CentralServer
     {
         #region construction and destruction
 
-        public ProcessModelingSessionsManagementService(ILogger<ProcessModelingSessionsManagementService> logger, ServerWorkerBase serverWorker)
+        public ProcessModelingSessionsManagementService(ILogger<ProcessModelingSessionsManagementService> logger, DataAccessServerWorkerBase serverWorker)
         {
             _logger = logger;            
             _serverWorker = (ServerWorker)serverWorker;

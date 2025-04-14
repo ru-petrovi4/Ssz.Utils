@@ -10,9 +10,9 @@ namespace Ssz.Dcs.CentralServer.Common
     {
         //public const string DefaultWindowsUserName = @"localhost\User";
 
-        public const string UserName_DefaultInstructor = @"Иванов И.И.";
+        public const string UserName_DefaultInstructor = @"Тестовый Инструктор";
 
-        public const string UserName_DefaultTrainee = @"Петров П.П.";
+        public const string UserName_DefaultTrainee = @"Тестовый Оператор";
 
         public const string ConfigurationKey_DbType = @"DbType";
 

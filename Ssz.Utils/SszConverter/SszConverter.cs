@@ -15,14 +15,8 @@ namespace Ssz.Utils
         public static SszConverter Empty { get; } = new();
 
         public static object DoNothing { get; } = new();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="values"></param>
-        /// <param name="loggersSet"></param>
-        /// <returns></returns>
-        public object? Convert(object?[]? values, ILoggersSet loggersSet)
+        
+        public object? Convert(object?[]? values, string? stringFormat, ILoggersSet loggersSet)
         {
             if (values is null || values.Length == 0)
                 return DoNothing;
@@ -34,9 +28,9 @@ namespace Ssz.Utils
 
             var firstTrue =
                 Statements.FirstOrDefault(
-                    s => new Any(s.Condition.Evaluate(values, null, loggersSet)).ValueAsBoolean(false));
+                    s => new Any(s.Condition.Evaluate(values, null, stringFormat, loggersSet)).ValueAsBoolean(false));
             if (firstTrue is not null)
-                resultValue = firstTrue.Value.Evaluate(values, null, loggersSet);
+                resultValue = firstTrue.Value.Evaluate(values, null, stringFormat, loggersSet);
             else
                 resultValue = values[0];
             
@@ -48,9 +42,10 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="value"></param>
         /// <param name="resultCount"></param>
-        /// <param name="loggersSet"></param>        
+        /// <param name=""></param>
+        /// <param name="loggersSet"></param>
         /// <returns></returns>
-        public object?[] ConvertBack(object? value, int resultCount, ILoggersSet loggersSet)
+        public object?[] ConvertBack(object? value, int resultCount, string? stringFormat, ILoggersSet loggersSet)
         {
             if (resultCount <= 0 || resultCount > 0xFFFF) return new object[0];
 
@@ -65,9 +60,9 @@ namespace Ssz.Utils
                     if (paramNum >= 0 && paramNum < resultCount)
                     {                        
                         if (!conditionResults[paramNum] &&
-                            new Any(statement.Condition.Evaluate(_values, value, loggersSet)).ValueAsBoolean(false))
+                            new Any(statement.Condition.Evaluate(_values, value, stringFormat, loggersSet)).ValueAsBoolean(false))
                         {
-                            resultValues[paramNum] = statement.Value.Evaluate(_values, value, loggersSet);
+                            resultValues[paramNum] = statement.Value.Evaluate(_values, value, stringFormat, loggersSet);
                             conditionResults[paramNum] = true;
                         }
                     }                        

@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using Ssz.DataAccessGrpc.Client.ClientLists;
-using Ssz.DataAccessGrpc.ServerBase;
+using Ssz.DataAccessGrpc.Common;
 using Ssz.DataAccessGrpc.Client.ClientListItems;
 using Ssz.Utils.DataAccess;
 using System.Linq;
 using System.Threading.Tasks;
 using Grpc.Core;
-using EventMessagesCollection = Ssz.DataAccessGrpc.ServerBase.EventMessagesCollection;
+using EventMessagesCollection = Ssz.DataAccessGrpc.Common.EventMessagesCollection;
 using Google.Protobuf.Collections;
 using Ssz.Utils;
 using System.Threading;
@@ -26,7 +26,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// </summary>
         /// <param name="elementValueList"></param>
         /// <returns></returns>
-        public async Task<ClientElementValueListItem[]> PollElementValuesChangesAsync(ClientElementValueList elementValueList)
+        public async Task<ClientElementValueListItem[]?> PollElementValuesChangesAsync(ClientElementValueList elementValueList)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -39,19 +39,10 @@ namespace Ssz.DataAccessGrpc.Client
                     ContextId = _serverContextId,
                     ListServerAlias = elementValueList.ListServerAlias
                 };
-                var reply = _resourceManagementClient.PollElementValuesChanges(request);
+                var reply = await _dataAccessService.PollElementValuesChangesAsync(request);
                 SetResourceManagementLastCallUtc();
 
-                List<ClientElementValueListItem> result = new();
-
-                while (await reply.ResponseStream.MoveNext())
-                {
-                    var changedItems = ElementValuesCallback(elementValueList, reply.ResponseStream.Current.ElementValuesCollection);
-                    if (changedItems is not null)
-                        result.AddRange(changedItems);
-                }
-
-                return result.ToArray();
+                return ElementValuesCallback(elementValueList, reply);
             }
             catch (Exception ex)
             {
@@ -65,7 +56,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// </summary>
         /// <param name="eventList"></param>
         /// <returns></returns>
-        public async Task<List<Utils.DataAccess.EventMessagesCollection>> PollEventsChangesAsync(ClientEventList eventList)
+        public async Task<List<Utils.DataAccess.EventMessagesCollection>?> PollEventsChangesAsync(ClientEventList eventList)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -78,19 +69,15 @@ namespace Ssz.DataAccessGrpc.Client
                     ContextId = _serverContextId,
                     ListServerAlias = eventList.ListServerAlias
                 };
-                var reply = _resourceManagementClient.PollEventsChanges(request);
+                var reply = await _dataAccessService.PollEventsChangesAsync(request);
                 SetResourceManagementLastCallUtc();
 
-                List<Utils.DataAccess.EventMessagesCollection> result = new();
-
-                while (await reply.ResponseStream.MoveNext())
-                {
-                    var eventMessagesCollection = EventMessagesCallback(eventList, reply.ResponseStream.Current);
-                    if (eventMessagesCollection is not null)
-                        result.Add(eventMessagesCollection);
-                }
-
-                return result;                
+                if (reply is not null)
+                    foreach (var eventMessagesCollection in reply)
+                    {
+                        EventMessagesCallback(eventList, eventMessagesCollection);
+                    }                
+                return reply;                
             }
             catch (Exception ex)
             {
@@ -103,21 +90,21 @@ namespace Ssz.DataAccessGrpc.Client
 
         #region private functions
 
-        private async Task ReadCallbackMessagesAsync(IAsyncStreamReader<CallbackMessage> reader, CancellationToken cancellationToken)
+        private async Task ReadCallbackMessagesAsync(IAsyncStreamReader<CallbackMessage> callbackStreamReader, CancellationToken cancellationToken)
         {
             while (_contextIsOperational)
             {
                 try
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    if (!await reader.MoveNext(cancellationToken))
+                    if (!await callbackStreamReader.MoveNext(cancellationToken))
                     {
                         _contextIsOperational = false;
                         break;
                     }
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    CallbackMessage current = reader.Current;
+                    CallbackMessage current = callbackStreamReader.Current;
                     _workingDispatcher.BeginInvoke(ct =>
                     {    
                         var ct2 = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, ct).Token;
@@ -204,30 +191,60 @@ namespace Ssz.DataAccessGrpc.Client
             return changedListItems;
         }
 
+        private ClientElementValueListItem[]? ElementValuesCallback(ClientElementValueList dataList, List<(uint, ValueStatusTimestamp)>? elementValues)
+        {
+            ClientElementValueListItem[]? changedListItems = dataList.OnElementValuesCallback(elementValues);
+            if (changedListItems is not null && changedListItems.Length > 0)
+            {
+                List<ValueStatusTimestamp> changeValueStatusTimestampsList = new List<ValueStatusTimestamp>(changedListItems.Length);
+                foreach (ClientElementValueListItem changedListItem in changedListItems)
+                {
+                    changeValueStatusTimestampsList.Add(changedListItem.ValueStatusTimestamp);
+                }
+                dataList.RaiseElementValuesCallbackEvent(changedListItems, changeValueStatusTimestampsList.ToArray());
+            }
+            return changedListItems;
+        }
+
         /// <summary>
         ///     Returns null, if incomplete EventMessageArray.
         /// </summary>
         /// <param name="eventList"></param>
         /// <param name="eventMessages"></param>
         /// <returns></returns>
-        private Utils.DataAccess.EventMessagesCollection? EventMessagesCallback(ClientEventList eventList, EventMessagesCollection eventMessagesCollection)
+        private Utils.DataAccess.EventMessagesCollection? EventMessagesCallback(ClientEventList eventList, EventMessagesCollection? eventMessagesCollection)
         {
-            Utils.DataAccess.EventMessagesCollection? fullEventMessagesCollection = eventList.GetEventMessagesCollection(eventMessagesCollection);
-            if (fullEventMessagesCollection is not null && fullEventMessagesCollection.EventMessages.Count > 0)
-            {
-                eventList.RaiseEventMessagesCallbackEvent(fullEventMessagesCollection);
-            }
-            return fullEventMessagesCollection;
+            if (eventMessagesCollection is null)
+                return null;
+
+            Utils.DataAccess.EventMessagesCollection result = ClientEventList.GetEventMessagesCollection(eventMessagesCollection);
+            EventMessagesCallback(eventList, result);
+            return result;
         }
 
-        private void LongrunningPassthroughCallback(ServerBase.LongrunningPassthroughCallback longrunningPassthroughCallback)
+        private void EventMessagesCallback(ClientEventList eventList, Utils.DataAccess.EventMessagesCollection eventMessagesCollection)
+        {            
+            if (eventMessagesCollection.EventMessages.Count > 0)
+            {
+                eventList.RaiseEventMessagesCallbackEvent(eventMessagesCollection);
+            }
+        }
+
+        private void LongrunningPassthroughCallback(Common.LongrunningPassthroughCallback longrunningPassthroughCallback)
         {
             var jobId = longrunningPassthroughCallback.JobId ?? @"";
-            if (_longrunningPassthroughRequestsCollection.TryGetValue(jobId, out List<LongrunningPassthroughRequest>? longrunningPassthroughRequestsList))
+            LongrunningPassthroughRequest[]? longrunningPassthroughRequestsArray = null;
+            lock (_longrunningPassthroughRequestsCollection)
+            {
+                _longrunningPassthroughRequestsCollection.TryGetValue(jobId, out List<LongrunningPassthroughRequest>? longrunningPassthroughRequests);
+                if (longrunningPassthroughRequests is not null)
+                    longrunningPassthroughRequestsArray = longrunningPassthroughRequests.ToArray();
+            }
+            if (longrunningPassthroughRequestsArray is not null)
             {
                 var statusCode = longrunningPassthroughCallback.StatusCode;
 
-                foreach (LongrunningPassthroughRequest longrunningPassthroughRequest in longrunningPassthroughRequestsList)
+                foreach (LongrunningPassthroughRequest longrunningPassthroughRequest in longrunningPassthroughRequestsArray)
                 {
                     var callbackAction = longrunningPassthroughRequest.CallbackAction;
                     if (callbackAction is not null)
@@ -252,9 +269,12 @@ namespace Ssz.DataAccessGrpc.Client
                 if (!StatusCodes.IsGood(statusCode) ||
                         longrunningPassthroughCallback.ProgressPercent == 100)
                 {
-                    _longrunningPassthroughRequestsCollection.Remove(jobId);
+                    lock (_longrunningPassthroughRequestsCollection)
+                    {
+                        _longrunningPassthroughRequestsCollection.Remove(jobId);
+                    }                    
                 }
-            }
+            }                          
         }
 
         #endregion

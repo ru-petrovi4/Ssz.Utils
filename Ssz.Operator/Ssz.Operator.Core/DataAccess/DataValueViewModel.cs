@@ -12,24 +12,6 @@ namespace Ssz.Operator.Core.DataAccess
 {
     public class DataValueViewModel : DisposableViewModelBase
     {
-        #region private fields
-
-        private readonly Dictionary<string, DataValueItem> _dataValueItemsDictionary =
-            new();
-
-        #endregion
-
-        #region protected functions
-
-        protected virtual void OnGlobalUITimerEvent(int phase)
-        {
-            if (IsDisposed) return;
-
-            OnPropertyChanged(Binding.IndexerName);
-        }        
-
-        #endregion
-
         #region construction and destruction
 
         public DataValueViewModel(IPlayWindowBase? playWindow, bool visualDesignMode)
@@ -37,7 +19,7 @@ namespace Ssz.Operator.Core.DataAccess
             PlayWindow = playWindow;
             VisualDesignMode = visualDesignMode;
 
-            MultiBindings = new List<MultiBinding>();
+            _multiBindings = new List<MultiBinding>();
 
             DsProject.Instance.GlobalUITimerEvent += OnGlobalUITimerEvent;
         }        
@@ -50,21 +32,7 @@ namespace Ssz.Operator.Core.DataAccess
             {
                 DsProject.Instance.GlobalUITimerEvent -= OnGlobalUITimerEvent;
 
-                foreach (MultiBinding multiBinding in MultiBindings)
-                {
-                    var disposable = multiBinding.Converter as IDisposable;
-                    if (disposable is not null) 
-                        disposable.Dispose();
-                }
-
-                MultiBindings.Clear();
-
-                // Release and Dispose managed resources.
-                foreach (DataValueItem dataValueItem in _dataValueItemsDictionary.Values)
-                {
-                    dataValueItem.Dispose();
-                }
-                _dataValueItemsDictionary.Clear();
+                Close();
             }
 
             PlayWindow = null;
@@ -80,7 +48,33 @@ namespace Ssz.Operator.Core.DataAccess
 
         public bool VisualDesignMode { get; }
 
-        public List<MultiBinding> MultiBindings { get; }
+        public virtual void Initialize(object? param_)
+        {
+        }
+
+        public virtual void Close()
+        {
+            foreach (MultiBinding multiBinding in _multiBindings)
+            {
+                var disposable = multiBinding.Converter as IDisposable;
+                if (disposable is not null)
+                    disposable.Dispose();
+            }
+
+            _multiBindings.Clear();
+
+            // Release and Dispose managed resources.
+            foreach (DataValueItem dataValueItem in _dataValueItemsDictionary.Values)
+            {
+                dataValueItem.Dispose();
+            }
+            _dataValueItemsDictionary.Clear();
+        }
+
+        public void RegisterMultiBinding(MultiBinding multiBinding)
+        {
+            _multiBindings.Add(multiBinding);
+        }
 
         public object? this[string dataSourceString]
         {
@@ -118,6 +112,26 @@ namespace Ssz.Operator.Core.DataAccess
             if (events.All(e => e.WaitOne(0))) return;
             await Task.Run(() => WaitHandle.WaitAll(events));
         }
+
+        #endregion
+
+        #region protected functions
+
+        protected virtual void OnGlobalUITimerEvent(int phase)
+        {
+            if (IsDisposed) return;
+
+            OnPropertyChanged(Binding.IndexerName);
+        }
+
+        #endregion
+
+        #region private fields
+
+        private readonly Dictionary<string, DataValueItem> _dataValueItemsDictionary =
+            new();
+
+        private readonly List<MultiBinding> _multiBindings = new();
 
         #endregion
     }

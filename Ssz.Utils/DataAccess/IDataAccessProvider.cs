@@ -50,12 +50,7 @@ namespace Ssz.Utils.DataAccess
         /// <summary>
         ///     If guid the same, the data is guaranteed not changed.
         /// </summary>
-        Guid DataGuid { get; }        
-
-        /// <summary>
-        ///     You can use this property as temp storage.
-        /// </summary>
-        object? Obj { get; set; }
+        Guid DataGuid { get; }                
 
         event EventHandler<ContextStatusChangedEventArgs> ContextStatusChanged;
 
@@ -221,5 +216,7 @@ namespace Ssz.Utils.DataAccess
         public bool UnsubscribeValuesJournalListItemsFromServer { get; set; } = true;
 
         public bool DangerousAcceptAnyServerCertificate { get; set; } = true;
+
+        public IDataAccessServerWorker? DataAccessServerWorker { get; set; }
     }
 }

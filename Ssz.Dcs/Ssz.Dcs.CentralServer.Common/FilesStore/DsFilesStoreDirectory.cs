@@ -15,14 +15,27 @@ namespace Ssz.Dcs.CentralServer.Common
         /// <summary>
         ///     String.Empty for the Files Store root directory.
         /// </summary>
-        public string Name => PathRelativeToRootDirectory.Substring(PathRelativeToRootDirectory.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+        public string Name => InvariantPathRelativeToRootDirectory.Substring(InvariantPathRelativeToRootDirectory.LastIndexOf('/') + 1);
 
-        /// <summary>        
+        /// <summary>    
+        ///     !!! Warning: always '/' as path separator !!!
         ///     Path relative to the root of the Files Store.
-        ///     No '\' at the begin, no '\' at the end.
+        ///     No '/' at the begin, no '/' at the end.
         ///     String.Empty for the Files Store root directory.
         /// </summary>
-        public string PathRelativeToRootDirectory { get; set; } = @"";
+        public string InvariantPathRelativeToRootDirectory { get; set; } = @"";
+
+        public string PathRelativeToRootDirectory
+        {
+            get
+            {
+                return InvariantPathRelativeToRootDirectory.Replace('/', Path.DirectorySeparatorChar);
+            }
+            set
+            {
+                InvariantPathRelativeToRootDirectory = value.Replace(Path.DirectorySeparatorChar, '/');
+            }
+        }
 
         public List<DsFilesStoreDirectory> ChildDsFilesStoreDirectoriesCollection { get; set; } = new List<DsFilesStoreDirectory>();
 
@@ -39,7 +52,7 @@ namespace Ssz.Dcs.CentralServer.Common
         {
             using (writer.EnterBlock(1))
             {
-                writer.Write(PathRelativeToRootDirectory);
+                writer.Write(InvariantPathRelativeToRootDirectory);
                 writer.WriteListOfOwnedDataSerializable(ChildDsFilesStoreDirectoriesCollection, context);
                 writer.WriteListOfOwnedDataSerializable(DsFilesStoreFilesCollection, context);
             }
@@ -59,7 +72,7 @@ namespace Ssz.Dcs.CentralServer.Common
                 switch (block.Version)
                 {
                     case 1:
-                        PathRelativeToRootDirectory = reader.ReadString();
+                        InvariantPathRelativeToRootDirectory = reader.ReadString();
                         ChildDsFilesStoreDirectoriesCollection = reader.ReadListOfOwnedDataSerializable(() => new DsFilesStoreDirectory(), context);
                         DsFilesStoreFilesCollection = reader.ReadListOfOwnedDataSerializable(() => new DsFilesStoreFile(), context);
                         break;

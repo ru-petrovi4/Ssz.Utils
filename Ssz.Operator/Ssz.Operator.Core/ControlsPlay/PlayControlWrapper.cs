@@ -599,7 +599,7 @@ namespace Ssz.Operator.Core.ControlsPlay
             if (typeGuid == ZoomboxDsPageType.TypeGuid) return new ZoomboxPlayControl(window);
             if (typeGuid == ToolTipDsPageType.TypeGuid) return new GenericFaceplatePlayControl(window);
 
-            return AddonsHelper.NewPlayControl(typeGuid, window);
+            return AddonsManager.NewPlayControl(typeGuid, window);
         }
 
         private void OnCurrentJumpInfoChanged()

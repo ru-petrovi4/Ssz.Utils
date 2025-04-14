@@ -14,13 +14,13 @@ using Ssz.DataAccessGrpc.Client;
 
 namespace Ssz.Dcs.CentralServer
 {
-    public partial class ServerWorker : ServerWorkerBase
+    public partial class ServerWorker : DataAccessServerWorkerBase
     {
         #region private functions
 
         private void On_ServerContextAddedOrRemoved(object? sender, ServerContextAddedOrRemovedEventArgs args)
         {
-            ServerContext serverContext = args.ServerContext;
+            ServerContext serverContext = (ServerContext)args.ServerContext;
             string systemNameToConnect = serverContext.SystemNameToConnect;
             if (systemNameToConnect == @"") // Utility context            
             {
@@ -197,7 +197,7 @@ namespace Ssz.Dcs.CentralServer
             /// </summary>
             public string ServerAddress { get; set; } = null!;
 
-            public HashSet<string> ClientWorkstationNames { get; } = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+            public HashSet<string> ClientWorkstationsGroups { get; } = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
 
             public List<ServerContext> UtilityServerContexts { get; } = new();
         }

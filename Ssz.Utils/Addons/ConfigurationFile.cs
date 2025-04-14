@@ -16,22 +16,24 @@ namespace Ssz.Utils.Addons
     {
         #region public functions
 
+        public static readonly string[] EditableFilesExtensions = [ @".txt", @".csv", @".htm", @".html", @".yml", @".xml" ];
+
         /// <summary>
         ///     pathRelativeToRootDirectory_NoFIleName - Path separator is always '/'. No '/' at the begin, file name at the end.
         /// </summary>
-        /// <param name="pathRelativeToRootDirectory"></param>
+        /// <param name="invariantPathRelativeToRootDirectory"></param>
         /// <param name="fileInfo"></param>
         /// <returns></returns>
-        public static ConfigurationFile CreateFromFileInfo(string pathRelativeToRootDirectory, FileInfo fileInfo, bool readBigFileData)
+        public static ConfigurationFile CreateFromFileInfo(string invariantPathRelativeToRootDirectory, FileInfo fileInfo, bool readBigFileData)
         {
             ConfigurationFile configurationFile = new()
             {
-                PathRelativeToRootDirectory = pathRelativeToRootDirectory,
-                LastWriteTimeUtc = fileInfo.LastWriteTimeUtc,
+                InvariantPathRelativeToRootDirectory = invariantPathRelativeToRootDirectory,
+                LastModified = fileInfo.LastWriteTimeUtc,
                 Length = fileInfo.Length,
             };            
 
-            if (fileInfo.Name.EndsWith(@".csv", StringComparison.InvariantCultureIgnoreCase))
+            if (EditableFilesExtensions.Any(ext => fileInfo.Name.EndsWith(ext, StringComparison.InvariantCultureIgnoreCase)))
             {
                 bool readFileData;
                 if (readBigFileData)
@@ -40,7 +42,7 @@ namespace Ssz.Utils.Addons
                 }
                 else
                 {
-                    int slashCount = configurationFile.PathRelativeToRootDirectory.Count(f => f == '/');
+                    int slashCount = configurationFile.InvariantPathRelativeToRootDirectory.Count(f => f == '/');
                     if (slashCount == 0)
                         readFileData = true;
                     else
@@ -86,7 +88,7 @@ namespace Ssz.Utils.Addons
 
         /// <summary>        
         /// </summary>
-        public string Name => PathRelativeToRootDirectory.Substring(PathRelativeToRootDirectory.LastIndexOf('/') + 1);
+        public string Name => InvariantPathRelativeToRootDirectory.Substring(InvariantPathRelativeToRootDirectory.LastIndexOf('/') + 1);
 
         /// <summary>        
         ///     
@@ -103,16 +105,29 @@ namespace Ssz.Utils.Addons
         /// </summary>        
         public string SourceIdToDisplay { get; set; } = @"";
 
-        /// <summary>        
+        /// <summary>       
+        ///     !!! Warning: always '/' as path separator !!!
         ///     Path relative to the root of the Files Store.
         ///     Path separator is always '/'. No '/' at the begin, file name at the end.        
         /// </summary>        
-        public string PathRelativeToRootDirectory { get; set; } = @"";
+        public string InvariantPathRelativeToRootDirectory { get; set; } = @"";
+
+        public string PathRelativeToRootDirectory
+        {
+            get
+            {
+                return InvariantPathRelativeToRootDirectory.Replace('/', Path.DirectorySeparatorChar);
+            }
+            set
+            {
+                InvariantPathRelativeToRootDirectory = value.Replace(Path.DirectorySeparatorChar, '/');
+            }
+        }
 
         /// <summary>
         ///     FileInfo.LastWriteTimeUtc
         /// </summary>        
-        public DateTime LastWriteTimeUtc { get; set; } = DateTime.MinValue;
+        public DateTimeOffset LastModified { get; set; }
 
         /// <summary>
         ///     FileInfo.Length
@@ -140,8 +155,8 @@ namespace Ssz.Utils.Addons
             writer.Write(SourcePath);
             writer.Write(SourceId);
             writer.Write(SourceIdToDisplay);
-            writer.Write(PathRelativeToRootDirectory);            
-            writer.Write(LastWriteTimeUtc);
+            writer.Write(InvariantPathRelativeToRootDirectory);            
+            writer.Write(LastModified);
             writer.Write(Length);
             writer.WriteNullableByteArray(FileData);
             writer.Write(IsDeleted);
@@ -157,8 +172,8 @@ namespace Ssz.Utils.Addons
             SourcePath = reader.ReadString();
             SourceId = reader.ReadString();
             SourceIdToDisplay = reader.ReadString();
-            PathRelativeToRootDirectory = reader.ReadString();            
-            LastWriteTimeUtc = reader.ReadDateTime();
+            InvariantPathRelativeToRootDirectory = reader.ReadString();            
+            LastModified = reader.ReadDateTimeOffset();
             Length = reader.ReadInt64();
             FileData = reader.ReadNullableByteArray();
             IsDeleted = reader.ReadBoolean();
@@ -167,7 +182,7 @@ namespace Ssz.Utils.Addons
         /// <summary>
         ///     Substitites to PathRelativeToRootDirectory a platform-specific character used to separate directory levels.
         /// </summary>
-        public string GetPathRelativeToRootDirectory_PlatformSpecific() => PathRelativeToRootDirectory.Replace('/', Path.DirectorySeparatorChar);
+        public string GetPathRelativeToRootDirectory_PlatformSpecific() => InvariantPathRelativeToRootDirectory.Replace('/', Path.DirectorySeparatorChar);
 
         #endregion
     }

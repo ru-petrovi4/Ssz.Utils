@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading;
 using Ssz.Utils;
 using Ssz.DataAccessGrpc.Client.ClientLists;
-using Ssz.DataAccessGrpc.ServerBase;
+using Ssz.DataAccessGrpc.Common;
 using Grpc.Net.Client;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
@@ -15,6 +15,9 @@ using Ssz.Utils.DataAccess;
 using Grpc.Net.Client.Web;
 using System.Net.Http;
 using System.Net;
+using System.Runtime.InteropServices;
+using System.Diagnostics.Eventing.Reader;
+using Ssz.DataAccessGrpc.Client.LocalServer;
 
 namespace Ssz.DataAccessGrpc.Client.Managers
 {
@@ -49,15 +52,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
         #region public functions
 
-        public GrpcChannel? GrpcChannel
-        {
-            get
-            {
-                if (_clientContext is null) return null;
-
-                return _clientContext.GrpcChannel; 
-            }
-        }
+        public GrpcChannel? GrpcChannel => _clientContext?.GrpcChannel;        
 
         public DateTime LastFailedConnectionDateTimeUtc { get; protected set; }
 
@@ -70,6 +65,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             string clientWorkstationName,
             string systemNameToConnect,
             CaseInsensitiveDictionary<string?> contextParams,
+            IDataAccessServerWorker? dataAccessServerWorker,
             bool dangerousAcceptAnyServerCertificate,
             IDispatcher? callbackDispatcher)
         {
@@ -82,35 +78,48 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 #else
             uint requestedServerContextTimeoutMs = 30 * 1000;
 #endif
-            GrpcChannel? grpcChannel = null;            
+            GrpcChannel? grpcChannel = null;
+
             try
             {
-                var httpClientHandler = new HttpClientHandler();
+                IDataAccessService dataAccessService;
+
+                if (dataAccessServerWorker is not null)
+                {
+                    dataAccessService = new LocalDataAccessService(_logger, dataAccessServerWorker);
+                }
+                else
+                {
+                    var httpClientHandler = new HttpClientHandler();
 #if NET5_0_OR_GREATER
                 if (dangerousAcceptAnyServerCertificate)
-                    httpClientHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-#else
-                if (dangerousAcceptAnyServerCertificate)
-                    httpClientHandler.ServerCertificateCustomValidationCallback = (httpRequestMessage, x509Certificate2, x509Chain, sslPolicyErrors) => true; ;
-#endif
-                var grpcWebHandler = new GrpcWebHandler(
-                        GrpcWebMode.GrpcWeb,
-                        httpClientHandler)
                 {
-                    HttpVersion = HttpVersion.Version11
-                };                
-                grpcChannel = GrpcChannel.ForAddress(serverAddress,
-                    new GrpcChannelOptions
-                    {
-                        HttpClient = new HttpClient(grpcWebHandler)
-                    });
+                    if (OperatingSystem.IsBrowser())
+                        throw new InvalidOperationException("In WebAssembly dangerousAcceptAnyServerCertificate MUST be False");
+                    else
+                        httpClientHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                }
+#else
+                    if (dangerousAcceptAnyServerCertificate)
+                        httpClientHandler.ServerCertificateCustomValidationCallback = (httpRequestMessage, x509Certificate2, x509Chain, sslPolicyErrors) => true;
+#endif
+                    var grpcWebHandler = new GrpcWebHandler(
+                            GrpcWebMode.GrpcWeb,
+                            httpClientHandler);
+                    grpcChannel = GrpcChannel.ForAddress(serverAddress,
+                        new GrpcChannelOptions
+                        {
+                            HttpVersion = HttpVersion.Version11,
+                            HttpHandler = grpcWebHandler
+                        });
 
-                var resourceManagementClient = new DataAccess.DataAccessClient(grpcChannel);
+                    dataAccessService = new RemoteDataAccessService(new DataAccess.DataAccessClient(grpcChannel));
+                }
 
                 var clientContext = new ClientContext(_logger,
                             _workingDispatcher,
                             grpcChannel,
-                            resourceManagementClient,
+                            dataAccessService,
                             clientApplicationName,
                             clientWorkstationName
                             );

@@ -112,7 +112,7 @@ namespace Ssz.Operator.Core.ControlsPlay.GenericPlay
                     rootPlayDsPageDrawingViewbox = RootPlayDsPageDrawingViewbox!;
 
                     rootPlayDsPageDrawingViewbox.PlayDrawingViewModel.Drawing.ParentItem = dsPageDrawingInfo;
-                    rootPlayDsPageDrawingViewbox.RefreshBindins();
+                    rootPlayDsPageDrawingViewbox.DsShapeViewsReInitialize();
 
                     FrameDsShapeView? mainFrameDsShapeView = null;
 

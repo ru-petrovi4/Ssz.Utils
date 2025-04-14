@@ -980,9 +980,9 @@ namespace Ssz.Utils.Serialization
             if (IsBlockEnding())
                 throw new BlockEndingException();
 
-            int length = ReadInt32();
+            long length = ReadOptimizedInt64();
             var result = new T[length];
-            for (int i = 0; i < length; i++)
+            for (long i = 0; i < length; i++)
             {
                 var v = func();
                 v.DeserializeOwnedData(this, context);
@@ -1229,7 +1229,7 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     Use Write(byte[] values) for writing.
+        ///     Use WriteArray(byte[] values) for writing.
         /// </summary>
         /// <returns></returns>
         public byte[] ReadByteArray()
@@ -1237,6 +1237,17 @@ namespace Ssz.Utils.Serialization
             if (IsBlockEnding()) throw new BlockEndingException();
 
             return ReadByteArrayInternal();
+        }
+
+        /// <summary>
+        ///     Use WriteArray(char[] values) for writing.
+        /// </summary>
+        /// <returns></returns>
+        public char[] ReadCharArray()
+        {
+            if (IsBlockEnding()) throw new BlockEndingException();
+
+            return ReadCharArrayInternal();
         }
 
         public void SkipString()
@@ -2087,7 +2098,7 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.ByteArrayType:
                     return ReadByteArrayInternal();
                 case SerializedType.CharArrayType:
-                    return ReadCharArray();
+                    return ReadCharArrayInternal();
                 case SerializedType.TypedArrayType:
                     return ReadOptimizedObjectArray(elementType ?? typeof(object));
             }
@@ -2134,7 +2145,7 @@ namespace Ssz.Utils.Serialization
         ///     Internal implementation returning a Char[].
         /// </summary>
         /// <returns> A Char[]. </returns>
-        private char[] ReadCharArray()
+        private char[] ReadCharArrayInternal()
         {
             return _binaryReader.ReadChars(ReadOptimizedInt32());
         }        

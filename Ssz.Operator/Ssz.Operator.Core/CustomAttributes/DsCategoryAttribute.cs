@@ -8,7 +8,7 @@ namespace Ssz.Operator.Core.CustomAttributes
         #region construction and destruction
 
         public DsCategoryAttribute(string categoryResourceName)
-            : base(Core.Properties.Resources.ResourceManager.GetString(categoryResourceName, Resources.Culture) ?? "")
+            : base(Ssz.Operator.Core.Properties.Resources.ResourceManager.GetString(categoryResourceName, Resources.Culture) ?? "")
         {
         }
 

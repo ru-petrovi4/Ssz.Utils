@@ -1,0 +1,155 @@
+﻿<UserControl x:Class="Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends.TrendGroupControl"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:res="using:Ssz.Operator.Core.Properties"
+             xmlns:genericTrends="using:Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends"
+             mc:Ignorable="d"
+             x:DataType="{x:Type genericTrends:GenericTrendsViewModel}"
+             d:DesignHeight="400" d:DesignWidth="600"
+             >
+  <Grid Background="White">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    <TextBlock Grid.Row="1" FontSize="18" Foreground="White" Text="{Binding Caption}" HorizontalAlignment="Center"></TextBlock>
+    <genericTrends:GenericTrendsPlotView Grid.Row="2" x:Name="MainGenericTrendsPlotView" />
+    <DataGrid Grid.Row="4" AutoGenerateColumns="False" HeadersVisibility="Column"
+              CanUserSortColumns="False"              
+              ItemsSource="{Binding TrendViewModelsCollection}"
+              SelectedItem="{Binding SelectedItem}"
+              Background="#FFC2D9F6"
+              SelectionMode="Single"
+              GridLinesVisibility="None"
+              IsReadOnly="False"
+              RowBackground="White"
+              FontFamily="Sans Serif">
+      <DataGrid.Resources>
+      </DataGrid.Resources>
+      <!--<DataGrid.RowStyle>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type DataGridRow}">
+                                <Border x:Name="DGR_Border" BorderThickness="0">
+                                    <SelectiveScrollingGrid>
+                                        <SelectiveScrollingGrid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </SelectiveScrollingGrid.ColumnDefinitions>
+                                        <DataGridRowHeader
+                                   SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical"
+                                   Visibility="{Binding HeadersVisibility, 
+                                ConverterParameter={x:Static DataGridHeadersVisibility.Row}, 
+                                Converter={x:Static DataGrid.HeadersVisibilityConverter}, 
+                                RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                                        <DataGridCellsPresenter Grid.Column="1"
+                                ItemsPanel="{TemplateBinding ItemsPanel}"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                    </SelectiveScrollingGrid>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </DataGrid.RowStyle>-->
+      <!--
+            <DataGrid.RowHeaderTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding DataContext.Num, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type DataGridRow}}}" Margin="5,0,5,0" Height="16" />
+                </DataTemplate>
+            </DataGrid.RowHeaderTemplate>-->
+      <DataGrid.Columns>
+        <DataGridTemplateColumn Header="{x:Static res:OperatorUIResources.GenericTrendsInfoTableControl_VisibleColumn}"
+                Width="auto" IsReadOnly="False">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <CheckBox IsChecked="{Binding IsDisplayedOnPlot, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center"
+                  VerticalAlignment="Center">
+              </CheckBox>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <!--
+                <DataGridTemplateColumn Header="Status" Width="auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Rectangle StrokeThickness="0">
+                                <Rectangle.Fill>
+                                    <SolidColorBrush Color="#FF43A569" />
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>-->
+        <DataGridTemplateColumn Header="{x:Static res:OperatorUIResources.GenericTrendsInfoTableControl_ColorColumn}" Width="auto">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <Rectangle StrokeThickness="0">
+                <Rectangle.ContextMenu>
+                  <ContextMenu>
+                    <MenuItem Header="Color..." Click="OnChangeTrendColorClicked" />
+                  </ContextMenu>
+                </Rectangle.ContextMenu>
+                <Rectangle.Fill>
+                  <SolidColorBrush Color="{Binding Color}" />
+                </Rectangle.Fill>
+              </Rectangle>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTemplateColumn Header="{x:Static res:OperatorUIResources.GenericTrendsInfoTableControl_DescriptionColumn}">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Description}"
+         Margin="2,0,2,0"
+         HorizontalAlignment="Left" />
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTextColumn Header="{x:Static res:OperatorUIResources.GenericTrendsInfoTableControl_HdaIdToDisplayColumn}" Binding="{Binding Generic_TagToDisplay}" />
+        <DataGridTemplateColumn Header="Property">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <ComboBox SelectedItem="{Binding Generic_PropertyToDisplay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Generic_PropertyToDisplayCollection}"
+                 Margin="2,0,2,0"
+                                />
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTemplateColumn Header="Значение">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding ValueString}"
+                         Margin="2,0,2,0"
+                         HorizontalAlignment="Left" />
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTemplateColumn Header="{x:Static res:OperatorUIResources.GenericTrendsInfoTableControl_EUColumn}">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding EU}"
+                 Margin="2,0,2,0"
+                 HorizontalAlignment="Left" />
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTextColumn Header="{x:Static res:OperatorUIResources.GenericTrendsInfoTableControl_MinScaleColumn}" Binding="{Binding YMinString}" />
+        <DataGridTextColumn Header="{x:Static res:OperatorUIResources.GenericTrendsInfoTableControl_MaxScaleColumn}" Binding="{Binding YMaxString}" />
+        <!--
+                <DataGridTextColumn Header="Ruler Time"
+                                    Binding="{Binding RulerTime, StringFormat=\{0:dd.MM.yyyy HH:mm:ss\}}" />
+                <DataGridTextColumn Header="Ruler Value" Binding="{Binding RulerValueString}" IsReadOnly="True" />-->
+        <DataGridTextColumn Header="" Width="*" />
+      </DataGrid.Columns>
+    </DataGrid>
+    <!--<DataGrid Grid.Row="2" />-->
+    <!-- events list -->
+  </Grid>
+</UserControl>

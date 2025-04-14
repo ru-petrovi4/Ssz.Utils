@@ -5,7 +5,7 @@ using System.Net;
 using System.Threading;
 using Ssz.Utils;
 using Ssz.DataAccessGrpc.Client.Managers;
-using Ssz.DataAccessGrpc.ServerBase;
+using Ssz.DataAccessGrpc.Common;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
@@ -30,15 +30,15 @@ namespace Ssz.DataAccessGrpc.Client
         
         public ClientContext(ILogger<GrpcDataAccessProvider> logger,
             IDispatcher workingDispatcher,
-            GrpcChannel grpcChannel,
-            DataAccess.DataAccessClient resourceManagementClient,            
+            GrpcChannel? grpcChannel,
+            IDataAccessService dataAccessService,            
             string clientApplicationName,
             string clientWorkstationName)
         {
             _logger = logger;
             _workingDispatcher = workingDispatcher;
             GrpcChannel = grpcChannel;
-            _resourceManagementClient = resourceManagementClient;
+            _dataAccessService = dataAccessService;
             _applicationName = clientApplicationName;
             _workstationName = clientWorkstationName;
         }
@@ -55,7 +55,7 @@ namespace Ssz.DataAccessGrpc.Client
 
                 try
                 {
-                    await _resourceManagementClient.ConcludeAsync(new ConcludeRequest
+                    await _dataAccessService.ConcludeAsync(new ConcludeRequest
                     {
                         ContextId = _serverContextId
                     });
@@ -67,7 +67,7 @@ namespace Ssz.DataAccessGrpc.Client
             
             ServerContextNotification = delegate { };
 
-            GrpcChannel.Dispose();
+            GrpcChannel?.Dispose();
 
             _disposed = true;
 
@@ -80,7 +80,7 @@ namespace Ssz.DataAccessGrpc.Client
 
         #region public functions
 
-        public GrpcChannel GrpcChannel { get; }
+        public GrpcChannel? GrpcChannel { get; }
 
         public ContextStatus? ServerContextStatus { get; private set; }        
 
@@ -127,7 +127,7 @@ namespace Ssz.DataAccessGrpc.Client
                 initiateRequest.ContextParams.Add(kvp.Key,
                     kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
 
-            InitiateReply initiateReply = await _resourceManagementClient.InitiateAsync(initiateRequest);
+            InitiateReply initiateReply = await _dataAccessService.InitiateAsync(initiateRequest);
             _serverContextId = initiateReply.ContextId;
             _serverContextTimeoutMs = initiateReply.ServerContextTimeoutMs;
             _serverCultureName = initiateReply.ServerCultureName;
@@ -137,22 +137,37 @@ namespace Ssz.DataAccessGrpc.Client
 
             SetResourceManagementLastCallUtc();
 
-            _callbackMessageStream = _resourceManagementClient.SubscribeForCallback(new SubscribeForCallbackRequest
+            _callbackStreamReader = _dataAccessService.SubscribeForCallback(new SubscribeForCallbackRequest
             {
                 ContextId = _serverContextId
-            }, new CallOptions());
+            });
 
             _contextIsOperational = true;
 
             var cancellationToken = _cancellationTokenSource.Token;
-            var taskCompletionSource = new TaskCompletionSource<int>();
-            var workingThread = new Thread(async () =>
+
+            bool isBrowser = false;
+#if NET5_0_OR_GREATER
+            if (OperatingSystem.IsBrowser())
+                isBrowser = true;
+#endif
+            if (isBrowser)
             {
-                await ReadCallbackMessagesAsync(_callbackMessageStream.ResponseStream, cancellationToken);
-                taskCompletionSource.SetResult(0);
-            });
-            _workingTask = taskCompletionSource.Task;
-            workingThread.Start();
+                _workingTask = Task.Run(async () =>
+                    await ReadCallbackMessagesAsync(_callbackStreamReader, cancellationToken)
+                );
+            }
+            else
+            {
+                var taskCompletionSource = new TaskCompletionSource<int>();
+                var workingThread = new Thread(async () =>
+                {
+                    await ReadCallbackMessagesAsync(_callbackStreamReader, cancellationToken);
+                    taskCompletionSource.SetResult(0);
+                });
+                _workingTask = taskCompletionSource.Task;
+                workingThread.Start();
+            }            
         }
 
         public async Task KeepContextAliveIfNeededAsync(CancellationToken ct, DateTime nowUtc)
@@ -160,15 +175,22 @@ namespace Ssz.DataAccessGrpc.Client
             if (!_contextIsOperational) 
                 return;
 
-            uint timeDiffInMs = (uint)(nowUtc - _resourceManagementLastCallUtc).TotalMilliseconds + 500;
+            uint timeDiffInMs;
+            lock (_resourceManagementLastCallUtcSyncRoot)
+            {
+                timeDiffInMs = (uint)(nowUtc - _resourceManagementLastCallUtc).TotalMilliseconds + 500;
+            }
 
             if (timeDiffInMs >= KeepAliveIntervalMs)
             {
                 try
                 {
-                    _resourceManagementLastCallUtc = nowUtc;
+                    lock (_resourceManagementLastCallUtcSyncRoot)
+                    {
+                        _resourceManagementLastCallUtc = nowUtc;
+                    }                    
 
-                    await _resourceManagementClient.ClientKeepAliveAsync(new ClientKeepAliveRequest
+                    await _dataAccessService.ClientKeepAliveAsync(new ClientKeepAliveRequest
                     {
                         ContextId = _serverContextId
                     }, cancellationToken: ct);                    
@@ -178,8 +200,7 @@ namespace Ssz.DataAccessGrpc.Client
                     _contextIsOperational = false;                    
                 }
             }
-        }       
-        
+        }
 
         #endregion
 
@@ -187,7 +208,10 @@ namespace Ssz.DataAccessGrpc.Client
 
         private void SetResourceManagementLastCallUtc()
         {
-            _resourceManagementLastCallUtc = DateTime.UtcNow;
+            lock (_resourceManagementLastCallUtcSyncRoot)
+            {
+                _resourceManagementLastCallUtc = DateTime.UtcNow;
+            }           
         }
 
         /// <summary>
@@ -238,7 +262,7 @@ namespace Ssz.DataAccessGrpc.Client
 
         private readonly CancellationTokenSource _cancellationTokenSource = new();
 
-        private DataAccess.DataAccessClient _resourceManagementClient;
+        private IDataAccessService _dataAccessService;
         
         private readonly string _applicationName;
         
@@ -250,15 +274,16 @@ namespace Ssz.DataAccessGrpc.Client
         
         private string _serverCultureName = null!;
 
+        private readonly object _resourceManagementLastCallUtcSyncRoot = new();
         private DateTime _resourceManagementLastCallUtc;
 
-        private AsyncServerStreamingCall<CallbackMessage>? _callbackMessageStream;
+        private IAsyncStreamReader<CallbackMessage>? _callbackStreamReader;
         
         private volatile bool _contextIsOperational;
 
         /// <summary>
         ///     The time interval that controls when ClientKeepAlive messages are
-        ///     sent to the ServerBase.  If no IResourceManagement messages are sent to
+        ///     sent to the Common.  If no IResourceManagement messages are sent to
         ///     the server for this period of time, a ClientKeepAlive message is
         ///     sent.  The value is expressed in milliseconds.  This value is the
         ///     same for all contexts.

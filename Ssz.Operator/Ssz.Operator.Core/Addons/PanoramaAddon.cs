@@ -113,7 +113,7 @@ namespace Ssz.Operator.Core.Addons
 
         public override string Version => "1.0";
 
-        public override string SszOperatorVersion => SszOperatorVersionConst;
+        public override string CoreLibraryVersion => CoreLibraryVersionConst;
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.PanoramaAddonFrameDsPageDrawingFileName)]

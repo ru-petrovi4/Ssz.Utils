@@ -1,0 +1,43 @@
+<!--<ControlTheme TargetType="{x:Type ButtonBase}" xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Classic">    
+    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+    <Setter Property="BorderBrush" Value="{x:Static themes:ClassicBorderDecorator.ClassicBorderBrush}"/>
+    <Setter Property="BorderThickness" Value="3"/>
+    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    <Setter Property="VerticalContentAlignment" Value="Center"/>
+    <Setter Property="Padding" Value="0,0,1,1"/>
+    <Setter Property="Template">
+        <Setter.Value>
+            <ControlTemplate TargetType="{x:Type ButtonBase}">
+                <themes:ClassicBorderDecorator x:Name="ContentContainer"
+                                                BorderStyle="Raised"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                Background="{TemplateBinding Background}">
+                    <ContentPresenter Margin="{TemplateBinding Padding}"
+                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                        RecognizesAccessKey="True"
+                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                </themes:ClassicBorderDecorator>
+                <ControlTemplate.Styles>
+                    <Style Selector="IsKeyboardFocused"            Value="true">
+                        <Setter Property="BorderStyle" Value="RaisedFocused" TargetName="ContentContainer"/>
+                    </Style>
+                    <Style Selector="Button.IsDefaulted" Value="true">
+                        <Setter Property="BorderStyle" Value="RaisedFocused" TargetName="ContentContainer"/>
+                    </Style>
+                    <Style Selector="^:pressed" Value="true">
+                        <Setter Property="BorderStyle" Value="RaisedPressed" TargetName="ContentContainer"/>
+                    </Style>
+                    <Style Selector="ToggleButton.IsChecked" Value="true">
+                        <Setter Property="BorderStyle" Value="RaisedPressed" TargetName="ContentContainer"/>
+                    </Style>
+                    <Style Selector="^:enabled" Value="false">
+                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                    </Style>
+                </ControlTemplate.Styles>
+            </ControlTemplate>
+        </Setter.Value>
+    </Setter>
+</ControlTheme>-->

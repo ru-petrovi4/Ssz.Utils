@@ -99,6 +99,48 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
 
         #region protected functions
 
+        protected static readonly DependencyProperty MinimumVisibleTimeProperty = DependencyProperty.Register("MinimumVisibleTime",
+            typeof(DateTime),
+            typeof(TrendsPlotView),
+            new PropertyMetadata(DateTime.MinValue));
+
+        protected static readonly DependencyProperty MaximumVisibleTimeProperty = DependencyProperty.Register("MaximumVisibleTime",
+            typeof(DateTime),
+            typeof(TrendsPlotView),
+            new PropertyMetadata(DateTime.MaxValue));
+
+        protected static readonly DependencyProperty TrendItemsProperty = DependencyProperty.Register(
+            "TrendItems",
+            typeof(IEnumerable<TrendViewModel>),
+            typeof(TrendsPlotView),
+            new PropertyMetadata(null));
+
+        protected static readonly DependencyProperty SelectedTrendProperty = DependencyProperty.Register(
+            "SelectedTrend",
+            typeof(TrendViewModel),
+            typeof(TrendsPlotView),
+            new PropertyMetadata(null));
+
+        private DateTime MinimumVisibleTime
+        {
+            get { return (DateTime)GetValue(MinimumVisibleTimeProperty); }
+        }
+
+        private DateTime MaximumVisibleTime
+        {
+            get { return (DateTime)GetValue(MaximumVisibleTimeProperty); }
+        }
+
+        protected IEnumerable<TrendViewModel> TrendItems
+        {
+            get { return (IEnumerable<TrendViewModel>)GetValue(TrendItemsProperty); }
+        }
+
+        protected TrendViewModel? SelectedTrend
+        {
+            get { return (TrendViewModel?)GetValue(SelectedTrendProperty); }
+        }
+
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
         {
             base.OnPropertyChanged(e);
@@ -149,9 +191,9 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
         {
             var trendItemsList = items.ToList();
             IEnumerable<TrendViewModel> trendItemsInDisplayOrder;
-            if (SelectedTrendItem is not null)
-                trendItemsInDisplayOrder = trendItemsList.Contains(SelectedTrendItem)
-                    ? trendItemsList.Except(new[] { SelectedTrendItem }).Concat(new[] { SelectedTrendItem })
+            if (SelectedTrend is not null)
+                trendItemsInDisplayOrder = trendItemsList.Contains(SelectedTrend)
+                    ? trendItemsList.Except(new[] { SelectedTrend }).Concat(new[] { SelectedTrend })
                     : trendItemsList;
             else
                 trendItemsInDisplayOrder = trendItemsList;
@@ -171,7 +213,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
             var lineSeries = new LineSeries
             {
                 DataContext = trendItem,
-                StrokeThickness = trendItem == SelectedTrendItem ? 3 : 1,
+                StrokeThickness = trendItem == SelectedTrend ? 3 : 1,
                 Mapping = obj =>
                 {
                     var point = (TrendPoint)obj;
@@ -201,21 +243,11 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
             }
 
             return lineSeries;
-        }
-
-        protected IEnumerable<TrendViewModel> TrendItems
-        {
-            get { return (IEnumerable<TrendViewModel>)GetValue(TrendItemsProperty); }
-        }
+        }        
 
         #endregion
 
         #region private functions
-
-        protected TrendViewModel? SelectedTrendItem
-        {
-            get { return (TrendViewModel?)GetValue(SelectedTrendProperty); }
-        }
 
         private void OnGlobalUITimerEvent(int phase)
         {
@@ -224,17 +256,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
             var viewModel = DataContext as TrendsViewModel;
             if (RefreshOnTimerTick && viewModel != null)
                 viewModel.OnTimerTick();
-        }
-
-        private DateTime MinimumVisibleTime
-        {
-            get { return (DateTime)GetValue(MinimumVisibleTimeProperty); }
-        }
-
-        private DateTime MaximumVisibleTime
-        {
-            get { return (DateTime)GetValue(MaximumVisibleTimeProperty); }
-        }
+        }        
 
         // http://stackoverflow.com/questions/29565113/oxyplots-mouse-events-are-not-caught-while-model-invalidated
         // Of couse, this is oxyplot version specific and might break in the future. Updating oxyplot might be an option (if it doesnt break other stuff).
@@ -252,32 +274,6 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
             grid.Children.Add(mouseGrid);
         }
 
-        #endregion
-
-        #region private fields
-
-        protected static readonly DependencyProperty MinimumVisibleTimeProperty = DependencyProperty.Register("MinimumVisibleTime", 
-            typeof(DateTime), 
-            typeof(TrendsPlotView), 
-            new PropertyMetadata(DateTime.MinValue));
-
-        protected static readonly DependencyProperty MaximumVisibleTimeProperty = DependencyProperty.Register("MaximumVisibleTime",
-            typeof(DateTime),
-            typeof(TrendsPlotView),
-            new PropertyMetadata(DateTime.MaxValue));
-
-        private static readonly DependencyProperty TrendItemsProperty = DependencyProperty.Register(
-            "TrendItems",
-            typeof(IEnumerable<TrendViewModel>),
-            typeof(TrendsPlotView),
-            new PropertyMetadata(null));
-
-        protected static readonly DependencyProperty SelectedTrendProperty = DependencyProperty.Register(
-            "SelectedTrend",
-            typeof(TrendViewModel),
-            typeof(TrendsPlotView),
-            new PropertyMetadata(null));
-
-        #endregion
+        #endregion        
     }
 }

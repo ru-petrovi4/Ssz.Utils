@@ -18,23 +18,20 @@ using System.Linq;
 using Ssz.Dcs.CentralServer.Common.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Ssz.Dcs.CentralServer.Common.EntityFramework;
-using Microsoft.Extensions.Diagnostics.ResourceMonitoring;
 
 namespace Ssz.Dcs.CentralServer
 {
-    public partial class ServerWorker : ServerWorkerBase
+    public partial class ServerWorker : DataAccessServerWorkerBase
     {
         #region construction and destruction
 
-        public ServerWorker(
-                IResourceMonitor resourceMonitor,
+        public ServerWorker(                
                 ILogger<ServerWorker> logger, 
                 IConfiguration configuration, 
                 IServiceProvider serviceProvider, 
                 AddonsManager addonsManager,
                 IDbContextFactory<DcsCentralServerDbContext> dbContextFactory) :
-            base(
-                resourceMonitor, 
+            base(                
                 logger)
         {
             _configuration = configuration;
@@ -51,7 +48,7 @@ namespace Ssz.Dcs.CentralServer
             // Creates all directories and subdirectories in the specified path unless they already exist.
             Directory.CreateDirectory(@"CsvDb");
             _csvDb = ActivatorUtilities.CreateInstance<CsvDb>(
-                _serviceProvider, new DirectoryInfo(@"CsvDb"), ThreadSafeDispatcher);
+                _serviceProvider, new DirectoryInfo(@"CsvDb").FullName, ThreadSafeDispatcher);
             //_csvDb.CsvFileChanged += CsvDbOnCsvFileChanged;
             //CsvDbOnCsvFileChanged(CsvFileChangeAction.Added, null);
                         
@@ -83,10 +80,10 @@ namespace Ssz.Dcs.CentralServer
                 });
         }
 
-        public override async Task DoWorkAsync(DateTime nowUtc, CancellationToken cancellationToken)
+        public override async Task<int> DoWorkAsync(DateTime nowUtc, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) 
-                return;
+                return 0;
 
             foreach (IWorkDoer workDoer in _addonsManager.AddonsThreadSafe.OfType<IWorkDoer>().ToArray())
             {
@@ -96,11 +93,11 @@ namespace Ssz.Dcs.CentralServer
             Cleanup(nowUtc, cancellationToken);
 
             if (cancellationToken.IsCancellationRequested) 
-                return;
+                return 0;
 
             DoWorkUtilityItems(nowUtc, cancellationToken);
 
-            await base.DoWorkAsync(nowUtc, cancellationToken);
+            return await base.DoWorkAsync(nowUtc, cancellationToken);
         }
 
         public override async Task CloseAsync()

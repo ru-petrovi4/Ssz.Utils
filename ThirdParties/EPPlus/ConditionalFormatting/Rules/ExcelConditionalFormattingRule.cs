@@ -32,7 +32,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.DrawingCore;
+using System.Drawing;
 using System.Xml;
 using OfficeOpenXml.Utils;
 using System.Text.RegularExpressions;

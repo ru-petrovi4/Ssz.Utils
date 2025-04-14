@@ -19,7 +19,7 @@ using Ssz.Utils.Addons;
 
 namespace Ssz.Dcs.CentralServer
 {    
-    public partial class ServerWorker : ServerWorkerBase
+    public partial class ServerWorker : DataAccessServerWorkerBase
     {
         #region private functions
 
@@ -27,7 +27,7 @@ namespace Ssz.Dcs.CentralServer
         {
             var dcsCentralServerAddon = _addonsManager.Addons.OfType<DcsCentralServerAddon>().Single();
 
-            AddonStatuses addonStatuses = _addonsManager.GetAddonStatuses();
+            AddonStatuses addonStatuses = await _addonsManager.GetAddonStatusesAsync();
             foreach (var addonStatus in addonStatuses.AddonStatusesCollection)
             {
                 addonStatus.SourcePath = @"";
@@ -37,25 +37,25 @@ namespace Ssz.Dcs.CentralServer
 
             try
             {
-                ObservableCollection<CentralServer.EngineSession> engineSessions = GetEngineSessions(serverContext);
+                ObservableCollection<EngineSession> engineSessions = GetEngineSessions(serverContext);
 
                 if (engineSessions.Count > 0)
                 {
                     var taskInfos = new List<(Task<ReadOnlyMemory<byte>>, EngineSession)>(engineSessions.Count);
 
-                    foreach (CentralServer.EngineSession engineSession in engineSessions)
+                    foreach (EngineSession engineSession in engineSessions)
                     {
                         if (engineSession.DataAccessProviderGetter_Addon.IsAddonsPassthroughSupported)
                         {
                             Logger.LogDebug("dataAccessProvider.Passthrough passthroughName=GetAddonStatuses");
-                            taskInfos.Add(((Task<ReadOnlyMemory<byte>>, CentralServer.EngineSession))(engineSession.DataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetAddonStatuses, new byte[0]), engineSession));
+                            taskInfos.Add(((Task<ReadOnlyMemory<byte>>, EngineSession))(engineSession.DataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetAddonStatuses, new byte[0]), engineSession));
                         }                            
                     }
 
                     foreach (var taskInfo in taskInfos)
                     {
                         var task = taskInfo.Item1;
-                        CentralServer.EngineSession engineSession = taskInfo.Item2;                        
+                        EngineSession engineSession = taskInfo.Item2;                        
                         try
                         {
                             var replyAddonStatuses = new AddonStatuses();
@@ -88,7 +88,7 @@ namespace Ssz.Dcs.CentralServer
 
         private async Task<byte[]> ReadConfigurationPassthroughAsync(ServerContext serverContext, string recipientPath, ReadOnlyMemory<byte> dataToSend)
         {
-            ObservableCollection<CentralServer.EngineSession> engineSessions = GetEngineSessions(serverContext);
+            ObservableCollection<EngineSession> engineSessions = GetEngineSessions(serverContext);
             ConfigurationFiles configurationFiles;
             var dcsCentralServerAddon = _addonsManager.Addons.OfType<DcsCentralServerAddon>().Single();
 
@@ -108,12 +108,12 @@ namespace Ssz.Dcs.CentralServer
                     {
                         var taskInfos = new List<(Task<ReadOnlyMemory<byte>>, EngineSession)>(engineSessions.Count);
 
-                        foreach (CentralServer.EngineSession engineSession in engineSessions)
+                        foreach (EngineSession engineSession in engineSessions)
                         {
                             if (engineSession.DataAccessProviderGetter_Addon.IsAddonsPassthroughSupported)
                             {
                                 Logger.LogDebug("dataAccessProvider.Passthrough passthroughName=ReadConfiguration");
-                                taskInfos.Add(((Task<ReadOnlyMemory<byte>>, CentralServer.EngineSession))(engineSession.DataAccessProvider.PassthroughAsync(@"", PassthroughConstants.ReadConfiguration, new byte[0]),
+                                taskInfos.Add(((Task<ReadOnlyMemory<byte>>, EngineSession))(engineSession.DataAccessProvider.PassthroughAsync(@"", PassthroughConstants.ReadConfiguration, new byte[0]),
                                     engineSession));
                             }
                         }
@@ -121,7 +121,7 @@ namespace Ssz.Dcs.CentralServer
                         foreach (var taskInfo in taskInfos)
                         {
                             var task = taskInfo.Item1;
-                            CentralServer.EngineSession engineSession = taskInfo.Item2;                            
+                            EngineSession engineSession = taskInfo.Item2;                            
                             try
                             {
                                 var replyConfigurationFiles = new ConfigurationFiles();
@@ -151,11 +151,11 @@ namespace Ssz.Dcs.CentralServer
             }
             else
             {                
-                string? pathRelativeToRootDirectory = Encoding.UTF8.GetString(dataToSend.Span);
+                string? invariantPathRelativeToRootDirectory = Encoding.UTF8.GetString(dataToSend.Span);
                           
                 if (String.IsNullOrEmpty(recipientPath))
                 {
-                    configurationFiles = _addonsManager.ReadConfiguration(pathRelativeToRootDirectory);
+                    configurationFiles = _addonsManager.ReadConfiguration(invariantPathRelativeToRootDirectory);
                     foreach (var configurationFile in configurationFiles.ConfigurationFilesCollection)
                     {
                         configurationFile.SourcePath = @"";
@@ -180,7 +180,7 @@ namespace Ssz.Dcs.CentralServer
                         beginSourcePath = recipientPath;
                         remainingSourcePath = @"";
                     }
-                    CentralServer.EngineSession? engineSession = engineSessions.FirstOrDefault(es =>
+                    EngineSession? engineSession = engineSessions.FirstOrDefault(es =>
                         es.DataAccessProviderGetter_Addon.IsAddonsPassthroughSupported &&
                         string.Equals(
                             es.DataAccessProviderGetter_Addon.InstanceId,
@@ -189,7 +189,7 @@ namespace Ssz.Dcs.CentralServer
                     if (engineSession is not null)
                     {
                         var task = engineSession.DataAccessProvider.PassthroughAsync(remainingSourcePath, PassthroughConstants.ReadConfiguration,
-                            Encoding.UTF8.GetBytes(pathRelativeToRootDirectory));
+                            Encoding.UTF8.GetBytes(invariantPathRelativeToRootDirectory));
 
                         try
                         {
@@ -223,7 +223,7 @@ namespace Ssz.Dcs.CentralServer
                 var allConfigurationFiles = new ConfigurationFiles();
                 SerializationHelper.SetOwnedData(allConfigurationFiles, dataToSend);
 
-                ObservableCollection<CentralServer.EngineSession> engineSessions = GetEngineSessions(serverContext);
+                ObservableCollection<EngineSession> engineSessions = GetEngineSessions(serverContext);
 
                 var tasks = new List<Task<ReadOnlyMemory<byte>>>(engineSessions.Count);
 
@@ -259,7 +259,7 @@ namespace Ssz.Dcs.CentralServer
                         {
                             configurationFile.SourcePath = remainingSourcePath;
                         }
-                        CentralServer.EngineSession? engineSession = engineSessions.FirstOrDefault(es =>
+                        EngineSession? engineSession = engineSessions.FirstOrDefault(es =>
                             es.DataAccessProviderGetter_Addon.IsAddonsPassthroughSupported &&
                             string.Equals(
                                 es.DataAccessProviderGetter_Addon.InstanceId,

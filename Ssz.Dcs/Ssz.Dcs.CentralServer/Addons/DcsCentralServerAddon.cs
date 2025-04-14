@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Ssz.DataAccessGrpc.ServerBase;
 using Ssz.Utils;
 using Ssz.Utils.Addons;
+using Ssz.Utils.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,6 +21,8 @@ namespace Ssz.Dcs.CentralServer
         public static readonly Guid AddonGuid = new Guid(@"78B739D5-5814-4B05-87CC-C369371A5003");
 
         public static readonly string AddonIdentifier = @"DcsCentralServer";
+
+        public static readonly string ClientsCsvFileName = @"clents.csv";
 
         public override Guid Guid => AddonGuid;
 
@@ -44,23 +47,22 @@ namespace Ssz.Dcs.CentralServer
         {
             ServiceId = Guid.NewGuid().ToString();
 
-            _dcsCentralServer = ServiceProvider.GetRequiredService<DcsCentralServer>();
-
             base.Initialize(cancellationToken);
         }
 
         public override void Close()
         {
-            _dcsCentralServer = null;
-
             base.Close();
         }
 
-        public override Ssz.Utils.Addons.AddonStatus GetAddonStatus()
+        public override async Task<AddonStatus> GetAddonStatusAsync()
         {
-            Ssz.Utils.Addons.AddonStatus addonStatus = base.GetAddonStatus();
+            AddonStatus addonStatus = await base.GetAddonStatusAsync();
 
-            _dcsCentralServer?.GetSystemParams(addonStatus.Params);
+            foreach (var kvp in await ComputerInfoHelper.GetSystemParamsAsync())
+            {
+                addonStatus.Params[kvp.Key] = kvp.Value;
+            }            
 
             return addonStatus;
         }
@@ -70,12 +72,6 @@ namespace Ssz.Dcs.CentralServer
         #region internal functions
 
         internal static string DescStatic { get; set; } = Properties.Resources.DcsCentralServerAddon_Desc;
-
-        #endregion
-
-        #region private fields
-
-        private DcsCentralServer? _dcsCentralServer;
 
         #endregion
     }

@@ -54,7 +54,7 @@ namespace Ssz.Operator.Core.Drawings
             {
                 Guid = initialTypeGuid
             };
-            _dsPageTypeObject = AddonsHelper.NewDsPageTypeObject(initialTypeGuid);
+            _dsPageTypeObject = AddonsManager.NewDsPageTypeObject(initialTypeGuid);
             if (_dsPageTypeObject is not null)
                 DsPageTypeGuidAndName.Name = _dsPageTypeObject.Name;
 
@@ -210,7 +210,7 @@ namespace Ssz.Operator.Core.Drawings
                 }
                 else
                 {
-                    DsPageTypeObject = AddonsHelper.NewDsPageTypeObject(DsPageTypeGuidAndName.Guid);
+                    DsPageTypeObject = AddonsManager.NewDsPageTypeObject(DsPageTypeGuidAndName.Guid);
                 }
 
                 if (DsPageTypeObject is not null)
@@ -337,7 +337,7 @@ namespace Ssz.Operator.Core.Drawings
                         else reader.SkipString();
 
                         reader.ReadOwnedData(DsPageTypeGuidAndName, context);
-                        DsPageTypeObject = AddonsHelper.NewDsPageTypeObject(DsPageTypeGuidAndName.Guid);
+                        DsPageTypeObject = AddonsManager.NewDsPageTypeObject(DsPageTypeGuidAndName.Guid);
                         reader.ReadNullableOwnedData(DsPageTypeObject, context);
                         break;
                     default:
@@ -449,7 +449,7 @@ namespace Ssz.Operator.Core.Drawings
         public ItemCollection GetValues()
         {
             var itemCollection = new ItemCollection();
-            foreach (AddonBase addon in AddonsHelper.AddonsCollection.ObservableCollection)
+            foreach (AddonBase addon in AddonsManager.AddonsCollection.ObservableCollection)
             {
                 var dsPageTypes = addon.GetDsPageTypes();
                 if (dsPageTypes is not null)

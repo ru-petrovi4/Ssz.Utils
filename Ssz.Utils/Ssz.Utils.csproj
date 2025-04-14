@@ -6,19 +6,25 @@
 	<Nullable>Enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>    
     <Company>SSZ</Company>
-    <Version>1.0.76</Version>
+    <Version>1.0.77</Version>
     <Platforms>AnyCPU;x86</Platforms>  
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.4.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.0" />
-    <PackageReference Include="protobuf-net" Version="3.2.45" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="9.0.0" />
-    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.5.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.4" />
+    <PackageReference Include="protobuf-net" Version="3.2.52" />    
+    <PackageReference Include="System.ComponentModel.Composition" Version="9.0.4" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.0.2" />
   </ItemGroup>
 
-  <ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+		<PackageReference Include="System.Collections.Immutable" Version="9.0.4" />	
+	</ItemGroup>
+
+	
+
+	<ItemGroup>
     <ProjectReference Include="..\ThirdParties\YamlDotNet\YamlDotNet.csproj" PrivateAssets="all" />
   </ItemGroup>
 

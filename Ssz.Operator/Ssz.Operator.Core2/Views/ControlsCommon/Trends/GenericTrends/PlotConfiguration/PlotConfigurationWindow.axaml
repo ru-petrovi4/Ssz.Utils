@@ -1,0 +1,130 @@
+﻿<!--<Window x:Class="Cdt.Operator.Addons.Generic.Controls.Trends.PlotConfiguration.PlotConfigurationWindow"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        Title="Конфигурирование Графика" Height="494" Width="700"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance plotConfiguration:PlotConfigurationDesignData, IsDesignTimeCreatable=True}"
+        Topmost="True" WindowStartupLocation="CenterOwner">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TabControl Grid.Row="0" Margin="5">
+            <TabItem Header="Конфигурирование Графика">
+                <Grid>
+                    <TextBlock HorizontalAlignment="Left" Margin="135,10,0,0" TextWrapping="Wrap"
+                               VerticalAlignment="Top">
+                        <Run Text="Заголовок:" />
+                    </TextBlock>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="205,7,0,0" VerticalAlignment="Top"
+                             Width="329" IsEnabled="False" />
+                    <TextBlock HorizontalAlignment="Left" Margin="116,42,0,0" TextWrapping="Wrap"
+                               VerticalAlignment="Top" Text="Подзаголовок:" Width="84" />
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="205,39,0,0" VerticalAlignment="Top"
+                             Width="329" IsEnabled="False" />
+
+                    <ListBox Background="White" Margin="95,116,112,0" Height="132" VerticalAlignment="Top"
+                             ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                             ItemsSource="{Binding TrendConfigurationViewModels}"
+                             x:Name="TrendsListBox">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="35" />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Button Content="{Binding}" Click="onColorButtonClicked">
+                                        <Button.ContentTemplate>
+                                            <DataTemplate>
+                                                <Rectangle Width="30" Height="10">
+                                                    <Rectangle.Fill>
+                                                        <SolidColorBrush Color="{Binding Color}" />
+                                                    </Rectangle.Fill>
+                                                </Rectangle>
+                                            </DataTemplate>
+                                        </Button.ContentTemplate>
+                                    </Button>
+
+                                    <TextBlock Text="{Binding HdaId}" Grid.Column="1" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <TextBlock HorizontalAlignment="Left" Margin="286,93,0,0" TextWrapping="Wrap"
+                               Text="Ссылка на Параметр" VerticalAlignment="Top" />
+                    <Button Content="Добавить" HorizontalAlignment="Left" Margin="10,116,0,0" VerticalAlignment="Top"
+                            Width="75"
+                            Click="onAssignTrendButtonClicked" />
+                    <Button Content="Детали" HorizontalAlignment="Left" Margin="10,143,0,0" VerticalAlignment="Top"
+                            Width="75"
+                            Click="onTrendDetailsButtonClicked" />
+                    <Button Content="Убрать" HorizontalAlignment="Left" Margin="10,256,0,0" VerticalAlignment="Top"
+                            Width="75" Click="onClearTrendButtonClicked" />
+                    <CheckBox Content="Автонастройка цветов ASCII?" HorizontalAlignment="Left" Margin="119,255,0,0"
+                              VerticalAlignment="Top"
+                              IsEnabled="False" IsChecked="True" />
+                    <TextBlock HorizontalAlignment="Left" Margin="569,80,0,0" TextWrapping="Wrap"
+                               VerticalAlignment="Top">
+                        <Run Text="Нов" /><LineBreak /><Run Text="Ось" />
+                    </TextBlock>
+                    <CheckBox HorizontalAlignment="Left" Margin="576,115,0,0" VerticalAlignment="Top" IsChecked="True"
+                              IsEnabled="False" />
+                    <CheckBox HorizontalAlignment="Left" Margin="576,130,0,0" VerticalAlignment="Top" IsEnabled="False" />
+                    <CheckBox HorizontalAlignment="Left" Margin="576,145,0,0" VerticalAlignment="Top" IsEnabled="False" />
+                    <CheckBox HorizontalAlignment="Left" Margin="576,160,0,0" VerticalAlignment="Top" IsEnabled="False" />
+                    <CheckBox HorizontalAlignment="Left" Margin="576,175,0,0" VerticalAlignment="Top" IsEnabled="False" />
+                    <CheckBox HorizontalAlignment="Left" Margin="576,190,0,0" VerticalAlignment="Top" IsEnabled="False" />
+                    <Button Content="B" HorizontalAlignment="Left" Margin="595,115,0,0" VerticalAlignment="Top"
+                            Width="24"
+                            IsEnabled="False" />
+                    <Button Content="H" HorizontalAlignment="Left" Margin="595,139,0,0" VerticalAlignment="Top"
+                            Width="24"
+                            IsEnabled="false" />
+                    <TextBlock HorizontalAlignment="Left" Margin="71,290,0,0" TextWrapping="Wrap"
+                               Text="Сервер Динамических Данных:" VerticalAlignment="Top" />
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="249,287,0,0" TextWrapping="Wrap"
+                             VerticalAlignment="Top" Width="209"
+                             IsEnabled="False" />
+                    <TextBlock HorizontalAlignment="Left" Margin="75,321,0,0" TextWrapping="Wrap"
+                               VerticalAlignment="Top">
+                        <Run Text="Сервер " /><Run Text="Исторических " /><Run Text="Данных:" />
+                    </TextBlock>
+                    <ComboBox HorizontalAlignment="Left" Margin="249,318,0,0" VerticalAlignment="Top" Width="229"
+                              IsEditable="True" IsEnabled="False" SelectedIndex="0">
+                        <ComboBoxItem Content="defaulthost" />
+                    </ComboBox>
+                    <TextBlock HorizontalAlignment="Left" Margin="193,349,0,0" TextWrapping="Wrap" Text="Попыток:"
+                               VerticalAlignment="Top" />
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="250,346,0,0" TextWrapping="Wrap" Text="2"
+                             VerticalAlignment="Top" Width="65"
+                             IsEnabled="False" />
+                    <TextBlock HorizontalAlignment="Left" Margin="330,349,0,0" TextWrapping="Wrap" Text="Таймаут:"
+                               VerticalAlignment="Top" />
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="387,346,0,0" TextWrapping="Wrap" Text="100"
+                             VerticalAlignment="Top" Width="65"
+                             IsEnabled="False" />
+                    <TextBlock HorizontalAlignment="Left" Margin="457,349,0,0" TextWrapping="Wrap" Text="(миллисекунд)"
+                               VerticalAlignment="Top" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="Шкала Времени" IsEnabled="False" />
+            <TabItem Header="Многозонная Ось Y" IsEnabled="False" />
+        </TabControl>
+
+        <StackPanel Grid.Row="1" Margin="5" Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+
+            <Button Content="OK" Width="73" Margin="2" Click="onOkButtonClicked" />
+            <Button Content="Отмена" Width="73" Margin="2" Click="onCancelButtonClicked" />
+            <Button Content="Справка" Width="73" Margin="2,2,0,2" IsEnabled="False" />
+
+        </StackPanel>
+    </Grid>
+</Window>-->

@@ -42,7 +42,6 @@ namespace Ssz.Operator.Core.DsShapeViews
             return BindingOperations.SetBinding(dependencyObject, dependencyProperty, multiBinding);
         }
 
-
         public static BindingExpressionBase? SetVisibilityBindingOrConst(this DependencyObject dependencyObject,
             IDsContainer? container,
             DependencyProperty dependencyProperty, BooleanDataBinding dataSourceInfo, Visibility valueWhenInvisible,
@@ -66,7 +65,6 @@ namespace Ssz.Operator.Core.DsShapeViews
 
             return BindingOperations.SetBinding(dependencyObject, dependencyProperty, multiBinding);
         }
-
 
         public static void SetConst(this DependencyObject dependencyObject,
             IDsContainer? container,
@@ -96,7 +94,6 @@ namespace Ssz.Operator.Core.DsShapeViews
                 }
         }
 
-
         public static MultiBinding CreateBindingWithoutConverter(
             IDsContainer? container,
             IValueDataBinding dataSourceInfo,
@@ -122,16 +119,17 @@ namespace Ssz.Operator.Core.DsShapeViews
             return multiBinding;
         }
 
-
         public static void RegisterMultiBinding(DependencyObject dependencyObject, MultiBinding? multiBinding)
         {
-            if (multiBinding is null) return;
+            if (multiBinding is null) 
+                return;
 
             var fe = dependencyObject as FrameworkElement;
             if (fe is null) return;
             var dataValueViewModel = fe.DataContext as DataValueViewModel;
-            if (dataValueViewModel is null) return;
-            dataValueViewModel.MultiBindings.Add(multiBinding);
+            if (dataValueViewModel is null) 
+                return;
+            dataValueViewModel.RegisterMultiBinding(multiBinding);
         }
 
         #endregion

@@ -13,7 +13,7 @@ namespace Ssz.Dcs.ControlEngine
     {
         #region construction and destruction
 
-        public EventListBase(ServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
+        public EventListBase(DataAccessServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
             : base(serverWorker, serverContext, listClientAlias, listParams)
         {
             string? updateRate = listParams.TryGetValue("UpdateRateMs");
@@ -37,19 +37,19 @@ namespace Ssz.Dcs.ControlEngine
             ListCallbackIsEnabled = enable;
         }
 
-        public override List<ServerContext.EventMessagesCallbackMessage>? GetEventMessagesCallbackMessages()
+        public override List<EventMessagesCallbackMessage>? GetEventMessagesCallbackMessages()
         {
             if (EventMessagesCollections.Count == 0)
                 return null;
 
-            List<ServerContext.EventMessagesCallbackMessage> result = new();
+            List<EventMessagesCallbackMessage> result = new();
 
             foreach (var eventMessagesCollection in EventMessagesCollections)
             {
-                result.Add(new ServerContext.EventMessagesCallbackMessage
+                result.Add(new EventMessagesCallbackMessage
                 {
                     ListClientAlias = this.ListClientAlias,
-                    EventMessages = eventMessagesCollection.EventMessages.Select(em => new Ssz.DataAccessGrpc.ServerBase.EventMessage(em)).ToList(),
+                    EventMessages = eventMessagesCollection.EventMessages,
                     CommonFields = eventMessagesCollection.CommonFields
                 });
             }
@@ -71,7 +71,7 @@ namespace Ssz.Dcs.ControlEngine
             {
                 LastCallbackTime = nowUtc;
 
-                List<ServerContext.EventMessagesCallbackMessage>? eventMessagesCallbackMessages = GetEventMessagesCallbackMessages();
+                List<EventMessagesCallbackMessage>? eventMessagesCallbackMessages = GetEventMessagesCallbackMessages();
                 if (eventMessagesCallbackMessages is not null)
                 {
                     foreach (var eventMessagesCallbackMessage in eventMessagesCallbackMessages)

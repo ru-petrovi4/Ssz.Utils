@@ -33,7 +33,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.DrawingCore;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Security;
@@ -875,7 +875,7 @@ namespace OfficeOpenXml
             _package.DoAdjustDrawings = false;
             Stream stream = packPart.GetStream();
 
-#if NET5_0_OR_GREATER
+#if Core
             var xr = XmlReader.Create(stream,new XmlReaderSettings() { DtdProcessing = DtdProcessing.Prohibit, IgnoreWhitespace = true });
 #else
             var xr = new XmlTextReader(stream);
@@ -1158,7 +1158,7 @@ namespace OfficeOpenXml
                 if (xr.LocalName == nodeText || xr.LocalName == altNode) return true;
             }
             while (xr.Read());
-#if !NET5_0_OR_GREATER
+#if !Core
             xr.Close();
 #endif
             return false;

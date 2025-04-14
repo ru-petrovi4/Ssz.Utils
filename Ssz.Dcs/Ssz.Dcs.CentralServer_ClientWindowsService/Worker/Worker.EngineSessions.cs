@@ -121,7 +121,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
             try
             {
-                var directoryPathsRelativeToRootDirectory = CsvHelper.ParseCsvLine(@",", parts[1]);
+                var invariantDirectoryPathsRelativeToRootDirectory = CsvHelper.ParseCsvLine(@",", parts[1]);
                 bool includeSubdirectories = new Any(parts[2] ?? "").ValueAsBoolean(false);
 
                 var progressInfo = new ProgressInfo(jobId, 0, 95)
@@ -129,11 +129,12 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     ProgressLabelResourceName = @""
                 };
                 progressInfo.Index = 0;
-                progressInfo.Count = directoryPathsRelativeToRootDirectory.Length;
+                progressInfo.Count = invariantDirectoryPathsRelativeToRootDirectory.Length;
 
-                foreach (var directoryPathRelativeToRootDirectory in directoryPathsRelativeToRootDirectory)
+                foreach (var invariantDirectoryPathRelativeToRootDirectory in invariantDirectoryPathsRelativeToRootDirectory)
                 {
-                    if (String.IsNullOrEmpty(directoryPathRelativeToRootDirectory)) continue;
+                    if (String.IsNullOrEmpty(invariantDirectoryPathRelativeToRootDirectory))
+                        continue;
 
                     if (progressInfo is not null)
                     {
@@ -146,7 +147,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     
                     var request = new GetDirectoryInfoRequest
                     {
-                        PathRelativeToRootDirectory = directoryPathRelativeToRootDirectory,
+                        InvariantPathRelativeToRootDirectory = invariantDirectoryPathRelativeToRootDirectory,
                         FilesAndDirectoriesIncludeLevel = includeSubdirectories ? Int32.MaxValue : 1,
                     };
                     var returnData = await utilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
@@ -194,18 +195,18 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
             try
             {
-                var directoryPathsRelativeToRootDirectory = CsvHelper.ParseCsvLine(@",", parts[1]);
+                var invariantDirectoryPathsRelativeToRootDirectory = CsvHelper.ParseCsvLine(@",", parts[1]);
 
                 var progressInfo = new ProgressInfo(jobId, 0, 95)
                 {
                     ProgressLabelResourceName = @""                    
                 };
                 progressInfo.Index = 0;
-                progressInfo.Count = directoryPathsRelativeToRootDirectory.Length;
+                progressInfo.Count = invariantDirectoryPathsRelativeToRootDirectory.Length;
 
-                foreach (var directoryPathRelativeToRootDirectory in directoryPathsRelativeToRootDirectory)
+                foreach (var invariantDirectoryPathRelativeToRootDirectory in invariantDirectoryPathsRelativeToRootDirectory)
                 {
-                    if (String.IsNullOrEmpty(directoryPathRelativeToRootDirectory)) continue;
+                    if (String.IsNullOrEmpty(invariantDirectoryPathRelativeToRootDirectory)) continue;
 
                     if (progressInfo is not null)
                     {
@@ -218,7 +219,10 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
                     try
                     {
-                        var dsFilesStoreDirectory = DsFilesStoreHelper.CreateDsFilesStoreDirectoryObject(FilesStoreDirectoryInfo, directoryPathRelativeToRootDirectory, 1);
+                        var dsFilesStoreDirectory = DsFilesStoreHelper.CreateDsFilesStoreDirectoryObject(
+                            FilesStoreDirectoryInfo, 
+                            invariantDirectoryPathRelativeToRootDirectory.Replace('/', Path.DirectorySeparatorChar),
+                            1);
 
                         await UploadFilesStoreDirectoryAsync(dsFilesStoreDirectory, utilityDataAccessProvider);
                     }

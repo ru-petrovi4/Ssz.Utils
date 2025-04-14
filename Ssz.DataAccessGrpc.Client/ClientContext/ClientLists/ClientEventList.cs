@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Ssz.DataAccessGrpc.Client.Managers;
 using Ssz.DataAccessGrpc.Client.ClientListItems;
-using Ssz.DataAccessGrpc.ServerBase;
+using Ssz.DataAccessGrpc.Common;
 using Ssz.Utils;
 using Ssz.Utils.DataAccess;
 using System.Threading.Tasks;
@@ -32,6 +32,25 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         #endregion
 
         #region public functions
+        
+        public static Utils.DataAccess.EventMessagesCollection GetEventMessagesCollection(Common.EventMessagesCollection eventMessagesCollection)
+        {
+            Utils.DataAccess.EventMessagesCollection result = new();
+
+            foreach (var eventMessage in eventMessagesCollection.EventMessages)
+            {
+                result.EventMessages.Add(eventMessage.ToEventMessage());
+            }
+
+            if (eventMessagesCollection.CommonFields.Count > 0)
+            {
+                result.CommonFields = new CaseInsensitiveDictionary<string?>(eventMessagesCollection.CommonFields
+                            .Select(cp => new KeyValuePair<string, string?>(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)));
+
+            }
+
+            return result;
+        }
 
         /// <summary>
         /// 
@@ -54,7 +73,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// <param name="comment"></param>
         /// <param name="eventIdsToAck"></param>
         /// <returns></returns>
-        public async Task<EventIdResult[]> AckAlarmsAsync(string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] eventIdsToAck)
+        public async Task<Common.EventIdResult[]> AckAlarmsAsync(string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] eventIdsToAck)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
@@ -65,7 +84,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// 
         /// </summary>
         /// <returns></returns>
-        public async Task<List<Utils.DataAccess.EventMessagesCollection>> PollEventsChangesAsync()
+        public async Task<List<Utils.DataAccess.EventMessagesCollection>?> PollEventsChangesAsync()
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
@@ -77,46 +96,6 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
             return await Context.ReadEventMessagesJournalAsync(this, firstTimestampUtc, secondTimestampUtc, params_);
-        }
-
-        /// <summary>
-        ///     Returns new EventMessagesCollection or null, if waiting next message.
-        /// </summary>
-        /// <param name="eventMessagesCollection"></param>
-        /// <returns></returns>
-        public Utils.DataAccess.EventMessagesCollection? GetEventMessagesCollection(ServerBase.EventMessagesCollection eventMessagesCollection)
-        {
-            if (Disposed) 
-                throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
-
-            _incompleteEventMessagesCollections.Add(eventMessagesCollection);            
-
-            if (eventMessagesCollection.IsIncomplete)
-            {
-                return null;
-            }
-            else
-            {
-                Utils.DataAccess.EventMessagesCollection result = new();
-
-                foreach (var incompleteEventMessagesCollection in _incompleteEventMessagesCollections)
-                {
-                    foreach (var eventMessage in incompleteEventMessagesCollection.EventMessages)
-                    {
-                        result.EventMessages.Add(eventMessage.ToEventMessage());
-                    }
-
-                    if (incompleteEventMessagesCollection.CommonFields.Count > 0)
-                    {
-                        result.CommonFields = new CaseInsensitiveDictionary<string?>(eventMessagesCollection.CommonFields
-                                    .Select(cp => new KeyValuePair<string, string?>(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)));
-
-                    }
-                }
-                _incompleteEventMessagesCollections.Clear();
-
-                return result;
-            }
         }
 
         /// <summary>
@@ -141,16 +120,6 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         ///     This event is used to notify the client application when new events are received.
         /// </summary>
         public event EventHandler<EventMessagesCallbackEventArgs> EventMessagesCallback = delegate { };
-
-        #endregion
-
-        #region private fields
-
-        /// <summary>
-        ///     This data member holds the last exception message encountered by the
-        ///     ElementValuesCallback callback when calling valuesUpdateEvent().
-        /// </summary>
-        private readonly List<ServerBase.EventMessagesCollection> _incompleteEventMessagesCollections = new();
 
         #endregion
     }

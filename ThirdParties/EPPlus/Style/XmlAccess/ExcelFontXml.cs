@@ -31,7 +31,7 @@
  *******************************************************************************/
 using System;
 using System.Collections.Generic;
-using System.DrawingCore;
+using System.Drawing;
 using System.Globalization;
 using System.Text;
 using System.Xml;
@@ -269,7 +269,7 @@ namespace OfficeOpenXml.Style.XmlAccess
                 _verticalAlign=value;
             }
         }
-        public void SetFromFont(System.DrawingCore.Font Font)
+        public void SetFromFont(System.Drawing.Font Font)
         {
             Name=Font.Name;
             //Family=fnt.FontFamily.;

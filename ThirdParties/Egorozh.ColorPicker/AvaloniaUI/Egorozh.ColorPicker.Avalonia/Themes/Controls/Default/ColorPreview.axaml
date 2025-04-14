@@ -1,0 +1,124 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+
+        xmlns:local="clr-namespace:Egorozh.ColorPicker;assembly=Egorozh.ColorPicker.Avalonia">
+
+  <Styles.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="../../Others/Brushes.axaml"/>
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Styles.Resources>
+  
+  <Style Selector="local|ColorPreview">
+
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate>
+          <Grid ColumnDefinitions="auto auto * auto auto">
+            <Border  Grid.Column="0"
+                     Width="49"
+                     ClipToBounds="True"
+                     Height="35"
+                     CornerRadius="6,0,0,6"
+                     HorizontalAlignment="Right"
+                     VerticalAlignment="Center"
+                     Background="{StaticResource TransparencyBrush}"/>
+            <Border Name="PART_PreviewBorder1"
+                    Grid.Column="0"
+                    Width="50"
+                    ClipToBounds="True"
+                    Height="36"
+                    CornerRadius="6,0,0,6"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center">
+              <Border.Background>
+                <SolidColorBrush
+                  Color="{Binding $parent[local:ColorPreview].Color, Converter={local:AccentColorShadeConverter}, ConverterParameter='-2'}" />
+              </Border.Background>
+            </Border>
+
+            <Border Grid.Column="1"
+                    Width="50"
+                    Height="35"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"
+                    Background="{StaticResource TransparencyBrush}"/>
+            <Border Name="PART_PreviewBorder2"
+                    Grid.Column="1"
+                    Width="50"
+                    Height="36"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center">
+              <Border.Background>
+                <SolidColorBrush
+                  Color="{Binding $parent[local:ColorPreview].Color, Converter={local:AccentColorShadeConverter}, ConverterParameter='-1'}" />
+              </Border.Background>
+            </Border>
+
+            <Border Grid.Column="2"
+                    ClipToBounds="True"
+                    CornerRadius="8"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Background="{StaticResource TransparencyBrush}"/>
+            <Border Name="PART_MainBorder"
+                    Grid.Column="2"
+                    ClipToBounds="True"
+                    CornerRadius="6"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch">
+              <Border.Background>
+                <SolidColorBrush Color="{Binding $parent[local:ColorPreview].Color}" />
+              </Border.Background>
+            </Border>
+
+            <Border Grid.Column="3"
+                    Width="50"
+                    Height="35"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"
+                    Background="{StaticResource TransparencyBrush}"/>
+            <Border Name="PART_PreviewBorder3"
+                    Grid.Column="3"
+                    Width="50"
+                    Height="36"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center">
+              <Border.Background>
+                <SolidColorBrush
+                  Color="{Binding $parent[local:ColorPreview].Color, Converter={local:AccentColorShadeConverter}, ConverterParameter='1'}" />
+              </Border.Background>
+            </Border>
+
+            <Border  Grid.Column="4"
+                     ClipToBounds="True"
+                     Width="49"
+                     Height="35"
+                     CornerRadius="0,6,6,0"
+                     HorizontalAlignment="Left"
+                     VerticalAlignment="Center"
+                     Background="{StaticResource TransparencyBrush}"/>
+            <Border Name="PART_PreviewBorder4"
+                    Grid.Column="4"
+                    ClipToBounds="True"
+                    Width="50"
+                    Height="36"
+                    CornerRadius="0,6,6,0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center">
+              <Border.Background>
+                <SolidColorBrush
+                  Color="{Binding $parent[local:ColorPreview].Color, Converter={local:AccentColorShadeConverter}, ConverterParameter='2'}" />
+              </Border.Background>
+            </Border>
+
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+
+  </Style>
+
+</Styles>

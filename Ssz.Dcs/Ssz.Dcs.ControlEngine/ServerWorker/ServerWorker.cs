@@ -11,22 +11,18 @@ using Microsoft.Extensions.Configuration;
 using System.IO;
 using Ssz.Dcs.ControlEngine.ServerListItems;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Diagnostics.ResourceMonitoring;
 
 namespace Ssz.Dcs.ControlEngine
 {
-    public partial class ServerWorker : ServerWorkerBase
+    public partial class ServerWorker : DataAccessServerWorkerBase
     {
         #region construction and destruction
 
-        public ServerWorker(
-            IResourceMonitor resourceMonitor,
+        public ServerWorker(            
             ILogger<ServerWorker> logger, 
             IConfiguration configuration, 
             IServiceProvider serviceProvider) :
-            base(
-                resourceMonitor, 
-                logger)
+            base(logger)
         {            
             _configuration = configuration;
             _serviceProvider = serviceProvider;
@@ -38,17 +34,17 @@ namespace Ssz.Dcs.ControlEngine
 
         public DsDevice? Device { get; set; }
 
-        public override async Task DoWorkAsync(DateTime nowUtc, CancellationToken cancellationToken)
+        public override async Task<int> DoWorkAsync(DateTime nowUtc, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) 
-                return;
+                return 0;
 
             if (Device is not null)
                 Device.DoWork(nowUtc, cancellationToken);
 
             DoWorkUtilityItems(nowUtc, cancellationToken);
 
-            await base.DoWorkAsync(nowUtc, cancellationToken);
+            return await base.DoWorkAsync(nowUtc, cancellationToken);
         }
 
         #endregion        

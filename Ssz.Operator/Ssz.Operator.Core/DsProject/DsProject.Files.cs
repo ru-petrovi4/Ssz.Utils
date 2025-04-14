@@ -356,6 +356,13 @@ namespace Ssz.Operator.Core
             {
                 if (readOnlyDrawingGuid)
                 {
+#if NET5_0_OR_GREATER
+                    byte[] buffer = new byte[100];
+                    using (FileStream fs = new(drawingFileInfo.FullName, FileMode.Open, FileAccess.Read))
+                    {
+                        fs.ReadAtLeast(buffer, buffer.Length, throwOnEndOfStream: false);
+                    }
+#else
                     byte[] buffer;
                     using (FileStream fs = new(drawingFileInfo.FullName, FileMode.Open, FileAccess.Read))
                     using (MemoryStream ms = new())
@@ -363,6 +370,7 @@ namespace Ssz.Operator.Core
                         fs.CopyTo(ms);
                         buffer = ms.ToArray();
                     }
+#endif
 
                     if (BitConverter.ToInt32(buffer, 0) == 6)
                     {
@@ -507,10 +515,10 @@ namespace Ssz.Operator.Core
                                     previewImageBytes = drawing.PreviewImageBytes;
                                     mark = drawing.Mark;                                    
 
-                                    usedAddonsInfo = AddonsHelper.GetAddonsInfo(drawing.GetUsedAddonGuids());
+                                    usedAddonsInfo = AddonsManager.GetAddonsInfo(drawing.GetUsedAddonGuids());
 
                                     string[] unSupportedAddonsNameToDisplays =
-                                        AddonsHelper.GetNotInAddonsCollection(usedAddonsInfo);
+                                        AddonsManager.GetNotInAddonsCollection(usedAddonsInfo);
                                     if (unSupportedAddonsNameToDisplays.Length > 0)
                                     {
                                         string message = drawingFileInfo.Name + @": " +
@@ -529,7 +537,7 @@ namespace Ssz.Operator.Core
                     if (!readOnlyDrawingGuid)
                     {
                         // Refresh Style NameToDisplay
-                        var styleDispalyName = AddonsHelper.GetDsPageTypeName(styleInfo.Guid);
+                        var styleDispalyName = AddonsManager.GetDsPageTypeName(styleInfo.Guid);
                         if (styleDispalyName is not null) styleInfo.Name = styleDispalyName;
                     }
 
@@ -1189,6 +1197,6 @@ namespace Ssz.Operator.Core
             }
         }
 
-        #endregion
+#endregion
     }
 }

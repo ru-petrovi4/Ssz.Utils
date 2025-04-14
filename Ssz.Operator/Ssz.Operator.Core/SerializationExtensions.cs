@@ -249,8 +249,7 @@ namespace Ssz.Operator.Core
                     }
                 }
 
-            var desc = XamlHelper.GetXamlDesc(xamlWithRelativePaths);
-            if (!string.IsNullOrEmpty(desc)) xamlWithRelativePaths = xamlWithRelativePaths.Replace(desc, @"");
+            xamlWithRelativePaths = XamlHelper.GetXamlWithoutDesc(xamlWithRelativePaths)!;           
             writer.Write(xamlWithRelativePaths);
         }
 
