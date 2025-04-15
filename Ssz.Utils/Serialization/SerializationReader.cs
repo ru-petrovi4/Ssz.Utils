@@ -135,6 +135,7 @@ namespace Ssz.Utils.Serialization
         {
             get { return _skippedBytesCount; }
         }
+
         public Func<Type,object?>? CustomFactory { get; set; }
 
         /// <summary>
@@ -1682,12 +1683,34 @@ namespace Ssz.Utils.Serialization
                     return new ArrayList(ReadOptimizedObjectArray(typeof (object)));
                 case SerializedType.OwnedDataSerializableType:
                 {
-                    var type = ReadOptimizedType();
-                    if (type is null) throw new InvalidOperationException();
-                        //object? result = CustomFactory!=null? CustomFactory( type.Name ) : Activator.CreateInstance(type);
-                    object? result = CustomFactory != null ? CustomFactory(type) : Activator.CreateInstance(type);
-                    if (result is null) throw new InvalidOperationException();
-                    ((IOwnedDataSerializable)result).DeserializeOwnedData(this, null);
+                    object? result;
+                    string typeString = ReadOptimizedOrNotString()!;
+                    long length = _binaryReader.ReadInt64();
+                    var type = GetType(typeString, false);                    
+                    if (type is null)
+                    {   
+                        result = new UnknownObject()
+                        {
+                            TypeString = typeString,
+                            Data = _binaryReader.ReadBytes((int)length)
+                        };                        
+                    }
+                    else
+                    {
+                        result = CustomFactory != null ? CustomFactory(type) : Activator.CreateInstance(type);
+                        if (result is null)
+                        {   
+                            result = new UnknownObject()
+                            {
+                                TypeString = typeString,
+                                Data = _binaryReader.ReadBytes((int)length)
+                            };
+                        }
+                        else
+                        {
+                            ((IOwnedDataSerializable)result).DeserializeOwnedData(this, null);
+                        }                               
+                    }
                     return result;
                 }
                 case SerializedType.OptimizedEnumType:

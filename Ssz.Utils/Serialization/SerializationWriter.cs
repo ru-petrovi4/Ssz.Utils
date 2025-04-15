@@ -835,11 +835,27 @@ namespace Ssz.Utils.Serialization
                 return;
             }
 
+            if (value is UnknownObject unknownObject)
+            {
+                WriteSerializedType(SerializedType.OwnedDataSerializableType);
+                WriteOptimizedOrNot(unknownObject.TypeString);
+                _binaryWriter.Write(unknownObject.Data.LongLength);
+                _binaryWriter.Write(unknownObject.Data);
+                return;
+            }
+
             if (IsOwnedDataSerializableAndRecreatable(value.GetType()))
             {
                 WriteSerializedType(SerializedType.OwnedDataSerializableType);
                 WriteOptimized(value.GetType());
+                // it will store the block length
+                _binaryWriter.Write((long)0);
+                long beginPosition = _baseStream.Position;
                 ((IOwnedDataSerializable) value).SerializeOwnedData(this, null);
+                long endPosition = _baseStream.Position;                
+                _baseStream.Position = beginPosition;
+                _binaryWriter.Write(endPosition - beginPosition);
+                _baseStream.Position = endPosition;
                 return;
             }
             
