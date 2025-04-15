@@ -721,30 +721,28 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     Use ReadByteArray() for reading.
-        ///     Waring!!! Supports only int Length!!!
+        ///     Use ReadByteArray() for reading.        
         /// </summary>                
         /// <param name="values"></param>
         public void WriteArray(byte[] values)
         {
-            WriteOptimized(values.Length);
+            WriteOptimized(values.LongLength);
 
-            if (values.Length > 0)
+            if (values.LongLength > 0)
             {
                 _binaryWriter.Write(values);
-            }
+            }            
         }
 
         /// <summary>
-        ///     Use ReadCharArray() for reading.
-        ///     Waring!!! Supports only int Length!!!
+        ///     Use ReadCharArray() for reading.        
         /// </summary>
         /// <param name="values"> The Char[] to store. </param>
         public void WriteArray(char[] values)
         {
-            WriteOptimized(values.Length);
+            WriteOptimized(values.LongLength);
 
-            if (values.Length > 0)
+            if (values.LongLength > 0)
             {
                 _binaryWriter.Write(values);
             }

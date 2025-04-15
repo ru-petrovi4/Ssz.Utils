@@ -1895,7 +1895,7 @@ namespace Ssz.Utils.Serialization
         /// <returns> A Byte[]. </returns>
         private byte[] ReadByteArrayInternal()
         {
-            return _binaryReader.ReadBytes(ReadOptimizedInt32());
+            return _binaryReader.ReadBytes((int)ReadOptimizedInt64());
         }
 
         /// <summary>
@@ -1904,7 +1904,7 @@ namespace Ssz.Utils.Serialization
         /// <returns> A Char[]. </returns>
         private char[] ReadCharArrayInternal()
         {
-            return _binaryReader.ReadChars(ReadOptimizedInt32());
+            return _binaryReader.ReadChars((int)ReadOptimizedInt64());
         }        
 
         /// <summary>
