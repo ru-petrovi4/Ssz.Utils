@@ -1,3 +1,4 @@
+#define EXTDEBUG
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Text.Json;
+
 
 namespace Ssz.Utils.Serialization
 {
@@ -92,7 +94,6 @@ namespace Ssz.Utils.Serialization
                     _baseStream.Seek(streamEndPosition, SeekOrigin.Begin);
                 }
             }
-
             Disposed = true;
         }
 
@@ -140,6 +141,7 @@ namespace Ssz.Utils.Serialization
                 _binaryWriter.Write((long)0);
                 // Store the begin position of the block
                 _blockBeginPositionsStack.Push(_baseStream.Position);
+                _shortBlockFlagsStack.Push(false);
                 _binaryWriter.Write7BitEncodedInt(version);
             }
             else
@@ -148,8 +150,36 @@ namespace Ssz.Utils.Serialization
                 // it will store the block length
                 _binaryWriter.Write((long)0);
                 // Store the begin position of the block
-                _blockBeginPositionsStack.Push(_baseStream.Position);                
-            }                
+                _blockBeginPositionsStack.Push(_baseStream.Position);
+                _shortBlockFlagsStack.Push(false);
+            }
+        }
+
+        /// <summary>
+        ///     Begins short Block.  Allways use optimaized storage for versin value
+        /// </summary>
+        /// <param name="version"></param>
+        public void BeginShortBlock(int version = -1)
+        {
+            if (version >= 0)
+            {
+                WriteSerializedType(SerializedType.ShortBlockBeginWithVersion);
+                // it will store the block length
+                _binaryWriter.Write((int)0);
+                // Store the begin position of the block
+                _blockBeginPositionsStack.Push(_baseStream.Position);
+                _binaryWriter.Write7BitEncodedInt(version);
+                _shortBlockFlagsStack.Push(true);
+            }
+            else
+            {
+                WriteSerializedType(SerializedType.ShortBlockBegin);
+                // it will store the block length
+                _binaryWriter.Write((int)0);
+                // Store the begin position of the block
+                _blockBeginPositionsStack.Push(_baseStream.Position);
+                _shortBlockFlagsStack.Push(true);
+            }
         }
 
         /// <summary>
@@ -159,8 +189,17 @@ namespace Ssz.Utils.Serialization
         {
             long endPosition = _baseStream.Position;
             long beginPosition = _blockBeginPositionsStack.Pop();
-            _baseStream.Position = beginPosition - 8;
-            _binaryWriter.Write(endPosition - beginPosition);
+            bool IsShortBlock = _shortBlockFlagsStack.Pop();
+            _baseStream.Position = beginPosition - (IsShortBlock? 4 :8);
+            if (IsShortBlock)
+            {
+                if ((endPosition - beginPosition) < int.MaxValue)
+                    _binaryWriter.Write((int)(endPosition - beginPosition));
+                else
+                    throw new BlockSizeException(endPosition - beginPosition);
+            }
+            else
+                    _binaryWriter.Write(endPosition - beginPosition);
             _baseStream.Position = endPosition;
             WriteSerializedType(SerializedType.BlockEnd);
         }
@@ -173,6 +212,15 @@ namespace Ssz.Utils.Serialization
         public IDisposable EnterBlock(int version = -1)
         {
             return new Block(this, version);
+        }
+        /// <summary>
+        ///     Enters short Block
+        /// </summary>
+        /// <param name="version"></param>
+        /// <returns></returns>
+        public IDisposable EnterShortBlock(int version = -1)
+        {
+            return new Block(this, version, true);
         }
 
         /// <summary>
@@ -1336,6 +1384,113 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
+        ///     Use ReadOwnedDataSerializable( Func<int,IOwnedDateSerializable?>, object?) for read.
+        ///     Allows any object supply serialization typeId and implementing IOwnedDataSerializable to serialize itself
+        ///     into this SerializationWriter.
+        ///     A context may also be used to give the object an indication of what data
+        ///     to store.        
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="typeId"></param>
+        /// <param name="context"></param>
+        public void WriteOwnedDataSerializable(IOwnedDataSerializable? target, int typeId, object? context)
+        {
+            if (target != null)
+            {
+                WriteSerializedType(SerializedType.OptimizedInt32Type);  // type code type )
+                WriteOptimized(typeId);                                  // type Id
+                target.SerializeOwnedData(this, context);
+            }
+            else
+                WriteSerializedType(SerializedType.NullType); 
+        }
+
+        /// <summary>
+        ///     Use ReadOwnedDataSerializable( Func<string,IOwnedDateSerializable?>, object?) for read.
+        ///     Allows any object supply serialization typeStringId and implementing IOwnedDataSerializable to serialize itself
+        ///     into this SerializationWriter.
+        ///     A context may also be used to give the object an indication of what data
+        ///     to store.        
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="typeStringId"></param>
+        /// <param name="context"></param>
+        /// <exception cref="ArgumentException"></exception>
+        public void WriteOwnedDataSerializable(IOwnedDataSerializable? target, string typeStringId, object? context)
+        {
+            if (target != null )
+            {
+                if (!string.IsNullOrEmpty(typeStringId))
+                {
+                    Write(typeStringId);                                  // type Id
+                    target.SerializeOwnedData(this, context);
+                }
+                else
+                    throw new ArgumentException($"Parameter typeStringId has invalid value for object {target.GetType().Name}");
+            }
+            else
+                WriteSerializedType(SerializedType.NullType);
+        }
+
+        /// <summary>
+        ///     Use ReadOwnedDataSerializable( Func<Guid,IOwnedDateSerializable?>, object?) for read.
+        ///     Allows any object supply serialization Guid and implementing IOwnedDataSerializable to serialize itself
+        ///     into this SerializationWriter.
+        ///     A context may also be used to give the object an indication of what data
+        ///     to store.        
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="typeGuidId"></param>
+        /// <param name="context"></param>
+        /// <exception cref="ArgumentException"></exception>
+        public void WriteOwnedDataSerializable(IOwnedDataSerializable? target, Guid typeGuidId, object? context)
+        {
+            if (target != null)
+            {
+                if (typeGuidId != Guid.Empty)
+                {
+                    WriteSerializedType(SerializedType.GuidType);           // type code type )
+                    Write(typeGuidId);                                      // type Id
+                    target.SerializeOwnedData(this, context);
+                }
+                else
+                    throw new ArgumentException($"Parameter typeGuidId has invalid value for object {target.GetType().Name}");
+            }
+            else
+                WriteSerializedType(SerializedType.NullType);
+        }
+
+        /// <summary>
+        ///     Use ReadOwnedDataSerializable( Func<Type,IOwnedDateSerializable?>, object?) for read.
+        ///     Allows any object supply serialization Guid and implementing IOwnedDataSerializable to serialize itself
+        ///     into this SerializationWriter.
+        ///     A context may also be used to give the object an indication of what data
+        ///     to store.        
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="context"></param>
+        /// <exception cref="ArgumentException"></exception>
+        public void WriteOwnedDataSerializableWithType(IOwnedDataSerializable? target, object? context)
+        {
+            if (target != null)
+            {
+                var type = target.GetType();
+                if (type != null)
+                {
+                    WriteSerializedType(SerializedType.TypeType);               // type code type )
+                    WriteOptimized(type);                                       // type 
+                    target.SerializeOwnedData(this, context);
+                }
+                else
+                    throw new ArgumentException($"Fail to obtain type information for parameter target for serializing");
+            }
+            else
+                WriteSerializedType(SerializedType.NullType);
+        }
+
+
+
+        /// <summary>
         ///     Use ReadOwnedDataSerializableAndRecreatable(...) for read.
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -1470,6 +1625,24 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
+        ///     use  T[] ReadArrayOfOwnedDataSerializable<T>(Func<int, IOwnedDataSerializable?> intTypeIdCreateFunc,
+        ///         object? context) for reading array
+        ///     Write array polymorphic objects to stream
+        /// </summary>
+        /// <param name="values">array of serializable objects</param>
+        /// <param name="typeIdFunc"> return integer Type Id for stored object</param>
+        /// <param name="context"></param>
+        public void WriteArrayOfOwnedDataSerializable<T>(T[] values, Func<T, int> typeIdFunc, object? context)
+            where T : IOwnedDataSerializable
+        {
+            Write(values.Length);
+            foreach (var v in values)
+            {
+                WriteOwnedDataSerializable(v, typeIdFunc(v), context);
+            }
+        }
+
+        /// <summary>
         ///     Use ReadNullableByteArray() for reading.
         /// </summary>
         /// <param name="values"></param>
@@ -1528,6 +1701,28 @@ namespace Ssz.Utils.Serialization
                 v.SerializeOwnedData(this, context);
             }
         }
+
+        /// <summary>
+        ///     use ReadListOfOwnedDataSerializable<T>(Func<int, IOwnedDataSerializable?> intTypeIdCreateFunc,
+        ///         object? context) for reading
+        ///     Writes list of polymorhic objects
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="values"></param>
+        /// <param name="typeIdFunc"> provide type identifiers for each element</param>
+        /// <param name="context"></param>
+        public void WriteListOfOwnedDataSerializable<T>(ICollection<T> values, Func<T, int> typeIdFunc,
+            object? context)
+            where T : IOwnedDataSerializable
+        {
+            Write(values.Count);
+            foreach (var v in values)
+            {
+                WriteOwnedDataSerializable(v, typeIdFunc(v), context);
+            }
+        }
+
+
 
         /// <summary>
         ///     use ReadListOfStrings() for reading.
@@ -1690,7 +1885,20 @@ namespace Ssz.Utils.Serialization
         /// <returns> true if the Type is recreatable; false otherwise. </returns>
         private static bool IsOwnedDataSerializableAndRecreatable(Type type)
         {
+#if DEBUG && EXTDEBUG
+            Console.WriteLine("IsOwnedDataSerializableAndRecreatable");
+            var s = (!type.IsValueType) ? "not" : "";
+            Console.WriteLine($"The type {type} is {s} ValueType");
+            s = typeof(IOwnedDataSerializable).IsAssignableFrom(type) ? "True" : "False";
+            Console.WriteLine($"typeof(IOwnedDataSerializable).IsAssignableFrom({type}) is {s}.");
+#endif
             if (type.IsValueType) return typeof (IOwnedDataSerializable).IsAssignableFrom(type);
+#if DEBUG && EXTDEBUG            
+            // !!! Reflection requared!
+            s = type.GetConstructor(Type.EmptyTypes) is not null ? "Constructor found." : "";
+
+            Console.WriteLine($"type.GetConstructor(Type.EmptyTypes) {s}");
+#endif
             return typeof (IOwnedDataSerializable).IsAssignableFrom(type) &&
                    type.GetConstructor(Type.EmptyTypes) is not null;
         }
@@ -2850,37 +3058,45 @@ namespace Ssz.Utils.Serialization
 #endif
 
         private readonly Stack<long> _blockBeginPositionsStack = new Stack<long>();
+        private readonly Stack<bool> _shortBlockFlagsStack = new Stack<bool>();
 
         private readonly long _stringsListInfoPosition;
         private Dictionary<string, int>? _stringsDictionary;
         private List<string>? _stringsList;
 
-#endregion
+        #endregion
 
         private class Block : IDisposable
         {
 #region construction and destruction
 
-            public Block(SerializationWriter serializationWriter, int version)
+            public Block(SerializationWriter serializationWriter, int version, bool shortBlock=false)
             {
                 _serializationWriter = serializationWriter;
-                _serializationWriter.BeginBlock(version);
+                if(shortBlock)
+                    _serializationWriter.BeginShortBlock(version);
+                else
+                    _serializationWriter.BeginBlock(version);
             }
 
             public void Dispose()
             {
                 _serializationWriter.EndBlock();
             }
-
 #endregion
 
 #region private fields
-
             private readonly SerializationWriter _serializationWriter;
-
 #endregion
+
         }
     }
+
+    public class BlockSizeException : Exception
+    {
+        public BlockSizeException(long size = 0) : base($"SortBlock too large. Current size is {size}.") { }
+    }
+
 }
 
 ///// <summary>

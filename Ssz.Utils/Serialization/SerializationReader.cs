@@ -135,6 +135,7 @@ namespace Ssz.Utils.Serialization
         {
             get { return _skippedBytesCount; }
         }
+        public Func<Type,object?>? CustomFactory { get; set; }
 
         /// <summary>
         ///     Use only with memory streams.
@@ -174,7 +175,7 @@ namespace Ssz.Utils.Serialization
                 _baseStream.Seek(originalPosition, SeekOrigin.Begin);
                 return version;
             }
-            if (typeCode == SerializedType.BlockBegin_Obsolete)
+            if (typeCode == SerializedType.ShortBlockBegin)
             {
                 // it will store either the block length or remain as 0 if allowUpdateHeader is false                
                 _baseStream.Seek(originalPosition, SeekOrigin.Begin);
@@ -228,7 +229,18 @@ namespace Ssz.Utils.Serialization
                 }
                 return version;
             }
-            if (typeCode == SerializedType.BlockBegin_Obsolete)
+            if (typeCode == SerializedType.ShortBlockBeginWithVersion)  // always optimized version
+            {
+                // it will store either the block length or remain as 0 if allowUpdateHeader is false
+                int blockSize = _binaryReader.ReadInt32();
+                // Store the ending position of the block if allowUpdateHeader true
+                if (blockSize > 0) _blockEndingPositionsStack.Push(_baseStream.Position + blockSize);
+                else _blockEndingPositionsStack.Push(0);
+                int version;
+                version = ReadOptimizedInt32();
+                return version;
+            }
+            if (typeCode == SerializedType.ShortBlockBegin)
             {
                 // it will store either the block length or remain as 0 if allowUpdateHeader is false
                 int blockSize = _binaryReader.ReadInt32();
@@ -705,6 +717,151 @@ namespace Ssz.Utils.Serialization
             return t;
         }
 
+        public IOwnedDataSerializable? ReadOwnedDataSerializable(Func<int, IOwnedDataSerializable?> func , object? context)
+        {
+            if (IsBlockEnding()) throw new BlockEndingException();
+
+            IOwnedDataSerializable? result = null;
+            // ------------------------- test TypeId serializing
+            SerializedType stypeId = ReadSerializedType();
+            //SerializedType stypeId = (SerializedType)reader.ReadByte();     // type code type )
+            switch (stypeId)
+            {
+                case SerializedType.NullType: break;                        // null
+                case SerializedType.EmptyGuidType: break;                   // null
+                case SerializedType.OptimizedInt32Type:                     // Type Id  (int)
+                    result = func(ReadOptimizedInt32()); break;
+                //case SerializedType.GuidType:                             // Type Id  (GUID)
+                //    result = func(reader.ReadGuid()); break;
+                //case SerializedType.TypeType:
+                //    result = func(reader.ReadOptimizedType()); break;     // Type
+                //    
+                //case SerializedType.StringDirect                          // Type Id  (string)
+                //    or SerializedType.EmptyStringType or SerializedType.EmptyStringType 
+                //    or SerializedType.SingleSpaceType or SerializedType.YStringType 
+                //    or SerializedType.NStringType or SerializedType.SingleCharStringType
+                //    or SerializedType.OptimizedStringType:
+                //    result = func(ReadOptimizedOrNotStringInternal(stypeId)); break;
+
+                default: new InvalidOperationException("Unrecognized TypeCode in ReadOwnedDataSerializable"); break;
+            }
+            if (result != null)
+                ReadOwnedDataSerializable(result, context);
+            return result;  
+        }
+
+        public IOwnedDataSerializable? ReadOwnedDataSerializable(Func<string, IOwnedDataSerializable?> func, object? context)
+        {
+            if (IsBlockEnding()) throw new BlockEndingException();
+
+            IOwnedDataSerializable? result = null;
+            // ------------------------- test TypeId serializing
+            SerializedType stypeId = ReadSerializedType();
+            //SerializedType stypeId = (SerializedType)reader.ReadByte();     // type code type )
+            switch (stypeId)
+            {
+                case SerializedType.NullType: break;                        // null
+                //case SerializedType.EmptyGuidType: break;                   // null
+                //case SerializedType.OptimizedInt32Type:                     // Type Id  (int)
+                //    result = func(ReadOptimizedInt32()); break;
+                //case SerializedType.GuidType:                             // Type Id  (GUID)
+                //    result = func(reader.ReadGuid()); break;
+                //case SerializedType.TypeType:
+                //    result = func(reader.ReadOptimizedType()); break;     // Type
+                //    
+                case SerializedType.StringDirect                          // Type Id  (string)
+                    or SerializedType.EmptyStringType or SerializedType.EmptyStringType 
+                    or SerializedType.SingleSpaceType or SerializedType.YStringType 
+                    or SerializedType.NStringType or SerializedType.SingleCharStringType
+                    or SerializedType.OptimizedStringType:
+                    result = func(ReadOptimizedOrNotStringInternal(stypeId)); break;
+
+                default: new InvalidOperationException("Unrecognized TypeCode in ReadOwnedDataSerializable"); break;
+            }
+            if (result != null)
+                ReadOwnedDataSerializable(result, context);
+            return result;
+        }
+
+        public IOwnedDataSerializable? ReadOwnedDataSerializable(Func<Guid, IOwnedDataSerializable?> func, object? context)
+        {
+            if (IsBlockEnding()) throw new BlockEndingException();
+
+            IOwnedDataSerializable? result = null;
+            // ------------------------- test TypeId serializing
+            SerializedType stypeId = ReadSerializedType();
+            //SerializedType stypeId = (SerializedType)reader.ReadByte();     // type code type )
+            switch (stypeId)
+            {
+                case SerializedType.NullType: break;                        // null
+                //case SerializedType.EmptyGuidType: break;                   // null
+                //case SerializedType.OptimizedInt32Type:                     // Type Id  (int)
+                //    result = func(ReadOptimizedInt32()); break;
+                case SerializedType.GuidType:                             // Type Id  (GUID)
+                    result = func(ReadGuid()); break;
+                //case SerializedType.TypeType:
+                //    result = func(reader.ReadOptimizedType()); break;     // Type
+                //    
+                //case SerializedType.StringDirect                          // Type Id  (string)
+                //    or SerializedType.EmptyStringType or SerializedType.EmptyStringType
+                //    or SerializedType.SingleSpaceType or SerializedType.YStringType
+                //    or SerializedType.NStringType or SerializedType.SingleCharStringType
+                //    or SerializedType.OptimizedStringType:
+                //    result = func(ReadOptimizedOrNotStringInternal(stypeId)); break;
+
+                default: new InvalidOperationException("Unrecognized TypeCode in ReadOwnedDataSerializable"); break;
+            }
+            if (result != null)
+                ReadOwnedDataSerializable(result, context);
+            return result;
+        }
+
+
+        /// <summary>
+        /// Read object, saved using WriteOwnedDataSerializableWithType(IOwnedDataSerializable? target, object? context)
+        /// </summary>
+        /// <param name="func">constructors for stored objects indexed by type</param>
+        /// <param name="context"></param>
+        /// <returns>Null if type is undefined or constructor does not defined</returns>
+        /// <exception cref="BlockEndingException"></exception>
+        public IOwnedDataSerializable? ReadOwnedDataSerializableWithType(Func<string, IOwnedDataSerializable?> func, object? context)
+        {
+            if (IsBlockEnding()) throw new BlockEndingException();
+
+            IOwnedDataSerializable? result = null;
+            // ------------------------- test TypeId serializing
+            SerializedType stypeId = ReadSerializedType();
+            //SerializedType stypeId = (SerializedType)reader.ReadByte();       // type code type )
+            switch (stypeId)
+            {
+                case SerializedType.NullType: break;                            // null
+                //case SerializedType.EmptyGuidType: break;                     // null
+                //case SerializedType.OptimizedInt32Type:                       // Type Id  (int)
+                //    result = func(ReadOptimizedInt32()); break;
+                //case SerializedType.GuidType:                                 // Type Id  (GUID)
+                //    result = func(ReadGuid()); break;
+                case SerializedType.TypeType:
+                    //readedType = ReadOptimizedType();
+                    var typeString = ReadOptimizedOrNotString()!;
+                    if (typeString != null)
+                        result = func(typeString); break;                       // Type
+                    
+                //case SerializedType.StringDirect                              // Type Id  (string)
+                //    or SerializedType.EmptyStringType or SerializedType.EmptyStringType
+                //    or SerializedType.SingleSpaceType or SerializedType.YStringType
+                //    or SerializedType.NStringType or SerializedType.SingleCharStringType
+                //    or SerializedType.OptimizedStringType:
+                //    result = func(ReadOptimizedOrNotStringInternal(stypeId)); break;
+
+                default: new InvalidOperationException("Unrecognized TypeCode in ReadOwnedDataSerializable"); break;
+            }
+            if (result != null)
+                ReadOwnedDataSerializable(result, context);
+            return result;
+        }
+
+
+
         /// <summary>
         ///     Use WriteNullable<T>() for reading.
         /// </summary>
@@ -835,6 +992,37 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
+        ///     use WriteArrayOfOwnedDataSerializable<T>(T[] values, Func<T, int> typeIdFunc, object? context) for store objects
+        ///     Reads array of polymorphic object
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="intTypeIdCreateFunc"> </param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        /// <exception cref="BlockEndingException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        public T[] ReadArrayOfOwnedDataSerializable<T>(Func<int, IOwnedDataSerializable?> intTypeIdCreateFunc,
+            object? context)
+            where T : IOwnedDataSerializable
+        {
+            if (IsBlockEnding())
+                throw new BlockEndingException();
+
+            int length = ReadInt32();
+            var result = new T[length];
+            for (int i = 0; i < length; i++)
+            {
+                var v = ReadOwnedDataSerializable(intTypeIdCreateFunc, context);
+                if (v == null)
+                    throw new InvalidOperationException($"Fail to create array element in the ReadArrayOfOwnedDataSerializable at {_baseStream.Position}"); 
+                else
+                    result[i] = (T)v;
+            }
+            return result;
+        }
+
+
+        /// <summary>
         ///     Use WriteNullableByteArray(...) for writing.
         /// </summary>
         /// <returns></returns>
@@ -898,6 +1086,28 @@ namespace Ssz.Utils.Serialization
             }
             return result;
         }
+
+
+        /// <summary>
+        ///     Use WriteListOfOwnedDataSerializable<T>(ICollection<T> values, Func<T, int> typeIdFunc,
+        ///         object? context) for writing.
+        ///     Reads list of polymorphic objects.
+        ///     intTypeIdCreateFunc is the object constructor function by int type identificator.              
+        /// </summary>        
+        /// <param name="intTypeIdCreateFunc"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public List<T> ReadListOfOwnedDataSerializable<T>(Func<int, IOwnedDataSerializable?> intTypeIdCreateFunc,
+            object? context)
+            where T : IOwnedDataSerializable
+        {
+            T[] arr = ReadArrayOfOwnedDataSerializable<T>(intTypeIdCreateFunc,context);
+            if(arr.Length>0)
+                return new List<T>(arr);
+            else
+                return new List<T>();
+        }
+
 
         /// <summary>
         ///     Use WriteListOfStrings(...) for writing.
@@ -1148,11 +1358,39 @@ namespace Ssz.Utils.Serialization
             if (IsBlockEnding()) throw new BlockEndingException();
 
             SerializedType typeCode = ReadSerializedType();
+            if(typeCode == SerializedType.NullType) // For compatibility
+                return null;
+            else
+                return ReadOptimizedOrNotStringInternal(typeCode);
+            //switch (typeCode)
+            //{
+            //    case SerializedType.NullType: // For compatibility
+            //        return null;
+            //    case SerializedType.EmptyStringType:
+            //        return string.Empty;
+            //    case SerializedType.SingleSpaceType:
+            //        return " ";
+            //    case SerializedType.YStringType:
+            //        return "Y";
+            //    case SerializedType.NStringType:
+            //        return "N";
+            //    case SerializedType.SingleCharStringType:
+            //        return Char.ToString(ReadChar());
+            //    case SerializedType.StringDirect:
+            //        return _binaryReader.ReadString();
+            //    case SerializedType.OptimizedStringType:                    
+            //        if (_stringsList is null) throw new InvalidOperationException();
+            //        int index = ReadOptimizedInt32();
+            //        return _stringsList[index];
+            //    default:
+            //        throw new InvalidOperationException("Unrecognized TypeCode");
+            //}
+        }
 
+        private string ReadOptimizedOrNotStringInternal(SerializedType typeCode)
+        {
             switch (typeCode)
             {
-                case SerializedType.NullType: // For compatibility
-                    return null;
                 case SerializedType.EmptyStringType:
                     return string.Empty;
                 case SerializedType.SingleSpaceType:
@@ -1165,7 +1403,7 @@ namespace Ssz.Utils.Serialization
                     return Char.ToString(ReadChar());
                 case SerializedType.StringDirect:
                     return _binaryReader.ReadString();
-                case SerializedType.OptimizedStringType:                    
+                case SerializedType.OptimizedStringType:
                     if (_stringsList is null) throw new InvalidOperationException();
                     int index = ReadOptimizedInt32();
                     return _stringsList[index];
@@ -1173,6 +1411,7 @@ namespace Ssz.Utils.Serialization
                     throw new InvalidOperationException("Unrecognized TypeCode");
             }
         }
+
 
         /// <summary>
         ///     Returns a TimeSpan value from the stream that was stored optimized.
@@ -1445,7 +1684,8 @@ namespace Ssz.Utils.Serialization
                 {
                     var type = ReadOptimizedType();
                     if (type is null) throw new InvalidOperationException();
-                    object? result = Activator.CreateInstance(type);
+                        //object? result = CustomFactory!=null? CustomFactory( type.Name ) : Activator.CreateInstance(type);
+                    object? result = CustomFactory != null ? CustomFactory(type) : Activator.CreateInstance(type);
                     if (result is null) throw new InvalidOperationException();
                     ((IOwnedDataSerializable)result).DeserializeOwnedData(this, null);
                     return result;
@@ -1814,7 +2054,10 @@ namespace Ssz.Utils.Serialization
                     Array result = Array.CreateInstance(elementType!, length);
                     for (long i = 0; i < length; i++)
                     {
+                        // TODO: replace actuator when CustomFactory is defined
+                        //var obj = CustomFactory != null ? CustomFactory(elementType.?Name) : Activator.CreateInstance(elementType!);
                         IOwnedDataSerializable? value = Activator.CreateInstance(elementType!) as IOwnedDataSerializable;
+                        //IOwnedDataSerializable? value = obj as IOwnedDataSerializable;
                         if (value is null) 
                             throw new InvalidOperationException();
                         ReadOwnedDataSerializable(value, null);
