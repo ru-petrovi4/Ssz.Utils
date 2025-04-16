@@ -849,12 +849,12 @@ namespace Ssz.Utils.Serialization
                 WriteSerializedType(SerializedType.OwnedDataSerializableType);
                 WriteOptimized(value.GetType());
                 // it will store the block length
-                _binaryWriter.Write((long)0);
                 long beginPosition = _baseStream.Position;
+                _binaryWriter.Write((long)0);                
                 ((IOwnedDataSerializable) value).SerializeOwnedData(this, null);
                 long endPosition = _baseStream.Position;                
                 _baseStream.Position = beginPosition;
-                _binaryWriter.Write(endPosition - beginPosition);
+                _binaryWriter.Write(endPosition - beginPosition - sizeof(long));
                 _baseStream.Position = endPosition;
                 return;
             }
