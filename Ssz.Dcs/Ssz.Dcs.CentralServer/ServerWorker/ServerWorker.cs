@@ -85,9 +85,9 @@ namespace Ssz.Dcs.CentralServer
             if (cancellationToken.IsCancellationRequested) 
                 return 0;
 
-            foreach (IWorkDoer workDoer in _addonsManager.AddonsThreadSafe.OfType<IWorkDoer>().ToArray())
+            foreach (AddonBase addon in _addonsManager.AddonsThreadSafe)
             {
-                await workDoer.DoWorkAsync(nowUtc, cancellationToken);
+                await addon.DoWorkAsync(nowUtc, cancellationToken);
             }
 
             Cleanup(nowUtc, cancellationToken);
