@@ -176,6 +176,11 @@ namespace Ssz.Utils.Addons
             IsInitialized = false;
         }
 
+        public virtual Task DoWorkAsync(DateTime nowUtc, CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+
         void IObservableCollectionItem.ObservableCollectionItemUpdate(IObservableCollectionItem item)
         {
         }        

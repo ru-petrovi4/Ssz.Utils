@@ -10,31 +10,8 @@ using System.Threading.Tasks;
 
 namespace Ssz.Utils.Logging
 {    
-    public abstract class SszLoggerBase : ILogger, IUserFriendlyLogger, IDisposable
+    public abstract class SszLoggerBase : ILogger, IUserFriendlyLogger
     {
-        #region construction and destruction
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-        
-        protected virtual void Dispose(bool disposing)
-        {   
-            _disposed = true;
-        }
-
-        /// <summary>
-        ///     The standard destructor invoked by the .NET garbage collector during Finalize.
-        /// </summary>
-        ~SszLoggerBase()
-        {
-            Dispose(false);
-        }
-
-        #endregion
-
         #region public functions
 
         public IDisposable BeginScope<TState>(TState state)
@@ -76,9 +53,7 @@ namespace Ssz.Utils.Logging
 
         #endregion
 
-        #region protected functions
-
-        protected bool Disposed => _disposed;
+        #region protected functions        
 
         protected object SyncRoot { get; } = new();
 
@@ -176,13 +151,7 @@ namespace Ssz.Utils.Logging
             }
         }        
 
-        #endregion
-
-        #region private fields
-
-        private volatile bool _disposed;                
-
-        #endregion
+        #endregion        
 
         private class Scope : IDisposable
         {

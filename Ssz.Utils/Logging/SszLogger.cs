@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.Utils.Logging
 {    
-    public class SszLogger : SszLoggerBase
+    public class SszLogger : SszLoggerBase, IDisposable
     {
         #region construction and destruction
 
@@ -34,6 +34,17 @@ namespace Ssz.Utils.Logging
                     LogFileTextWriter.Dispose();
                     LogFileTextWriter = new LogFileTextWriter(options);
                 }
+                LogFileTextWriter_UseCount += 1;
+            }                
+        }
+
+        public void Dispose()
+        {
+            lock (LogFileTextWriterSyncRoot)
+            {
+                LogFileTextWriter_UseCount -= 1;
+                if (LogFileTextWriter_UseCount == 0)
+                    LogFileTextWriter?.Dispose();
             }                
         }
 
@@ -117,7 +128,7 @@ namespace Ssz.Utils.Logging
                 LogFileTextWriter!.WriteLine(header);
                 LogFileTextWriter!.WriteLine(content);
             }            
-        }
+        }        
 
         #endregion
 
@@ -128,6 +139,8 @@ namespace Ssz.Utils.Logging
         private readonly string _name;
 
         private static readonly object LogFileTextWriterSyncRoot = new();
+
+        private static int LogFileTextWriter_UseCount;
 
         private static LogFileTextWriter? LogFileTextWriter;
 

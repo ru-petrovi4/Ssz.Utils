@@ -23,7 +23,7 @@ namespace Ssz.Utils.Logging
             Logger = logger;
             if (userFriendlyLogger is null)
             {
-                UserFriendlyLogger = new WrapperUserFriendlyLogger(new ILogger[0]);
+                UserFriendlyLogger = new WrapperUserFriendlyLogger(NullLogger.Instance);
                 LoggerAndUserFriendlyLogger = new WrapperUserFriendlyLogger(logger);
             }
             else
