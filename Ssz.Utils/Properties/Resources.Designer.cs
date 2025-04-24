@@ -214,6 +214,15 @@ namespace Ssz.Utils.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot determine file encoding..
+        /// </summary>
+        public static string Error_CannotDetermineFileEncoding {
+            get {
+                return ResourceManager.GetString("Error_CannotDetermineFileEncoding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The configuration file &apos;{0}&apos; was not found and is not optional..
         /// </summary>
         public static string Error_FileNotFound {

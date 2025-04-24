@@ -14,6 +14,24 @@ namespace Ssz.Utils
         #region public functions
 
         /// <summary>
+        ///     Each constant starts with '%(' and ends with ')'
+        /// </summary>
+        /// <param name="fields"></param>
+        /// <returns></returns>
+        public static CaseInsensitiveDictionary<string?> FieldsToConstants(CaseInsensitiveDictionary<string?> fields)
+        {
+            CaseInsensitiveDictionary<string?> constants = new();
+            foreach (var kvp in fields)
+            {
+                string constant = kvp.Key;
+                if (!constant.StartsWith(@"%(") || !constant.EndsWith(@")"))
+                    constant = @"%(" + constant + @")";                
+                constants[constant] = kvp.Value;
+            }
+            return constants;
+        }
+
+        /// <summary>
         ///     Searches special text like %(...) or $(...) in string.
         /// </summary>
         /// <param name="value"></param>

@@ -35,6 +35,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
+#nullable disable
 
 using System;
 using System.Collections.Generic;
@@ -70,7 +71,7 @@ namespace Ude.Core
         int freqChar;
   
         // Optional auxiliary prober for name decision. created and destroyed by the GroupProber
-        CharsetProber? nameProber; 
+        CharsetProber nameProber; 
                     
         public SingleByteCharSetProber(SequenceModel model) 
             : this(model, false, null)
@@ -79,7 +80,7 @@ namespace Ude.Core
         }
     
         public SingleByteCharSetProber(SequenceModel model, bool reversed, 
-                                       CharsetProber? nameProber)
+                                       CharsetProber nameProber)
         {
             this.model = model;
             this.reversed = reversed;

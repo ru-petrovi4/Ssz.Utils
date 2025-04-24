@@ -35,6 +35,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
+#nullable disable
 
 using System;
 using System.IO;
@@ -71,7 +72,7 @@ namespace Ude
     /// </summary>                
     public class CharsetDetector : UniversalDetector, ICharsetDetector
     {
-        private string? charset;
+        private string charset;
         
         private float confidence;
         
@@ -105,18 +106,18 @@ namespace Ude
         }
         
         public string Charset {
-            get { return charset!; }
+            get { return charset; }
         }
 
-        public Encoding? Encoding
+        public Encoding Encoding
         {
-            get 
+            get
             {
                 if (String.IsNullOrEmpty(charset))
                     return null;
                 try
                 {
-                    return Encoding.GetEncoding(charset!);
+                    return Encoding.GetEncoding(charset);
                 }
                 catch
                 {

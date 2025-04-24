@@ -168,6 +168,18 @@
   <data name="DuplicateAddonsMessage" xml:space="preserve">
     <value>Обнаружены плагины дубликаты</value>
   </data>
+  <data name="Error_CannotDetermineFileEncoding" xml:space="preserve">
+    <value>Не удается определить кодировку файла.</value>
+  </data>
+  <data name="Error_FileNotFound" xml:space="preserve">
+    <value>Обязательный конфигурационный файл {0} не найден.</value>
+  </data>
+  <data name="Error_InvalidFilePath" xml:space="preserve">
+    <value>Путь до файла не должен быть пустой строкой.</value>
+  </data>
+  <data name="Error_KeyIsDuplicated" xml:space="preserve">
+    <value>Найден повторяющийся ключ: {0}</value>
+  </data>
   <data name="Error_YamlParseError" xml:space="preserve">
     <value>Ошибка при чтении YAML файла (Строка: {0}, Столбец: {1}).</value>
   </data>

@@ -35,6 +35,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
+#nullable disable
 
 using System;
 
@@ -166,10 +167,9 @@ namespace Ude.Core
 
         protected const string VISUAL_HEBREW_NAME = "ISO-8859-8";
         protected const string LOGICAL_HEBREW_NAME = "windows-1255";
-
+        
         // owned by the group prober.
-        protected CharsetProber logicalProber = null!;
-        protected CharsetProber visualProber = null!;
+        protected CharsetProber logicalProber, visualProber;
         protected int finalCharLogicalScore, finalCharVisualScore;      
         
         // The two last bytes seen in the previous buffer.

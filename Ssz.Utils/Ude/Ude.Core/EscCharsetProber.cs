@@ -34,6 +34,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
+#nullable disable
 
 using System;
 using System.Collections.Generic;
@@ -44,7 +45,7 @@ namespace Ude.Core
     public class EscCharsetProber : CharsetProber
     {
         private const int CHARSETS_NUM = 4;
-        private string? detectedCharset;
+        private string detectedCharset;
         private CodingStateMachine[] codingSM; 
         int activeSM;
 
@@ -98,7 +99,7 @@ namespace Ude.Core
 
         public override string GetCharsetName()
         {
-            return detectedCharset!;        
+            return detectedCharset;        
         }
         
         public override float GetConfidence()

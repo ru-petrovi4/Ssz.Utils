@@ -35,6 +35,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
+#nullable disable
 
 using System;
 
@@ -87,10 +88,7 @@ namespace Ude.Core
             byte[] newBuf = FilterWithoutEnglishLetters(buf, offset, len);
             if (newBuf.Length == 0)
                 return state; // Nothing to see here, move on.
-
-            //VALFIX
-            activeNum = PROBERS_NUM;
-
+            
             for (int i = 0; i < PROBERS_NUM; i++) {
                 if (!isActive[i])
                     continue;
@@ -148,12 +146,11 @@ namespace Ude.Core
                 else
                     probers[i].DumpStatus();
             }
-            if (bestGuess != -1)
-                Console.WriteLine(" SBCS Group found best match [{0}] confidence {1}.",  
-                    probers[bestGuess].GetCharsetName(), cf);
+            Console.WriteLine(" SBCS Group found best match [{0}] confidence {1}.",  
+                probers[bestGuess].GetCharsetName(), cf);
         }
 
-        public override void Reset()
+        public override void Reset ()
         {
             int activeNum = 0;
             for (int i = 0; i < PROBERS_NUM; i++) {

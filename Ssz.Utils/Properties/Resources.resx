@@ -168,6 +168,9 @@
   <data name="DuplicateAddonsMessage" xml:space="preserve">
     <value>Duplicate addons</value>
   </data>
+  <data name="Error_CannotDetermineFileEncoding" xml:space="preserve">
+    <value>Cannot determine file encoding.</value>
+  </data>
   <data name="Error_FileNotFound" xml:space="preserve">
     <value>The configuration file '{0}' was not found and is not optional.</value>
   </data>

@@ -34,6 +34,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
+#nullable disable
 
 using System;
 using System.Collections.Generic;
@@ -62,7 +63,7 @@ namespace Ude.Core
         protected int totalChars;
         
         // Mapping table to get frequency order from char order (get from GetOrder())
-        protected int[] charToFreqOrder = null!;
+        protected int[] charToFreqOrder;
 
         // This constant value varies from language to language. It is used in calculating confidence. 
         protected float typicalDistributionRatio;        
