@@ -318,17 +318,17 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public override async Task<WriteElementValuesReply> WriteElementValues(IAsyncStreamReader<WriteElementValuesRequest> requestStream, ServerCallContext context)
         {
-            List<ByteString> requestByteStrings = new();
+            List<DataChunk> requestDataChunks = new();
             WriteElementValuesRequest? request = null;
             await foreach (WriteElementValuesRequest writeElementValuesRequest in requestStream.ReadAllAsync())
             {
                 request = writeElementValuesRequest;
-                requestByteStrings.Add(writeElementValuesRequest.ElementValuesCollection.Bytes);
+                requestDataChunks.Add(writeElementValuesRequest.ElementValuesCollection);
             }
             if (request is null)
                 throw new RpcException(new Status(StatusCode.Internal, "Invalid request."));
 
-            ReadOnlyMemory<byte> elementValuesCollectionBytes = ProtobufHelper.Combine(requestByteStrings);
+            ReadOnlyMemory<byte> elementValuesCollectionBytes = ProtobufHelper.Combine(requestDataChunks);
 
             return await GetReplyAsync(async () =>
                 {
@@ -360,17 +360,17 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public override async Task Passthrough(IAsyncStreamReader<PassthroughRequest> requestStream, IServerStreamWriter<DataChunk> responseStream, ServerCallContext context)
         {
-            List<ByteString> requestByteStrings = new();
+            List<DataChunk> requestDataChunks = new();
             PassthroughRequest? request = null;
             await foreach (PassthroughRequest passthroughRequest in requestStream.ReadAllAsync())
             {
                 request = passthroughRequest;
-                requestByteStrings.Add(passthroughRequest.DataToSend.Bytes);
+                requestDataChunks.Add(passthroughRequest.DataToSend);
             }
             if (request is null)
                 throw new RpcException(new Status(StatusCode.Internal, "Invalid request."));
 
-            ReadOnlyMemory<byte> dataToSend = ProtobufHelper.Combine(requestByteStrings);
+            ReadOnlyMemory<byte> dataToSend = ProtobufHelper.Combine(requestDataChunks);
 
             await GetReplyAsync(async () =>
                 {
@@ -388,17 +388,17 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public override async Task<LongrunningPassthroughReply> LongrunningPassthrough(IAsyncStreamReader<LongrunningPassthroughRequest> requestStream, ServerCallContext context)
         {
-            List<ByteString> requestByteStrings = new();
+            List<DataChunk> requestDataChunks = new();
             LongrunningPassthroughRequest? request = null;
             await foreach (LongrunningPassthroughRequest longrunningPassthroughRequest in requestStream.ReadAllAsync())
             {
                 request = longrunningPassthroughRequest;
-                requestByteStrings.Add(longrunningPassthroughRequest.DataToSend.Bytes);
+                requestDataChunks.Add(longrunningPassthroughRequest.DataToSend);
             }
             if (request is null)
                 throw new RpcException(new Status(StatusCode.Internal, "Invalid request."));
 
-            ReadOnlyMemory<byte> dataToSend = ProtobufHelper.Combine(requestByteStrings);
+            ReadOnlyMemory<byte> dataToSend = ProtobufHelper.Combine(requestDataChunks);
 
             return await GetReplyAsync(() =>
                 {

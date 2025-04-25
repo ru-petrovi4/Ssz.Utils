@@ -84,8 +84,8 @@ namespace MailKit.Net.Smtp {
 		readonly List<SmtpCommand> queued = new List<SmtpCommand> ();
 		SslCertificateValidationInfo sslValidationInfo;
 		SmtpCapabilities capabilities;
-		int timeout = 2 * 60 * 1000;
-		bool authenticated;
+		int timeout = 30 * 1000; // VALFIX. Original 2 * 60 * 1000
+        bool authenticated;
 		bool connected;
 		bool disposed;
 		bool secure;

@@ -204,6 +204,7 @@ message TouchListReply {
 message DataChunk {
   bytes bytes = 1;
   bool is_incomplete = 2;
+  string compression = 3;
 }
 
 message EventMessagesCollection {

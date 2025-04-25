@@ -18,7 +18,32 @@ namespace Ssz.Utils
         #region public functions
 
         /// <summary>
-        ///     Returns defaultValue if key value is null or empty.
+        ///     Returns defaultValue if kay is not found or value is String.Empty.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="configuration"></param>
+        /// <param name="key"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        public static T GetValue<T>(CaseInsensitiveDictionary<string?>? configuration, string key, T defaultValue)
+            where T : notnull
+        {
+            if (configuration is null)
+                return defaultValue;
+            // null if no key in startup args string
+            // null if --Rewiew or -r
+            // "" if --Rewiew=
+            var valueString = configuration.TryGetValue(key);
+            if (String.IsNullOrEmpty(valueString))
+                return defaultValue;
+            var result = new Any(valueString!).ValueAs<T>(false);
+            if (result is null)
+                return defaultValue;
+            return result;
+        }
+
+        /// <summary>
+        ///     Returns defaultValue if kay is not found or value is String.Empty.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="configuration"></param>

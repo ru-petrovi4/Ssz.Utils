@@ -85,20 +85,20 @@ namespace Ssz.DataAccessGrpc.Client
         {
             var call = _resourceManagementClient.PollElementValuesChanges(request);            
 
-            List<ByteString> responseByteStrings = new();
+            List<DataChunk> responseDataChunks = new();
 #if NET5_0_OR_GREATER
             await foreach (var it in call.ResponseStream.ReadAllAsync())
             {                    
-                responseByteStrings.Add(it.ElementValuesCollection.Bytes);
+                responseDataChunks.Add(it.ElementValuesCollection);
             }      
 #else
             while (await call.ResponseStream.MoveNext())
             {
-                responseByteStrings.Add(call.ResponseStream.Current.ElementValuesCollection.Bytes);
+                responseDataChunks.Add(call.ResponseStream.Current.ElementValuesCollection);
             }
 #endif
-            return responseByteStrings.Count > 0 ?
-                ClientElementValueList.GetElementValues(ProtobufHelper.Combine(responseByteStrings)) :
+            return responseDataChunks.Count > 0 ?
+                ClientElementValueList.GetElementValues(ProtobufHelper.Combine(responseDataChunks)) :
                 null;
         }
 
@@ -108,7 +108,7 @@ namespace Ssz.DataAccessGrpc.Client
 
             List<Utils.DataAccess.EventMessagesCollection> eventMessagesCollectionsList = new();
 
-            List<ByteString> responseByteStrings = new();
+            List<DataChunk> responseByteStrings = new();
 #if NET5_0_OR_GREATER
             await foreach (var it in call.ResponseStream.ReadAllAsync())
             {                    
@@ -134,19 +134,19 @@ namespace Ssz.DataAccessGrpc.Client
         {
             var call = _resourceManagementClient.ReadElementValuesJournals(request);
 
-            List<ByteString> responseByteStrings = new();
+            List<DataChunk> responseDataChunks = new();
 #if NET5_0_OR_GREATER
                 await foreach (DataChunk dataChunk in call.ResponseStream.ReadAllAsync())
                 {                    
-                    responseByteStrings.Add(dataChunk.Bytes);
+                    responseDataChunks.Add(dataChunk);
                 }      
 #else
             while (await call.ResponseStream.MoveNext())
             {
-                responseByteStrings.Add(call.ResponseStream.Current.Bytes);
+                responseDataChunks.Add(call.ResponseStream.Current);
             }
 #endif
-            return ProtobufHelper.Combine(responseByteStrings);
+            return ProtobufHelper.Combine(responseDataChunks);
         }
 
         public async Task<List<Utils.DataAccess.EventMessagesCollection>> ReadEventMessagesJournalAsync(ReadEventMessagesJournalRequest request)
@@ -220,19 +220,19 @@ namespace Ssz.DataAccessGrpc.Client
             }
             await call.RequestStream.CompleteAsync();
 
-            List<ByteString> responseByteStrings = new();
+            List<DataChunk> responseDataChunks = new();
 #if NET5_0_OR_GREATER
                 await foreach (DataChunk dataChunk in call.ResponseStream.ReadAllAsync())
                 {                    
-                    responseByteStrings.Add(dataChunk.Bytes);
+                    responseDataChunks.Add(dataChunk);
                 }      
 #else
             while (await call.ResponseStream.MoveNext())
             {
-                responseByteStrings.Add(call.ResponseStream.Current.Bytes);
+                responseDataChunks.Add(call.ResponseStream.Current);
             }
 #endif
-            return ProtobufHelper.Combine(responseByteStrings);
+            return ProtobufHelper.Combine(responseDataChunks);
         }
 
         public async Task<LongrunningPassthroughReply> LongrunningPassthroughAsync(
