@@ -80,7 +80,7 @@ namespace Ssz.Utils.Serialization
                 {
                     long stringsListPosition = _baseStream.Position;
 
-                    _binaryWriter.Write7BitEncodedInt(_stringsList.Count);
+                    WriteOptimized((long)_stringsList.Count);
                     foreach (string s in _stringsList)
                     {
                         _binaryWriter.Write(s);
@@ -534,7 +534,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="value"> The BitArray value to store. Must not be null. </param>
         public void WriteOptimized(BitArray value)
         {
-            WriteOptimized(value.Length);
+            WriteOptimized((long)value.Length);            
 
             if (value.Length > 0)
             {
@@ -677,7 +677,7 @@ namespace Ssz.Utils.Serialization
             {
                 if ((flags & 0x20) != 0)
                 {
-                    WriteOptimized(data[0]);
+                    _binaryWriter.Write7BitEncodedInt(data[0]);                    
                 }
                 else
                 {
@@ -689,7 +689,7 @@ namespace Ssz.Utils.Serialization
             {
                 if ((flags & 0x40) != 0)
                 {
-                    WriteOptimized(data[1]);
+                    _binaryWriter.Write7BitEncodedInt(data[1]);                    
                 }
                 else
                 {
@@ -701,7 +701,7 @@ namespace Ssz.Utils.Serialization
             {
                 if ((flags & 0x80) != 0)
                 {
-                    WriteOptimized(data[2]);
+                    _binaryWriter.Write7BitEncodedInt(data[2]);                    
                 }
                 else
                 {
@@ -763,7 +763,7 @@ namespace Ssz.Utils.Serialization
         /// </summary>                
         /// <param name="values"></param>
         public void WriteArray(byte[] values)
-        {
+        {            
             WriteOptimized(values.LongLength);
 
             if (values.LongLength > 0)
@@ -777,7 +777,7 @@ namespace Ssz.Utils.Serialization
         /// </summary>
         /// <param name="values"> The Char[] to store. </param>
         public void WriteArray(char[] values)
-        {
+        {            
             WriteOptimized(values.LongLength);
 
             if (values.LongLength > 0)
@@ -934,7 +934,7 @@ namespace Ssz.Utils.Serialization
                         {
                             if (valueInt64 <= HighestOptimizable64BitValue)
                             {
-                                WriteSerializedType(SerializedType.OptimizedInt64Type);
+                                WriteSerializedType(SerializedType.OptimizedInt64Type);                                
                                 WriteOptimized(valueInt64);
                                 return;
                             }
@@ -945,7 +945,7 @@ namespace Ssz.Utils.Serialization
 
                             if (positiveInt64Value <= HighestOptimizable64BitValue)
                             {
-                                WriteSerializedType(SerializedType.OptimizedInt64NegativeType);
+                                WriteSerializedType(SerializedType.OptimizedInt64NegativeType);                                
                                 WriteOptimized(positiveInt64Value);
                                 return;
                             }
@@ -1215,7 +1215,7 @@ namespace Ssz.Utils.Serialization
                             if (positiveInt16Value <= HighestOptimizable16BitValue)
                             {
                                 WriteSerializedType(SerializedType.OptimizedInt16NegativeType);
-                                WriteOptimized(positiveInt16Value);
+                                _binaryWriter.Write7BitEncodedInt(positiveInt16Value);                                
                                 return;
                             }
                         }
@@ -1269,7 +1269,7 @@ namespace Ssz.Utils.Serialization
                             if (valueInt32 <= HighestOptimizable32BitValue)
                             {
                                 WriteSerializedType(SerializedType.OptimizedInt32Type);
-                                WriteOptimized(valueInt32);
+                                _binaryWriter.Write7BitEncodedInt(valueInt32);                                
                                 return;
                             }
                         }
@@ -1279,7 +1279,7 @@ namespace Ssz.Utils.Serialization
                             if (positiveInt32Value <= HighestOptimizable32BitValue)
                             {
                                 WriteSerializedType(SerializedType.OptimizedInt32NegativeType);
-                                WriteOptimized(positiveInt32Value);
+                                _binaryWriter.Write7BitEncodedInt(positiveInt32Value);                                
                                 return;
                             }
                         }
@@ -1404,7 +1404,7 @@ namespace Ssz.Utils.Serialization
             if (target != null)
             {
                 WriteSerializedType(SerializedType.OptimizedInt32Type);  // type code type )
-                WriteOptimized(typeId);                                  // type Id
+                _binaryWriter.Write7BitEncodedInt(typeId);                
                 target.SerializeOwnedData(this, context);
             }
             else
@@ -1575,7 +1575,7 @@ namespace Ssz.Utils.Serialization
         /// </summary>
         /// <param name="values"></param>
         public void WriteArrayOfSingle(float[] values)
-        {
+        {            
             WriteOptimized(values.LongLength);
 
             foreach (float value in values)
@@ -1589,7 +1589,7 @@ namespace Ssz.Utils.Serialization
         /// </summary>
         /// <param name="values"></param>
         public void WriteArrayOfDouble(double[] values)
-        {
+        {            
             WriteOptimized(values.LongLength);
 
             foreach (double value in values)
@@ -1604,7 +1604,7 @@ namespace Ssz.Utils.Serialization
         /// </summary>
         /// <param name="values"></param>
         public void WriteArrayOfDecimal(decimal[] values)
-        {
+        {            
             WriteOptimized(values.LongLength);
 
             for (long i = 0; i < values.LongLength; i++)
@@ -1622,8 +1622,9 @@ namespace Ssz.Utils.Serialization
         public void WriteArrayOfOwnedDataSerializable<T>(T[] values,
             object? context)
             where T : IOwnedDataSerializable
-        {
+        {            
             WriteOptimized(values.LongLength);
+
             foreach (var v in values)
             {
                 v.SerializeOwnedData(this, context);
@@ -1993,7 +1994,7 @@ namespace Ssz.Utils.Serialization
                     _stringsList.Add(value);
                 }
                 WriteSerializedType(SerializedType.OptimizedStringType);
-                WriteOptimized(index);
+                WriteOptimized((long)index);                
             }            
         }
 
@@ -2369,7 +2370,7 @@ namespace Ssz.Utils.Serialization
         /// </summary>
         /// <param name="values"></param>
         private void WriteArrayInternal(Guid[] values)
-        {
+        {            
             WriteOptimized(values.LongLength);
 
             foreach (Guid value in values)
@@ -2392,7 +2393,7 @@ namespace Ssz.Utils.Serialization
         /// </summary>
         /// <param name="values"></param>
         private void WriteArrayInternal(sbyte[] values)
-        {
+        {            
             WriteOptimized(values.LongLength);
 
             foreach (sbyte value in values)
@@ -2480,7 +2481,7 @@ namespace Ssz.Utils.Serialization
 
             if (days != 0)
             {
-                WriteOptimized(days);
+                _binaryWriter.Write7BitEncodedInt(days);                
             }
         }
 
@@ -2495,7 +2496,7 @@ namespace Ssz.Utils.Serialization
         /// </param>
         private void WriteArray(DateTime[] values, BitArray writeOptimizedFlags)
         {
-            WriteOptimizeFlags(writeOptimizedFlags);
+            WriteOptimizeFlags(writeOptimizedFlags);            
             WriteOptimized(values.LongLength);
 
             for (long i = 0; i < values.LongLength; i++)
@@ -2532,7 +2533,7 @@ namespace Ssz.Utils.Serialization
         /// </param>
         private void WriteArray(short[] values, BitArray writeOptimizedFlags)
         {
-            WriteOptimizeFlags(writeOptimizedFlags);
+            WriteOptimizeFlags(writeOptimizedFlags);            
             WriteOptimized(values.LongLength);
 
             for (long i = 0; i < values.LongLength; i++)
@@ -2571,7 +2572,7 @@ namespace Ssz.Utils.Serialization
                 }
                 else
                 {
-                    WriteOptimized(values[i]);
+                    _binaryWriter.Write7BitEncodedInt(values[i]);                    
                 }
             }
         }
@@ -2597,7 +2598,7 @@ namespace Ssz.Utils.Serialization
                     _binaryWriter.Write(values[i]);
                 }
                 else
-                {
+                {                    
                     WriteOptimized(values[i]);
                 }
             }
@@ -2614,7 +2615,7 @@ namespace Ssz.Utils.Serialization
         /// </param>
         private void WriteArray(TimeSpan[] values, BitArray writeOptimizedFlags)
         {
-            WriteOptimizeFlags(writeOptimizedFlags);
+            WriteOptimizeFlags(writeOptimizedFlags);            
             WriteOptimized(values.LongLength);
 
             for (long i = 0; i < values.LongLength; i++)
@@ -2651,7 +2652,7 @@ namespace Ssz.Utils.Serialization
         /// </param>
         private void WriteArray(ushort[] values, BitArray writeOptimizedFlags)
         {
-            WriteOptimizeFlags(writeOptimizedFlags);
+            WriteOptimizeFlags(writeOptimizedFlags);            
             WriteOptimized(values.LongLength);
 
             for (long i = 0; i < values.LongLength; i++)
@@ -2678,7 +2679,7 @@ namespace Ssz.Utils.Serialization
         /// </param>
         private void WriteArray(uint[] values, BitArray writeOptimizedFlags)
         {
-            WriteOptimizeFlags(writeOptimizedFlags);
+            WriteOptimizeFlags(writeOptimizedFlags);            
             WriteOptimized(values.LongLength);
 
             for (long i = 0; i < values.LongLength; i++)
@@ -2705,7 +2706,7 @@ namespace Ssz.Utils.Serialization
         /// </param>
         private void WriteArray(ulong[] values, BitArray writeOptimizedFlags)
         {
-            WriteOptimizeFlags(writeOptimizedFlags);
+            WriteOptimizeFlags(writeOptimizedFlags);            
             WriteOptimized(values.LongLength);
 
             for (long i = 0; i < values.LongLength; i++)
@@ -2716,7 +2717,7 @@ namespace Ssz.Utils.Serialization
                     _binaryWriter.Write(values[i]);
                 }
                 else
-                {
+                {                    
                     WriteOptimized(values[i]);
                 }
             }
@@ -2729,7 +2730,7 @@ namespace Ssz.Utils.Serialization
         ///     This routine is called by the Write(object[]), WriteOptimized(object[]) and Write(object[], object[])) methods.
         /// </summary>
         private void WriteOptimizedObjectArray(object?[] values)
-        {
+        {            
             WriteOptimized(values.LongLength);
             long lastIndex = values.LongLength - 1;
             for (long i = 0; i < values.LongLength; i++)
@@ -2832,7 +2833,7 @@ namespace Ssz.Utils.Serialization
                 }
                 if (allObjectsSameType)
                 {
-                    WriteSerializedType(SerializedType.OwnedDataSerializableTypedArrayType);
+                    WriteSerializedType(SerializedType.OwnedDataSerializableTypedArrayType);                    
                     WriteOptimized(values.LongLength);
                     for (long i = 0; i < values.LongLength; i++)
                     {

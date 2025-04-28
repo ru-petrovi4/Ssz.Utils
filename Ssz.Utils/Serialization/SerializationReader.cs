@@ -63,7 +63,7 @@ namespace Ssz.Utils.Serialization
                     {
                         long streamCurrentPosition = _baseStream.Position;
                         _baseStream.Seek(stringsListPositionPlaceholder_Position + stringsListPositionDelta, SeekOrigin.Begin);
-                        int count = _binaryReader.Read7BitEncodedInt();
+                        int count = (int)ReadOptimizedInt64();
                         _stringsList = new List<string>(count);
                         for (int i = 0; i < count; i++)
                         {
@@ -166,7 +166,7 @@ namespace Ssz.Utils.Serialization
                 //}
                 //else
                 //{
-                //    version = ReadOptimizedInt32();
+                //    version = _binaryReader.Read7BitEncodedInt();
                 //}                
                 //_baseStream.Seek(originalPosition, SeekOrigin.Begin);
                 //return version;
@@ -234,7 +234,7 @@ namespace Ssz.Utils.Serialization
                 //}
                 //else
                 //{
-                //    version = ReadOptimizedInt32();
+                //    version = _binaryReader.Read7BitEncodedInt();
                 //}
                 //return version;
                 throw new InvalidOperationException();
@@ -249,7 +249,7 @@ namespace Ssz.Utils.Serialization
                 else 
                     _blockEndingPositionsStack.Push(0);
                 int version;
-                version = ReadOptimizedInt32();
+                version = _binaryReader.Read7BitEncodedInt();
                 return version;
             }
             if (typeCode == SerializedType.ShortBlockBegin)
@@ -544,7 +544,7 @@ namespace Ssz.Utils.Serialization
         {
             if (IsBlockEnding()) throw new BlockEndingException();
 
-            int length = ReadOptimizedInt32();
+            int length = (int)ReadOptimizedInt64();
             if (length == 0) return new BitArray(0);
 
             return new BitArray(_binaryReader.ReadBytes((length + 7) / 8)) { Length = length };
@@ -635,17 +635,17 @@ namespace Ssz.Utils.Serialization
 
             if ((flags & 4) == 0)
             {
-                lo = (flags & 32) != 0 ? ReadOptimizedInt32() : _binaryReader.ReadInt32();
+                lo = (flags & 32) != 0 ? _binaryReader.Read7BitEncodedInt() : _binaryReader.ReadInt32();
             }
 
             if ((flags & 8) == 0)
             {
-                mid = (flags & 64) != 0 ? ReadOptimizedInt32() : _binaryReader.ReadInt32();
+                mid = (flags & 64) != 0 ? _binaryReader.Read7BitEncodedInt() : _binaryReader.ReadInt32();
             }
 
             if ((flags & 16) == 0)
             {
-                hi = (flags & 128) != 0 ? ReadOptimizedInt32() : _binaryReader.ReadInt32();
+                hi = (flags & 128) != 0 ? _binaryReader.Read7BitEncodedInt() : _binaryReader.ReadInt32();
             }
 
             return new decimal(lo, mid, hi, (flags & 0x01) != 0, scale);
@@ -744,7 +744,7 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.NullType: break;                        // null
                 case SerializedType.EmptyGuidType: break;                   // null
                 case SerializedType.OptimizedInt32Type:                     // Type Id  (int)
-                    result = func(ReadOptimizedInt32()); break;
+                    result = func(_binaryReader.Read7BitEncodedInt()); break;
                 //case SerializedType.GuidType:                             // Type Id  (GUID)
                 //    result = func(reader.ReadGuid()); break;
                 //case SerializedType.TypeType:
@@ -777,7 +777,7 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.NullType: break;                        // null
                 //case SerializedType.EmptyGuidType: break;                   // null
                 //case SerializedType.OptimizedInt32Type:                     // Type Id  (int)
-                //    result = func(ReadOptimizedInt32()); break;
+                //    result = func(_binaryReader.Read7BitEncodedInt()); break;
                 //case SerializedType.GuidType:                             // Type Id  (GUID)
                 //    result = func(reader.ReadGuid()); break;
                 //case SerializedType.TypeType:
@@ -810,7 +810,7 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.NullType: break;                        // null
                 //case SerializedType.EmptyGuidType: break;                   // null
                 //case SerializedType.OptimizedInt32Type:                     // Type Id  (int)
-                //    result = func(ReadOptimizedInt32()); break;
+                //    result = func(_binaryReader.Read7BitEncodedInt()); break;
                 case SerializedType.GuidType:                             // Type Id  (GUID)
                     result = func(ReadGuid()); break;
                 //case SerializedType.TypeType:
@@ -851,7 +851,7 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.NullType: break;                            // null
                 //case SerializedType.EmptyGuidType: break;                     // null
                 //case SerializedType.OptimizedInt32Type:                       // Type Id  (int)
-                //    result = func(ReadOptimizedInt32()); break;
+                //    result = func(_binaryReader.Read7BitEncodedInt()); break;
                 //case SerializedType.GuidType:                                 // Type Id  (GUID)
                 //    result = func(ReadGuid()); break;
                 case SerializedType.TypeType:
@@ -1299,7 +1299,7 @@ namespace Ssz.Utils.Serialization
                     _baseStream.Seek(stringLength, SeekOrigin.Current);
                     return;
                 case SerializedType.OptimizedStringType:
-                    ReadOptimizedInt32();
+                    ReadOptimizedInt64();
                     return;
                 default:
                     throw new InvalidOperationException("Unrecognized TypeCode");
@@ -1394,7 +1394,7 @@ namespace Ssz.Utils.Serialization
             //        return _binaryReader.ReadString();
             //    case SerializedType.OptimizedStringType:                    
             //        if (_stringsList is null) throw new InvalidOperationException();
-            //        int index = ReadOptimizedInt32();
+            //        int index = _binaryReader.Read7BitEncodedInt();
             //        return _stringsList[index];
             //    default:
             //        throw new InvalidOperationException("Unrecognized TypeCode");
@@ -1419,7 +1419,7 @@ namespace Ssz.Utils.Serialization
                     return _binaryReader.ReadString();
                 case SerializedType.OptimizedStringType:
                     if (_stringsList is null) throw new InvalidOperationException();
-                    int index = ReadOptimizedInt32();
+                    int index = (int)ReadOptimizedInt64();
                     return _stringsList[index];
                 default:
                     throw new InvalidOperationException("Unrecognized TypeCode");
@@ -1503,7 +1503,7 @@ namespace Ssz.Utils.Serialization
 
             if (packedData[SerializationWriter.HasDaysSection] == 1)
             {
-                ticks += ReadOptimizedInt32()*TimeSpan.TicksPerDay;
+                ticks += _binaryReader.Read7BitEncodedInt()*TimeSpan.TicksPerDay;
             }
 
             if (packedData[SerializationWriter.IsNegativeSection] == 1)
@@ -1557,9 +1557,9 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.ZeroInt32Type:
                     return 0;
                 case SerializedType.OptimizedInt32Type:
-                    return ReadOptimizedInt32();
+                    return _binaryReader.Read7BitEncodedInt();
                 case SerializedType.OptimizedInt32NegativeType:
-                    return -ReadOptimizedInt32() - 1;
+                    return -_binaryReader.Read7BitEncodedInt() - 1;
                 case SerializedType.DecimalType:
                     return ReadOptimizedDecimal();
                 case SerializedType.ZeroDecimalType:
@@ -1764,7 +1764,7 @@ namespace Ssz.Utils.Serialization
                 {
                     if (_stringsList is null) 
                             throw new InvalidOperationException();
-                    int index = ReadOptimizedInt32();
+                    int index = (int)ReadOptimizedInt64();
                     return _stringsList[index];
                 }
                 default:
@@ -1805,7 +1805,7 @@ namespace Ssz.Utils.Serialization
                         }
                         else
                         {
-                            result[i] = ReadOptimizedInt32();
+                            result[i] = _binaryReader.Read7BitEncodedInt();
                         }
                     }
 
