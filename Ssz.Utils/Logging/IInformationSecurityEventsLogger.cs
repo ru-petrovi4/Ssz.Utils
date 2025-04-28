@@ -45,13 +45,14 @@ namespace Ssz.Utils.Logging
     public static class InformationSecurityEventsLoggerExtensions
     {
         /// <summary>
-        ///     Extension method that creates a structured logging record
+        ///     Extension method that creates a structured logging record.
+        ///     All fields must have an InvariantCulture and can be processed programmatically, except eventDesc and eventDescArgs
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="user"></param>
         /// <param name="sourceIpAddress"></param>
         /// <param name="sourceHost"></param>
-        /// <param name="eventId"></param>
+        /// <param name="eventId">Event Category</param>
         /// <param name="severity"></param>
         /// <param name="succeeded"></param>
         /// <param name="eventName"></param>
