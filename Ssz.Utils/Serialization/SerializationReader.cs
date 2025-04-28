@@ -43,31 +43,27 @@ namespace Ssz.Utils.Serialization
             _binaryReader = new BinaryReader(_baseStream);      
 #else
             _binaryReader = new BinaryReaderEx(_baseStream);
-#endif            
-
-            // Always read the first 4 bytes
-            int version = _binaryReader.ReadInt32();
+#endif      
+            int version = _binaryReader.Read7BitEncodedInt();
 
             switch (version)
             {
                 case 0: // Obsolete version
-                case 2: // Obsolete version
-                case 4: // Obsolete version
-                case 6:
-                    _optimizedSize = false;
-                    break;
                 case 1: // Obsolete version
+                case 2: // Obsolete version
                 case 3: // Obsolete version
+                case 4: // Obsolete version
                 case 5: // Obsolete version
-                case 7:
-                    _optimizedSize = true;
-                    long stringsListInfoPosition = _baseStream.Position;
+                case 6:                    
+                    break;
+                case 7:                    
+                    long stringsListPositionPlaceholder_Position = _baseStream.Position;
                     long stringsListPositionDelta = _binaryReader.ReadInt64();
                     if (stringsListPositionDelta > 0)
                     {
                         long streamCurrentPosition = _baseStream.Position;
-                        _baseStream.Seek(stringsListInfoPosition + stringsListPositionDelta, SeekOrigin.Begin);
-                        int count = _binaryReader.ReadInt32();
+                        _baseStream.Seek(stringsListPositionPlaceholder_Position + stringsListPositionDelta, SeekOrigin.Begin);
+                        int count = _binaryReader.Read7BitEncodedInt();
                         _stringsList = new List<string>(count);
                         for (int i = 0; i < count; i++)
                         {
@@ -77,8 +73,7 @@ namespace Ssz.Utils.Serialization
                         _baseStream.Seek(streamCurrentPosition, SeekOrigin.Begin);
                     }
                     break;
-                default:
-                    _optimizedSize = false;
+                default:                    
                     _binaryReader.ReadInt32();
                     _binaryReader.ReadInt32();
                     break;
@@ -162,17 +157,26 @@ namespace Ssz.Utils.Serialization
             }
             if (typeCode == SerializedType.BlockBeginWithVersion_Obsolete)
             {
+                //// it will store either the block length or remain as 0 if allowUpdateHeader is false
+                //_binaryReader.ReadInt32();
+                //int version;
+                //if (!_optimizedSize)
+                //{
+                //    version = _binaryReader.ReadInt32();
+                //}
+                //else
+                //{
+                //    version = ReadOptimizedInt32();
+                //}                
+                //_baseStream.Seek(originalPosition, SeekOrigin.Begin);
+                //return version;
+                throw new InvalidOperationException();
+            }
+            if (typeCode == SerializedType.ShortBlockBeginWithVersion)
+            {
                 // it will store either the block length or remain as 0 if allowUpdateHeader is false
                 _binaryReader.ReadInt32();
-                int version;
-                if (!_optimizedSize)
-                {
-                    version = _binaryReader.ReadInt32();
-                }
-                else
-                {
-                    version = ReadOptimizedInt32();
-                }                
+                int version = _binaryReader.Read7BitEncodedInt();
                 _baseStream.Seek(originalPosition, SeekOrigin.Begin);
                 return version;
             }
@@ -198,8 +202,10 @@ namespace Ssz.Utils.Serialization
                 // it will store either the block length or remain as 0 if allowUpdateHeader is false
                 long blockSize = _binaryReader.ReadInt64();
                 // Store the ending position of the block if allowUpdateHeader true
-                if (blockSize > 0) _blockEndingPositionsStack.Push(_baseStream.Position + blockSize);
-                else _blockEndingPositionsStack.Push(0);
+                if (blockSize > 0) 
+                    _blockEndingPositionsStack.Push(_baseStream.Position + blockSize);
+                else 
+                    _blockEndingPositionsStack.Push(0);
                 int version = _binaryReader.Read7BitEncodedInt();
                 return version;
             }
@@ -208,35 +214,40 @@ namespace Ssz.Utils.Serialization
                 // it will store either the block length or remain as 0 if allowUpdateHeader is false
                 long blockSize = _binaryReader.ReadInt64();
                 // Store the ending position of the block if allowUpdateHeader true
-                if (blockSize > 0) _blockEndingPositionsStack.Push(_baseStream.Position + blockSize);
-                else _blockEndingPositionsStack.Push(0);
+                if (blockSize > 0) 
+                    _blockEndingPositionsStack.Push(_baseStream.Position + blockSize);
+                else 
+                    _blockEndingPositionsStack.Push(0);
                 return -1;
             }
             if (typeCode == SerializedType.BlockBeginWithVersion_Obsolete)
             {
-                // it will store either the block length or remain as 0 if allowUpdateHeader is false
-                int blockSize = _binaryReader.ReadInt32();
-                // Store the ending position of the block if allowUpdateHeader true
-                if (blockSize > 0) _blockEndingPositionsStack.Push(_baseStream.Position + blockSize);
-                else _blockEndingPositionsStack.Push(0);
-                int version;
-                if (!_optimizedSize)
-                {
-                    version = _binaryReader.ReadInt32();
-                }
-                else
-                {
-                    version = ReadOptimizedInt32();
-                }
-                return version;
+                //// it will store either the block length or remain as 0 if allowUpdateHeader is false
+                //int blockSize = _binaryReader.ReadInt32();
+                //// Store the ending position of the block if allowUpdateHeader true
+                //if (blockSize > 0) _blockEndingPositionsStack.Push(_baseStream.Position + blockSize);
+                //else _blockEndingPositionsStack.Push(0);
+                //int version;
+                //if (!_optimizedSize)
+                //{
+                //    version = _binaryReader.ReadInt32();
+                //}
+                //else
+                //{
+                //    version = ReadOptimizedInt32();
+                //}
+                //return version;
+                throw new InvalidOperationException();
             }
             if (typeCode == SerializedType.ShortBlockBeginWithVersion)  // always optimized version
             {
                 // it will store either the block length or remain as 0 if allowUpdateHeader is false
                 int blockSize = _binaryReader.ReadInt32();
                 // Store the ending position of the block if allowUpdateHeader true
-                if (blockSize > 0) _blockEndingPositionsStack.Push(_baseStream.Position + blockSize);
-                else _blockEndingPositionsStack.Push(0);
+                if (blockSize > 0) 
+                    _blockEndingPositionsStack.Push(_baseStream.Position + blockSize);
+                else 
+                    _blockEndingPositionsStack.Push(0);
                 int version;
                 version = ReadOptimizedInt32();
                 return version;
@@ -246,8 +257,10 @@ namespace Ssz.Utils.Serialization
                 // it will store either the block length or remain as 0 if allowUpdateHeader is false
                 int blockSize = _binaryReader.ReadInt32();
                 // Store the ending position of the block if allowUpdateHeader true
-                if (blockSize > 0) _blockEndingPositionsStack.Push(_baseStream.Position + blockSize);
-                else _blockEndingPositionsStack.Push(0);
+                if (blockSize > 0) 
+                    _blockEndingPositionsStack.Push(_baseStream.Position + blockSize);
+                else 
+                    _blockEndingPositionsStack.Push(0);
                 return -1;
             }
             throw new Exception("Stream error.");
@@ -2213,9 +2226,7 @@ namespace Ssz.Utils.Serialization
 
         private static readonly BitArray AllTrueBitArray = new BitArray(0);
                 
-        private readonly Stream _baseStream;
-
-        private readonly bool _optimizedSize;
+        private readonly Stream _baseStream;        
         
         private readonly Stack<long> _blockEndingPositionsStack = new Stack<long>();
 
