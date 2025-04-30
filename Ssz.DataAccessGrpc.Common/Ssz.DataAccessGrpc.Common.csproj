@@ -2,9 +2,12 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net9.0</TargetFrameworks>
-	<LangVersion>Latest</LangVersion>
-	<Nullable>Enable</Nullable>
-	<Platforms>AnyCPU;x86</Platforms>
+	  <LangVersion>Latest</LangVersion>
+	  <Nullable>Enable</Nullable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Company>SSZ</Company>
+    <Version>1.0.78</Version>
+	  <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
