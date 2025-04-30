@@ -29,14 +29,33 @@ namespace Ssz.Utils
             where T : notnull
         {
             if (configuration is null)
-                return defaultValue;
-            // null if no key in startup args string
-            // null if --Rewiew or -r
-            // "" if --Rewiew=
+                return defaultValue;            
             var valueString = configuration.TryGetValue(key);
             if (String.IsNullOrEmpty(valueString))
                 return defaultValue;
             var result = new Any(valueString!).ValueAs<T>(false);
+            if (result is null)
+                return defaultValue;
+            return result;
+        }
+
+        /// <summary>
+        ///     Returns defaultValue if kay is not found or value is Empty.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="configuration"></param>
+        /// <param name="key"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        public static T GetValue<T>(CaseInsensitiveDictionary<Any>? configuration, string key, T defaultValue)
+            where T : notnull
+        {
+            if (configuration is null)
+                return defaultValue;
+            Any valueAny = configuration.TryGetValue(key);
+            if (valueAny.ValueTypeCode == Any.TypeCode.Empty)
+                return defaultValue;
+            var result = valueAny.ValueAs<T>(false);
             if (result is null)
                 return defaultValue;
             return result;
