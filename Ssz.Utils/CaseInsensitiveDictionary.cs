@@ -110,23 +110,7 @@ namespace Ssz.Utils
             T? result;
             dictionary.TryGetValue(key, out result);
             return result;
-        }
-
-        /// <summary>
-        ///     Does not return defaultValue, if object exists in dictionary.
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="defaultValue"></param>
-        /// <returns></returns>
-        public static T GetValue<T>(this IDictionary<string, T> dictionary, string? key, T defaultValue)
-        {
-            if (key is null)
-                return defaultValue;
-            T? result;
-            if (!dictionary.TryGetValue(key, out result))
-                return defaultValue;
-            return result;
-        }
+        }        
     }
 
     public class CaseInsensitiveDictionary_TypeConverter : TypeConverter

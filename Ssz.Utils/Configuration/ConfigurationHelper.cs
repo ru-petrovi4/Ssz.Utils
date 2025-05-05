@@ -25,7 +25,7 @@ namespace Ssz.Utils
         /// <param name="key"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        public static T GetValue<T>(CaseInsensitiveDictionary<string?>? configuration, string key, T defaultValue)
+        public static T GetValue<T>(IDictionary<string, string?>? configuration, string key, T defaultValue)
             where T : notnull
         {
             if (configuration is null)
@@ -47,7 +47,7 @@ namespace Ssz.Utils
         /// <param name="key"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        public static T GetValue<T>(CaseInsensitiveDictionary<Any>? configuration, string key, T defaultValue)
+        public static T GetValue<T>(IDictionary<string, Any>? configuration, string key, T defaultValue)
             where T : notnull
         {
             if (configuration is null)
