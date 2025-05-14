@@ -581,8 +581,10 @@ namespace Ssz.Operator.Core
         private static string PrepareObsoleteXaml(string drawingXml)
         {
             // Obsolete
+            drawingXml = drawingXml.Replace(@"Simcode.DeltaSim.", @"Ssz.");            
+
             drawingXml = drawingXml.Replace(@"Ssz.Operator.Core.DataBinding", @"Ssz.Operator.Core");
-            drawingXml = drawingXml.Replace(@"Ssz.Operator.Core.DataItem", @"Ssz.Operator.Core");
+            drawingXml = drawingXml.Replace(@"Ssz.Operator.Core.DataItem", @"Ssz.Operator.Core");            
 
             return drawingXml;
         }
