@@ -26,10 +26,8 @@ namespace Ssz.Utils.Yaml
 
             if (yaml.Documents.Any())
             {
-                var mapping = (YamlMappingNode)yaml.Documents[0].RootNode;
-
-                // The document node is a mapping node
-                VisitYamlMappingNode(mapping);
+                if (yaml.Documents[0].RootNode is YamlMappingNode yamlMappingNode)                    
+                    VisitYamlMappingNode(yamlMappingNode);
             }
 
             return _data;
@@ -40,10 +38,8 @@ namespace Ssz.Utils.Yaml
             _data.Clear();
             _context.Clear();            
 
-            var mapping = (YamlMappingNode)yamlDocument.RootNode;
-
-            // The document node is a mapping node
-            VisitYamlMappingNode(mapping);
+            if (yamlDocument.RootNode is YamlMappingNode yamlMappingNode)                
+                VisitYamlMappingNode(yamlMappingNode);
 
             return _data;
         }

@@ -47,6 +47,10 @@ namespace Ssz.Dcs.CentralServer
                     cancellationToken.ThrowIfCancellationRequested();
 
                     await _serverWorker.DoWorkAsync(DateTime.UtcNow, cancellationToken);
+
+                    // TEMPCODE
+                    //if (DateTime.UtcNow > new DateTime(2025, 06, 14))
+                    //    return;
                 }
                 catch when (cancellationToken.IsCancellationRequested)
                 {
