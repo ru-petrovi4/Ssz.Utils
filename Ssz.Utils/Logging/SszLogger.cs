@@ -82,7 +82,7 @@ namespace Ssz.Utils.Logging
 
             lock (SyncRoot)
             {                
-                content += GetScopesString();
+                content += GetScopesStringInternal();
                 try
                 {
                     content += formatter(state, exception);

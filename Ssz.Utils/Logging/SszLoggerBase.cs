@@ -51,6 +51,14 @@ namespace Ssz.Utils.Logging
             Exception? exception,
             Func<TState, Exception?, string> formatter);
 
+        public string GetScopesString(string[]? excludeScopeNames = null)
+        {
+            lock (SyncRoot)
+            {
+                return GetScopesStringInternal(excludeScopeNames);
+            }
+        }
+
         #endregion
 
         #region protected functions        
@@ -67,7 +75,7 @@ namespace Ssz.Utils.Logging
         /// </summary>
         /// <param name="excludeScopeNames"></param>
         /// <returns></returns>
-        protected string GetScopesString(string[]? excludeScopeNames = null)
+        protected string GetScopesStringInternal(string[]? excludeScopeNames = null)
         {
             string line = @"";
             foreach (var scope in ScopesStack.Distinct())

@@ -61,7 +61,7 @@ namespace Ssz.Utils.Logging
             line += " ";
             lock (SyncRoot)
             {
-                line += GetScopesString();
+                line += GetScopesStringInternal();
             }
             try
             {

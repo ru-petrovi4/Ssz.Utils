@@ -19,6 +19,11 @@ namespace Ssz.Utils.Logging
             return null;
         }
 
+        public string GetScopesString(string[]? excludeScopeNames = null)
+        {
+            return @"";
+        }
+
         public bool IsEnabled(LogLevel logLevel)
         {
             return false;

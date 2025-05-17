@@ -33,6 +33,14 @@ namespace Ssz.Utils.Logging
             return new ComplexScope(Loggers.Select(l => l.BeginScope(state)).ToArray());
         }
 
+        public string GetScopesString(string[]? excludeScopeNames = null)
+        {
+            var logger = Loggers.OfType<IUserFriendlyLogger>().FirstOrDefault();
+            if (logger is null)
+                return string.Empty;
+            return logger.GetScopesString(excludeScopeNames);
+        }
+
         public bool IsEnabled(LogLevel logLevel)
         {
             return Loggers.Any(l => l.IsEnabled(logLevel));

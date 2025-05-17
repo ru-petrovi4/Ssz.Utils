@@ -73,6 +73,25 @@ namespace Ssz.Utils
         }
 
         /// <summary>
+        ///     Returns null, if not found.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public T? TryRemoveValue(string? key)
+        {
+            if (key is null)
+                return default;
+            T? result;
+#if NET5_0_OR_GREATER
+            Remove(key, out result);
+#else
+            if (TryGetValue(key, out result))
+                Remove(key);
+#endif
+            return result;
+        }
+
+        /// <summary>
         ///     Does not return defaultValue, if object exists in dictionary.
         /// </summary>
         /// <param name="key"></param>
@@ -93,7 +112,7 @@ namespace Ssz.Utils
             return NameValueCollectionHelper.GetNameValueCollectionStringToDisplay(this.Select(kvp => (kvp.Key, (string?)(new Any(kvp.Value).ValueAsString(false)))));
         }
 
-        #endregion
+#endregion
     }
     
     public static class DictionaryExtensions
