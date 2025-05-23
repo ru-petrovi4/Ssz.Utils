@@ -373,7 +373,7 @@ namespace Ssz.Operator.Core.Drawings
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] // For XAML serialization
-        public bool RefreshForPropertyGridIsDisabled { get; set; }
+        public bool RefreshForPropertyGridIsDisabled { get; set; }        
 
         public void RefreshForPropertyGrid()
         {
@@ -814,7 +814,7 @@ namespace Ssz.Operator.Core.Drawings
         private object? _undoRoot;
 
         [Searchable(false)] 
-        private readonly ObservableCollection<DsShapeBase> _dsShapes = new();
+        private readonly ObservableCollection<DsShapeBase> _dsShapes = new();        
 
         #endregion
     }

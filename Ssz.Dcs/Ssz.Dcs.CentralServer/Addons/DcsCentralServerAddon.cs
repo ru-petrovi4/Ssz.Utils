@@ -32,12 +32,7 @@ namespace Ssz.Dcs.CentralServer
 
         public override string Version => "1.0";
 
-        public override bool IsAlwaysSwitchedOn => true;
-
-        /// <summary>
-        ///     Globally unique server service identifier.
-        /// </summary>
-        public string ServiceId { get; private set; } = @"";
+        public override bool IsAlwaysSwitchedOn => true;        
 
         public override (string, string, string)[] OptionsInfo => new (string, string, string)[]
         {
@@ -45,8 +40,6 @@ namespace Ssz.Dcs.CentralServer
 
         public override void Initialize(CancellationToken cancellationToken)
         {
-            ServiceId = Guid.NewGuid().ToString();
-
             base.Initialize(cancellationToken);
         }
 

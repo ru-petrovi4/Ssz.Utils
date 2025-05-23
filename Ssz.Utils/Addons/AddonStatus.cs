@@ -6,31 +6,22 @@ using System.Text;
 namespace Ssz.Utils.Addons
 {
     public class AddonStatus : IOwnedDataSerializable
-    {
-        /// <summary>
-        ///     CPU usage percent.
-        /// </summary>
-        public const string ParamName_Cpu = @"Cpu";
-
-        /// <summary>
-        ///     The amount of private memory, in bytes, allocated for the associated process.
-        /// </summary>
-        public const string ParamName_PrivateMemorySize64 = @"PrivateMemorySize64";
-
+    {        
         #region public functions
 
         /// <summary>        
-        ///     
+        ///     String.Empty for in process entities.
+        ///     Path separator is always '/'. No '/' at the begin, no '/' at the end.
         /// </summary>        
         public string SourcePath { get; set; } = @"";
 
         /// <summary>        
-        ///     
+        ///     Globally-unique service (process) id.
         /// </summary>        
         public string SourceId { get; set; } = @"";
 
         /// <summary>        
-        ///     
+        ///     Globally-unique service (process) id to display.
         /// </summary>        
         public string SourceIdToDisplay { get; set; } = @"";
 

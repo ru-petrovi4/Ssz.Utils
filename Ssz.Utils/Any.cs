@@ -1243,6 +1243,11 @@ namespace Ssz.Utils {
                     return ((TimeSpan)value).ToString(stringFormat ?? @"c", GetCultureInfo(stringIsLocalized));
             }
 
+            if (value is byte[] byteArray)
+            {
+                return $"[Byte array ({byteArray.Length} bytes)]";
+            }
+
             if (type.IsArray ||
                 (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>)) ||
                 (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>)) ||

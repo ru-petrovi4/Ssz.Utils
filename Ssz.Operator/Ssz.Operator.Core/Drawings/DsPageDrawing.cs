@@ -80,6 +80,33 @@ namespace Ssz.Operator.Core.Drawings
             }
         }
 
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] // For XAML serialization
+        public bool IsMainPage
+        {
+            get => _isMainPage;
+            set
+            {
+                _isMainPage = value;
+
+                _hiddenDsConstantsCollection![0].Value = Name;
+                _hiddenDsConstantsCollection![1].Value = !string.IsNullOrEmpty(Desc) ? Desc : " ";
+                _hiddenDsConstantsCollection![2].Value = !string.IsNullOrEmpty(Group) ? Group : " ";
+                if (_isMainPage)
+                {
+                    _hiddenDsConstantsCollection![3].Value = Name;
+                    _hiddenDsConstantsCollection![4].Value = !string.IsNullOrEmpty(Desc) ? Desc : " ";
+                    _hiddenDsConstantsCollection![5].Value = !string.IsNullOrEmpty(Group) ? Group : " ";
+                }
+                else
+                {
+                    _hiddenDsConstantsCollection![3].Value = @"";
+                    _hiddenDsConstantsCollection![4].Value = @"";
+                    _hiddenDsConstantsCollection![5].Value = @"";
+                }
+            }
+        }
+
         [DsCategory(ResourceStrings.DrawingCategory)]
         [DsDisplayName(ResourceStrings.DsPageDrawing_Name)]
         [LocalizedDescription(ResourceStrings.DsPageDrawing_NameDescription)]
@@ -241,12 +268,7 @@ namespace Ssz.Operator.Core.Drawings
         public override DsConstant[]? HiddenDsConstantsCollection
         {
             get
-            {
-                _hiddenDsConstantsCollection[0] = new DsConstant(@"%(PageName)", Name);
-                _hiddenDsConstantsCollection[1] =
-                    new DsConstant(@"%(PageDesc)", !string.IsNullOrEmpty(Desc) ? Desc : " ");
-                _hiddenDsConstantsCollection[2] =
-                    new DsConstant(@"%(PageGroup)", !string.IsNullOrEmpty(Group) ? Group : " ");
+            {   
                 return _hiddenDsConstantsCollection;
             }
         }
@@ -397,14 +419,22 @@ namespace Ssz.Operator.Core.Drawings
 
         #region private fields
 
-        private readonly DsConstant[] _hiddenDsConstantsCollection = new DsConstant[3];
-
+        /// <summary>
+        ///     See IsMainPage property. Code it that function depends on this!
+        /// </summary>
+        private readonly DsConstant[] _hiddenDsConstantsCollection = [
+            new DsConstant(@"%(PageName)", @""),
+            new DsConstant(@"%(PageDesc)", @""),
+            new DsConstant(@"%(PageGroup)", @""),
+            new DsConstant(@"%(RootPageName)", @""),
+            new DsConstant(@"%(RootPageDesc)", @""),
+            new DsConstant(@"%(RootPageGroup)", @""),
+            ];
 
         private DsPageTypeBase? _dsPageTypeObject;
 
         private readonly Dictionary<Guid, DsPageTypeBase> _cacheDsPageTypeObjectsDictionary =
             new();
-
 
         private DsXaml _underlyingDsXaml;
 
@@ -413,6 +443,8 @@ namespace Ssz.Operator.Core.Drawings
         private DsPageVerticalAlignment _dsPageVerticalAlignment;
         private SolidDsBrush? _background;
         private bool _excludeFromTagSearch;
+
+        private bool _isMainPage;
 
         #endregion
     }

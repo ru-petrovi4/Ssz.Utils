@@ -72,18 +72,15 @@ namespace Ssz.Operator.Core.DsShapes
             FieldOfView = 45.0;
         }
 
-
         protected DsShapeBase(bool isEmpty)
         {
         }
-
 
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-
 
         protected virtual void Dispose(bool disposing)
         {
@@ -105,7 +102,6 @@ namespace Ssz.Operator.Core.DsShapes
 
             Disposed = true;
         }
-
 
         ~DsShapeBase()
         {

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -58,7 +59,7 @@ namespace Ssz.Operator.Core.DsShapeViews
 
         public string StartDsPageFileRelativePath { get; private set; } = @"";
 
-        public DsPageDrawing? DsPageDrawing { get; private set; }
+        public DsPageDrawing? DsPageDrawing { get; private set; }        
 
         public JumpInfo? CurrentJumpInfo
         {
@@ -70,7 +71,7 @@ namespace Ssz.Operator.Core.DsShapeViews
                 _currentJumpInfo = value;
                 OnCurrentJumpInfoChanged();
             }
-        }
+        }        
 
         public void JumpBack()
         {
@@ -85,13 +86,13 @@ namespace Ssz.Operator.Core.DsShapeViews
         public object GetUndoRoot()
         {
             return this;
-        }
+        }        
 
         #endregion
 
         #region protected functions
 
-        protected TextBlock? DesignModeTextBlock { get; }
+        protected TextBlock? DesignModeTextBlock { get; }        
 
         protected override void OnDsShapeChanged(string? propertyName)
         {
@@ -110,15 +111,17 @@ namespace Ssz.Operator.Core.DsShapeViews
             if (propertyName is null || propertyName == nameof(dsShape.StartDsPageFileRelativePath))
             {
                 StartDsPageFileRelativePath = ConstantsHelper.ComputeValue(dsShape.Container, dsShape.StartDsPageFileRelativePath)!;
-                if (!VisualDesignMode)
+                if (!VisualDesignMode && !string.IsNullOrEmpty(StartDsPageFileRelativePath) && _currentJumpInfo is null)
                 {
-                    if (!string.IsNullOrEmpty(StartDsPageFileRelativePath))
-                    {                       
+                    if (String.IsNullOrEmpty(FrameName))
+                        _currentJumpInfo = new JumpInfo(
+                            StartDsPageFileRelativePath,
+                            DsProject.Instance);
+                    else
                         _currentJumpInfo = new JumpInfo(
                             StartDsPageFileRelativePath,
                             PlayDsProjectView.GetGenericContainerCopy(dsShape.ParentItem));
-                        OnCurrentJumpInfoChanged();
-                    }
+                    OnCurrentJumpInfoChanged();
                 }
             }
         }
@@ -141,14 +144,19 @@ namespace Ssz.Operator.Core.DsShapeViews
             {
                 DsPageDrawing = dsPageDrawing;
 
+                var dsShape = (FrameDsShape)DsShapeViewModel.DsShape;
+                dsShape.FrameGenericContainer.ParentItem = dsPageDrawing;
+
                 var disposable = Content as IDisposable;
                 if (disposable is not null) disposable.Dispose();
 
                 if (playWindow is not null)
+                {
                     Content = new PlayDsPageDrawingViewbox(dsPageDrawing,
-                        new ControlsPlay.Frame(playWindow, FrameName));
+                        new ControlsPlay.Frame(playWindow, FrameName));                    
+                }
             }
-        }
+        }        
 
         #endregion
 

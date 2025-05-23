@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Ssz.Utils.Addons
 {
     /// <summary>
-    ///     pathRelativeToRootDirectory - Path separator is always '/'. No '/' at the begin, no '/' at the end. 
+    ///     
     /// </summary>    
     public class ConfigurationFile : IOwnedDataSerializable
     {
@@ -91,27 +91,33 @@ namespace Ssz.Utils.Addons
         public string Name => InvariantPathRelativeToRootDirectory.Substring(InvariantPathRelativeToRootDirectory.LastIndexOf('/') + 1);
 
         /// <summary>        
-        ///     
+        ///     String.Empty for in process entities.
+        ///     Path separator is always '/'. No '/' at the begin, no '/' at the end.
         /// </summary>        
         public string SourcePath { get; set; } = @"";
 
         /// <summary>        
-        ///     
+        ///     Globally-unique service (process) id.
         /// </summary>        
         public string SourceId { get; set; } = @"";
 
         /// <summary>        
-        ///     
+        ///     Globally-unique service (process) id to display.
         /// </summary>        
         public string SourceIdToDisplay { get; set; } = @"";
 
         /// <summary>       
         ///     !!! Warning: always '/' as path separator !!!
         ///     Path relative to the root of the Files Store.
-        ///     Path separator is always '/'. No '/' at the begin, file name at the end.        
+        ///     No '/' at the begin, file name at the end.        
         /// </summary>        
         public string InvariantPathRelativeToRootDirectory { get; set; } = @"";
 
+        /// <summary>       
+        ///     !!! Warning: always Path.DirectorySeparatorChar as path separator !!!
+        ///     Path relative to the root of the Files Store.
+        ///     No Path.DirectorySeparatorChar at the begin, file name at the end.        
+        /// </summary>   
         public string PathRelativeToRootDirectory
         {
             get

@@ -16,8 +16,9 @@ using Ssz.Operator.Core.Constants;
 using Ssz.Operator.Core.ControlsPlay;
 using Ssz.Operator.Core.Drawings;
 using Ssz.Operator.Core.DsPageTypes;
+using Ssz.Operator.Core.DsShapes;
 using Ssz.Operator.Core.Properties;
-
+using Ssz.Operator.Core;
 using Ssz.Operator.Core.Utils;
 using Ssz.Operator.Core.Utils.Serialization;
 using Ssz.Utils;
@@ -248,97 +249,6 @@ namespace Ssz.Operator.Core
             }
 
             return drawing;
-        }
-
-        public static DsPageDrawing? ReadDsPageInPlay(Stream? stream, string dsPageFileFullName,
-            IDsContainer? parentContainer, IPlayWindowBase? playWindow)
-        {
-            if (stream is null) return null;
-
-            if (!stream.CanSeek) throw new ArgumentException(@"stream must be seekable (CanSeek is true)");
-
-            DsPageDrawing? dsPageDrawing = null;
-
-            try
-            {
-                if (stream is null) return null;
-                var streamInfo = DrawingBase.GetStreamInfo(stream);
-
-                if (streamInfo != -1) // Not XML
-                {
-                    var drawingInfo = new DsPageDrawingInfo(new FileInfo(dsPageFileFullName));
-                    dsPageDrawing = new DsPageDrawing(false, true);
-
-                    if (streamInfo == 0 || streamInfo == 1) throw new Exception("Unsupported old file format.");
-
-                    using (var reader = new SerializationReader(stream))
-                    {
-                        drawingInfo.DeserializeOwnedData(reader, null);
-                    }
-
-                    dsPageDrawing.SetDrawingInfo(drawingInfo);
-                    using (var reader = new SerializationReader(stream))
-                    {
-                        dsPageDrawing.DeserializeOwnedData(reader, null);
-                    }
-                }
-                else
-                {
-                    using (
-                        var xmlTextReader =
-                            new XmlTextReader(
-                                stream))
-                    {
-                        xmlTextReader.MoveToContent();
-                        if (xmlTextReader.NodeType ==
-                            XmlNodeType.EndElement)
-                            throw new Exception(@"XAML format error.");
-                        if (xmlTextReader.NodeType !=
-                            XmlNodeType.Element) throw new Exception(@"XAML format error.");
-                        if (xmlTextReader.Name !=
-                            "DsProject") throw new Exception(@"XAML format error.");
-                        while (xmlTextReader.Read())
-                        {
-                            if (xmlTextReader.NodeType ==
-                                XmlNodeType.EndElement)
-                                break;
-                            if (xmlTextReader.NodeType !=
-                                XmlNodeType.Element)
-                                continue;
-                            if (xmlTextReader.Name ==
-                                "DsPageDrawing")
-                            {
-                                string xaml =
-                                    xmlTextReader.ReadOuterXml();
-
-                                xaml = PrepareObsoleteXaml(xaml);
-
-                                dsPageDrawing = XamlHelper.Load(xaml) as DsPageDrawing;
-
-                                if (dsPageDrawing is not null) dsPageDrawing.FileFullName = dsPageFileFullName;
-                            }
-                        }
-                    }
-                }
-            }
-            catch (BlockUnsupportedVersionException ex)
-            {
-                dsPageDrawing = null;
-                DsProject.LoggersSet.Logger.LogError(ex, Resources.DrawingFileOpenErrorUnsupportedVersion);
-            }
-            catch (Exception ex)
-            {
-                dsPageDrawing = null;
-                DsProject.LoggersSet.Logger.LogError(ex, Resources.DrawingFileOpenErrorGeneral);
-            }
-
-            if (dsPageDrawing is not null)
-            {
-                dsPageDrawing.ParentItem = parentContainer ?? Instance;
-                dsPageDrawing.PlayWindow = playWindow;
-            }
-
-            return dsPageDrawing;
         }
 
         public static DrawingInfo? ReadDrawingInfo(FileInfo? drawingFileInfo, bool readOnlyDrawingGuid,
@@ -1199,6 +1109,112 @@ namespace Ssz.Operator.Core
             }
         }
 
-#endregion
+        #endregion        
+
+        #region private functions
+
+        private static DsPageDrawing? ReadDsPageInPlay(Stream? stream, string dsPageFileFullName,
+            IDsContainer? parentContainer, IPlayWindowBase? playWindow)
+        {
+            if (stream is null) return null;
+
+            if (!stream.CanSeek) throw new ArgumentException(@"stream must be seekable (CanSeek is true)");
+
+            DsPageDrawing? dsPageDrawing = null;
+
+            try
+            {
+                if (stream is null) return null;
+                var streamInfo = DrawingBase.GetStreamInfo(stream);
+
+                if (streamInfo != -1) // Not XML
+                {
+                    var drawingInfo = new DsPageDrawingInfo(new FileInfo(dsPageFileFullName));
+                    dsPageDrawing = new DsPageDrawing(false, true);
+
+                    if (streamInfo == 0 || streamInfo == 1) throw new Exception("Unsupported old file format.");
+
+                    using (var reader = new SerializationReader(stream))
+                    {
+                        drawingInfo.DeserializeOwnedData(reader, null);
+                    }
+
+                    dsPageDrawing.SetDrawingInfo(drawingInfo);
+                    using (var reader = new SerializationReader(stream))
+                    {
+                        dsPageDrawing.DeserializeOwnedData(reader, null);
+                    }
+                }
+                else
+                {
+                    using (
+                        var xmlTextReader =
+                            new XmlTextReader(
+                                stream))
+                    {
+                        xmlTextReader.MoveToContent();
+                        if (xmlTextReader.NodeType ==
+                            XmlNodeType.EndElement)
+                            throw new Exception(@"XAML format error.");
+                        if (xmlTextReader.NodeType !=
+                            XmlNodeType.Element) throw new Exception(@"XAML format error.");
+                        if (xmlTextReader.Name !=
+                            "DsProject") throw new Exception(@"XAML format error.");
+                        while (xmlTextReader.Read())
+                        {
+                            if (xmlTextReader.NodeType ==
+                                XmlNodeType.EndElement)
+                                break;
+                            if (xmlTextReader.NodeType !=
+                                XmlNodeType.Element)
+                                continue;
+                            if (xmlTextReader.Name ==
+                                "DsPageDrawing")
+                            {
+                                string xaml =
+                                    xmlTextReader.ReadOuterXml();
+
+                                xaml = PrepareObsoleteXaml(xaml);
+
+                                dsPageDrawing = XamlHelper.Load(xaml) as DsPageDrawing;
+
+                                if (dsPageDrawing is not null) 
+                                    dsPageDrawing.FileFullName = dsPageFileFullName;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (BlockUnsupportedVersionException ex)
+            {
+                dsPageDrawing = null;
+                DsProject.LoggersSet.Logger.LogError(ex, Resources.DrawingFileOpenErrorUnsupportedVersion);
+            }
+            catch (Exception ex)
+            {
+                dsPageDrawing = null;
+                DsProject.LoggersSet.Logger.LogError(ex, Resources.DrawingFileOpenErrorGeneral);
+            }
+
+            if (dsPageDrawing is not null)
+            {
+                dsPageDrawing.PlayWindow = playWindow;
+                dsPageDrawing.ParentItem = parentContainer ?? Instance;
+                dsPageDrawing.IsMainPage = true;
+
+                foreach (FrameDsShape frameDsShape in dsPageDrawing.FindDsShapes<FrameDsShape>())
+                {
+                    if (String.IsNullOrEmpty(frameDsShape.FrameName))
+                    {
+                        dsPageDrawing.ParentItem = frameDsShape.FrameGenericContainer;
+                        dsPageDrawing.IsMainPage = false;
+                    }
+                }
+            }
+
+            return dsPageDrawing;
+        }
+
+        #endregion
     }
 }

@@ -4,24 +4,21 @@ using System.Collections.ObjectModel;
 using Ssz.Operator.Core.Constants;
 using Ssz.Operator.Core.ControlsPlay;
 using Ssz.Operator.Core.DsShapes;
+using Ssz.Utils;
 
 namespace Ssz.Operator.Core
 {
     public class GenericContainer : IDsContainer
     {
-        #region private fields
-
-        #endregion
-
         #region public functions
 
-        public ObservableCollection<DsConstant> DsConstantsCollection { get; } = new();
+        public ObservableCollection<DsConstant> DsConstantsCollection => _dsConstantsCollection;
 
         public DsConstant[]? HiddenDsConstantsCollection => null;
 
         public DsShapeBase[] DsShapes
         {
-            get => new DsShapeBase[0];
+            get => _dsShapes;
             set
             {                
             }
@@ -53,6 +50,14 @@ namespace Ssz.Operator.Core
         public void FindConstants(HashSet<string> constants)
         {
         }
+
+        #endregion
+
+        #region private fields       
+
+        [Searchable(false)] private readonly ObservableCollection<DsConstant> _dsConstantsCollection = new();
+
+        [Searchable(false)] private readonly DsShapeBase[] _dsShapes = new DsShapeBase[0];
 
         #endregion
     }

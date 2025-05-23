@@ -104,15 +104,22 @@ namespace Ssz.Operator.Core.ControlsPlay.GenericPlay
                                 .RootPlayDsPageDrawingViewbox_MainFrame_ErrorMessage);
                         }
 
+                        Mouse.OverrideCursor = Cursors.Wait;
+                        await Task.Delay(1);
+                        MainBusyIndicator.IsBusy = true;
+
                         rootPlayDsPageDrawingViewbox = new PlayDsPageDrawingViewbox(DsPageDrawing, PlayWindow.MainFrame);
+                        rootPlayDsPageDrawingViewbox.Loaded +=
+                            (sender, args) =>
+                            {
+                                MainBusyIndicator.IsBusy = false;
+                                Mouse.OverrideCursor = null;
+                            };
                     }
                 }
                 else
                 {
                     rootPlayDsPageDrawingViewbox = RootPlayDsPageDrawingViewbox!;
-
-                    rootPlayDsPageDrawingViewbox.PlayDrawingViewModel.Drawing.ParentItem = dsPageDrawingInfo;
-                    rootPlayDsPageDrawingViewbox.DsShapeViewsReInitialize();
 
                     FrameDsShapeView? mainFrameDsShapeView = null;
 
@@ -125,7 +132,7 @@ namespace Ssz.Operator.Core.ControlsPlay.GenericPlay
                             mainFrameDsShapeView = frameDsShapeView;
                             frameDsShapeView.CurrentJumpInfo = new JumpInfo(
                                 jumpInfo.FileRelativePath,
-                                PlayDsProjectView.GetGenericContainerCopy(frameDsShapeView.DsShapeViewModel.DsShape.ParentItem));
+                                jumpInfo.SenderContainerCopy);                            
                         }
                         else
                         {
@@ -145,6 +152,8 @@ namespace Ssz.Operator.Core.ControlsPlay.GenericPlay
                         MessageBoxHelper.ShowError(Properties.Resources
                             .RootPlayDsPageDrawingViewbox_MainFrame_ErrorMessage);
                     }
+
+                    rootPlayDsPageDrawingViewbox.DsShapeViewsReInitialize();
                 }
             }            
 

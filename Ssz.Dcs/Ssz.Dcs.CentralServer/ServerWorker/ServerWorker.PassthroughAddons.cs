@@ -31,7 +31,7 @@ namespace Ssz.Dcs.CentralServer
             foreach (var addonStatus in addonStatuses.AddonStatusesCollection)
             {
                 addonStatus.SourcePath = @"";
-                addonStatus.SourceId = dcsCentralServerAddon.ServiceId;
+                addonStatus.SourceId = dcsCentralServerAddon.Desc;
                 addonStatus.SourceIdToDisplay = dcsCentralServerAddon.Desc;
             }
 
@@ -98,7 +98,7 @@ namespace Ssz.Dcs.CentralServer
                 foreach (var configurationFile in configurationFiles.ConfigurationFilesCollection)
                 {
                     configurationFile.SourcePath = @"";
-                    configurationFile.SourceId = dcsCentralServerAddon.ServiceId;
+                    configurationFile.SourceId = dcsCentralServerAddon.Desc;
                     configurationFile.SourceIdToDisplay = dcsCentralServerAddon.Desc;
                 }
 
@@ -159,7 +159,7 @@ namespace Ssz.Dcs.CentralServer
                     foreach (var configurationFile in configurationFiles.ConfigurationFilesCollection)
                     {
                         configurationFile.SourcePath = @"";
-                        configurationFile.SourceId = dcsCentralServerAddon.ServiceId;
+                        configurationFile.SourceId = dcsCentralServerAddon.Desc;
                         configurationFile.SourceIdToDisplay = dcsCentralServerAddon.Desc;
                     }
                 }

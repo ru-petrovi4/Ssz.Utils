@@ -638,9 +638,9 @@ namespace Ssz.Operator.Core
         {
             get
             {
-                _hiddenDsConstantsCollection[0] = new DsConstant(@"%(DsProjectName)", Name);
+                _hiddenDsConstantsCollection[0] = new DsConstant(@"%(ProjectName)", Name);
                 _hiddenDsConstantsCollection[1] =
-                    new DsConstant(@"%(DsProjectDesc)", !string.IsNullOrEmpty(Desc) ? Desc : " ");
+                    new DsConstant(@"%(ProjectDesc)", !string.IsNullOrEmpty(Desc) ? Desc : " ");
                 return _hiddenDsConstantsCollection;
             }
         }

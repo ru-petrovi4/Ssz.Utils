@@ -5,6 +5,10 @@ using Ssz.Operator.Core.Properties;
 using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using Ssz.Operator.Core.Utils.Serialization;
 using Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
+using System.Collections.ObjectModel;
+using Ssz.Operator.Core.Constants;
+using Ssz.Utils;
+using System.Collections.Generic;
 
 namespace Ssz.Operator.Core.DsShapes
 {
@@ -31,6 +35,7 @@ namespace Ssz.Operator.Core.DsShapes
         public const string DsShapeTypeNameToDisplay = "Frame";
         public static readonly Guid DsShapeTypeGuid = new(@"7EB58611-F541-43F5-B399-D0B4144FCEB4");
 
+        public GenericContainer FrameGenericContainer => _frameGenericContainer;
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.FrameDsShape_FrameName)]
@@ -46,7 +51,6 @@ namespace Ssz.Operator.Core.DsShapes
             }
         }
 
-
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.FrameDsShape_StartDsPageFileRelativePath)]
         [LocalizedDescription(ResourceStrings.FrameDsShape_StartDsPageFileRelativePath_Description)]
@@ -60,7 +64,7 @@ namespace Ssz.Operator.Core.DsShapes
                 if (value is null) value = @"";
                 SetValue(ref _startDsPageFileRelativePath, value);
             }
-        }
+        }        
 
         public override Guid GetDsShapeTypeGuid()
         {
@@ -114,8 +118,9 @@ namespace Ssz.Operator.Core.DsShapes
 
         private string _frameName = @"";
 
-
         private string _startDsPageFileRelativePath = @"";
+
+        private readonly GenericContainer _frameGenericContainer = new();
 
         #endregion
     }
