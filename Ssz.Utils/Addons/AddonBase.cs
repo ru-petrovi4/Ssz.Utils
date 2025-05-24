@@ -150,6 +150,7 @@ namespace Ssz.Utils.Addons
             {
                 AddonGuid = Guid,
                 AddonIdentifier = Identifier,
+                AddonDesc = Desc,
                 AddonInstanceId = InstanceId,
                 LastWorkTimeUtc = LastWorkTimeUtc,
                 StateCode = AddonStateCodes.STATE_OPERATIONAL

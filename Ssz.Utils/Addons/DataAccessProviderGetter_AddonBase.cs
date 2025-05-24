@@ -48,6 +48,7 @@ namespace Ssz.Utils.Addons
                 {
                     AddonGuid = Guid,
                     AddonIdentifier = Identifier,
+                    AddonDesc = Desc,
                     AddonInstanceId = InstanceId,
                     StateCode = AddonStateCodes.STATE_INITIALIZING,
                     Label = Properties.Resources.Addon_STATE_INITIALIZING
@@ -58,6 +59,7 @@ namespace Ssz.Utils.Addons
                 {
                     AddonGuid = Guid,
                     AddonIdentifier = Identifier,
+                    AddonDesc = Desc,
                     AddonInstanceId = InstanceId,
                     StateCode = AddonStateCodes.STATE_NOT_OPERATIONAL,
                     Label = Properties.Resources.Addon_STATE_NOT_OPERATIONAL_DataAccessProviderIsNull
@@ -68,6 +70,7 @@ namespace Ssz.Utils.Addons
                 {
                     AddonGuid = Guid,
                     AddonIdentifier = Identifier,
+                    AddonDesc = Desc,
                     AddonInstanceId = InstanceId,
                     StateCode = AddonStateCodes.STATE_NOT_OPERATIONAL,
                     Label = Properties.Resources.Addon_STATE_NOT_OPERATIONAL_DataAccessProviderIsNotConnected
@@ -77,6 +80,7 @@ namespace Ssz.Utils.Addons
             {
                 AddonGuid = Guid,
                 AddonIdentifier = Identifier,
+                AddonDesc = Desc,
                 AddonInstanceId = InstanceId,
                 LastWorkTimeUtc = LastWorkTimeUtc,
                 StateCode = AddonStateCodes.STATE_OPERATIONAL,

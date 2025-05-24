@@ -29,6 +29,8 @@ namespace Ssz.Utils.Addons
 
         public string AddonIdentifier { get; set; } = @"";
 
+        public string AddonDesc { get; set; } = @"";
+
         public string AddonInstanceId { get; set; } = @"";
 
         /// <summary>
@@ -60,13 +62,14 @@ namespace Ssz.Utils.Addons
 
         public void SerializeOwnedData(SerializationWriter writer, object? context)
         {
-            using (writer.EnterBlock(1))
+            using (writer.EnterBlock(2))
             {
                 writer.Write(SourcePath);
                 writer.Write(SourceId);
                 writer.Write(SourceIdToDisplay);
                 writer.Write(AddonGuid);
                 writer.Write(AddonIdentifier);
+                writer.Write(AddonDesc);
                 writer.Write(AddonInstanceId);
                 writer.WriteNullable(LastWorkTimeUtc);
                 writer.Write(StateCode);
@@ -91,6 +94,28 @@ namespace Ssz.Utils.Addons
                             SourceIdToDisplay = reader.ReadString();
                             AddonGuid = reader.ReadGuid();
                             AddonIdentifier = reader.ReadString();
+                            AddonDesc = @"";
+                            AddonInstanceId = reader.ReadString();
+                            LastWorkTimeUtc = reader.ReadNullable<DateTime>();
+                            StateCode = reader.ReadUInt32();
+                            Info = reader.ReadString();
+                            Label = reader.ReadString();
+                            Details = reader.ReadString();
+                            Params = new CaseInsensitiveDictionary<Any>(reader.ReadDictionaryOfOwnedDataSerializable<Any>(() => new Any(), null)!);
+                        }
+                        catch (BlockEndingException)
+                        {
+                        }
+                        break;
+                    case 2:
+                        try
+                        {
+                            SourcePath = reader.ReadString();
+                            SourceId = reader.ReadString();
+                            SourceIdToDisplay = reader.ReadString();
+                            AddonGuid = reader.ReadGuid();
+                            AddonIdentifier = reader.ReadString();
+                            AddonDesc = reader.ReadString();
                             AddonInstanceId = reader.ReadString();
                             LastWorkTimeUtc = reader.ReadNullable<DateTime>();
                             StateCode = reader.ReadUInt32();
