@@ -55,6 +55,12 @@ namespace Ssz.Utils.Logging
             if (!IsEnabled(logLevel))
                 return;
 
+            base.Log(logLevel,
+                eventId,
+                state,
+                exception,
+                formatter);
+
             string line = $"{logLevel,-11} {DateTime.Now:O}";
             if (eventId.Id != 0)
                 line += $" ID: {eventId.Id}";

@@ -44,18 +44,73 @@ namespace Ssz.Utils.Logging
 
         public abstract bool IsEnabled(LogLevel logLevel);
 
-        public abstract void Log<TState>(
+        public virtual void Log<TState>(
             LogLevel logLevel,
             EventId eventId,
             TState state,
             Exception? exception,
-            Func<TState, Exception?, string> formatter);
+            Func<TState, Exception?, string> formatter)
+        {
+            lock (SyncRoot)
+            {                
+                _statistics.TryGetValue(logLevel, out int count);
+                _statistics[logLevel] = count + 1;
+            }
+        }
 
         public string GetScopesString(string[]? excludeScopeNames = null)
         {
             lock (SyncRoot)
             {
                 return GetScopesStringInternal(excludeScopeNames);
+            }
+        }
+
+        public void ClearStatistics()
+        {
+            lock (SyncRoot)
+            {
+                _statistics.Clear();
+            }
+        }
+
+        public Dictionary<LogLevel, int> GetStatistics()
+        {
+            lock (SyncRoot)
+            {
+                return new Dictionary<LogLevel, int>(_statistics);
+            }
+        }
+
+        /// <summary>
+        ///     Returns count for exact log level or for greater than or equal to.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="logLevel"></param>
+        /// <param name="count_LogLevel_GreaterThanOrEqualTo"></param>
+        /// <returns></returns>
+        public int GetStatistics(LogLevel logLevel, bool count_LogLevel_GreaterThanOrEqualTo = false)
+        {
+            lock (SyncRoot)
+            {
+                if (count_LogLevel_GreaterThanOrEqualTo)
+                {
+                    int count = 0;
+                    
+                    for (int logLevelInt = (int)logLevel; logLevelInt <= (int)LogLevel.Critical; logLevelInt += 1)
+                    {
+                        _statistics.TryGetValue((LogLevel)logLevelInt, out int exactCount);
+                        count += exactCount;
+                    }
+
+                    return count;
+                }
+                else
+                {
+                    _statistics.TryGetValue(logLevel, out int exactCount);
+
+                    return exactCount;
+                }
             }
         }
 
@@ -157,7 +212,16 @@ namespace Ssz.Utils.Logging
             {
                 ScopesStack.RemoveRange(ScopesStack.Count - count, count);
             }
-        }        
+        }
+
+        #endregion
+
+        #region private fields
+
+        /// <summary>
+        ///     [LogLevel, Count]
+        /// </summary>
+        private Dictionary<LogLevel, int> _statistics = new();
 
         #endregion        
 
@@ -215,7 +279,7 @@ namespace Ssz.Utils.Logging
 
             private SszLoggerBase? _sszLogger;
 
-            private int _scopeTuplesCount;
+            private int _scopeTuplesCount;            
 
             #endregion
         }

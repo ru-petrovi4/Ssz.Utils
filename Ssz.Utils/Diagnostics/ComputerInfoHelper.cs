@@ -56,9 +56,7 @@ namespace Ssz.Utils.Diagnostics
 
         public static async Task<CaseInsensitiveDictionary<Any>> GetSystemParamsAsync()
         {
-            CaseInsensitiveDictionary<Any> systemParams = new();
-
-            systemParams[AddonBase.ParamName_IsResourceMonitoringAddon] = new Any(true);
+            CaseInsensitiveDictionary<Any> systemParams = new();            
 
             Process currentProcess = Process.GetCurrentProcess();
             ComputerInfo computerInfo = new();

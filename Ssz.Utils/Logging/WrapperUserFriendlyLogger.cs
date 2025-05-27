@@ -56,8 +56,35 @@ namespace Ssz.Utils.Logging
         /// <param name="exception"></param>
         /// <param name="formatter"></param>
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+        {            
+            foreach (var l in Loggers)
+            {
+                l.Log(logLevel, eventId, state, exception, formatter);
+            }
+        }
+
+        public void ClearStatistics()
+        {   
+            foreach (var l in Loggers.OfType<IUserFriendlyLogger>())
+            {
+                l.ClearStatistics();
+            }
+        }
+
+        public Dictionary<LogLevel, int> GetStatistics()
         {
-            Array.ForEach(Loggers, l => l.Log(logLevel, eventId, state, exception, formatter));
+            var logger = Loggers.OfType<IUserFriendlyLogger>().FirstOrDefault();
+            if (logger is null)
+                return new Dictionary<LogLevel, int>();
+            return logger.GetStatistics();            
+        }
+
+        public int GetStatistics(LogLevel logLevel, bool count_LogLevel_GreaterThanOrEqualTo = false)
+        {
+            var logger = Loggers.OfType<IUserFriendlyLogger>().FirstOrDefault();
+            if (logger is null)
+                return 0;
+            return logger.GetStatistics(logLevel, count_LogLevel_GreaterThanOrEqualTo);            
         }
 
         #endregion

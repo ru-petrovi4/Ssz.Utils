@@ -28,7 +28,7 @@ namespace Ssz.Dcs.CentralServer
 
         public override string Identifier => AddonIdentifier;
 
-        public override string Desc => DescStatic;
+        public override string Desc => Properties.Resources.DcsCentralServerAddon_Desc;
 
         public override string Version => "1.0";
 
@@ -55,16 +55,11 @@ namespace Ssz.Dcs.CentralServer
             foreach (var kvp in await ComputerInfoHelper.GetSystemParamsAsync())
             {
                 addonStatus.Params[kvp.Key] = kvp.Value;
-            }            
+            }
+            addonStatus.Params[ParamName_IsResourceMonitoringAddon] = new Any(true);
 
             return addonStatus;
         }
-
-        #endregion
-
-        #region internal functions
-
-        internal static string DescStatic { get; set; } = Properties.Resources.DcsCentralServerAddon_Desc;
 
         #endregion
     }

@@ -50,11 +50,7 @@ namespace Ssz.Dcs.CentralServer
             _csvDb = ActivatorUtilities.CreateInstance<CsvDb>(
                 _serviceProvider, new DirectoryInfo(@"CsvDb").FullName, ThreadSafeDispatcher);
             //_csvDb.CsvFileChanged += CsvDbOnCsvFileChanged;
-            //CsvDbOnCsvFileChanged(CsvFileChangeAction.Added, null);
-                        
-            string dcsCentralServerAddonDesc = ConfigurationHelper.GetValue(_configuration, @"DcsCentralServerAddonDesc", @"");
-            if (dcsCentralServerAddonDesc != @"")
-                DcsCentralServerAddon.DescStatic = dcsCentralServerAddonDesc;            
+            //CsvDbOnCsvFileChanged(CsvFileChangeAction.Added, null);      
         }        
 
         #endregion

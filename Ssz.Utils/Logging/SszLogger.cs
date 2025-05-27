@@ -73,6 +73,12 @@ namespace Ssz.Utils.Logging
             if (!IsEnabled(logLevel))
                 return;
 
+            base.Log(logLevel,
+                eventId,
+                state,
+                exception,
+                formatter);
+
             string header = $"{logLevel,-11} {DateTime.Now:O}";
             if (!String.IsNullOrEmpty(_categoryName))
                 header += $" [{_categoryName}]";

@@ -30,9 +30,9 @@ namespace Ssz.Dcs.CentralServer
             AddonStatuses addonStatuses = await _addonsManager.GetAddonStatusesAsync();
             foreach (var addonStatus in addonStatuses.AddonStatusesCollection)
             {
-                addonStatus.SourcePath = @"";
-                addonStatus.SourceId = dcsCentralServerAddon.Desc;
-                addonStatus.SourceIdToDisplay = dcsCentralServerAddon.Desc;
+                addonStatus.SourcePath = @"";                
+                addonStatus.SourceId = ConfigurationHelper.GetValue(_configuration, DcsCentralServerConstants.ConfigurationKey_Process_SourceId, @"Ssz.Dcs.CentralServer");
+                addonStatus.SourceIdToDisplay = ConfigurationHelper.GetValue(_configuration, DcsCentralServerConstants.ConfigurationKey_Process_SourceIdToDisplay, @"Ssz.Dcs.CentralServer");
             }
 
             try
@@ -98,8 +98,8 @@ namespace Ssz.Dcs.CentralServer
                 foreach (var configurationFile in configurationFiles.ConfigurationFilesCollection)
                 {
                     configurationFile.SourcePath = @"";
-                    configurationFile.SourceId = dcsCentralServerAddon.Desc;
-                    configurationFile.SourceIdToDisplay = dcsCentralServerAddon.Desc;
+                    configurationFile.SourceId = ConfigurationHelper.GetValue(_configuration, DcsCentralServerConstants.ConfigurationKey_Process_SourceId, @"Ssz.Dcs.CentralServer");
+                    configurationFile.SourceIdToDisplay = ConfigurationHelper.GetValue(_configuration, DcsCentralServerConstants.ConfigurationKey_Process_SourceIdToDisplay, @"Ssz.Dcs.CentralServer");                    
                 }
 
                 try
@@ -159,8 +159,8 @@ namespace Ssz.Dcs.CentralServer
                     foreach (var configurationFile in configurationFiles.ConfigurationFilesCollection)
                     {
                         configurationFile.SourcePath = @"";
-                        configurationFile.SourceId = dcsCentralServerAddon.Desc;
-                        configurationFile.SourceIdToDisplay = dcsCentralServerAddon.Desc;
+                        configurationFile.SourceId = ConfigurationHelper.GetValue(_configuration, DcsCentralServerConstants.ConfigurationKey_Process_SourceId, @"Ssz.Dcs.CentralServer");
+                        configurationFile.SourceIdToDisplay = ConfigurationHelper.GetValue(_configuration, DcsCentralServerConstants.ConfigurationKey_Process_SourceIdToDisplay, @"Ssz.Dcs.CentralServer");
                     }
                 }
                 else

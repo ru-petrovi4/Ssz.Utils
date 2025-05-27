@@ -32,7 +32,8 @@ Kestrel:
       # пароль от файла сертификата
       Password: "identityserver"
       AllowInvalid: "true"
-DcsCentralServerAddonDesc: "Центральный сервер SSZ.DCS"
+Process_SourceId: "Ssz.Dcs.CentralServer"
+Process_SourceIdToDisplay: "Центральный сервер SSZ.DCS"
 AllowedHosts: "*"
 # Задается язык сообщений в журналах событий, которые доступны через веб интерфейс ИТ-решения. Возможные значения RU EN
 UICulture: "RU"

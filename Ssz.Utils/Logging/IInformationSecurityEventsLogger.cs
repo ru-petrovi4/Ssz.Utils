@@ -17,12 +17,12 @@ namespace Ssz.Utils.Logging
         public IDisposable? BeginScope<TState>(TState state) where TState : notnull
         {
             return null;
-        }
+        }        
 
         public string GetScopesString(string[]? excludeScopeNames = null)
         {
             return @"";
-        }
+        }        
 
         public bool IsEnabled(LogLevel logLevel)
         {
@@ -31,6 +31,20 @@ namespace Ssz.Utils.Logging
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
         {            
+        }
+
+        public void ClearStatistics()
+        {
+        }
+
+        public Dictionary<LogLevel, int> GetStatistics()
+        {
+            return new Dictionary<LogLevel, int>();
+        }
+
+        public int GetStatistics(LogLevel logLevel, bool count_LogLevel_GreaterThanOrEqualTo = false)
+        {
+            return 0;
         }
     }
 

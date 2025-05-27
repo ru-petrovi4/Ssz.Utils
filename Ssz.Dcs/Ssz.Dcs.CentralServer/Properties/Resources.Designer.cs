@@ -61,7 +61,7 @@ namespace Ssz.Dcs.CentralServer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DCS Central Server.
+        ///   Looks up a localized string similar to Base module.
         /// </summary>
         public static string DcsCentralServerAddon_Desc {
             get {
