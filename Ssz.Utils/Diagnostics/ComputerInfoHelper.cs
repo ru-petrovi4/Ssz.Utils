@@ -14,6 +14,8 @@ namespace Ssz.Utils.Diagnostics
 {
     public static class ComputerInfoHelper
     {
+        #region public functions
+
         /// <summary>
         ///     The CPU utilization percentage..
         /// </summary>
@@ -56,7 +58,7 @@ namespace Ssz.Utils.Diagnostics
 
         public static async Task<CaseInsensitiveDictionary<Any>> GetSystemParamsAsync()
         {
-            CaseInsensitiveDictionary<Any> systemParams = new();            
+            CaseInsensitiveDictionary<Any> systemParams = new();
 
             Process currentProcess = Process.GetCurrentProcess();
             ComputerInfo computerInfo = new();
@@ -69,7 +71,7 @@ namespace Ssz.Utils.Diagnostics
             systemParams[ParamName_CpuUsedPercentage] = new Any((long)await GetCpuUsedPercentageAsync(currentProcess));
             systemParams[ParamName_TotalMemoryInBytes] = new Any((long)computerInfo.TotalPhysicalMemory);
             systemParams[ParamName_MemoryUsedInBytes] = new Any((long)currentProcess.WorkingSet64);
-           
+
             //addonStatusParams[ParamName_OSPlatform] = new Any(computerInfo.OSPlatform);
             //addonStatusParams[ParamName_OSVersion] = new Any(computerInfo.OSVersion);
             //systemParams[ParamName_TotalPhysicalMemory] = new Any(computerInfo.TotalPhysicalMemory);
@@ -97,6 +99,10 @@ namespace Ssz.Utils.Diagnostics
             return systemParams;
         }
 
+        #endregion
+
+        #region private functions
+
         private static async Task<double> GetCpuUsedPercentageAsync(Process process)
         {
             TimeSpan prevCpuTime = process.TotalProcessorTime;
@@ -106,8 +112,10 @@ namespace Ssz.Utils.Diagnostics
 
             TimeSpan curCpuTime = process.TotalProcessorTime;
             DateTime curTime = DateTime.UtcNow;
-            
+
             return 100.0 * (curCpuTime - prevCpuTime).TotalMilliseconds / ((curTime - prevTime).TotalMilliseconds * Environment.ProcessorCount);
         }
+
+        #endregion        
     }
 }

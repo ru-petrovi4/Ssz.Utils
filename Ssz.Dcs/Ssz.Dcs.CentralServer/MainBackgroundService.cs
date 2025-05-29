@@ -49,7 +49,7 @@ namespace Ssz.Dcs.CentralServer
                     await _serverWorker.DoWorkAsync(DateTime.UtcNow, cancellationToken);
 
                     // TEMPCODE
-                    //if (DateTime.UtcNow > new DateTime(2025, 06, 14))
+                    //if (DateTime.UtcNow > new DateTime(2025, 07, 30))
                     //    return;
                 }
                 catch when (cancellationToken.IsCancellationRequested)

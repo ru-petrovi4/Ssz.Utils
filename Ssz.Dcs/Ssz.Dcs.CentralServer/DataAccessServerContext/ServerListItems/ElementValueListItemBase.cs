@@ -23,6 +23,8 @@ namespace Ssz.Dcs.CentralServer.ServerListItems
 
         public bool Changed { get; set; }
 
+        public bool ValueUpdated { get; private set; }
+
         public ValueStatusTimestamp ValueStatusTimestamp { get; private set; } = new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain };
 
         public bool? IsReadable { get; set; }
@@ -37,15 +39,16 @@ namespace Ssz.Dcs.CentralServer.ServerListItems
         {
             if (StatusCodes.IsUncertain(valueStatusTimestamp.StatusCode))
             {
-                if (!StatusCodes.IsUncertain(ValueStatusTimestamp.StatusCode))
+                if (ValueUpdated)
                 {
-                    ValueStatusTimestamp = valueStatusTimestamp;
-                    Changed = true;
+                    ValueStatusTimestamp = valueStatusTimestamp;                    
+                    Changed = true;                    
                 }
             }
             else
             {
                 ValueStatusTimestamp = valueStatusTimestamp;
+                ValueUpdated = true;
                 Changed = true;
             }            
         }

@@ -5,11 +5,13 @@ using IdentityServer4.Models;
 using IdentityServer4.Services;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Novell.Directory.Ldap;
 using Ssz.IdentityServer.Helpers;
 using Ssz.Utils;
+using Ssz.Utils.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,12 +29,16 @@ namespace Ssz.IdentityServer
         /// <param name="users">The users.</param>
         /// <param name="clock">The clock.</param>
         public ADProfileService(ILogger<ADProfileService> logger, 
-            IConfiguration configuration,             
+            IConfiguration configuration,
+            IHttpContextAccessor httpContextAccessor,
+            IInformationSecurityEventsLogger informationSecurityEventsLogger,
             IConfigurationProcessor? configurationProcessor = null,
             IUsersAndRolesInfo? usersAndRolesInfo = null)
         {
             _logger = logger;
-            _configuration = configuration;            
+            _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
+            _informationSecurityEventsLogger = informationSecurityEventsLogger;
             _configurationProcessor = configurationProcessor;
             _usersAndRolesInfo = usersAndRolesInfo;
         }
@@ -41,7 +47,8 @@ namespace Ssz.IdentityServer
         {
             // search by context.Subject.GetSubjectId()
 
-            //context.LogProfileRequest(_logger);
+            //context.LogProfileRequest(_logger);            
+            var httpContext = _httpContextAccessor.HttpContext;
 
             string userLowerInvariant = context.Subject.GetSubjectId().ToLowerInvariant();
             bool isTestUser = false;
@@ -98,7 +105,20 @@ namespace Ssz.IdentityServer
                 {
                     claims!.Add(new Claim(JwtClaimTypes.Role, @"SuperUser"));
                 }
-            }            
+            }
+
+            if (context.Caller != @"ClaimsProviderAccessToken")
+                _informationSecurityEventsLogger.InformationSecurityEvent(context.Subject.GetSubjectId(),
+                                HttpContextHelper.GetSourceIpAddress(httpContext),
+                                HttpContextHelper.GetSourceHost(httpContext),
+                                0x01,
+                                1,
+                                true,
+                                Properties.Resources.User_GetClaims_Event,
+                                context.Subject.GetSubjectId(),
+                                Properties.Resources.ObjectSystem,
+                                NameValueCollectionHelper.GetNameValueCollectionString(claims.Where(c => c.Type == JwtClaimTypes.Role).Select(c => (c.Type, (string?)c.Value))),
+                                Properties.Resources.User_GetClaims_Event);
 
             context.IssuedClaims.AddRange(claims!);
 
@@ -122,7 +142,9 @@ namespace Ssz.IdentityServer
         #region private fields
 
         private readonly ILogger _logger;
-        private readonly IConfiguration _configuration;        
+        private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IInformationSecurityEventsLogger _informationSecurityEventsLogger;
         private readonly IConfigurationProcessor? _configurationProcessor;
         private readonly IUsersAndRolesInfo? _usersAndRolesInfo;
 

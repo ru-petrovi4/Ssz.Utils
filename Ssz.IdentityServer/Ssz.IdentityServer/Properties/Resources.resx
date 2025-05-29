@@ -138,4 +138,7 @@
   <data name="UserLogIn_Event" xml:space="preserve">
     <value>User Log In</value>
   </data>
+  <data name="User_GetClaims_Event" xml:space="preserve">
+    <value>Claims requested</value>
+  </data>
 </root>

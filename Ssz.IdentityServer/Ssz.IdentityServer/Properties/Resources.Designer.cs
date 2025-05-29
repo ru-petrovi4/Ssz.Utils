@@ -115,6 +115,15 @@ namespace Ssz.IdentityServer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Claims requested.
+        /// </summary>
+        public static string User_GetClaims_Event {
+            get {
+                return ResourceManager.GetString("User_GetClaims_Event", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User Log In.
         /// </summary>
         public static string UserLogIn_Event {

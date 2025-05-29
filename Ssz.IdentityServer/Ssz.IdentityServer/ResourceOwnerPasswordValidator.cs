@@ -184,7 +184,7 @@ namespace Ssz.IdentityServer
                 {
                     if (!context.Result.IsError)
                     {
-                        _informationSecurityEventsLogger.InformationSecurityEvent(user,
+                        _informationSecurityEventsLogger.InformationSecurityEvent(context.UserName,
                             HttpContextHelper.GetSourceIpAddress(httpContext),
                             HttpContextHelper.GetSourceHost(httpContext),                            
                             0x01,
@@ -198,7 +198,7 @@ namespace Ssz.IdentityServer
                     }
                     else
                     {
-                        _informationSecurityEventsLogger.InformationSecurityEvent(user,
+                        _informationSecurityEventsLogger.InformationSecurityEvent(context.UserName,
                             HttpContextHelper.GetSourceIpAddress(httpContext),
                             HttpContextHelper.GetSourceHost(httpContext),                            
                             0x01,
@@ -215,7 +215,7 @@ namespace Ssz.IdentityServer
                 {
                     if (!context.Result.IsError)
                     {
-                        _informationSecurityEventsLogger.InformationSecurityEvent(user,
+                        _informationSecurityEventsLogger.InformationSecurityEvent(context.UserName,
                             HttpContextHelper.GetSourceIpAddress(httpContext),
                             HttpContextHelper.GetSourceHost(httpContext),                            
                             0x01,
@@ -229,7 +229,7 @@ namespace Ssz.IdentityServer
                     }
                     else
                     {
-                        _informationSecurityEventsLogger.InformationSecurityEvent(user,
+                        _informationSecurityEventsLogger.InformationSecurityEvent(context.UserName,
                             HttpContextHelper.GetSourceIpAddress(httpContext),
                             HttpContextHelper.GetSourceHost(httpContext),                            
                             0x01,

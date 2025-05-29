@@ -138,4 +138,7 @@
   <data name="UserLogIn_Event" xml:space="preserve">
     <value>Вход пользователя в систему</value>
   </data>
+  <data name="User_GetClaims_Event" xml:space="preserve">
+    <value>Запрошены разрешения для пользователя</value>
+  </data>
 </root>
