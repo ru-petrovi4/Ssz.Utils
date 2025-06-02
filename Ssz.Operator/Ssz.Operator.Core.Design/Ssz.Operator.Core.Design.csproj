@@ -94,7 +94,7 @@
     <ProjectReference Include="..\..\ThirdParties\Ssz.WindowsAPICodePack\Ssz.WindowsAPICodePack.csproj" />
   </ItemGroup>  
   <ItemGroup>
-    <PackageReference Include="Google.Protobuf" Version="3.31.0" />
+    <PackageReference Include="Google.Protobuf" Version="3.31.1" />
     <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
   </ItemGroup>
   <ItemGroup>

@@ -15,7 +15,7 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.5" />
     <PackageReference Include="protobuf-net" Version="3.2.52" />    
     <PackageReference Include="System.ComponentModel.Composition" Version="9.0.5" />
-    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.4" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.5" />
   </ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
