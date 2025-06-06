@@ -83,9 +83,11 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             Logger.LogDebug("Ssz.Dcs.Instructor.exe is starting.. " + binDirectoryFullName + @" " + arguments);
 
             var t = utilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.ProcessModelingSession_RunInstructorExe,
-                   Encoding.UTF8.GetBytes(CsvHelper.FormatForCsv(processModelingSessionId,
-                   binDirectoryFullName,
-                   arguments)));            
+                   Encoding.UTF8.GetBytes(CsvHelper.FormatForCsv(
+                       @",", 
+                       [ processModelingSessionId,
+                       binDirectoryFullName,
+                       arguments ])));            
         }
 
         #endregion

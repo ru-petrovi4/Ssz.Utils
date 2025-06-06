@@ -51,10 +51,12 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 }
 
                 var t = await utilityDataAccessProvider.LongrunningPassthroughAsync(@"", LongrunningPassthroughConstants.ProcessModelingSession_RunOperatorExe,
-                    Encoding.UTF8.GetBytes(CsvHelper.FormatForCsv(operatorSessionId, 
-                    workingDirectoriesOptional.Value.BinDirectoryInfo.FullName, 
-                    workingDirectoriesOptional.Value.DataDirectoryInfo.FullName,
-                    utilityDataAccessProvider.ServerAddress)), null);
+                    Encoding.UTF8.GetBytes(CsvHelper.FormatForCsv(
+                        @",",
+                        [ operatorSessionId, 
+                        workingDirectoriesOptional.Value.BinDirectoryInfo.FullName, 
+                        workingDirectoriesOptional.Value.DataDirectoryInfo.FullName,
+                        utilityDataAccessProvider.ServerAddress ])), null);
                       
             }
             catch (NotifyProgressException ex)

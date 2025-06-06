@@ -45,37 +45,17 @@ namespace Ssz.Utils
                 result += FormatValueForCsv(separator, v);                
             }
             return result;
-        }
-
-        /// <summary>
-        ///     Formats with default separator - comma.
-        /// </summary>
-        /// <param name="values"></param>
-        /// <returns></returns>
-        public static string FormatForCsv(params string?[] values)
-        {            
-            return FormatForCsv(@",", values);
-        }
+        }        
 
         /// <summary>        
         ///     values converted using Any.ConvertTo String (obj, false).
         /// </summary>
-        public static string FormatForCsv(string separator, IEnumerable<object?> values)
+        public static string FormatForCsv(string separator, IEnumerable<object> values)
         {
             if (separator.Length != 1) throw new InvalidOperationException();
 
             return FormatForCsv(separator, values.Select(obj => obj is null ? null : new Any(obj).ValueAsString(false)));
-        }
-
-        /// <summary>
-        ///     Formats with default separator - comma.
-        /// </summary>
-        /// <param name="values"></param>
-        /// <returns></returns>
-        public static string FormatForCsv(params object?[] values)
-        {
-            return FormatForCsv(@",", values);
-        }
+        }        
 
         /// <summary>        
         /// </summary>
