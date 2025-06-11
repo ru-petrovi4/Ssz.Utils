@@ -214,7 +214,20 @@ namespace Ssz.Utils
         {
             return GetValue(configuration, ConfigurationConstants.ConfigurationKey_IsMainProcess, true);
         }
-        
+
+        /// <summary>
+        ///     Default is 'Production' environment.
+        /// </summary>
+        /// <param name="hostEnvironment"></param>
+        /// <returns></returns>
+        public static string GetEnvironmentName(IHostEnvironment? hostEnvironment)
+        {
+            string? environmentName = hostEnvironment?.EnvironmentName;
+            if (String.IsNullOrEmpty(environmentName))
+                environmentName = @"Production";
+            return environmentName!;
+        }
+
         /// <summary>
         ///     Default is 'Production' environment.
         /// </summary>
@@ -222,10 +235,7 @@ namespace Ssz.Utils
         /// <returns></returns>
         public static IEnumerable<string> GetYamlConfigurationFilePaths(IHostEnvironment? hostEnvironment)
         {
-            string? environmentName = hostEnvironment?.EnvironmentName;
-            if (String.IsNullOrEmpty(environmentName))
-                environmentName = @"Production";
-
+            string environmentName = GetEnvironmentName(hostEnvironment);            
             yield return $"appsettings.yml";
             yield return $"appsettings.{environmentName}.yml";            
         }
