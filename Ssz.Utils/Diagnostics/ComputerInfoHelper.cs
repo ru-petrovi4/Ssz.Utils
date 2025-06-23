@@ -24,7 +24,7 @@ namespace Ssz.Utils.Diagnostics
         /// <summary>
         ///     Total Physical Memory
         /// </summary>
-        public const string ParamName_TotalMemoryInBytes = @"TotalMemoryInBytes";
+        public const string ParamName_MemoryTotalInBytes = @"MemoryTotalInBytes";
 
         /// <summary>
         ///     The memory utilization.
@@ -42,14 +42,14 @@ namespace Ssz.Utils.Diagnostics
         public const string ParamName_DriveFormat = @"DriveFormat";
 
         /// <summary>
-        ///     Drive Total Size.
+        ///     Drive Total Space.
         /// </summary>
-        public const string ParamName_Drive_TotalSizeInBytes = @"Drive_TotalSizeInBytes";
+        public const string ParamName_DriveTotalInBytes = @"DriveTotalInBytes";
 
         /// <summary>
         ///     Space Used.
         /// </summary>
-        public const string ParamName_Drive_SpaceUsedInBytes = @"Drive_SpaceUsedInBytes";
+        public const string ParamName_DriveUsedInBytes = @"DriveUsedInBytes";
 
         /// <summary>
         ///     Drives info.
@@ -69,7 +69,7 @@ namespace Ssz.Utils.Diagnostics
             //systemParams[ParamName_MemoryUsedInBytes] = new Any((long)resourceUtilization.MemoryUsedInBytes);
 
             systemParams[ParamName_CpuUsedPercentage] = new Any((long)await GetCpuUsedPercentageAsync(currentProcess));
-            systemParams[ParamName_TotalMemoryInBytes] = new Any((long)computerInfo.TotalPhysicalMemory);
+            systemParams[ParamName_MemoryTotalInBytes] = new Any((long)computerInfo.TotalPhysicalMemory);
             systemParams[ParamName_MemoryUsedInBytes] = new Any((long)currentProcess.WorkingSet64);
 
             //addonStatusParams[ParamName_OSPlatform] = new Any(computerInfo.OSPlatform);
@@ -88,8 +88,8 @@ namespace Ssz.Utils.Diagnostics
 
                     driveInfo[ParamName_VolumeLabel] = new Any(di.VolumeLabel);
                     driveInfo[ParamName_DriveFormat] = new Any(di.DriveFormat);
-                    driveInfo[ParamName_Drive_TotalSizeInBytes] = new Any(di.TotalSize);
-                    driveInfo[ParamName_Drive_SpaceUsedInBytes] = new Any(di.TotalSize - di.AvailableFreeSpace);
+                    driveInfo[ParamName_DriveTotalInBytes] = new Any(di.TotalSize);
+                    driveInfo[ParamName_DriveUsedInBytes] = new Any(di.TotalSize - di.AvailableFreeSpace);
 
                     drivesInfo[di.Name] = new Any(driveInfo);
                 }
