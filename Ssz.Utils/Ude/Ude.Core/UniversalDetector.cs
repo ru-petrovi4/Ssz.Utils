@@ -93,28 +93,28 @@ namespace Ude.Core
             // If the data starts with BOM, we know it is UTF
             if (start) {
                 start = false;
-                if (len > 3) {
+                if (len >= 3) { // VALFIX
                     switch (buf[0]) {
                     case 0xEF:
                         if (0xBB == buf[1] && 0xBF == buf[2])
                             detectedCharset = "UTF-8";
                         break;
                     case 0xFE:
-                        if (0xFF == buf[1] && 0x00 == buf[2] && 0x00 == buf[3])
+                        if (len > 3 && 0xFF == buf[1] && 0x00 == buf[2] && 0x00 == buf[3]) // VALFIX
                             // FE FF 00 00  UCS-4, unusual octet order BOM (3412)
                             detectedCharset = "X-ISO-10646-UCS-4-3412";
                         else if (0xFF == buf[1])
                             detectedCharset = "UTF-16BE";
                         break;
                     case 0x00:
-                        if (0x00 == buf[1] && 0xFE == buf[2] && 0xFF == buf[3])
+                        if (len > 3 && 0x00 == buf[1] && 0xFE == buf[2] && 0xFF == buf[3]) // VALFIX
                             detectedCharset = "UTF-32BE";
-                        else if (0x00 == buf[1] && 0xFF == buf[2] && 0xFE == buf[3])
+                        else if (len > 3 && 0x00 == buf[1] && 0xFF == buf[2] && 0xFE == buf[3])  // VALFIX
                             // 00 00 FF FE  UCS-4, unusual octet order BOM (2143)
                             detectedCharset = "X-ISO-10646-UCS-4-2143";
                         break;
                     case 0xFF:
-                        if (0xFE == buf[1] && 0x00 == buf[2] && 0x00 == buf[3])
+                        if (len > 3 && 0xFE == buf[1] && 0x00 == buf[2] && 0x00 == buf[3]) // VALFIX
                             detectedCharset = "UTF-32LE";
                         else if (0xFE == buf[1])
                             detectedCharset = "UTF-16LE";
