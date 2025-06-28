@@ -8,11 +8,7 @@
   <GenerateDocumentationFile>True</GenerateDocumentationFile>
   <NoWarn>$(NoWarn);1591</NoWarn>  
   <Platforms>AnyCPU;x86</Platforms>  
-  </PropertyGroup>
-
-  <ItemGroup>
-    <Content Update="appsettings.*.yml" CopyToPublishDirectory="Never" />
-  </ItemGroup>
+  </PropertyGroup>  
 
   <PropertyGroup>
     <ServerGarbageCollection>true</ServerGarbageCollection>
@@ -58,6 +54,10 @@
     <EmbeddedResource Update="Properties\Resources.ru.resx">
       <Generator></Generator>
     </EmbeddedResource>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Content Update="appsettings.*.yml" CopyToPublishDirectory="Never" />
   </ItemGroup>
 
   <ItemGroup>

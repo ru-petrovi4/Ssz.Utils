@@ -16,7 +16,7 @@ namespace Ssz.Utils.Diagnostics
         {
             const String KbToken = "kB";
             var memTotalLine = GetProcMemInfoLines().FirstOrDefault(x => x.StartsWith(token))?.Substring(token.Length);
-            if (memTotalLine != null && memTotalLine.EndsWith(KbToken) && UInt64.TryParse(memTotalLine.Substring(0, memTotalLine.Length - KbToken.Length), out var memKb))
+            if (memTotalLine != null && memTotalLine.EndsWith(KbToken) && UInt64.TryParse(memTotalLine.Substring(0, memTotalLine.Length - KbToken.Length).Trim(), out var memKb))
                 return memKb * 1024;
             throw new Exception();
         }
