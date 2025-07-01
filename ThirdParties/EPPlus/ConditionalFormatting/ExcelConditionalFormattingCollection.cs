@@ -369,40 +369,41 @@ namespace OfficeOpenXml.ConditionalFormatting
     {
       return _rules.Find(x => x.Priority == priority);
     }
-    #endregion IEnumerable<IExcelConditionalFormatting>
 
-    /****************************************************************************************/
-
-    #region Conditional Formatting Rules
     /// <summary>
-    /// Add rule (internal)
+    /// Add rule (VALFIX)
     /// </summary>
     /// <param name="type"></param>
     /// <param name="address"></param>
     /// <returns></returns>F
-    internal IExcelConditionalFormattingRule AddRule(
-      eExcelConditionalFormattingRuleType type,
-      ExcelAddress address)
+    public IExcelConditionalFormattingRule AddRule(
+        eExcelConditionalFormattingRuleType type,
+        ExcelAddress address)
     {
-      Require.Argument(address).IsNotNull("address");
+        Require.Argument(address).IsNotNull("address");
 
-      address = ValidateAddress(address);
-      EnsureRootElementExists();
+        address = ValidateAddress(address);
+        EnsureRootElementExists();
 
-      // Create the Rule according to the correct type, address and priority
-      IExcelConditionalFormattingRule cfRule = ExcelConditionalFormattingRuleFactory.Create(
-        type,
-        address,
-        GetNextPriority(),
-        _worksheet,
-        null);
+        // Create the Rule according to the correct type, address and priority
+        IExcelConditionalFormattingRule cfRule = ExcelConditionalFormattingRuleFactory.Create(
+            type,
+            address,
+            GetNextPriority(),
+            _worksheet,
+            null);
 
-      // Add the newly created rule to the list
-      _rules.Add(cfRule);
+        // Add the newly created rule to the list
+        _rules.Add(cfRule);
 
-      // Return the newly created rule
-      return cfRule;
+        // Return the newly created rule
+        return cfRule;
     }
+    #endregion IEnumerable<IExcelConditionalFormatting>
+
+    /****************************************************************************************/
+
+    #region Conditional Formatting Rules   
 
     /// <summary>
     /// Add AboveAverage Rule

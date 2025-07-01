@@ -186,7 +186,11 @@ namespace OfficeOpenXml.Drawing
         protected internal int _id;
         const float STANDARD_DPI = 96;
         public const int EMU_PER_PIXEL = 9525;
-        protected internal int _width = int.MinValue, _height = int.MinValue, _top=int.MinValue, _left=int.MinValue;
+        // VALFIX
+        public int Width { get; protected internal set; } = int.MinValue;
+        public int Height { get; protected internal set; } = int.MinValue;
+        public int Top { get; protected internal set; } = int.MinValue;
+        public int Left { get; protected internal set; } = int.MinValue;
         bool _doNotAdjust = false;
         internal ExcelDrawing(ExcelDrawings drawings, XmlNode node, string nameXPath) :
             base(drawings.NameSpaceManager, node)
@@ -330,8 +334,8 @@ namespace OfficeOpenXml.Drawing
             if (!_drawings.Worksheet.Workbook._package.DoAdjustDrawings &&
                 EditAs==eEditAs.Absolute)
             {
-                SetPixelWidth(_width);
-                SetPixelHeight(_height);
+                SetPixelWidth(Width);
+                SetPixelHeight(Height);
             }
         }
         /// <summary>
@@ -576,7 +580,7 @@ namespace OfficeOpenXml.Drawing
                 From.Row = row - 2;
                 From.RowOff = (pixels - prevPix) * EMU_PER_PIXEL;
             }
-            _top = pixels;
+            Top = pixels;
             _doNotAdjust = false;
         }
         internal void SetPixelLeft(int pixels)
@@ -603,7 +607,7 @@ namespace OfficeOpenXml.Drawing
                 From.Column = col - 2;
                 From.ColumnOff = (pixels - prevPix) * EMU_PER_PIXEL;
             }
-            _left = pixels;
+            Left = pixels;
             _doNotAdjust = false;
         }
         internal void SetPixelHeight(int pixels)
@@ -672,17 +676,17 @@ namespace OfficeOpenXml.Drawing
         public void SetPosition(int PixelTop, int PixelLeft)
         {
             _doNotAdjust = true;
-            if (_width == int.MinValue)
+            if (Width == int.MinValue)
             {
-                _width = GetPixelWidth();
-                _height = GetPixelHeight();
+                Width = GetPixelWidth();
+                Height = GetPixelHeight();
             }
 
             SetPixelTop(PixelTop);
             SetPixelLeft(PixelLeft);
 
-            SetPixelWidth(_width);
-            SetPixelHeight(_height);
+            SetPixelWidth(Width);
+            SetPixelHeight(Height);
             _doNotAdjust = false;
         }
         /// <summary>
@@ -705,10 +709,10 @@ namespace OfficeOpenXml.Drawing
             }
             _doNotAdjust = true;
 
-            if (_width == int.MinValue)
+            if (Width == int.MinValue)
             {
-                _width = GetPixelWidth();
-                _height = GetPixelHeight();
+                Width = GetPixelWidth();
+                Height = GetPixelHeight();
             }
 
             From.Row = Row;
@@ -716,8 +720,8 @@ namespace OfficeOpenXml.Drawing
             From.Column = Column;
             From.ColumnOff = ColumnOffsetPixels * EMU_PER_PIXEL;
 
-            SetPixelWidth(_width);
-            SetPixelHeight(_height);
+            SetPixelWidth(Width);
+            SetPixelHeight(Height);
             _doNotAdjust = false;
         }
         /// <summary>
@@ -728,16 +732,16 @@ namespace OfficeOpenXml.Drawing
         public virtual void SetSize(int Percent)
         {
             _doNotAdjust = true;
-            if (_width == int.MinValue)
+            if (Width == int.MinValue)
             {
-                _width = GetPixelWidth();
-                _height = GetPixelHeight();
+                Width = GetPixelWidth();
+                Height = GetPixelHeight();
             }
-            _width = (int)(_width * ((decimal)Percent / 100));
-            _height = (int)(_height * ((decimal)Percent / 100));
+            Width = (int)(Width * ((decimal)Percent / 100));
+            Height = (int)(Height * ((decimal)Percent / 100));
 
-            SetPixelWidth(_width, 96);
-            SetPixelHeight(_height, 96);
+            SetPixelWidth(Width, 96);
+            SetPixelHeight(Height, 96);
             _doNotAdjust = false;
         }
         /// <summary>
@@ -749,8 +753,8 @@ namespace OfficeOpenXml.Drawing
         public void SetSize(int PixelWidth, int PixelHeight)
         {
             _doNotAdjust = true;
-            _width = PixelWidth;
-            _height = PixelHeight;
+            Width = PixelWidth;
+            Height = PixelHeight;
             SetPixelWidth(PixelWidth);
             SetPixelHeight(PixelHeight);
             _doNotAdjust = false;
@@ -768,10 +772,10 @@ namespace OfficeOpenXml.Drawing
         internal void GetPositionSize()
         {
             if (_doNotAdjust) return;
-            _top = GetPixelTop();
-            _left = GetPixelLeft();
-            _height = GetPixelHeight();
-            _width = GetPixelWidth();
+            Top = GetPixelTop();
+            Left = GetPixelLeft();
+            Height = GetPixelHeight();
+            Width = GetPixelWidth();
         }
         /// <summary>
         /// Will adjust the position and size of the drawing according to chages in font of rows and to the Normal style.
@@ -782,13 +786,13 @@ namespace OfficeOpenXml.Drawing
             if (_drawings.Worksheet.Workbook._package.DoAdjustDrawings == false) return;
             if (EditAs==eEditAs.Absolute)
             {
-                SetPixelLeft(_left);
-                SetPixelTop(_top);
+                SetPixelLeft(Left);
+                SetPixelTop(Top);
             }
             if(EditAs == eEditAs.Absolute || EditAs == eEditAs.OneCell)
             {
-                SetPixelHeight(_height);
-                SetPixelWidth(_width);
+                SetPixelHeight(Height);
+                SetPixelWidth(Width);
             }
         }
     }

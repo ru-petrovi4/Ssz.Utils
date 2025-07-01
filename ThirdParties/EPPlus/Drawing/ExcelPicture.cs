@@ -107,8 +107,8 @@ namespace OfficeOpenXml.Drawing
 
             //Create relationship
             node.SelectSingleNode("xdr:pic/xdr:blipFill/a:blip/@r:embed", NameSpaceManager).Value = relID;
-            _height = image.Height;
-            _width = image.Width;
+            Height = image.Height;
+            Width = image.Width;
             SetPosDefaults(image);
             package.Flush();
         }
@@ -154,8 +154,8 @@ namespace OfficeOpenXml.Drawing
                 UriPic = UriHelper.ResolvePartUri(rel.SourceUri, rel.TargetUri);
             }
             ImageHash = ii.Hash;
-            _height = Image.Height;
-            _width = Image.Width;
+            Height = Image.Height;
+            Width = Image.Width;
             SetPosDefaults(Image);
             //Create relationship
             node.SelectSingleNode("xdr:pic/xdr:blipFill/a:blip/@r:embed", NameSpaceManager).Value = relID;
@@ -366,14 +366,14 @@ namespace OfficeOpenXml.Drawing
             }
             else
             {
-                _width = Image.Width;
-                _height = Image.Height;
+                Width = Image.Width;
+                Height = Image.Height;
 
-                _width = (int)(_width * ((decimal)Percent / 100));
-                _height = (int)(_height * ((decimal)Percent / 100));
+                Width = (int)(Width * ((decimal)Percent / 100));
+                Height = (int)(Height * ((decimal)Percent / 100));
 
-                SetPixelWidth(_width, Image.HorizontalResolution);
-                SetPixelHeight(_height, Image.VerticalResolution);
+                SetPixelWidth(Width, Image.HorizontalResolution);
+                SetPixelHeight(Height, Image.VerticalResolution);
             }
         }
         internal Uri UriPic { get; set; }

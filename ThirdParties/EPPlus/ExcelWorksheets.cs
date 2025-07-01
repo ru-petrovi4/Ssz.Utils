@@ -738,10 +738,10 @@ namespace OfficeOpenXml
                 var c = workSheet.Drawings[i];
                 if (c != null)
                 {
-                    c._left = draw._left;
-                    c._top = draw._top;
-                    c._height = draw._height;
-                    c._width = draw._width;
+                    c.Left = draw.Left;
+                    c.Top = draw.Top;
+                    c.Height = draw.Height;
+                    c.Width = draw.Width;
                 }
             }            
         }
