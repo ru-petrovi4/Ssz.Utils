@@ -197,6 +197,12 @@ namespace Ssz.Utils.DataAccess
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        ///     Used only when <see cref="ElementIdsMap"> or <see cref="ServerAddress"> changed.
+        ///     Re-initializes this object with same other settings.
+        ///     Items must not be added again.
+        ///     Precondition: must be initializied.   
+        /// </summary>
         public virtual async Task ReInitializeAsync()
         {
             if (!IsInitialized)

@@ -81,7 +81,8 @@ namespace Ssz.Utils.DataAccess
         Task UpdateContextParamsAsync(CaseInsensitiveDictionary<string?> contextParams);
 
         /// <summary>
-        ///     Re-initializes this object with same settings.
+        ///     Used only when <see cref="ElementIdsMap"> or <see cref="ServerAddress"> changed.
+        ///     Re-initializes this object with same other settings.
         ///     Items must not be added again.
         ///     Precondition: must be initializied.   
         /// </summary>
