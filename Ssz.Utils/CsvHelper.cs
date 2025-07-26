@@ -50,7 +50,7 @@ namespace Ssz.Utils
         /// <summary>        
         ///     values converted using Any.ConvertTo String (obj, false).
         /// </summary>
-        public static string FormatForCsv(string separator, IEnumerable<object> values)
+        public static string FormatForCsv(string separator, IEnumerable<object?> values)
         {
             if (separator.Length != 1) throw new InvalidOperationException();
 
