@@ -1,5 +1,7 @@
 ﻿using OfficeOpenXml;
 using OfficeOpenXml.Drawing;
+using OfficeOpenXml.Style;
+using System.Drawing;
 
 namespace Ssz.Utils.OpenXML;
 
@@ -79,6 +81,52 @@ public static class ExcelHelper
                 var image = target.Drawings.AddPicture(pic.Name + "_Copy", pic.Image);
                 image.SetPosition(pic.From.Row, pic.From.RowOff, pic.From.Column, pic.From.ColumnOff);
                 image.SetSize(pic.Width, pic.Height);
+            }
+        }
+    }
+
+    public static void DrawBorder(ExcelWorksheet ws,
+                                  int fromRow, int fromCol,
+                                  int toRow, int toCol,
+                                  ExcelBorderStyle borderStyle = ExcelBorderStyle.Thin,
+                                  Color? color = null)
+    {
+        Color borderColor = color ?? Color.Black;
+
+        for (int row = fromRow; row <= toRow; row++)
+        {
+            for (int col = fromCol; col <= toCol; col++)
+            {
+                var cell = ws.Cells[row, col];
+                var border = cell.Style.Border;
+
+                // верхняя граница
+                if (row == fromRow)
+                {
+                    border.Top.Style = borderStyle;
+                    border.Top.Color.SetColor(borderColor);
+                }
+
+                // нижняя граница
+                if (row == toRow)
+                {
+                    border.Bottom.Style = borderStyle;
+                    border.Bottom.Color.SetColor(borderColor);
+                }
+
+                // левая граница
+                if (col == fromCol)
+                {
+                    border.Left.Style = borderStyle;
+                    border.Left.Color.SetColor(borderColor);
+                }
+
+                // правая граница
+                if (col == toCol)
+                {
+                    border.Right.Style = borderStyle;
+                    border.Right.Color.SetColor(borderColor);
+                }
             }
         }
     }
