@@ -14,9 +14,9 @@
     <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.4.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.7" />
     <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="9.0.7" />
-    <PackageReference Include="protobuf-net" Version="3.2.52" />    
+    <PackageReference Include="protobuf-net" Version="3.2.56" />    
     <PackageReference Include="System.ComponentModel.Composition" Version="9.0.7" />
-    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.6" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.7" />
   </ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
