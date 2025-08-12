@@ -6,30 +6,33 @@ namespace Ssz.Utils;
 
 public class FastList<T>
 {
-    private const int DefaultCapacity = 16;
-
-    private T[] _items;  // Публичный доступ к внутреннему массиву
-    public int Count { get; private set; }
-
-    public Span<T> Items => _items.AsSpan(0, Count);
+    #region construction and destruction
 
     public FastList(int capacity = DefaultCapacity)
     {
         _items = new T[capacity];
-        Count = 0;
+        _count = 0;
     }
+
+    #endregion
+
+    #region public functions
+
+    public Span<T> Items => _items.AsSpan(0, _count);
+
+    public int Count => _count;
 
     public void Add(T item)
     {
-        if (Count >= _items.Length)
+        if (_count >= _items.Length)
             Resize(_items.Length * 2);
 
-        _items[Count++] = item;
+        _items[_count++] = item;
     }
 
     public void AddRange(ReadOnlySpan<T> span)
     {
-        int required = Count + span.Length;
+        int required = _count + span.Length;
 
         if (required > _items.Length)
         {
@@ -40,13 +43,18 @@ public class FastList<T>
             Resize(newCapacity);
         }
 
-        span.CopyTo(_items.AsSpan(Count));
-        Count += span.Length;
+        span.CopyTo(_items.AsSpan(_count));
+        _count += span.Length;
+    }
+
+    public void Swap(FastList<T> that)
+    {
+        (that._items, that._count) = (_items, _count);
     }
 
     public void Clear()
     {
-        Count = 0;
+        _count = 0;
     }
 
     public T this[int index]
@@ -58,9 +66,21 @@ public class FastList<T>
     private void Resize(int newSize)
     {
         var newArray = new T[newSize];
-        for (int i = 0; i < Count; i++)
+        for (int i = 0; i < _count; i++)
             newArray[i] = _items[i];
 
         _items = newArray;
     }
+
+    #endregion    
+
+    #region private fields
+
+    private const int DefaultCapacity = 16;
+
+    private T[] _items;
+
+    private int _count;
+
+    #endregion
 }

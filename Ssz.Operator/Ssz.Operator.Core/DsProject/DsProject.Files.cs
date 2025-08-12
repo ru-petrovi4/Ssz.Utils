@@ -996,19 +996,18 @@ namespace Ssz.Operator.Core
 
             if (dlg.ShowDialog() != true) return true;
 
-            if (!StringHelper.StartsWithIgnoreCase(dlg.FileName, DsPagesDirectoryInfo!.FullName + @"\"))
-            {
-                MessageBoxHelper.ShowError(Resources.FileMustBeInDsProjectDir);
-                return true;
-            }
-
             /*
-                    if (String.Compare(dlg.FileName, drawing.FileInfo.FullName, true,
-                        CultureInfo.InvariantCulture) == 0)
-                    {
-                        File.Copy(drawing.FileInfo.FullName, drawing.FileInfo.FullName + ".backup", true);
-                        MessageBoxHelper.ShowInfo(Properties.Resources.BackupDrawingWasCreated + " " + drawing.FileInfo.FullName + ".backup");
-                    }*/
+           if (!StringHelper.StartsWithIgnoreCase(dlg.FileName, DsPagesDirectoryInfo!.FullName + @"\"))
+           {
+               MessageBoxHelper.ShowError(Resources.FileMustBeInDsProjectDir);
+               return true;
+           }           
+                   if (String.Compare(dlg.FileName, drawing.FileInfo.FullName, true,
+                       CultureInfo.InvariantCulture) == 0)
+                   {
+                       File.Copy(drawing.FileInfo.FullName, drawing.FileInfo.FullName + ".backup", true);
+                       MessageBoxHelper.ShowInfo(Properties.Resources.BackupDrawingWasCreated + " " + drawing.FileInfo.FullName + ".backup");
+                   }*/
 
             drawing.FileFullName = new FileInfo(dlg.FileName).FullName;
 

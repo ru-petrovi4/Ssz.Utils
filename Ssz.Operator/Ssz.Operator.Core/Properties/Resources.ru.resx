@@ -174,11 +174,11 @@
   <data name="AlarmListDsShapeAppearanceType" xml:space="preserve">
     <value>Отображение</value>
   </data>
-  <data name="AllDsShapeDrawingsComboBoxItem" xml:space="preserve">
-    <value>Все шейпы</value>
-  </data>
   <data name="AllDsPageDrawingsComboBoxItem" xml:space="preserve">
     <value>Все страницы</value>
+  </data>
+  <data name="AllDsShapeDrawingsComboBoxItem" xml:space="preserve">
+    <value>Все шейпы</value>
   </data>
   <data name="AllOpenedDrawingsComboBoxItem" xml:space="preserve">
     <value>Все открытые страницы и шейпы</value>
@@ -327,6 +327,12 @@
   <data name="CloneableObjectProperties" xml:space="preserve">
     <value>...</value>
   </data>
+  <data name="CloseAllFaceplatesDsCommandOptions_PlayWindowClassInfo" xml:space="preserve">
+    <value>Класс окна</value>
+  </data>
+  <data name="CloseAllFaceplatesDsCommandOptions_PlayWindowClassInfo_Description" xml:space="preserve">
+    <value>Закрывает все дочерние окна определенного класса. Если класс не задан, то закрывает все дочерние окна.</value>
+  </data>
   <data name="CloseButtonToolTip" xml:space="preserve">
     <value>Закрыть</value>
   </data>
@@ -407,9 +413,6 @@
   </data>
   <data name="ComplexDsShapeDesc" xml:space="preserve">
     <value>Описание</value>
-  </data>
-  <data name="DsShapeDrawing" xml:space="preserve">
-    <value>Complex Shape Drawing</value>
   </data>
   <data name="ComplexDsShapeDsConstantsCollection" xml:space="preserve">
     <value>Константы</value>
@@ -847,6 +850,12 @@ d[i], i[i], u[i], b[i], s[i], где i это индекс источника д
   <data name="DsConstantsCollectionDescription" xml:space="preserve">
     <value>You can type in partial value in 'Value' field, e. g. you can type in '3310' to filter drop-down list for values 'FIC3310', 'FI3310'.</value>
   </data>
+  <data name="DsPageBackground" xml:space="preserve">
+    <value>Фон страницы</value>
+  </data>
+  <data name="DsPageBackgroundDescription" xml:space="preserve">
+    <value>If value is default, corresponding Solution setting is used.</value>
+  </data>
   <data name="DsPageDrawing" xml:space="preserve">
     <value>Страница</value>
   </data>
@@ -859,14 +868,59 @@ d[i], i[i], u[i], b[i], s[i], где i это индекс источника д
   <data name="DsPageDrawingForConstantValueFaceplateDsPageDrawingFileName" xml:space="preserve">
     <value>Имя файла фейсплейта</value>
   </data>
+  <data name="DsPageDrawing_Desc" xml:space="preserve">
+    <value>Описание</value>
+  </data>
+  <data name="DsPageDrawing_DescDescription" xml:space="preserve">
+    <value>Use %(PageDesc) to refer current page desc. Use %(RootPageDesc) to refer root page desc in windows hierarchy.</value>
+  </data>
   <data name="DsPageDrawing_DsPageTypeGuid" xml:space="preserve">
     <value>Тип</value>
   </data>
   <data name="DsPageDrawing_DsPageTypeObject" xml:space="preserve">
     <value>Свойства</value>
   </data>
+  <data name="DsPageDrawing_ExcludeFromTagSearch" xml:space="preserve">
+    <value>Исключить страницу из поиска тэгов</value>
+  </data>
+  <data name="DsPageDrawing_ExcludeFromTagSearchDescription" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DsPageDrawing_Group" xml:space="preserve">
+    <value>Группа</value>
+  </data>
+  <data name="DsPageDrawing_GroupDescription" xml:space="preserve">
+    <value>Use %(PageGroup) to refer current page group. Use %(RootPageGroup) to refer root page group in windows hierarchy.</value>
+  </data>
+  <data name="DsPageDrawing_HorizontalAlignment" xml:space="preserve">
+    <value>Page Horizontal Alignment</value>
+  </data>
+  <data name="DsPageDrawing_HorizontalAlignment_Description" xml:space="preserve">
+    <value>If value is default, corresponding Solution property is used.</value>
+  </data>
+  <data name="DsPageDrawing_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="DsPageDrawing_NameDescription" xml:space="preserve">
+    <value>Use %(PageName) to refer current page name. Use %(RootPageName) to refer root page name in windows hierarchy.</value>
+  </data>
   <data name="DsPageDrawing_UnderlyingXaml" xml:space="preserve">
     <value>Underlying Content</value>
+  </data>
+  <data name="DsPageDrawing_VerticalAlignment" xml:space="preserve">
+    <value>Page Vertical Alignment</value>
+  </data>
+  <data name="DsPageDrawing_VerticalAlignment_Description" xml:space="preserve">
+    <value>If value is default, corresponding Solution property is used.</value>
+  </data>
+  <data name="DsPagesAndDsShapesDirectoryError" xml:space="preserve">
+    <value>Pages and Shapes library directory not found</value>
+  </data>
+  <data name="DsPageStretchMode" xml:space="preserve">
+    <value>Тип растягивания страницы</value>
+  </data>
+  <data name="DsPageStretchModeDescription" xml:space="preserve">
+    <value>If value is default, corresponding Solution property is used.</value>
   </data>
   <data name="DsPageTypeBase_Desc" xml:space="preserve">
     <value>Описание</value>
@@ -876,6 +930,123 @@ d[i], i[i], u[i], b[i], s[i], где i это индекс источника д
   </data>
   <data name="DsPageTypeCategory" xml:space="preserve">
     <value>Тип страницы</value>
+  </data>
+  <data name="DsProject" xml:space="preserve">
+    <value>Проект</value>
+  </data>
+  <data name="DsProjectActuallyUsedAddons" xml:space="preserve">
+    <value>Actually Used Addons</value>
+  </data>
+  <data name="DsProjectAddonsCollection" xml:space="preserve">
+    <value>Solution Addons</value>
+  </data>
+  <data name="DsProjectDesc" xml:space="preserve">
+    <value>Solution Description</value>
+  </data>
+  <data name="DsProjectDrawingCurrentSerializationVersionDateTime" xml:space="preserve">
+    <value>Solution Files Storage Version</value>
+  </data>
+  <data name="DsProjectDrawingsStoreMode" xml:space="preserve">
+    <value>Store Pages as </value>
+  </data>
+  <data name="DsProjectDsConstantsCollection" xml:space="preserve">
+    <value>Solution Generic Params</value>
+  </data>
+  <data name="DsProjectExeVersionDateTime" xml:space="preserve">
+    <value>EXE Version</value>
+  </data>
+  <data name="DsProjectFileFullName" xml:space="preserve">
+    <value>Solution File</value>
+  </data>
+  <data name="DsProjectFileOpenErrorAddonIsNotFound" xml:space="preserve">
+    <value>Cannot open Solution! Addon(s) isn't found:</value>
+  </data>
+  <data name="DsProjectFileOpenErrorFileWasSavedInNewerVersion" xml:space="preserve">
+    <value>Cannot open Solution! File was saved in unsupported or newer version of designer.</value>
+  </data>
+  <data name="DsProjectFileOpenErrorGeneral" xml:space="preserve">
+    <value>Cannot open Solution!</value>
+  </data>
+  <data name="DsProjectFileOpenWarningAddonIsNotFound" xml:space="preserve">
+    <value>Addon(s) isn't found:</value>
+  </data>
+  <data name="DsProjectIsReadOnlyDueToLicense" xml:space="preserve">
+    <value>Solution cannot be modified or saved. Design is in Read-Only mode. A Ssz Maintenance Licence is required to perform this toolkitOperation.</value>
+  </data>
+  <data name="DsProjectLoadedWithErrors" xml:space="preserve">
+    <value>Solution loaded with errors. See error log for details.</value>
+  </data>
+  <data name="DsProjectName" xml:space="preserve">
+    <value>Solution Name</value>
+  </data>
+  <data name="DsProjectRootWindowProps" xml:space="preserve">
+    <value>Play Window Properties</value>
+  </data>
+  <data name="DsProjectRootWindowPropsDescription" xml:space="preserve">
+    <value>Properties of root play windows (title etc.)</value>
+  </data>
+  <data name="DsProjectSavingError" xml:space="preserve">
+    <value>Error saving Solution file.</value>
+  </data>
+  <data name="DsProjectSavingUnauthorizedAccessError" xml:space="preserve">
+    <value>Error saving Solution file. Access is denied!</value>
+  </data>
+  <data name="DsProjectStartDsPageFileRelativePath" xml:space="preserve">
+    <value>Стартовая страница. Имя .DsPage файла (с расширением)</value>
+  </data>
+  <data name="DsProject_ConditionalDsCommandsCollection" xml:space="preserve">
+    <value>Conditional Commands</value>
+  </data>
+  <data name="DsProject_ConditionalDsCommandsCollection_Description" xml:space="preserve">
+    <value>Command from list is executed, when transition from command disabled to command enabled occurs or after Solution load, if enabled.</value>
+  </data>
+  <data name="DsProject_DataEngine" xml:space="preserve">
+    <value>Play-time Properties</value>
+  </data>
+  <data name="DsProject_DataEngineGuidAndName" xml:space="preserve">
+    <value>Model Engine</value>
+  </data>
+  <data name="DsProject_DefaultDsPageSize" xml:space="preserve">
+    <value>Default Page Size</value>
+  </data>
+  <data name="DsProject_DefaultServerAddress" xml:space="preserve">
+    <value>Адрес сервера данных</value>
+  </data>
+  <data name="DsProject_DsPageBackground" xml:space="preserve">
+    <value>Pages Background</value>
+  </data>
+  <data name="DsProject_DsPageBackground_Description" xml:space="preserve">
+    <value>You can override this setting in page properties.</value>
+  </data>
+  <data name="DsProject_DsPageHorizontalAlignment" xml:space="preserve">
+    <value>Pages Horizontal Alignment</value>
+  </data>
+  <data name="DsProject_DsPageHorizontalAlignment_Description" xml:space="preserve">
+    <value>You can override this setting in page properties.</value>
+  </data>
+  <data name="DsProject_DsPageStretchMode" xml:space="preserve">
+    <value>Pages Stretch Mode</value>
+  </data>
+  <data name="DsProject_DsPageStretchMode_Description" xml:space="preserve">
+    <value>You can override this setting in page properties.</value>
+  </data>
+  <data name="DsProject_DsPageVerticalAlignment" xml:space="preserve">
+    <value>Pages Vertical Alignment</value>
+  </data>
+  <data name="DsProject_DsPageVerticalAlignment_Description" xml:space="preserve">
+    <value>You can override this setting in page properties.</value>
+  </data>
+  <data name="DsProject_OperatorUICultureName" xml:space="preserve">
+    <value>Operator UI Culture</value>
+  </data>
+  <data name="DsProject_PlayWindowClassOptionsCollection" xml:space="preserve">
+    <value>Настройки классов окон</value>
+  </data>
+  <data name="DsProject_PlayWindowClassOptionsCollection_Description" xml:space="preserve">
+    <value>Определяет для классов окон: максимальное количество окон данного класса, закрывать ли фейсплейты данного класса при переходе на другую страницу.</value>
+  </data>
+  <data name="DsProject_TryConvertXamlToDsShapes" xml:space="preserve">
+    <value>Try Convert XAML to Shapes</value>
   </data>
   <data name="DsShapeAngleDeltaInfo" xml:space="preserve">
     <value>Angle delta [0..1]</value>
@@ -912,6 +1083,9 @@ d[i], i[i], u[i], b[i], s[i], где i это индекс источника д
   </data>
   <data name="DsShapeDesc" xml:space="preserve">
     <value>Description</value>
+  </data>
+  <data name="DsShapeDrawing" xml:space="preserve">
+    <value>Complex Shape Drawing</value>
   </data>
   <data name="DsShapeExportPropertiesSaveAsDialogTitle" xml:space="preserve">
     <value>Please, specify new file name to export to</value>
@@ -991,123 +1165,6 @@ d[i], i[i], u[i], b[i], s[i], где i это индекс источника д
   <data name="DsShape_RotationZ" xml:space="preserve">
     <value>Rotation Z</value>
   </data>
-  <data name="DsProject" xml:space="preserve">
-    <value>Проект</value>
-  </data>
-  <data name="DsProjectActuallyUsedAddons" xml:space="preserve">
-    <value>Actually Used Addons</value>
-  </data>
-  <data name="DsProjectAddonsCollection" xml:space="preserve">
-    <value>Solution Addons</value>
-  </data>
-  <data name="DsProject_DefaultDsPageSize" xml:space="preserve">
-    <value>Default Page Size</value>
-  </data>
-  <data name="DsProjectDesc" xml:space="preserve">
-    <value>Solution Description</value>
-  </data>
-  <data name="DsProjectDrawingCurrentSerializationVersionDateTime" xml:space="preserve">
-    <value>Solution Files Storage Version</value>
-  </data>
-  <data name="DsProjectDrawingsStoreMode" xml:space="preserve">
-    <value>Store Pages as </value>
-  </data>
-  <data name="DsProjectDsConstantsCollection" xml:space="preserve">
-    <value>Solution Generic Params</value>
-  </data>
-  <data name="DsProjectExeVersionDateTime" xml:space="preserve">
-    <value>EXE Version</value>
-  </data>
-  <data name="DsProjectFileFullName" xml:space="preserve">
-    <value>Solution File</value>
-  </data>
-  <data name="DsProjectFileOpenErrorAddonIsNotFound" xml:space="preserve">
-    <value>Cannot open Solution! Addon(s) isn't found:</value>
-  </data>
-  <data name="DsProjectFileOpenErrorFileWasSavedInNewerVersion" xml:space="preserve">
-    <value>Cannot open Solution! File was saved in unsupported or newer version of designer.</value>
-  </data>
-  <data name="DsProjectFileOpenErrorGeneral" xml:space="preserve">
-    <value>Cannot open Solution!</value>
-  </data>
-  <data name="DsProjectFileOpenWarningAddonIsNotFound" xml:space="preserve">
-    <value>Addon(s) isn't found:</value>
-  </data>
-  <data name="DsProjectIsReadOnlyDueToLicense" xml:space="preserve">
-    <value>Solution cannot be modified or saved. Design is in Read-Only mode. A Ssz Maintenance Licence is required to perform this toolkitOperation.</value>
-  </data>
-  <data name="DsProjectLoadedWithErrors" xml:space="preserve">
-    <value>Solution loaded with errors. See error log for details.</value>
-  </data>
-  <data name="DsProjectName" xml:space="preserve">
-    <value>Solution Name</value>
-  </data>
-  <data name="DsProjectRootWindowProps" xml:space="preserve">
-    <value>Play Window Properties</value>
-  </data>
-  <data name="DsProjectRootWindowPropsDescription" xml:space="preserve">
-    <value>Properties of root play windows (title etc.)</value>
-  </data>
-  <data name="DsProjectSavingError" xml:space="preserve">
-    <value>Error saving Solution file.</value>
-  </data>
-  <data name="DsProjectSavingUnauthorizedAccessError" xml:space="preserve">
-    <value>Error saving Solution file. Access is denied!</value>
-  </data>
-  <data name="DsProjectStartDsPageFileRelativePath" xml:space="preserve">
-    <value>Стартовая страница. Имя .DsPage файла (с расширением)</value>
-  </data>
-  <data name="DsProject_ConditionalDsCommandsCollection" xml:space="preserve">
-    <value>Conditional Commands</value>
-  </data>
-  <data name="DsProject_ConditionalDsCommandsCollection_Description" xml:space="preserve">
-    <value>Command from list is executed, when transition from command disabled to command enabled occurs or after Solution load, if enabled.</value>
-  </data>
-  <data name="DsProject_DataEngine" xml:space="preserve">
-    <value>Play-time Properties</value>
-  </data>
-  <data name="DsProject_DataEngineGuidAndName" xml:space="preserve">
-    <value>Model Engine</value>
-  </data>
-  <data name="DsProject_DefaultServerAddress" xml:space="preserve">
-    <value>Адрес сервера данных</value>
-  </data>
-  <data name="DsProject_DsPageBackground" xml:space="preserve">
-    <value>Pages Background</value>
-  </data>
-  <data name="DsProject_DsPageBackground_Description" xml:space="preserve">
-    <value>You can override this setting in page properties.</value>
-  </data>
-  <data name="DsProject_DsPageHorizontalAlignment" xml:space="preserve">
-    <value>Pages Horizontal Alignment</value>
-  </data>
-  <data name="DsProject_DsPageHorizontalAlignment_Description" xml:space="preserve">
-    <value>You can override this setting in page properties.</value>
-  </data>
-  <data name="DsProject_DsPageStretchMode" xml:space="preserve">
-    <value>Pages Stretch Mode</value>
-  </data>
-  <data name="DsProject_DsPageStretchMode_Description" xml:space="preserve">
-    <value>You can override this setting in page properties.</value>
-  </data>
-  <data name="DsProject_DsPageVerticalAlignment" xml:space="preserve">
-    <value>Pages Vertical Alignment</value>
-  </data>
-  <data name="DsProject_DsPageVerticalAlignment_Description" xml:space="preserve">
-    <value>You can override this setting in page properties.</value>
-  </data>
-  <data name="DsProject_OperatorUICultureName" xml:space="preserve">
-    <value>Operator UI Culture</value>
-  </data>
-  <data name="DsProject_PlayWindowClassOptionsCollection" xml:space="preserve">
-    <value>Настройки классов окон</value>
-  </data>
-  <data name="DsProject_PlayWindowClassOptionsCollection_Description" xml:space="preserve">
-    <value>Определяет для классов окон: максимальное количество окон данного класса, закрывать ли фейсплейты данного класса при переходе на другую страницу.</value>
-  </data>
-  <data name="DsProject_TryConvertXamlToDsShapes" xml:space="preserve">
-    <value>Try Convert XAML to Shapes</value>
-  </data>
   <data name="DsTrendItemColor" xml:space="preserve">
     <value>Color</value>
   </data>
@@ -1139,13 +1196,13 @@ d[i], i[i], u[i], b[i], s[i], где i это индекс источника д
     <value>File exists and differs. Overwrite?</value>
   </data>
   <data name="FileMustBeInDsPagesDir" xml:space="preserve">
-    <value>Error! File must be in Solution Pages\ directory</value>
-  </data>
-  <data name="FileMustBeInDsShapesDir" xml:space="preserve">
-    <value>Error! File must be in Solution Shapes\ directory</value>
+    <value>Ошибка! Файл должен быть в папке проекта Pages\</value>
   </data>
   <data name="FileMustBeInDsProjectDir" xml:space="preserve">
-    <value>File must be in Solution directory</value>
+    <value>Ошибка! Файл должен быть в основной папке проекта.</value>
+  </data>
+  <data name="FileMustBeInDsShapesDir" xml:space="preserve">
+    <value>Ошибка! Файл должен быть в папке проекта Shapes\</value>
   </data>
   <data name="FileNotFoundMessage" xml:space="preserve">
     <value>File not found:</value>
@@ -1281,60 +1338,6 @@ d[i], i[i], u[i], b[i], s[i], где i это индекс источника д
   </data>
   <data name="GradientBrushTabItem" xml:space="preserve">
     <value>Gradient Brush</value>
-  </data>
-  <data name="DsPageBackground" xml:space="preserve">
-    <value>Фон страницы</value>
-  </data>
-  <data name="DsPageBackgroundDescription" xml:space="preserve">
-    <value>If value is default, corresponding Solution setting is used.</value>
-  </data>
-  <data name="DsPageDrawing_Desc" xml:space="preserve">
-    <value>Описание</value>
-  </data>
-  <data name="DsPageDrawing_DescDescription" xml:space="preserve">
-    <value>Use %(PageDesc) to refer current page desc. Use %(RootPageDesc) to refer root page desc in windows hierarchy.</value>
-  </data>
-  <data name="DsPageDrawing_ExcludeFromTagSearch" xml:space="preserve">
-    <value>Исключить страницу из поиска тэгов</value>
-  </data>
-  <data name="DsPageDrawing_ExcludeFromTagSearchDescription" xml:space="preserve">
-    <value />
-  </data>
-  <data name="DsPageDrawing_Group" xml:space="preserve">
-    <value>Группа</value>
-  </data>
-  <data name="DsPageDrawing_GroupDescription" xml:space="preserve">
-    <value>Use %(PageGroup) to refer current page group. Use %(RootPageGroup) to refer root page group in windows hierarchy.</value>
-  </data>
-  <data name="DsPageDrawing_Name" xml:space="preserve">
-    <value>Name</value>
-  </data>
-  <data name="DsPageDrawing_NameDescription" xml:space="preserve">
-    <value>Use %(PageName) to refer current page name. Use %(RootPageName) to refer root page name in windows hierarchy.</value>
-  </data>
-  <data name="Pages" xml:space="preserve">
-    <value>Pages</value>
-  </data>
-  <data name="DsPagesAndDsShapesDirectoryError" xml:space="preserve">
-    <value>Pages and Shapes library directory not found</value>
-  </data>
-  <data name="DsPageStretchMode" xml:space="preserve">
-    <value>Тип растягивания страницы</value>
-  </data>
-  <data name="DsPageStretchModeDescription" xml:space="preserve">
-    <value>If value is default, corresponding Solution property is used.</value>
-  </data>
-  <data name="DsPageDrawing_HorizontalAlignment" xml:space="preserve">
-    <value>Page Horizontal Alignment</value>
-  </data>
-  <data name="DsPageDrawing_HorizontalAlignment_Description" xml:space="preserve">
-    <value>If value is default, corresponding Solution property is used.</value>
-  </data>
-  <data name="DsPageDrawing_VerticalAlignment" xml:space="preserve">
-    <value>Page Vertical Alignment</value>
-  </data>
-  <data name="DsPageDrawing_VerticalAlignment_Description" xml:space="preserve">
-    <value>If value is default, corresponding Solution property is used.</value>
   </data>
   <data name="HelpFileName" xml:space="preserve">
     <value>Field view user guide.pdf</value>
@@ -1606,11 +1609,11 @@ d[i], i[i], u[i], b[i], s[i], где i это индекс источника д
   <data name="MustDefineDataItemsMessage" xml:space="preserve">
     <value>Please, define Data Source Item(s) first!</value>
   </data>
-  <data name="NewDsShapeDrawingDialogTitle" xml:space="preserve">
-    <value>Specify New Complex Shape Drawing File Name</value>
-  </data>
   <data name="NewDsPageDrawingDialogTitle" xml:space="preserve">
     <value>Specify New Page File Name</value>
+  </data>
+  <data name="NewDsShapeDrawingDialogTitle" xml:space="preserve">
+    <value>Specify New Complex Shape Drawing File Name</value>
   </data>
   <data name="NoConverter" xml:space="preserve">
     <value>&lt;No Conversion&gt;</value>
@@ -1647,6 +1650,9 @@ d[i], i[i], u[i], b[i], s[i], где i это индекс источника д
   </data>
   <data name="OpenedUnsavedDrawingExistsMessage" xml:space="preserve">
     <value>Opened unsaved drawing exists. Close drawing and try again.</value>
+  </data>
+  <data name="Pages" xml:space="preserve">
+    <value>Pages</value>
   </data>
   <data name="PanoramaAddonAllowDesignModeInPlay" xml:space="preserve">
     <value>Allow Design Mode in Play</value>
@@ -1765,11 +1771,29 @@ d[i], i[i], u[i], b[i], s[i], где i это индекс источника д
   <data name="PinButtonToolTipDescription" xml:space="preserve">
     <value>Another properties window will be opened as needed</value>
   </data>
+  <data name="PlayWindowClassInfo_WindowCategory" xml:space="preserve">
+    <value>Категория окна</value>
+  </data>
+  <data name="PlayWindowClassInfo_WindowCategory_Description" xml:space="preserve">
+    <value>Категория окна. Задается в свойствах команды ShowWindow или в свойствах Фейсплейта. Необязательное поле.</value>
+  </data>
+  <data name="PlayWindowClassOptions_CloseWindowsOnParentJump" xml:space="preserve">
+    <value>Закрывать при переходе</value>
+  </data>
+  <data name="PlayWindowClassOptions_CloseWindowsOnParentJump_Description" xml:space="preserve">
+    <value>Закрывать ли Фейсплейты данного типа при переходе в родительском окне на другую страницу</value>
+  </data>
   <data name="PlayWindowClassOptions_PlayWindowClassInfo" xml:space="preserve">
     <value>Класс окна</value>
   </data>
   <data name="PlayWindowClassOptions_PlayWindowClassInfo_Description" xml:space="preserve">
     <value>Определение класса окна. Задается через категорию и/или через тип страницы или фейсплейта</value>
+  </data>
+  <data name="PlayWindowClassOptions_WindowsMaxCount" xml:space="preserve">
+    <value>Максимальное количество</value>
+  </data>
+  <data name="PlayWindowClassOptions_WindowsMaxCount_Description" xml:space="preserve">
+    <value>Максимальное количество открытых Фейсплейтов данного типа. 0 означает неограниченное количество.</value>
   </data>
   <data name="PreviewCategory" xml:space="preserve">
     <value>Preview Settings</value>
@@ -2011,9 +2035,6 @@ d[i], i[i], u[i], b[i], s[i], где i это индекс источника д
   <data name="TagInfoAreas" xml:space="preserve">
     <value>Areas</value>
   </data>
-  <data name="TagInfo_PageFileRelativePath" xml:space="preserve">
-    <value>Page File for Tag Search</value>
-  </data>
   <data name="TagInfo_TagName" xml:space="preserve">
     <value>Tag</value>
   </data>
@@ -2167,12 +2188,6 @@ d[i], i[i], u[i], b[i], s[i], где i это индекс источника д
   <data name="UpdateComplexDsShapesToolkitOperationOptions_UpdateOnAllDsPages" xml:space="preserve">
     <value>Обновить на всех страницах</value>
   </data>
-  <data name="UpdatePagesToolkitOperationOptionsTryUpdatePagesWithSizeOfImage" xml:space="preserve">
-    <value>Try to Update Pages with Size of Underlying Image</value>
-  </data>
-  <data name="UpdatePagesToolkitOperationOptionsTryUpdatePagesWithSizeOfImageDescription" xml:space="preserve">
-    <value>When this option is selected, if image size is known, then updating page takes that image size, otherwise size of the page is unchanged.</value>
-  </data>
   <data name="UpdateObsoleteDrawingsQuestion" xml:space="preserve">
     <value>Solution contains drawings saved in older designer version. Do you wish to resave them in current version? ('Yes' recommended.)</value>
   </data>
@@ -2196,24 +2211,6 @@ d[i], i[i], u[i], b[i], s[i], где i это индекс источника д
   </data>
   <data name="WildcardsCheckBoxToolTip" xml:space="preserve">
     <value>Wildcards are represented by "*" or "?", where "*" matches multiple characters and "?" matches only a single character</value>
-  </data>
-  <data name="PlayWindowClassOptions_CloseWindowsOnParentJump" xml:space="preserve">
-    <value>Закрывать при переходе</value>
-  </data>
-  <data name="PlayWindowClassOptions_CloseWindowsOnParentJump_Description" xml:space="preserve">
-    <value>Закрывать ли Фейсплейты данного типа при переходе в родительском окне на другую страницу</value>
-  </data>
-  <data name="PlayWindowClassInfo_WindowCategory" xml:space="preserve">
-    <value>Категория окна</value>
-  </data>
-  <data name="PlayWindowClassInfo_WindowCategory_Description" xml:space="preserve">
-    <value>Категория окна. Задается в свойствах команды ShowWindow или в свойствах Фейсплейта. Необязательное поле.</value>
-  </data>
-  <data name="PlayWindowClassOptions_WindowsMaxCount" xml:space="preserve">
-    <value>Максимальное количество</value>
-  </data>
-  <data name="PlayWindowClassOptions_WindowsMaxCount_Description" xml:space="preserve">
-    <value>Максимальное количество открытых Фейсплейтов данного типа. 0 означает неограниченное количество.</value>
   </data>
   <data name="WindowDsCommandOptionsBase_CurrentFrame" xml:space="preserve">
     <value>Current Frame</value>
@@ -2274,15 +2271,6 @@ d[i], i[i], u[i], b[i], s[i], где i это индекс источника д
   </data>
   <data name="ZoomboxHomeButtonToolTip" xml:space="preserve">
     <value>Стартовая Страница</value>
-  </data>
-  <data name="CloseAllFaceplatesDsCommandOptions_PlayWindowClassInfo" xml:space="preserve">
-    <value>Класс окна</value>
-  </data>
-  <data name="CloseAllFaceplatesDsCommandOptions_PlayWindowClassInfo_Description" xml:space="preserve">
-    <value>Закрывает все дочерние окна определенного класса. Если класс не задан, то закрывает все дочерние окна.</value>
-  </data>
-  <data name="TagInfoDsPageFileRelativePath" xml:space="preserve">
-    <value>Имя файла страницы для поиска тэга</value>
   </data>
   <data name="TrendGroupDsShapeTrendsAxisXVisibility" xml:space="preserve">
     <value>Axis X is Visible</value>
@@ -2346,5 +2334,17 @@ d[i], i[i], u[i], b[i], s[i], где i это индекс источника д
   </data>
   <data name="TagAlarmsInfo_AlarmPriorityInfosList" xml:space="preserve">
     <value>Дополнительные цвета приоритетов алармов</value>
+  </data>
+  <data name="TagInfo_PageFileRelativePath" xml:space="preserve">
+    <value>Page File for Tag Search</value>
+  </data>
+  <data name="UpdatePagesToolkitOperationOptionsTryUpdatePagesWithSizeOfImage" xml:space="preserve">
+    <value>Try to Update Pages with Size of Underlying Image</value>
+  </data>
+  <data name="UpdatePagesToolkitOperationOptionsTryUpdatePagesWithSizeOfImageDescription" xml:space="preserve">
+    <value>When this option is selected, if image size is known, then updating page takes that image size, otherwise size of the page is unchanged.</value>
+  </data>
+  <data name="TagInfoDsPageFileRelativePath" xml:space="preserve">
+    <value>Имя файла страницы для поиска тэга</value>
   </data>
 </root>
