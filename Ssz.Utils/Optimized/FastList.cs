@@ -49,7 +49,8 @@ public class FastList<T>
 
     public void Swap(FastList<T> that)
     {
-        (that._items, that._count) = (_items, _count);
+        (that._items, that._count, _items, _count) = 
+            (_items, _count, that._items, that._count);
     }
 
     public void Clear()
