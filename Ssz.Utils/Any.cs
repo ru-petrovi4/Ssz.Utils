@@ -1235,7 +1235,7 @@ namespace Ssz.Utils {
                     case @"System.Decimal":
                         return (Decimal)(int)storageObject;
                 }                             }              if (!asType.IsAbstract)
-                try                 {                     return Activator.CreateInstance(asType);                 }                 catch (Exception)                 {                 }             return null;         }          /// <summary>                 /// </summary>         /// <param name="value"></param>         /// <param name="stringIsLocalized"></param>         /// <returns></returns>         private static string TypeCodeObject_ValueAsString(object? value, bool stringIsLocalized, string? stringFormat)         {             if (value is null) return String.Empty;              Type type = value.GetType();             switch (type.Name)
+                try                 {                     return Activator.CreateInstance(asType);                 }                 catch (Exception)                 {                 }             return null;         }          /// <summary>                 /// </summary>         /// <param name="value"></param>         /// <param name="stringIsLocalized"></param>         /// <returns></returns>         private static string TypeCodeObject_ValueAsString(object? value, bool stringIsLocalized, string? stringFormat)         {             if (value is null) return String.Empty;              Type type = value.GetType();             switch (type.FullName)
             {
                 case @"System.Object":
                     return String.Empty;
