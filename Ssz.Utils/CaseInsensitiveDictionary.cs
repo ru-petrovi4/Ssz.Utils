@@ -129,7 +129,24 @@ namespace Ssz.Utils
             T? result;
             dictionary.TryGetValue(key, out result);
             return result;
-        }        
+        }
+
+        public static CaseInsensitiveDictionary<TSource> ToCaseInsensitiveDictionary<TSource>(this IEnumerable<TSource> source, Func<TSource, string> keySelector)
+        {
+            int capacity = 0;
+            if (source is TSource[] array)
+                capacity = array.Length;
+            if (source is List<TSource> list)
+                capacity = list.Count;
+
+            CaseInsensitiveDictionary<TSource> d = new CaseInsensitiveDictionary<TSource>(capacity);
+            foreach (TSource element in source)
+            {
+                d[keySelector(element)] = element;
+            }
+
+            return d;
+        }
     }
 
     public class CaseInsensitiveDictionary_TypeConverter : TypeConverter
