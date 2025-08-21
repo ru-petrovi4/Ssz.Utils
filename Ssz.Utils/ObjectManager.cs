@@ -22,7 +22,8 @@ namespace Ssz.Utils
         public ObjectManager(int capacity)
         {
             if (capacity < 1) capacity = 1;
-            _items = new ValueWrapper[capacity];            
+            _items = new ValueWrapper[capacity];
+            _items[0] = new ValueWrapper();
             _valueWrapperCount = 1;
             Count = 0;
         }
@@ -59,11 +60,10 @@ namespace Ssz.Utils
         /// </summary>
         public void TrimExcess()
         {
-            if (_valueWrapperCount == _items.Length) 
-                return;
+            if (_valueWrapperCount == _items.Length) return;
             ValueWrapper[] oldItems = _items;
             _items = new ValueWrapper[_valueWrapperCount];
-            oldItems.CopyTo(_items, 0);
+            oldItems.CopyTo(_items, 0); // TODO: Verify
         }
 
         /// <summary>
@@ -145,13 +145,13 @@ namespace Ssz.Utils
         {
             if (_valueWrapperCount == 1) return;
 
-            ref ValueWrapper item0 = ref _items[0];
+            ValueWrapper item0 = _items[0];
             item0.NextIndex = 0;
             item0.PrevIndex = 1;
 
             for (int index = 1; index < _valueWrapperCount; index++)
             {
-                ref ValueWrapper item = ref _items[index];
+                ValueWrapper item = _items[index];
                 item.Value = null;
                 item.NextIndex = index - 1;
                 item.PrevIndex = index + 1 < _valueWrapperCount ? index + 1 : 0;
@@ -291,7 +291,7 @@ namespace Ssz.Utils
             var id = (byte)(handle >> 24);
             var index = (int)(handle & 0xFFFFFF);
             if (index >= _valueWrapperCount) return 0;
-            ref ValueWrapper item = ref _items[index];
+            ValueWrapper item = _items[index];
             if (item.Value is null) return 0;
             if (id != item.InstanceId) return 0;
             return index;
@@ -302,7 +302,7 @@ namespace Ssz.Utils
         /// </summary>
         private int AddInternal(T value)
         {
-            ref ValueWrapper item0 = ref _items[0];
+            ValueWrapper item0 = _items[0];
 
             if (item0.PrevIndex == 0)
             {
@@ -319,7 +319,7 @@ namespace Ssz.Utils
 
             int currentIndex = item0.PrevIndex;
 
-            ref ValueWrapper currentItem = ref _items[currentIndex];
+            ValueWrapper currentItem = _items[currentIndex];
 
             int nextIndex = currentItem.NextIndex;
             int prevIndex = currentItem.PrevIndex;
@@ -361,7 +361,7 @@ namespace Ssz.Utils
             int nextIndex0 = _items[0].NextIndex;
             int prevIndex0 = _items[0].PrevIndex;
 
-            ref ValueWrapper item = ref _items[index];
+            ValueWrapper item = _items[index];
             item.Value = null;
             item.NextIndex = 0;
             item.PrevIndex = prevIndex0;
@@ -392,7 +392,7 @@ namespace Ssz.Utils
 
         #endregion
 
-        private struct ValueWrapper
+        private class ValueWrapper
         {
             #region public functions
 
@@ -433,8 +433,7 @@ namespace Ssz.Utils
             {
                 // TODO throw new InvalidOperationException();
                 _currentIndex = _objectManager._items[_currentIndex].NextIndex;
-                if (_currentIndex == 0) 
-                    return false;
+                if (_currentIndex == 0) return false;
                 return true;
             }
 
@@ -442,11 +441,9 @@ namespace Ssz.Utils
             {
                 get
                 {
-                    if (_currentIndex == 0) 
-                        throw new InvalidOperationException();
+                    if (_currentIndex == 0) throw new InvalidOperationException();
                     T? value = _objectManager._items[_currentIndex].Value;
-                    if (value is null) 
-                        throw new InvalidOperationException();
+                    if (value is null) throw new InvalidOperationException();
                     return value;
                 }
             }
@@ -455,11 +452,9 @@ namespace Ssz.Utils
             {
                 get
                 {
-                    if (_currentIndex == 0) 
-                        throw new InvalidOperationException();
+                    if (_currentIndex == 0) throw new InvalidOperationException();
                     T? value = _objectManager._items[_currentIndex].Value;
-                    if (value is null) 
-                        throw new InvalidOperationException();
+                    if (value is null) throw new InvalidOperationException();
                     return value;
                 }
             }
@@ -468,11 +463,9 @@ namespace Ssz.Utils
             {
                 get
                 {
-                    if (_currentIndex == 0) 
-                        throw new InvalidOperationException();
+                    if (_currentIndex == 0) throw new InvalidOperationException();
                     T? value = _objectManager._items[_currentIndex].Value;
-                    if (value is null) 
-                        throw new InvalidOperationException();                    
+                    if (value is null) throw new InvalidOperationException();                    
                     return new KeyValuePair<UInt32, T>(_objectManager.IndexToHandle(_currentIndex),
                         value);
                 }
