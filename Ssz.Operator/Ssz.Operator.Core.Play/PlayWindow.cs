@@ -77,7 +77,7 @@ namespace Ssz.Operator.Core.Play
                 BindingOperations.SetBinding(smi, SystemMenuItem.CommandProperty,
                     new Binding { Source = SetupTouchScreen });
                 MenuItems.Add(smi);
-                CommandBindings.Add(new CommandBinding(SetupTouchScreen, SetupTouchScreenExecuted));
+                CommandBindings.Add(new CommandBinding(SetupTouchScreen, SetupTouchScreenExecuted));                
 
                 // Separator
                 smi = new SystemMenuItem
@@ -168,6 +168,24 @@ namespace Ssz.Operator.Core.Play
                 MenuItems.Add(smi);
                 CommandBindings.Add(new CommandBinding(ShowDebugWindow, ShowDebugWindowExecuted));
 
+                // Separator
+                smi = new SystemMenuItem
+                {
+                    IsSeparator = true
+                };
+                MenuItems.Add(smi);
+
+                menuItemId += 1;
+                smi = new SystemMenuItem
+                {
+                    Id = menuItemId,
+                    Header = Properties.Resources.FindMenuItemHeader,
+                };
+                BindingOperations.SetBinding(smi, SystemMenuItem.CommandProperty,
+                    new Binding { Source = ApplicationCommands.Find });
+                MenuItems.Add(smi);
+                CommandBindings.Add(new CommandBinding(ApplicationCommands.Find, FindExecuted));
+
                 if (DsProject.Instance.Review)
                 {
                     // Separator
@@ -175,18 +193,7 @@ namespace Ssz.Operator.Core.Play
                     {
                         IsSeparator = true
                     };
-                    MenuItems.Add(smi);
-
-                    menuItemId += 1;
-                    smi = new SystemMenuItem
-                    {
-                        Id = menuItemId,
-                        Header = Properties.Resources.FindMenuItemHeader,
-                    };
-                    BindingOperations.SetBinding(smi, SystemMenuItem.CommandProperty,
-                        new Binding { Source = ApplicationCommands.Find });
-                    MenuItems.Add(smi);
-                    CommandBindings.Add(new CommandBinding(ApplicationCommands.Find, FindExecuted));
+                    MenuItems.Add(smi);                    
 
                     menuItemId += 1;
                     smi = new SystemMenuItem
@@ -343,7 +350,7 @@ namespace Ssz.Operator.Core.Play
             if (!IsActive) return;
 
             CommandsManager.NotifyCommand(MainFrame, CommandsManager.SetupTouchScreenCommand, dsCommandOptions: null);
-        }
+        }        
 
         private void ShowVirtualKeyboardExecuted(object sender, ExecutedRoutedEventArgs e)
         {
