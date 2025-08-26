@@ -653,13 +653,14 @@ namespace OfficeOpenXml.Packaging.Ionic.Crc
             get { return _Crc32.Crc32Result; }
         }
 
+#if !Core
         /// <summary>
         ///   Indicates whether the underlying stream will be left open when the
         ///   <c>CrcCalculatorStream</c> is Closed.
         /// </summary>
         /// <remarks>
         ///   <para>
-        ///     Set this at any point before calling <see cref="Close()"/>.
+        ///     Set this at any point before calling <see cref="Close"/>.
         ///   </para>
         /// </remarks>
         public bool LeaveOpen
@@ -667,6 +668,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Crc
             get { return _leaveOpen; }
             set { _leaveOpen = value; }
         }
+#endif
 
         /// <summary>
         /// Read from the stream

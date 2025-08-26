@@ -1,5 +1,8 @@
 # EPPlus 4.5.3.3
 
+## Special CompuMaster Edition
+* required for resetting internal calculation caches to force MS Excel to recalculate on next reload (otherwise cells referencing other cells with formulas won't be recalculated correctly)
+
 ## Announcement: This is the last version of EPPlus under the LGPL License
 EPPlus will from version 5 be licensed under the [Polyform Noncommercial 1.0.0]( https://polyformproject.org/licenses/noncommercial/1.0.0/) license.  
 With the new license EPPlus is still free to use in some cases, but will require a commercial license to be used in a commercial business.  

@@ -473,7 +473,20 @@ namespace OfficeOpenXml
                         
             _vba = new ExcelVbaProject(this);
             _vba.Create();
-				}
+		}
+
+		/// <summary>
+		/// Remove a VBA project
+		/// </summary>
+		public void RemoveVBAProject()
+		{
+			_vba = null;
+            if (_package.Package.PartExists(new Uri(ExcelVbaProject.PartUri, UriKind.Relative)))
+			{
+				_package.Package.DeletePart(new Uri(ExcelVbaProject.PartUri, UriKind.Relative));
+			}
+        }
+
 		/// <summary>
 		/// URI to the workbook inside the package
 		/// </summary>

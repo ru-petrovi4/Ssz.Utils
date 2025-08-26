@@ -67,7 +67,7 @@ namespace OfficeOpenXml.FormulaParsing.ExpressionGraph
                 //case DataType.Enumerable:
                 //    return 
                 case DataType.ExcelError:
-                    //throw (new OfficeOpenXml.FormulaParsing.Exceptions.ExcelErrorValueException((ExcelErrorValue)compileResult.Result)); //Added JK
+                    //throw (new EpplusFreeOfficeOpenXml.FormulaParsing.Exceptions.ExcelErrorValueException((ExcelErrorValue)compileResult.Result)); //Added JK
                     return compileResult.Result is string
                         ? new ExcelErrorExpression(compileResult.Result.ToString(),
                             ExcelErrorValue.Parse(compileResult.Result.ToString()))

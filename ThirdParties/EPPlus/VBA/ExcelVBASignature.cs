@@ -320,10 +320,11 @@ namespace OfficeOpenXml.VBA
             Verifier.Encrypt(r);
             return Verifier.Encode();
 #else
-            Verifier = new SignedCms(contentInfo);
-            var signer = new CmsSigner(Certificate);
-            Verifier.ComputeSignature(signer, false);
-            return Verifier.Encode();
+            // TODO
+            //Verifier = new SignedCms(contentInfo);
+            //var signer = new CmsSigner(Certificate);
+            //Verifier.ComputeSignature(signer, false);
+            //return Verifier.Encode();
 #endif
         }
 

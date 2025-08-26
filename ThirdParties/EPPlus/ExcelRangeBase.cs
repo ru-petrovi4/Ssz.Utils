@@ -260,6 +260,23 @@ namespace OfficeOpenXml
             if (sfi != null) range._worksheet._formulas.SetValue(row, col, string.Empty);
             range._worksheet.SetValueInner(row, col, value);
         }
+
+        public static void ClearCachedCalculatedFormulaValue(ExcelRangeBase range, int row, int col)
+        {
+            if (range._worksheet.GetFormula(row, col) != null)
+            {
+                range._worksheet.SetValueInner(row, col, null);
+            }
+        }
+
+        public static bool HasMissingCachedCalculatedFormulaValue(ExcelRangeBase range, int row, int col)
+        {
+            if (!string.IsNullOrEmpty(range._worksheet.GetFormula(row, col)))
+                return (range._worksheet.GetValueInner(row, col) == null);
+            else
+                return false;
+        }
+
         private static void Set_Formula(ExcelRangeBase range, object value, int row, int col)
         {
             var f = range._worksheet._formulas.GetValue(row, col);
@@ -1126,6 +1143,16 @@ namespace OfficeOpenXml
                 return d.ToString(format, nf.Culture);
             }
 
+        }
+
+        public void ClearCachedCalculatedFormulaValue()
+        {
+            ClearCachedCalculatedFormulaValue(this, _fromRow, _fromCol);
+        }
+
+        public bool HasMissingCachedCalculatedFormulaValue()
+        {
+            return HasMissingCachedCalculatedFormulaValue(this, _fromRow, _fromCol);
         }
 
         /// <summary>

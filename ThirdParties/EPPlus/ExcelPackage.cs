@@ -46,10 +46,10 @@ using OfficeOpenXml.Utils.CompundDocument;
 using System.Configuration;
 using OfficeOpenXml.Compatibility;
 using System.Text;
-#if (Core)
+//#if (Core)
 // VALFIX
 //using Microsoft.Extensions.Configuration;
-#endif
+//#endif
 namespace OfficeOpenXml
 {
     /// <summary>
@@ -529,7 +529,6 @@ namespace OfficeOpenXml
             DoAdjustDrawings = true;
 #if (Core)
             // VALFIX
-            string v = null;
             //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);  //Add Support for codepage 1252
 
             //var build = new ConfigurationBuilder()
@@ -539,15 +538,16 @@ namespace OfficeOpenXml
 
             //var v = c["EPPlus:ExcelPackage:Compatibility:IsWorksheets1Based"];
 #else
-            var v = ConfigurationManager.AppSettings["EPPlus:ExcelPackage.Compatibility.IsWorksheets1Based"];
+            //var v = ConfigurationManager.AppSettings["EPPlus:ExcelPackage.Compatibility.IsWorksheets1Based"];
 #endif
-            if (v != null)
-            {
-                if(Boolean.TryParse(v.ToLowerInvariant(), out bool value))
-                {
-                    Compatibility.IsWorksheets1Based = value;
-                }
-            }
+            //if (v != null)
+            //{
+            //    if(Boolean.TryParse(v.ToLowerInvariant(), out bool value))
+            //    {
+            //        Compatibility.IsWorksheets1Based = value;
+            //    }
+            //}
+            Compatibility.IsWorksheets1Based = false;
         }
         /// <summary>
         /// Create a new file from a template

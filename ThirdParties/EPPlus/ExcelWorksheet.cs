@@ -61,7 +61,9 @@ namespace OfficeOpenXml
   /// <summary>
   /// Worksheet hidden enumeration
   /// </summary>
+#pragma warning disable IDE1006 // Benennungsstile
   public enum eWorkSheetHidden
+#pragma warning restore IDE1006 // Benennungsstile
     {
         /// <summary>
         /// The worksheet is visible
@@ -87,7 +89,9 @@ namespace OfficeOpenXml
     /// <summary>
     /// For Cell value structure (for memory optimization of huge sheet)
     /// </summary>
+#pragma warning disable CA1815 // Override equals and operator equals on value types
     public struct ExcelCoreValue
+#pragma warning restore CA1815 // Override equals and operator equals on value types
     {
         internal object _value;
         internal int _styleId;
@@ -183,7 +187,9 @@ namespace OfficeOpenXml
         /// <summary>
         /// Collection containing merged cell addresses
         /// </summary>
+#pragma warning disable CA1034 // Nested types should not be visible
         public class MergeCellsCollection : IEnumerable<string>
+#pragma warning restore CA1034 // Nested types should not be visible
         {
             internal MergeCellsCollection()
             {
@@ -1128,7 +1134,9 @@ namespace OfficeOpenXml
 
                         col.ColumnMax = int.Parse(xr.GetAttribute("max"));
                         col.Width = xr.GetAttribute("width") == null ? 0 : double.Parse(xr.GetAttribute("width"), CultureInfo.InvariantCulture);
+#pragma warning disable IDE0075 // Bedingten Ausdruck vereinfachen
                         col.BestFit = xr.GetAttribute("bestFit") != null && xr.GetAttribute("bestFit") == "1" ? true : false;
+#pragma warning restore IDE0075 // Bedingten Ausdruck vereinfachen
                         col.Collapsed = xr.GetAttribute("collapsed") != null && xr.GetAttribute("collapsed") == "1" ? true : false;
                         col.Phonetic = xr.GetAttribute("phonetic") != null && xr.GetAttribute("phonetic") == "1" ? true : false;
                         col.OutlineLevel = (short)(xr.GetAttribute("outlineLevel") == null ? 0 : int.Parse(xr.GetAttribute("outlineLevel"), CultureInfo.InvariantCulture));
