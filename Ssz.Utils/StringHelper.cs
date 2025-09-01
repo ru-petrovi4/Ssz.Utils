@@ -14,6 +14,20 @@ namespace Ssz.Utils
     {
         #region public functions
 
+        public static string SmartConcatenate(string? str0, string? joinSymbols, string? str1, string? endingSymbols = null)
+        {
+            if (String.IsNullOrEmpty(str0) && String.IsNullOrEmpty(str1))
+                return @"";
+
+            if (String.IsNullOrEmpty(str0))
+                return str1 + endingSymbols;
+
+            if (String.IsNullOrEmpty(str1))
+                return str0 + endingSymbols;           
+
+            return str0 + joinSymbols + str1 + endingSymbols;
+        }
+
         /// <summary>
         /// Returns <paramref name="str"/> with the minimal concatenation of <paramref name="ending"/> (starting from end) that
         /// results in satisfying .EndsWith(ending).
