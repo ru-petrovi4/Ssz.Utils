@@ -61,15 +61,15 @@ namespace Ssz.Utils
                 // extract the name / value pair                
                 if (equalsCharIndex >= 0) // has '=' char
                 {
-                    string name = nameValueCollectionString.Substring(nameValueBeginIndex, equalsCharIndex - nameValueBeginIndex);
-                    string value = nameValueCollectionString.Substring(equalsCharIndex + 1, i - equalsCharIndex - 1);
+                    string name = nameValueCollectionString.Substring(nameValueBeginIndex, equalsCharIndex - nameValueBeginIndex).Trim();
+                    string value = nameValueCollectionString.Substring(equalsCharIndex + 1, i - equalsCharIndex - 1).Trim();
 
                     // add name / value pair to the collection
                     result[UrlDecode(name) ?? @""] = UrlDecode(value);
                 }
                 else
                 {
-                    string value = nameValueCollectionString.Substring(nameValueBeginIndex, i - nameValueBeginIndex);
+                    string value = nameValueCollectionString.Substring(nameValueBeginIndex, i - nameValueBeginIndex).Trim();
                     result[@""] = UrlDecode(value);
                 }
 
