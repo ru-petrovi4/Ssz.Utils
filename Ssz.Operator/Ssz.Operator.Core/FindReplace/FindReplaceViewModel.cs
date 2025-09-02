@@ -843,8 +843,11 @@ namespace Ssz.Operator.Core.FindReplace
                             id,
                             vst =>
                             {
-                                if (!StatusCodes.IsUncertain(vst.StatusCode) &&
-                                    srvm.ParentGroup is not null) srvm.ParentGroup.Remove(srvm);
+                                if (StatusCodes.IsGood(vst.StatusCode) && 
+                                        vst.Value.ValueTypeCode != Any.TypeCode.Empty &&
+                                        vst.Value.ValueTypeCode != Any.TypeCode.DBNull &&
+                                        srvm.ParentGroup is not null) 
+                                    srvm.ParentGroup.Remove(srvm);
                             });
                         string modelId = subscription.MappedElementIdOrConst;
 

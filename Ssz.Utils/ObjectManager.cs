@@ -14,7 +14,7 @@ namespace Ssz.Utils
         where T : class
     {
         #region construction and destruction
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -309,7 +309,7 @@ namespace Ssz.Utils
                 if (_valueWrapperCount == _items.Length)
                 {
                     ValueWrapper[] oldItems = _items;
-                    _items = new ValueWrapper[oldItems.Length*2];
+                    _items = new ValueWrapper[oldItems.Length * 2];
                     oldItems.CopyTo(_items, 0);
                 }
                 _items[_valueWrapperCount] = new ValueWrapper();
@@ -326,7 +326,7 @@ namespace Ssz.Utils
             int nextIndex0 = item0.NextIndex;
             int prevIndex0 = item0.PrevIndex;
 
-            currentItem.Value = value;            
+            currentItem.Value = value;
             if (currentItem.InstanceId == 0xFF) currentItem.InstanceId = 1;
             else currentItem.InstanceId++;
             currentItem.NextIndex = nextIndex0;
@@ -465,7 +465,7 @@ namespace Ssz.Utils
                 {
                     if (_currentIndex == 0) throw new InvalidOperationException();
                     T? value = _objectManager._items[_currentIndex].Value;
-                    if (value is null) throw new InvalidOperationException();                    
+                    if (value is null) throw new InvalidOperationException();
                     return new KeyValuePair<UInt32, T>(_objectManager.IndexToHandle(_currentIndex),
                         value);
                 }
