@@ -102,9 +102,6 @@ namespace Ssz.Operator.Core.MultiValueConverters
 
             if (UiToDataSourceStatements.Count == 0)
             {
-                if (value is string sValue) 
-                    value = Any.ConvertToBestType(sValue, true);
-
                 resultValues[0] = value;
                 if (_dataSourceValues is not null && 0 < _dataSourceValues.Length)
                     _dataSourceValues[0] = value;
