@@ -86,9 +86,9 @@ namespace Ssz.Operator.Core.MultiValueConverters
 
             if (StringHelper.IsNullOrEmptyString(evaluatedValue)) return NullOrEmptyValue;
             if (targetType == typeof(string))
-                evaluatedValue = (string) ObsoleteAnyHelper.ConvertTo(evaluatedValue, typeof(string), true, Format);
+                evaluatedValue = new Any(evaluatedValue).ValueAsString(true, Format);
             else
-                evaluatedValue = ObsoleteAnyHelper.ConvertTo(evaluatedValue, targetType, false, Format);
+                evaluatedValue = new Any(evaluatedValue).ValueAs(targetType, false, Format);
             if (StringHelper.IsNullOrEmptyString(evaluatedValue)) return NullOrEmptyValue;
             return evaluatedValue;
         }
@@ -99,6 +99,9 @@ namespace Ssz.Operator.Core.MultiValueConverters
             if (targetTypes.Length == 0) return new object[0];
 
             var resultValues = new object?[targetTypes.Length];
+
+            if (value is string sValue)
+                value = Any.ConvertToBestType(sValue, true).ValueAsString(false);
 
             if (UiToDataSourceStatements.Count == 0)
             {

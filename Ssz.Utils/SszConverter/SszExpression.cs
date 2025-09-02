@@ -92,14 +92,14 @@ namespace Ssz.Utils
                         v => new Any(v).ValueAsBoolean(false))
                     .ToArray();
                 sDataSourceValues = dataSourceValues.Select(
-                        v => new Any(v).ValueAsString(true, stringFormat))
+                        v => new Any(v).ValueAsString(false, stringFormat))
                     .ToArray();
             }
 
-            var dUserValue = new Any(userValue).ValueAsDouble(true);
-            var iUserValue = new Any(userValue).ValueAsInt32(true);
-            var uUserValue = new Any(userValue).ValueAsUInt32(true);
-            var bUserValue = new Any(userValue).ValueAsBoolean(true);
+            var dUserValue = new Any(userValue).ValueAsDouble(false);
+            var iUserValue = new Any(userValue).ValueAsInt32(false);
+            var uUserValue = new Any(userValue).ValueAsUInt32(false);
+            var bUserValue = new Any(userValue).ValueAsBoolean(false);
             string sUserValue = new Any(userValue).ValueAsString(false);
 
             if (_delegate is null)
