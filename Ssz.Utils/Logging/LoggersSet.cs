@@ -41,6 +41,8 @@ namespace Ssz.Utils.Logging
 
         public static ILoggersSet Empty { get; } = new LoggersSet(NullLogger.Instance, null);
 
+        public static ILoggersSet Default { get; set; } = null!;
+
         public ILogger Logger { get; }
 
         /// <summary>

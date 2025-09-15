@@ -96,19 +96,23 @@ namespace Ssz.Utils
 
         /// <summary>   
         ///     Child list.Count > 0
-        ///     No procerssing #include, #define, comments.
+        ///     No processing #include.
         /// </summary>
         /// <param name="separator"></param>
         /// <param name="sourceString"></param>
         /// <returns></returns>
         public static List<List<string?>> ParseCsvMultiline(string separator, string? sourceString)
         {
+            // !!! Warning !!! Code duplicated in LoadCsvFile(...), LoadCsvFileAsync(...), ParseCsvMultiline(...)
+
             if (separator.Length != 1) throw new InvalidOperationException();            
 
             var result = new List<List<string?>>(100);
 
             if (String.IsNullOrEmpty(sourceString))
                 return result;
+
+            Dictionary<Regex, string> defines = new();
 
             using (var reader = new StringReader(sourceString))
             {
@@ -119,6 +123,17 @@ namespace Ssz.Utils
                 while ((l = reader.ReadLine()) is not null)
                 {
                     l = l.Trim();
+                    l = l.TrimEnd(',');
+
+                    if (l.Length > 0 && l[l.Length - 1] == '\\')
+                    {
+                        if (line != @"")
+                            line += @" " + l.Substring(0, l.Length - 1);
+                        else
+                            line = l.Substring(0, l.Length - 1);
+
+                        continue;
+                    }
 
                     line += l;
 
@@ -132,7 +147,46 @@ namespace Ssz.Utils
 
                         if (beginFields is null)
                         {
-                            fields = ParseCsvLineInternal(@",", line, ref inQuotes);
+                            if (line.StartsWith(@"#define", StringComparison.InvariantCultureIgnoreCase) &&
+                                line.Length > 7)
+                            {
+                                int q1 = 7;
+                                for (; q1 < line.Length; q1++)
+                                {
+                                    char ch = line[q1];
+                                    if (Char.IsWhiteSpace(ch)) continue;
+                                    else break;
+                                }
+                                if (q1 < line.Length)
+                                {
+                                    int q2 = q1 + 1;
+                                    for (; q2 < line.Length; q2++)
+                                    {
+                                        char ch = line[q2];
+                                        if (Char.IsWhiteSpace(ch)) break;
+                                        else continue;
+                                    }
+                                    string define = line.Substring(q1, q2 - q1);
+                                    string subst = @"";
+                                    if (q2 < line.Length - 1)
+                                    {
+                                        subst = line.Substring(q2 + 1).Trim();
+                                    }
+                                    defines[new Regex(@"\b" + define + @"\b", RegexOptions.IgnoreCase)] = subst;
+                                }
+
+                                line = "";
+                                continue;
+                            }
+                            if (line[0] == '#')
+                            {
+                                // Comment, skip
+
+                                line = "";
+                                continue;
+                            }
+
+                            fields = ParseCsvLineInternal(@",", ReplaceDefines(line, defines), ref inQuotes);
                             if (inQuotes)
                             {
                                 beginFields = fields;
@@ -142,7 +196,7 @@ namespace Ssz.Utils
                         }
                         else
                         {
-                            fields = ParseCsvLineInternal(@",", line, ref inQuotes);
+                            fields = ParseCsvLineInternal(@",", ReplaceDefines(line, defines), ref inQuotes);
                             beginFields[beginFields.Count - 1] = beginFields[beginFields.Count - 1] + fields[0];
                             beginFields.AddRange(fields.Skip(1));
                             if (inQuotes)
@@ -259,7 +313,7 @@ namespace Ssz.Utils
             IUserFriendlyLogger? userFriendlyLogger = null,
             List<string>? includeFileNames = null)
         {
-            // !!! Warning !!! Code duplicated in LoadCsvFileAsync(...)
+            // !!! Warning !!! Code duplicated in LoadCsvFile(...), LoadCsvFileAsync(...), ParseCsvMultiline(...)
             var fileData = new CaseInsensitiveDictionary<List<string?>>();
 
             try
@@ -456,7 +510,7 @@ namespace Ssz.Utils
             IUserFriendlyLogger? userFriendlyLogger = null,
             List<string>? includeFileNames = null)
         {
-            // !!! Warning !!! Code duplicated in LoadCsvFile(...)
+            // !!! Warning !!! Code duplicated in LoadCsvFile(...), LoadCsvFileAsync(...), ParseCsvMultiline(...)
             var fileData = new CaseInsensitiveDictionary<List<string?>>();
 
             try

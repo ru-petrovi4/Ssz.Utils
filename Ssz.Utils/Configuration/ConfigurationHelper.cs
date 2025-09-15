@@ -120,7 +120,7 @@ namespace Ssz.Utils
         public static T GetValue_Enum<T>(string value, T defaultValue)
             where T : struct, System.Enum
         {
-            if (!Enum.TryParse<T>(value, out var result))
+            if (!Enum.TryParse<T>(value, true, out var result))
                 return defaultValue;
             else
                 return result;

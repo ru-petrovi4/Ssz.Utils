@@ -271,15 +271,15 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.8" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.9" />
 		<PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
 		<PackageReference Include="System.Data.Common" Version="4.3.0" />
-		<PackageReference Include="System.Drawing.Common" Version="9.0.8" />			
+		<PackageReference Include="System.Drawing.Common" Version="9.0.9" />			
 		<PackageReference Include="System.Reflection" Version="4.3.0" />
 		<PackageReference Include="System.Security.Claims" Version="4.3.0" />
-		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.8" />
+		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.9" />
 		<PackageReference Include="System.Security.Cryptography.X509Certificates" Version="4.3.2" />
-		<PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.8" />
+		<PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.9" />
 		<PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
 		<PackageReference Include="System.Xml.XPath.XmlDocument" Version="4.7.0" />
 	</ItemGroup>
