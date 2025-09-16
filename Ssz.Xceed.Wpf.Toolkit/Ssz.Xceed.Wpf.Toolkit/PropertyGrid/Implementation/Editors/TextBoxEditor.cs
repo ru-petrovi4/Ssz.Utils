@@ -24,7 +24,10 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Editors
     {
         protected override PropertyGridEditorTextBox CreateEditor()
         {
-            return new();
+            return new()
+            {
+                TextWrapping = TextWrapping.Wrap,
+            };
         }
 
         protected override void SetValueDependencyProperty()
