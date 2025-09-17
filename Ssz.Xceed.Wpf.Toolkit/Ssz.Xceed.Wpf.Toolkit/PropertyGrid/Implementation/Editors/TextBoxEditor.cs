@@ -27,6 +27,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Editors
             return new()
             {
                 TextWrapping = TextWrapping.Wrap,
+                AcceptsReturn = true
             };
         }
 

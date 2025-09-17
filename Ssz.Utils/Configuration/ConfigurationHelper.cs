@@ -25,12 +25,12 @@ namespace Ssz.Utils
         /// <param name="key"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        public static T GetValue<T>(IDictionary<string, string?>? configuration, string key, T defaultValue)
+        public static T GetValue<T>(IReadOnlyDictionary<string, string?>? configuration, string key, T defaultValue)
             where T : notnull
         {
             if (configuration is null)
                 return defaultValue;            
-            var valueString = configuration.TryGetValue(key);
+            configuration.TryGetValue(key, out var valueString);
             if (String.IsNullOrEmpty(valueString))
                 return defaultValue;
             var result = new Any(valueString!).ValueAs<T>(false);
@@ -47,12 +47,12 @@ namespace Ssz.Utils
         /// <param name="key"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        public static T GetValue<T>(IDictionary<string, Any>? configuration, string key, T defaultValue)
+        public static T GetValue<T>(IReadOnlyDictionary<string, Any>? configuration, string key, T defaultValue)
             where T : notnull
         {
             if (configuration is null)
                 return defaultValue;
-            Any valueAny = configuration.TryGetValue(key);
+            configuration.TryGetValue(key, out var valueAny);
             if (valueAny.ValueTypeCode == Any.TypeCode.Empty)
                 return defaultValue;
             var result = valueAny.ValueAs<T>(false);
