@@ -233,8 +233,15 @@ namespace Ssz.DataAccessGrpc.Client
                     try
                     {
                         callbackDispatcher.BeginInvoke(ct =>
-                        {                            
-                            valueSubscription.Update(new ValueStatusTimestamp { StatusCode = StatusCodes.BadNodeIdUnknown });
+                        {
+                            try
+                            {
+                                valueSubscription.Update(new ValueStatusTimestamp { StatusCode = StatusCodes.BadNodeIdUnknown });
+                            }
+                            catch (Exception ex)
+                            {
+                                LoggersSet.Logger.LogDebug(ex, "ValueSubscription.Update(...) exception.");
+                            }
 
                             RaiseValueSubscriptionsUpdated();
                         });
@@ -349,7 +356,16 @@ namespace Ssz.DataAccessGrpc.Client
                     callbackDispatcher.BeginInvoke(ct =>
                     {
                         foreach (var constItemValueSubscription in constItemValueSubscriptionsArray)
-                            constItemValueSubscription.Update(valueStatusTimestamp);
+                        {
+                            try
+                            {
+                                constItemValueSubscription.Update(valueStatusTimestamp);
+                            }
+                            catch (Exception ex)
+                            {
+                                LoggersSet.Logger.LogDebug(ex, "ValueSubscription.Update(...) exception.");
+                            }                            
+                        }
                     });
                 }
                 catch (Exception)
@@ -744,8 +760,15 @@ namespace Ssz.DataAccessGrpc.Client
                             сallbackDispatcher.BeginInvoke(ct =>
                             {
                                 foreach (IValueSubscription valueSubscription in valueSubscriptions)
-                                {                                    
-                                    valueSubscription.Update(new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain });
+                                {
+                                    try
+                                    {
+                                        valueSubscription.Update(new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain });
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        LoggersSet.Logger.LogDebug(ex, "ValueSubscription.Update(...) exception.");
+                                    }
                                 }                                
 
                                 RaiseValueSubscriptionsUpdated();
@@ -938,8 +961,15 @@ namespace Ssz.DataAccessGrpc.Client
                 {
                     callbackDispatcher.BeginInvoke(ct =>
                     {
-                        valueSubscription.Update(new ValueStatusTimestamp(constAny.Value, StatusCodes.Good,
-                            DateTime.UtcNow));
+                        try
+                        {
+                            valueSubscription.Update(new ValueStatusTimestamp(constAny.Value, StatusCodes.Good,
+                                DateTime.UtcNow));
+                        }
+                        catch (Exception ex)
+                        {
+                            LoggersSet.Logger.LogDebug(ex, "ValueSubscription.Update(...) exception.");
+                        }                        
 
                         RaiseValueSubscriptionsUpdated();
                     });
@@ -1127,7 +1157,14 @@ namespace Ssz.DataAccessGrpc.Client
                 var changedValueSubscription = (IValueSubscription)elementValuesCallbackChange.ClientObj;                
                 if (elementValuesCallbackChange.ValueStatusTimestamp.HasValue)
                 {
-                    changedValueSubscription.Update(elementValuesCallbackChange.ValueStatusTimestamp.Value);
+                    try
+                    {
+                        changedValueSubscription.Update(elementValuesCallbackChange.ValueStatusTimestamp.Value);
+                    }
+                    catch (Exception ex)
+                    {
+                        LoggersSet.Logger.LogDebug(ex, "ValueSubscription.Update(...) exception.");
+                    }                    
                 }                
             }            
 
@@ -1199,27 +1236,35 @@ namespace Ssz.DataAccessGrpc.Client
                 if (ChildValueSubscriptionsList is null)
                     return;
 
-                if (ChildValueSubscriptionsList.Any(vs => StatusCodes.IsBad(vs?.ValueStatusTimestamp.StatusCode ?? StatusCodes.Good)))
+                try
                 {
-                    ValueSubscription.Update(new ValueStatusTimestamp { StatusCode = StatusCodes.Bad });
-                    return;
-                }
-                if (ChildValueSubscriptionsList.Any(vs => StatusCodes.IsUncertain(vs?.ValueStatusTimestamp.StatusCode ?? StatusCodes.Good)))
-                {
-                    ValueSubscription.Update(new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain });
-                    return;
-                }
+                    if (ChildValueSubscriptionsList.Any(vs => StatusCodes.IsBad(vs?.ValueStatusTimestamp.StatusCode ?? StatusCodes.Good)))
+                    {
+                        ValueSubscription.Update(new ValueStatusTimestamp { StatusCode = StatusCodes.Bad });
+                        return;
+                    }
+                    if (ChildValueSubscriptionsList.Any(vs => StatusCodes.IsUncertain(vs?.ValueStatusTimestamp.StatusCode ?? StatusCodes.Good)))
+                    {
+                        ValueSubscription.Update(new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain });
+                        return;
+                    }
 
-                var values = new List<object?>();
-                foreach (var childValueSubscription in ChildValueSubscriptionsList)
-                {
-                    values.Add(childValueSubscription?.ValueStatusTimestamp.Value.ValueAsObject());
+                    var values = new List<object?>();
+                    foreach (var childValueSubscription in ChildValueSubscriptionsList)
+                    {
+                        values.Add(childValueSubscription?.ValueStatusTimestamp.Value.ValueAsObject());
+                    }
+                    SszConverter converter = Converter ?? SszConverter.Empty;
+                    var convertedValue = converter.Convert(values.ToArray(), null, Ssz.Utils.Logging.LoggersSet.Empty);
+                    if (convertedValue == SszConverter.DoNothing) return;
+                    ValueSubscription.Update(new ValueStatusTimestamp(new Any(convertedValue), StatusCodes.Good,
+                        DateTime.UtcNow));
                 }
-                SszConverter converter = Converter ?? SszConverter.Empty;                
-                var convertedValue = converter.Convert(values.ToArray(), null, Ssz.Utils.Logging.LoggersSet.Empty);
-                if (convertedValue == SszConverter.DoNothing) return;
-                ValueSubscription.Update(new ValueStatusTimestamp(new Any(convertedValue), StatusCodes.Good,
-                    DateTime.UtcNow));
+                catch //(Exception ex)
+                {
+                    // TODO Add Logging
+                    //LoggersSet.Logger.LogDebug(ex, "ValueSubscription.Update(...) exception."); 
+                }                
             }
         }
 
