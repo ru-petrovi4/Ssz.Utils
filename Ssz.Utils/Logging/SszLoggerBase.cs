@@ -64,7 +64,7 @@ namespace Ssz.Utils.Logging
             {
                 return GetScopesStringInternal(excludeScopeNames);
             }
-        }
+        }        
 
         public void ClearStatistics()
         {
@@ -153,6 +153,18 @@ namespace Ssz.Utils.Logging
                 }
             }
             return line;
+        }
+
+        protected IEnumerable<(string, string?)> GetScopesInternal(string[]? excludeScopeNames = null)
+        {
+            List<(string, string?)> result = new();
+            foreach (var scope in ScopesStack.Distinct())
+            {
+                if (excludeScopeNames is not null && excludeScopeNames.Contains(scope.Item1, StringComparer.InvariantCultureIgnoreCase))
+                    continue;
+                result.Add((scope.Item1, new Any(scope.Item2).ValueAsString(true)));                
+            }
+            return result;
         }
 
         /// <summary>

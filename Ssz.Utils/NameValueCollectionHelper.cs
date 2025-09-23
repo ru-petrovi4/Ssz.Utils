@@ -80,7 +80,7 @@ namespace Ssz.Utils
         }
 
         /// <summary>
-        /// 
+        ///     Returns ordered collection.
         /// </summary>
         /// <param name="nameValueCollectionString"></param>
         /// <returns></returns>
@@ -190,12 +190,8 @@ namespace Ssz.Utils
 
             return String.Join("&", items);
         }
-
-        /// <summary>        
-        /// </summary>
-        /// <param name="nameValueCollection"></param>
-        /// <returns></returns>
-        public static string GetNameValueCollectionStringToDisplay(Dictionary<string, string?> nameValueCollection)
+        
+        public static string GetNameValueCollectionStringToDisplay(Dictionary<string, string?> nameValueCollection, string separator = "; ")
         {
             if (nameValueCollection.Count == 0) return "";
 
@@ -213,10 +209,10 @@ namespace Ssz.Utils
                 }
             }
 
-            return String.Join("; ", items);
+            return String.Join(separator, items);
         }
 
-        public static string GetNameValueCollectionStringToDisplay(IEnumerable<(string, string?)> nameValueCollection)
+        public static string GetNameValueCollectionStringToDisplay(IEnumerable<(string, string?)> nameValueCollection, string separator = "; ")
         {
             var items = new List<string>();
 
@@ -232,7 +228,7 @@ namespace Ssz.Utils
                 }
             }
 
-            return String.Join("; ", items);
+            return String.Join(separator, items);
         }        
 
         /// <summary>        

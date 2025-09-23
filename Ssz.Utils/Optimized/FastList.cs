@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Ssz.Utils.Serialization;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Ssz.Utils;
 
-public class FastList<T> : IList<T>, IReadOnlyList<T>
+public class FastList<T> : IList<T>, IReadOnlyList<T>, IOwnedDataSerializable    
+    where T : notnull
 {
     #region construction and destruction
 
@@ -13,6 +15,12 @@ public class FastList<T> : IList<T>, IReadOnlyList<T>
     {
         _items = new T[capacity];
         _count = 0;
+    }
+
+    public FastList(T[] items)
+    {
+        _items = items;
+        _count = items.Length;
     }
 
     #endregion
@@ -28,7 +36,7 @@ public class FastList<T> : IList<T>, IReadOnlyList<T>
     public void Add(T item)
     {
         if (_count >= _items.Length)
-            Resize(_items.Length * 2);
+            IncreaseSize(_items.Length * 2);
 
         _items[_count] = item;
         _count += 1;
@@ -44,7 +52,7 @@ public class FastList<T> : IList<T>, IReadOnlyList<T>
             while (newCapacity < required)
                 newCapacity *= 2;
 
-            Resize(newCapacity);
+            IncreaseSize(newCapacity);
         }
 
         span.CopyTo(_items.AsSpan(_count));
@@ -68,7 +76,11 @@ public class FastList<T> : IList<T>, IReadOnlyList<T>
         set => _items[index] = value; // Без проверок на выход за пределы
     }
 
-    private void Resize(int newSize)
+    /// <summary>
+    ///     Peconditions: newSize must be greater than old.
+    /// </summary>
+    /// <param name="newSize"></param>
+    private void IncreaseSize(int newSize)
     {
         var newArray = new T[newSize];
         for (int i = 0; i < _count; i++)
@@ -110,6 +122,75 @@ public class FastList<T> : IList<T>, IReadOnlyList<T>
     public IEnumerator<T> GetEnumerator() => new Enumerator(this);    
 
     IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
+
+    public void SerializeOwnedData(SerializationWriter writer, object? context)
+    {
+        using (writer.EnterBlock(1))
+        {
+            writer.WriteOptimized(_count);
+            if (typeof(T) == typeof(Int32))
+            {
+                var items = (_items as int[])!;
+                for (int i = 0; i < _count; i++)
+                {
+                    writer.WriteOptimized(items[i]);
+                }
+            }
+            else if (typeof(T) == typeof(float))
+            {
+                var items = (_items as float[])!;
+                for (int i = 0; i < _count; i++)
+                {
+                    writer.Write(items[i]);
+                }
+            }
+            else
+            {                
+                for (int i = 0; i < _count; i++)
+                {
+                    writer.WriteObject(_items[i]);
+                }
+            }
+        }
+    }
+
+    public void DeserializeOwnedData(SerializationReader reader, object? context)
+    {
+        using (Block block = reader.EnterBlock())
+        {
+            switch (block.Version)
+            {
+                case 1:
+                    _count = reader.ReadOptimizedInt32();
+                    if (_count >= _items.Length)
+                        _items = new T[_count];
+                    if (typeof(T) == typeof(Int32))
+                    {
+                        var items = (_items as int[])!;
+                        for (int i = 0; i < _count; i++)
+                        {
+                            items[i] = reader.ReadOptimizedInt32();
+                        }
+                    }
+                    else if (typeof(T) == typeof(float))
+                    {
+                        var items = (_items as float[])!;
+                        for (int i = 0; i < _count; i++)
+                        {
+                            items[i] = reader.ReadSingle();
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < _count; i++)
+                        {
+                            _items[i] = (T)reader.ReadObject()!;
+                        }
+                    }
+                    break;
+            }
+        }
+    }
 
     #endregion
 
