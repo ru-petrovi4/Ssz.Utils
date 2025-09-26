@@ -47,8 +47,9 @@ namespace Ssz.Utils
         /// </summary>
         public SemaphoreSlim Job_ContinuationSemaphoreSlim { get; } = new SemaphoreSlim(0);
 
-        public IJobProgress GetChildJobProgress(uint minProgressPercent, uint maxProgressPercent, bool parentFailedIfFailed)
+        public async Task<IJobProgress> GetChildJobProgressAsync(uint minProgressPercent, uint maxProgressPercent, bool parentFailedIfFailed)
         {
+            await SetJobProgressAsync(minProgressPercent, null, null, StatusCodes.Good);
             return new ChildJobProgress(ParentJobProgress,
                 MinProgressPercent + (MaxProgressPercent - MinProgressPercent) * minProgressPercent / 100,
                 MinProgressPercent + (MaxProgressPercent - MinProgressPercent) * maxProgressPercent / 100,

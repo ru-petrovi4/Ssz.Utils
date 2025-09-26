@@ -48,9 +48,9 @@ namespace Ssz.Utils
             return Task.CompletedTask;
         }
 
-        public IJobProgress GetChildJobProgress(uint minProgressPercent, uint maxProgressPercent, bool parentFailedIfFailed)
+        public Task<IJobProgress> GetChildJobProgressAsync(uint minProgressPercent, uint maxProgressPercent, bool parentFailedIfFailed)
         {
-            return this;
+            return Task.FromResult<IJobProgress>(this);
         }
     }
 }

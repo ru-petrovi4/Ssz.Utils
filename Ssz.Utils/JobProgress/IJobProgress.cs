@@ -53,6 +53,6 @@ namespace Ssz.Utils
         /// <param name="maxProgressPercent"></param>
         /// <param name="parentFailedIfFailed"></param>
         /// <returns></returns>
-        IJobProgress GetChildJobProgress(uint minProgressPercent, uint maxProgressPercent, bool parentFailedIfFailed);
+        Task<IJobProgress> GetChildJobProgressAsync(uint minProgressPercent, uint maxProgressPercent, bool parentFailedIfFailed);
     }    
 }
