@@ -186,7 +186,7 @@ namespace Ssz.Utils
                                 continue;
                             }
 
-                            fields = ParseCsvLineInternal(@",", ReplaceDefines(line, defines), ref inQuotes);
+                            fields = ParseCsvLineInternal(separator, ReplaceDefines(line, defines), ref inQuotes);
                             if (inQuotes)
                             {
                                 beginFields = fields;
@@ -196,7 +196,7 @@ namespace Ssz.Utils
                         }
                         else
                         {
-                            fields = ParseCsvLineInternal(@",", ReplaceDefines(line, defines), ref inQuotes);
+                            fields = ParseCsvLineInternal(separator, ReplaceDefines(line, defines), ref inQuotes);
                             beginFields[beginFields.Count - 1] = beginFields[beginFields.Count - 1] + fields[0];
                             beginFields.AddRange(fields.Skip(1));
                             if (inQuotes)
