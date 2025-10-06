@@ -17,6 +17,7 @@
     <PackageReference Include="protobuf-net" Version="3.2.56" />    
     <PackageReference Include="System.ComponentModel.Composition" Version="9.0.9" />
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.8" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.9" />
   </ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">

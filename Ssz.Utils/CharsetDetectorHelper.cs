@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Ude;
+using UtfUnknown;
 
 namespace Ssz.Utils
 {
@@ -27,12 +27,12 @@ namespace Ssz.Utils
             Encoding? encoding = null;
             if (bytes.Length > 0)
             {
-                CharsetDetector charsetDetector = new();
-                charsetDetector.Feed(bytes, 0, bytes.Length);
-                charsetDetector.DataEnd();
+                var results = CharsetDetector.DetectFromBytes(bytes);
+                // Get the best Detection
+                DetectionDetail resultDetected = results.Detected;                
 
-                var encoding2 = charsetDetector.Encoding;
-                if (encoding2 is not null && charsetDetector.Confidence > 0.9)
+                var encoding2 = resultDetected.Encoding;
+                if (encoding2 is not null && resultDetected.Confidence > 0.9)
                     encoding = encoding2;
                 
                 if (encoding is null)
@@ -57,12 +57,12 @@ namespace Ssz.Utils
             Encoding? encoding = null;
             if (bytes.Length > 0)
             {
-                CharsetDetector charsetDetector = new();
-                charsetDetector.Feed(bytes, 0, bytes.Length);
-                charsetDetector.DataEnd();
+                var results = CharsetDetector.DetectFromBytes(bytes);
+                // Get the best Detection
+                DetectionDetail resultDetected = results.Detected;
 
-                var encoding2 = charsetDetector.Encoding;
-                if (encoding2 is not null && charsetDetector.Confidence > 0.9)
+                var encoding2 = resultDetected.Encoding;
+                if (encoding2 is not null && resultDetected.Confidence > 0.9)
                     encoding = encoding2;
 
                 if (encoding is null)

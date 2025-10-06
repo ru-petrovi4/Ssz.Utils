@@ -1531,7 +1531,7 @@ namespace Ssz.Utils.Serialization
             {
                 WriteObject((object)value.Value);
             }
-        }        
+        }
 
         ///// <summary>
         /////     Writes a System.Windows.Point value into the stream.
@@ -1554,7 +1554,7 @@ namespace Ssz.Utils.Serialization
         //}
 
         /// <summary>        
-        ///     Use ReadArray() for reading.
+        ///     Use ReadArray T() for reading.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="values"></param>

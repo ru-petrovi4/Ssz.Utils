@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
-using Ude;
+using UtfUnknown;
 
 namespace Ssz.Utils
 {
@@ -16,8 +16,7 @@ namespace Ssz.Utils
         /// <param name="stream"></param>
         /// <returns></returns>
         public static ZipArchive GetZipArchiveForRead(Stream stream)
-        {
-            CharsetDetector charsetDetector = new();
+        {            
             Dictionary<Encoding, int> map = new();
 #if NETCOREAPP            
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -27,13 +26,17 @@ namespace Ssz.Utils
             var transportEncoding = Encoding.UTF8; // TODO, not working
 #endif            
             ZipArchive zipArchive = new ZipArchive(stream, ZipArchiveMode.Read, true, transportEncoding);
+            string s = @"";
             foreach (var entry in zipArchive.Entries)
             {
-                var bytes = transportEncoding.GetBytes(entry.FullName);
-                charsetDetector.Feed(bytes, 0, bytes.Length);
+                s += entry.FullName + " ";                
             }
-            charsetDetector.DataEnd();
-            if (!charsetDetector.IsDone() || charsetDetector.Encoding == transportEncoding)
+            var bytes = transportEncoding.GetBytes(s);
+            // Detect from bytes
+            var results = CharsetDetector.DetectFromBytes(bytes);
+            // Get the best Detection
+            DetectionDetail resultDetected = results.Detected;                       
+            if (resultDetected.Confidence < 0.9f || resultDetected.Encoding == transportEncoding)
             {
                 return zipArchive;
             }
@@ -41,7 +44,7 @@ namespace Ssz.Utils
             {
                 zipArchive.Dispose();
                 stream.Position = 0;
-                return new ZipArchive(stream, ZipArchiveMode.Read, true, charsetDetector.Encoding ?? Encoding.UTF8);
+                return new ZipArchive(stream, ZipArchiveMode.Read, true, resultDetected.Encoding ?? Encoding.UTF8);
             }            
         }
     }

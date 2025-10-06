@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Ssz.Utils.Logging;
-using Ude;
 
 namespace Ssz.Utils
 {
@@ -321,7 +320,7 @@ namespace Ssz.Utils
                 if (defines is null)
                     defines = new Dictionary<Regex, string>();
 
-                using (var reader = CharsetDetectorHelper.GetStreamReader(csvStream, Encoding.UTF8))
+                using (var reader = CharsetDetectorHelper.GetStreamReader(csvStream, Encoding.GetEncoding("windows-1251")))
                 {
                     string line = "";
                     string? l;
@@ -518,7 +517,7 @@ namespace Ssz.Utils
                 if (defines is null) 
                     defines = new Dictionary<Regex, string>();                
 
-                using (var reader = CharsetDetectorHelper.GetStreamReader(csvStream, Encoding.UTF8))
+                using (var reader = CharsetDetectorHelper.GetStreamReader(csvStream, Encoding.GetEncoding("windows-1251")))
                 {
                     string line = "";
                     string? l;
