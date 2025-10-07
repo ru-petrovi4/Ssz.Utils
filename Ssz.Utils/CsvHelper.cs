@@ -320,7 +320,7 @@ namespace Ssz.Utils
                 if (defines is null)
                     defines = new Dictionary<Regex, string>();
 
-                using (var reader = CharsetDetectorHelper.GetStreamReader(csvStream, Encoding.GetEncoding("windows-1251")))
+                using (var reader = CharsetDetectorHelper.GetStreamReader(csvStream, Encoding.GetEncoding(1251)))
                 {
                     string line = "";
                     string? l;
@@ -517,7 +517,7 @@ namespace Ssz.Utils
                 if (defines is null) 
                     defines = new Dictionary<Regex, string>();                
 
-                using (var reader = CharsetDetectorHelper.GetStreamReader(csvStream, Encoding.GetEncoding("windows-1251")))
+                using (var reader = CharsetDetectorHelper.GetStreamReader(csvStream, Encoding.GetEncoding(1251)))
                 {
                     string line = "";
                     string? l;
