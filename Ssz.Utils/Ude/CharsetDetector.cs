@@ -139,22 +139,41 @@ public class CharsetDetector
         detector.Feed(bytes, 0, bytes.Length);
         var standardResult = detector.DataEnd();        
         results.AddRange(standardResult.Details);
-
-        // Дополнительная проверка на Windows-1251
-        double cyrillicConfidence = ImprovedCyrillicDetector.CalculateWindows1251Confidence(bytes);
-
-        if (cyrillicConfidence > 0.3)
-        {
-            var cyrillicDetail = new DetectionDetail(encodingShortName: "windows-1251", confidence: (float)cyrillicConfidence)
-            {                
-                Encoding = System.Text.Encoding.GetEncoding("windows-1251")
-            };
-
-            results.Add(cyrillicDetail);
-        }
-
         // Сортировка по уверенности
         results.Sort((x, y) => y.Confidence.CompareTo(x.Confidence));
+
+        DetectionDetail resultDetected = results.FirstOrDefault();        
+        if (resultDetected is null || resultDetected.Encoding is null || resultDetected.Confidence < 0.9)
+        {
+            // Дополнительная проверка на Windows-1251
+            double cyrillicConfidence = ImprovedCyrillicDetector.CalculateWindows1251Confidence(bytes);
+
+            if (cyrillicConfidence > 0.3)
+            {
+                results.Add(new DetectionDetail(encodingShortName: "windows-1251", confidence: (float)cyrillicConfidence)
+                {
+                    Encoding = System.Text.Encoding.GetEncoding("windows-1251")
+                });
+                // Сортировка по уверенности
+                results.Sort((x, y) => y.Confidence.CompareTo(x.Confidence));
+            }            
+        }        
+
+        resultDetected = results.FirstOrDefault();
+        if (resultDetected is null || resultDetected.Encoding is null || resultDetected.Confidence < 0.9)
+        {
+            double confidence;
+            string encodingShortName = Utf16EncodingDetector.HeuristicDetectUtf16(bytes, out confidence);
+            if (confidence > 0.7)
+            {
+                results.Add(new DetectionDetail(encodingShortName, confidence: (float)confidence)
+                {
+                    Encoding = System.Text.Encoding.GetEncoding(encodingShortName)
+                });
+                // Сортировка по уверенности
+                results.Sort((x, y) => y.Confidence.CompareTo(x.Confidence));
+            }
+        }        
 
         return new DetectionResult(results);
     }

@@ -29,10 +29,10 @@ namespace Ssz.Utils
             {
                 var results = CharsetDetector.DetectFromBytes(bytes);
                 // Get the best Detection
-                DetectionDetail resultDetected = results.Detected;                
+                DetectionDetail? resultDetected = results.Detected;                
 
-                var encoding2 = resultDetected.Encoding;
-                if (encoding2 is not null && resultDetected.Confidence > 0.9)
+                var encoding2 = resultDetected?.Encoding;
+                if (encoding2 is not null && resultDetected!.Confidence > 0.9)
                     encoding = encoding2;
                 
                 if (encoding is null)
@@ -51,7 +51,7 @@ namespace Ssz.Utils
         /// <returns></returns>
         public static StreamReader GetStreamReader(Stream textStream, Encoding defaultEncoding, ILoggersSet? loggersSet = null)
         {
-            MemoryStream memoryStream = new();
+            using MemoryStream memoryStream = new();
             textStream.CopyTo(memoryStream);
             byte[] bytes = memoryStream.ToArray();
             Encoding? encoding = null;
@@ -59,7 +59,7 @@ namespace Ssz.Utils
             {
                 var results = CharsetDetector.DetectFromBytes(bytes);
                 // Get the best Detection
-                DetectionDetail resultDetected = results.Detected;
+                DetectionDetail? resultDetected = results.Detected;
 
                 var encoding2 = resultDetected?.Encoding;
                 if (encoding2 is not null && resultDetected!.Confidence > 0.9)
@@ -70,8 +70,8 @@ namespace Ssz.Utils
                 else
                     loggersSet?.Logger.LogDebug(@"Detected Encoding: " + encoding.EncodingName);
             }
-            memoryStream.Position = 0;
-            return new StreamReader(memoryStream, encoding ?? defaultEncoding, false);
+            textStream.Position = 0;
+            return new StreamReader(textStream, encoding ?? defaultEncoding, false);
         }
     }
 }
