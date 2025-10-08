@@ -36,7 +36,7 @@ namespace Ssz.Utils
             var results = CharsetDetector.DetectFromBytes(bytes);
             // Get the best Detection
             DetectionDetail resultDetected = results.Detected;                       
-            if (resultDetected.Confidence < 0.9f || resultDetected.Encoding == transportEncoding)
+            if (resultDetected is null || resultDetected.Confidence < 0.9f || resultDetected.Encoding == transportEncoding)
             {
                 return zipArchive;
             }

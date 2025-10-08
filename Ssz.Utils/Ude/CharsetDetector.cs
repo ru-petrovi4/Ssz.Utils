@@ -38,6 +38,7 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+using Ssz.Utils.Ude;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -129,11 +130,33 @@ public class CharsetDetector
         if (bytes == null)
         {
             throw new ArgumentNullException(nameof(bytes));
-        }
+        }        
 
+        var results = new List<DetectionDetail>();
+
+        // Стандартная детекция UTF-unknown
         var detector = new CharsetDetector();
         detector.Feed(bytes, 0, bytes.Length);
-        return detector.DataEnd();
+        var standardResult = detector.DataEnd();        
+        results.AddRange(standardResult.Details);
+
+        // Дополнительная проверка на Windows-1251
+        double cyrillicConfidence = ImprovedCyrillicDetector.CalculateWindows1251Confidence(bytes);
+
+        if (cyrillicConfidence > 0.3)
+        {
+            var cyrillicDetail = new DetectionDetail(encodingShortName: "windows-1251", confidence: (float)cyrillicConfidence)
+            {                
+                Encoding = System.Text.Encoding.GetEncoding("windows-1251")
+            };
+
+            results.Add(cyrillicDetail);
+        }
+
+        // Сортировка по уверенности
+        results.Sort((x, y) => y.Confidence.CompareTo(x.Confidence));
+
+        return new DetectionResult(results);
     }
 
     /// <summary>
@@ -144,7 +167,7 @@ public class CharsetDetector
     /// <param name="offset">The zero-based byte offset in buffer at which to begin reading the data from</param>
     /// <param name="len">The maximum number of bytes to be read</param>
     /// <returns></returns>
-    public static DetectionResult DetectFromBytes(byte[] bytes, int offset, int len)
+    private static DetectionResult DetectFromBytes(byte[] bytes, int offset, int len)
     {
         if (bytes == null)
         {
@@ -174,7 +197,7 @@ public class CharsetDetector
     /// Note: stream position is not reset before and after.
     /// </summary>
     /// <param name="stream">The steam. </param>
-    public static DetectionResult DetectFromStream(Stream stream)
+    private static DetectionResult DetectFromStream(Stream stream)
     {
         if (stream == null)
         {
@@ -192,7 +215,7 @@ public class CharsetDetector
     /// <param name="stream">The steam. </param>
     /// <param name="maxBytesToRead">max bytes to read from <paramref name="stream"/>. If <c>null</c>, then no max</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="maxBytesToRead"/> 0 or lower.</exception>
-    public static DetectionResult DetectFromStream(Stream stream, long? maxBytesToRead)
+    private static DetectionResult DetectFromStream(Stream stream, long? maxBytesToRead)
     {
         if (stream == null)
         {
@@ -217,7 +240,7 @@ public class CharsetDetector
     /// </summary>
     /// <param name="stream">The steam. </param>
     /// <param name="cancellationToken">The cancellation token for this operation.</param>
-    public static Task<DetectionResult> DetectFromStreamAsync(Stream stream, CancellationToken cancellationToken = default)
+    private static Task<DetectionResult> DetectFromStreamAsync(Stream stream, CancellationToken cancellationToken = default)
     {
         if (stream == null)
         {
@@ -236,7 +259,7 @@ public class CharsetDetector
     /// <param name="maxBytesToRead">max bytes to read from <paramref name="stream"/>. If <c>null</c>, then no max</param>
     /// <param name="cancellationToken">The cancellation token for this operation.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="maxBytesToRead"/> 0 or lower.</exception>
-    public static async Task<DetectionResult> DetectFromStreamAsync(Stream stream, long? maxBytesToRead, CancellationToken cancellationToken = default)
+    private static async Task<DetectionResult> DetectFromStreamAsync(Stream stream, long? maxBytesToRead, CancellationToken cancellationToken = default)
     {
         if (stream == null)
         {

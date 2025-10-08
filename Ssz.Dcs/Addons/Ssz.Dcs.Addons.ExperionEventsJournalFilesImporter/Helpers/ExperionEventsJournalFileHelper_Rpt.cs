@@ -17,7 +17,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
     /// <summary>
     ///     For event files with no extension
     /// </summary>
-    public static class ExperionEventsJournalRptFileHelper
+    public static class ExperionEventsJournalFileHelper_Rpt
     {
         public static Task ProcessFileAsync(Stream stream, 
             Encoding defaultEncoding, 

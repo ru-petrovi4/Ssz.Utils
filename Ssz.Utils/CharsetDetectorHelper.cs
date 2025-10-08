@@ -50,22 +50,28 @@ namespace Ssz.Utils
         /// <param name="csvFileFullName"></param>
         /// <returns></returns>
         public static StreamReader GetStreamReader(Stream textStream, Encoding defaultEncoding, ILoggersSet? loggersSet = null)
-        {            
+        {
+            MemoryStream memoryStream = new();
+            textStream.CopyTo(memoryStream);
+            byte[] bytes = memoryStream.ToArray();
             Encoding? encoding = null;
-            var results = CharsetDetector.DetectFromStream(textStream);
-            // Get the best Detection
-            DetectionDetail resultDetected = results.Detected;
+            if (bytes.Length > 0)
+            {
+                var results = CharsetDetector.DetectFromBytes(bytes);
+                // Get the best Detection
+                DetectionDetail resultDetected = results.Detected;
 
-            var encoding2 = resultDetected?.Encoding;
-            if (encoding2 is not null && resultDetected!.Confidence > 0.9)
-                encoding = encoding2;
+                var encoding2 = resultDetected?.Encoding;
+                if (encoding2 is not null && resultDetected!.Confidence > 0.9)
+                    encoding = encoding2;
 
-            if (encoding is null)
-                loggersSet?.LoggerAndUserFriendlyLogger.LogError(Properties.Resources.Error_CannotDetermineFileEncoding);
-            else
-                loggersSet?.Logger.LogDebug(@"Detected Encoding: " + encoding.EncodingName);
-            textStream.Position = 0;
-            return new StreamReader(textStream, encoding ?? defaultEncoding, false);
+                if (encoding is null)
+                    loggersSet?.LoggerAndUserFriendlyLogger.LogError(Properties.Resources.Error_CannotDetermineFileEncoding);
+                else
+                    loggersSet?.Logger.LogDebug(@"Detected Encoding: " + encoding.EncodingName);
+            }
+            memoryStream.Position = 0;
+            return new StreamReader(memoryStream, encoding ?? defaultEncoding, false);
         }
     }
 }

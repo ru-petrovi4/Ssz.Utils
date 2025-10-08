@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
 {
-    public static class ExperionEventsJournalCsvFileHelper
+    public static class ExperionEventsJournalFileHelper_Csv
     {
         public static Task ProcessFileAsync(Stream stream, 
             Encoding defaultEncoding, 

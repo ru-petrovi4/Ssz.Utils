@@ -464,7 +464,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                         {
                             if (stream is not null)
                             {
-                                await ExperionEventsJournalRptFileHelper.ProcessFileAsync(stream,
+                                await ExperionEventsJournalFileHelper_Rpt.ProcessFileAsync(stream,
                                     defaultRptFiles_Encoding,
                                     maxProcessedTimeUtc,
                                     options,
@@ -490,7 +490,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                         {
                             if (stream is not null)
                             {
-                                await ExperionEventsJournalCsvFileHelper.ProcessFileAsync(stream,
+                                await ExperionEventsJournalFileHelper_Csv.ProcessFileAsync(stream,
                                     Encoding.UTF8,
                                     maxProcessedTimeUtc,
                                     options,
@@ -516,7 +516,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                         {
                             if (stream is not null)
                             {
-                                await ExperionEventsJournalHtmFileHelper.ProcessFileAsync(stream,
+                                await ExperionEventsJournalFileHelper_Htm.ProcessFileAsync(stream,
                                     Encoding.UTF8,
                                     maxProcessedTimeUtc,
                                     options,
