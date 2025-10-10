@@ -151,30 +151,53 @@ namespace Ssz.DataAccessGrpc.Client
 
         public async Task<List<Utils.DataAccess.EventMessagesCollection>> ReadEventMessagesJournalAsync(ReadEventMessagesJournalRequest request)
         {
-            var call = _resourceManagementClient.ReadEventMessagesJournal(request);
+            var call = _resourceManagementClient.ReadEventMessagesJournal(request);            
 
             List<Utils.DataAccess.EventMessagesCollection> result = new();
 #if NET5_0_OR_GREATER
                 await foreach (var eventMessagesCollection in call.ResponseStream.ReadAllAsync())
-                {                    
+                {
+                    CaseInsensitiveDictionary<string?>? commonFields = null;
+                    if (eventMessagesCollection.CommonFieldsOrdered.Count > 0)
+                    {
+                        commonFields = new CaseInsensitiveDictionary<string?>(eventMessagesCollection.CommonFieldsOrdered
+                                        .Select(f => new KeyValuePair<string, string?>(f.Name, f.Value.KindCase == NullableString.KindOneofCase.Data ? f.Value.Data : null)));
+                    }
+                    else if (eventMessagesCollection.CommonFields.Count > 0) // Obsolete for compatibility only
+                    {
+                        commonFields = new CaseInsensitiveDictionary<string?>(eventMessagesCollection.CommonFields
+                                        .Select(cp => new KeyValuePair<string, string?>(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)));
+                    }
+
                     result.Add(
                         new Utils.DataAccess.EventMessagesCollection
                         {
                             EventMessages = eventMessagesCollection.EventMessages.Select(em => em.ToEventMessage()).ToList(),
-                            CommonFields = new CaseInsensitiveDictionary<string?>(eventMessagesCollection.CommonFields
-                                        .Select(cp => new KeyValuePair<string, string?>(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)))
+                            CommonFields = commonFields
                         });
-                }      
+                }
 #else
             while (await call.ResponseStream.MoveNext())
             {
                 var eventMessagesCollection = call.ResponseStream.Current;
+
+                CaseInsensitiveDictionary<string?>? commonFields = null;
+                if (eventMessagesCollection.CommonFieldsOrdered.Count > 0)
+                {
+                    commonFields = new CaseInsensitiveDictionary<string?>(eventMessagesCollection.CommonFieldsOrdered
+                                    .Select(f => new KeyValuePair<string, string?>(f.Name, f.Value.KindCase == NullableString.KindOneofCase.Data ? f.Value.Data : null)));
+                }
+                else if (eventMessagesCollection.CommonFields.Count > 0) // Obsolete for compatibility only
+                {
+                    commonFields = new CaseInsensitiveDictionary<string?>(eventMessagesCollection.CommonFields
+                                    .Select(cp => new KeyValuePair<string, string?>(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)));
+                }
+
                 result.Add(
                     new Utils.DataAccess.EventMessagesCollection
                     {
                         EventMessages = eventMessagesCollection.EventMessages.Select(em => em.ToEventMessage()).ToList(),
-                        CommonFields = new CaseInsensitiveDictionary<string?>(eventMessagesCollection.CommonFields
-                                    .Select(cp => new KeyValuePair<string, string?>(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)))
+                        CommonFields = commonFields
                     });
             }
 #endif

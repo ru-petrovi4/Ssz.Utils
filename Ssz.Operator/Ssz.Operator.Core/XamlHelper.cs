@@ -502,7 +502,7 @@ namespace Ssz.Operator.Core
             return xaml;
         }
 
-        public static string AddXamlDesc(string? xamlWithNoDesc, Dictionary<string, string?> nameValueCollection)
+        public static string AddXamlDesc(string? xamlWithNoDesc, IReadOnlyDictionary<string, string?> nameValueCollection)
         {            
             return XamlDescV2Begin + NameValueCollectionHelper.GetNameValueCollectionString(nameValueCollection) + XamlDescEnd + xamlWithNoDesc;
         }

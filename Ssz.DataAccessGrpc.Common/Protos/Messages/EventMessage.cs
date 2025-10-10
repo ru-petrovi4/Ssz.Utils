@@ -29,8 +29,16 @@ namespace Ssz.DataAccessGrpc.Common
             if (eventMessage.Fields is not null)
             {
                 foreach (var kvp in eventMessage.Fields)
+                {
+                    FieldsOrdered.Add(new Field
+                    {
+                        Name = kvp.Key,
+                        Value = kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue }
+                    });
+                    // Obsolete for compatibility only
                     Fields.Add(kvp.Key,
                         kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
+                }
             }
         }
 
@@ -51,7 +59,13 @@ namespace Ssz.DataAccessGrpc.Common
             {
                 eventMessage.AlarmMessageData = AlarmMessageData.ToAlarmMessageData();
             }
-            if (Fields.Count > 0)
+            if (FieldsOrdered.Count > 0)
+            {
+                eventMessage.Fields = new Utils.CaseInsensitiveDictionary<string?>(FieldsOrdered
+                            .Select(f => new KeyValuePair<string, string?>(f.Name, f.Value.KindCase == NullableString.KindOneofCase.Data ? f.Value.Data : null)));
+
+            }
+            else if (Fields.Count > 0) // Obsolete for compatibility only
             {
                 eventMessage.Fields = new Utils.CaseInsensitiveDictionary<string?>(Fields
                             .Select(cp => new KeyValuePair<string, string?>(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)));

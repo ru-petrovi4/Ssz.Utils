@@ -119,8 +119,16 @@ namespace Ssz.DataAccessGrpc.Common
                 if (commonFields is not null)
                 {
                     foreach (var kvp in commonFields)
+                    {
+                        eventMessagesCollection.CommonFieldsOrdered.Add(new Field()
+                        {
+                            Name = kvp.Key,
+                            Value = kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue }
+                        });
+                        // Obsolete for compatibility only
                         eventMessagesCollection.CommonFields.Add(kvp.Key,
                             kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
+                    }
                 }
                 int length;
                 if (eventMessages.Count - index <= Constants.MaxEventMessagesCount)

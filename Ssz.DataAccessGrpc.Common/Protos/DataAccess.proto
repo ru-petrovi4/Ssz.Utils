@@ -207,10 +207,16 @@ message DataChunk {
   string compression = 3;
 }
 
+message Field {
+  string name = 1;
+  NullableString value = 2;
+}
+
 message EventMessagesCollection {
   repeated EventMessage event_messages = 1;
   map<string, NullableString> common_fields = 2;
   bool is_incomplete = 3;
+  repeated Field common_fields_ordered = 4;
 }
 
 message EventMessage {  
@@ -223,6 +229,7 @@ message EventMessage {
   string operator_name = 7;
   AlarmMessageData alarm_message_data = 8; 
   map<string, NullableString> fields = 9;
+  repeated Field fields_ordered = 10;
 }
 
 message EventId {  

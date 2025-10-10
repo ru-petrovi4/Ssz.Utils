@@ -85,28 +85,7 @@ namespace Ssz.Utils.Addons
             using (Block block = reader.EnterBlock())
             {
                 switch (block.Version)
-                {
-                    case 1:
-                        try
-                        {
-                            SourcePath = reader.ReadString();
-                            SourceId = reader.ReadString();
-                            SourceIdToDisplay = reader.ReadString();
-                            AddonGuid = reader.ReadGuid();
-                            AddonIdentifier = reader.ReadString();
-                            AddonDesc = @"";
-                            AddonInstanceId = reader.ReadString();
-                            LastWorkTimeUtc = reader.ReadNullable<DateTime>();
-                            StateCode = reader.ReadUInt32();
-                            Info = reader.ReadString();
-                            Label = reader.ReadString();
-                            Details = reader.ReadString();
-                            Params = new CaseInsensitiveDictionary<Any>(reader.ReadDictionaryOfOwnedDataSerializable<Any>(() => new Any(), null)!);
-                        }
-                        catch (BlockEndingException)
-                        {
-                        }
-                        break;
+                {   
                     case 2:
                         try
                         {
@@ -122,7 +101,11 @@ namespace Ssz.Utils.Addons
                             Info = reader.ReadString();
                             Label = reader.ReadString();
                             Details = reader.ReadString();
+#if NET9_0_OR_GREATER
+                            Params = new CaseInsensitiveDictionary<Any>(reader.ReadOrderedDictionaryOfOwnedDataSerializable<Any>(() => new Any(), null)!);
+#else
                             Params = new CaseInsensitiveDictionary<Any>(reader.ReadDictionaryOfOwnedDataSerializable<Any>(() => new Any(), null)!);
+#endif
                         }
                         catch (BlockEndingException)
                         {
@@ -134,7 +117,7 @@ namespace Ssz.Utils.Addons
             }            
         }
 
-        #endregion
+#endregion
     }
 
     public static class AddonStateCodes

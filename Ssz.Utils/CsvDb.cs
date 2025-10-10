@@ -99,7 +99,7 @@ namespace Ssz.Utils
             }                     
 
             if (!CsvFileNameIsCaseSensistve)
-                _csvFilesCollection = new CaseInsensitiveDictionary<CsvFile>();
+                _csvFilesCollection = new Dictionary<string, CsvFile>(StringComparer.InvariantCultureIgnoreCase);
             else
                 _csvFilesCollection = new Dictionary<string, CsvFile>();
 
@@ -175,7 +175,7 @@ namespace Ssz.Utils
 
             Dictionary<string, CsvFile> newCsvFilesCollection;
             if (!CsvFileNameIsCaseSensistve)
-                newCsvFilesCollection = new CaseInsensitiveDictionary<CsvFile>();
+                newCsvFilesCollection = new Dictionary<string, CsvFile>(StringComparer.InvariantCultureIgnoreCase);
             else
                 newCsvFilesCollection = new Dictionary<string, CsvFile>();
             

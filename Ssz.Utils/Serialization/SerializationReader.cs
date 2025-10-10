@@ -1189,10 +1189,36 @@ namespace Ssz.Utils.Serialization
                 string key = ReadString();
                 var v = func();
                 v.DeserializeOwnedData(this, context);
-                result.Add(key, v);
+                result[key] = v;
             }
             return result;
         }
+
+#if NET9_0_OR_GREATER
+        /// <summary>
+        ///     Use WriteDictionaryOfOwnedDataSerializable(...) for writing.
+        ///     Reads Dictionary of same objects.
+        ///     func is constructor function.              
+        /// </summary>        
+        /// <param name="func"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public OrderedDictionary<string, T> ReadOrderedDictionaryOfOwnedDataSerializable<T>(Func<T> func,
+            object? context)
+            where T : IOwnedDataSerializable
+        {
+            int count = ReadInt32();
+            var result = new OrderedDictionary<string, T>(count);
+            for (int i = 0; i < count; i++)
+            {
+                string key = ReadString();
+                var v = func();
+                v.DeserializeOwnedData(this, context);
+                result[key] = v;
+            }
+            return result;
+        }
+#endif
 
         /// <summary>
         ///     Returns a BitArray or null from the stream.

@@ -1773,12 +1773,13 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     use ReadDictionaryOfOwnedDataSerializable(...) for reading.
+        ///     Use ReadDictionaryOfOwnedDataSerializable(...)
+        ///     or ReadOrderedDictionaryOfOwnedDataSerializable(...) for reading.
         ///     Writes Dictionary of same type not null objects.         
         /// </summary>        
         /// <param name="values"></param>
         /// <param name="context"></param>
-        public void WriteDictionaryOfOwnedDataSerializable<T>(Dictionary<string, T> values,
+        public void WriteDictionaryOfOwnedDataSerializable<T>(IReadOnlyDictionary<string, T> values,
             object? context)
             where T : IOwnedDataSerializable
         {

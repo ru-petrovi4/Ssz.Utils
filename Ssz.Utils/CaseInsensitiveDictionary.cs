@@ -9,11 +9,15 @@ using System.Text.Json.Serialization;
 namespace Ssz.Utils
 {
     /// <summary>
-    ///     Case Insensitive Dictionary
+    ///     Case-insensitive ordered dictionary.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [TypeConverter(typeof(CaseInsensitiveDictionary_TypeConverter))]
-    public class CaseInsensitiveDictionary<T> : Dictionary<string, T>        
+#if NET9_0_OR_GREATER
+    public class CaseInsensitiveDictionary<T> : OrderedDictionary<string, T>
+#else
+    public class CaseInsensitiveDictionary<T> : Dictionary<string, T>
+#endif
     {
         #region construction and destruction
 
