@@ -18,7 +18,7 @@ namespace Ssz.Utils
         #region public functions
 
         /// <summary>
-        ///     Returns immutable dictionary.
+        ///     Returns ordered collection.
         /// </summary>
         /// <param name="nameValueCollectionString"></param>
         /// <returns></returns>
@@ -145,28 +145,11 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="nameValueCollection"></param>
         /// <returns></returns>
-        public static string GetNameValueCollectionString(Dictionary<string, string?> nameValueCollection)
+        public static string GetNameValueCollectionString(IReadOnlyDictionary<string, string?> nameValueCollection)
         {
             if (nameValueCollection.Count == 0) return "";
 
-            var items = new List<string>();
-
-            foreach (var kvp in nameValueCollection.OrderBy(i => i.Key))
-            {
-                if (kvp.Value is null)
-                    continue;
-
-                if (kvp.Key == @"")
-                {
-                    items.Add(UrlEncode(kvp.Value));
-                }
-                else
-                {
-                    items.Add(UrlEncode(kvp.Key) + @"=" + UrlEncode(kvp.Value));
-                }                
-            }
-
-            return String.Join("&", items);
+            return GetNameValueCollectionString(nameValueCollection.Select(kv => (kv.Key, kv.Value)));
         }
 
         public static string GetNameValueCollectionString(IEnumerable<(string, string?)> nameValueCollection)
@@ -191,25 +174,11 @@ namespace Ssz.Utils
             return String.Join("&", items);
         }
         
-        public static string GetNameValueCollectionStringToDisplay(Dictionary<string, string?> nameValueCollection, string separator = "; ")
+        public static string GetNameValueCollectionStringToDisplay(IReadOnlyDictionary<string, string?> nameValueCollection, string separator = "; ")
         {
             if (nameValueCollection.Count == 0) return "";
 
-            var items = new List<string>();
-
-            foreach (var kvp in nameValueCollection.OrderBy(i => i.Key))
-            {
-                if (kvp.Key == @"")
-                {
-                    items.Add(kvp.Value ?? @"%null");
-                }
-                else
-                {
-                    items.Add(kvp.Key + @": " + (kvp.Value ?? @"%null"));
-                }
-            }
-
-            return String.Join(separator, items);
+            return GetNameValueCollectionStringToDisplay(nameValueCollection.Select(kv => (kv.Key, kv.Value)), separator);
         }
 
         public static string GetNameValueCollectionStringToDisplay(IEnumerable<(string, string?)> nameValueCollection, string separator = "; ")
