@@ -800,7 +800,7 @@ namespace Ssz.DataAccessGrpc.Client
                             ClientWorkstationName, 
                             SystemNameToConnect, 
                             ContextParams, 
-                            Options.DataAccessServerWorker,
+                            Options.LocalDataAccessServerWorker,
                             Options.DangerousAcceptAnyServerCertificate,
                             CallbackDispatcher);
 
