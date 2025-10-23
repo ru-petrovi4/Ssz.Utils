@@ -79,8 +79,8 @@
 
   <ItemGroup>    
     <PackageReference Include="BouncyCastle.Cryptography" Version="2.6.2" />
-    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.9" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.9" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.10" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.10" />
   </ItemGroup>
 
   <ItemGroup>
