@@ -81,7 +81,7 @@ public static class ExcelHelper
             string stringValue = cell.Value.GetText();
             stringValue = stringValue.Replace('\n', ' ');
             stringValue = stringValue.Replace('\r', ' ');
-            return stringValue;
+            return stringValue.Trim();
         }
         else
         {
