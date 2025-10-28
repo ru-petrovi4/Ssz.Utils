@@ -79,6 +79,8 @@ public static class ExcelHelper
         else if (cell.Value.IsText)
         {
             string stringValue = cell.Value.GetText();
+            if (stringValue.StartsWith("'"))
+                stringValue = stringValue.Substring(1);
             stringValue = stringValue.Replace('\n', ' ');
             stringValue = stringValue.Replace('\r', ' ');
             return stringValue.Trim();
