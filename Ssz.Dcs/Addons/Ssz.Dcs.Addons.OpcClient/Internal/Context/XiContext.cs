@@ -44,7 +44,7 @@ namespace Ssz.Xi.Client.Internal.Context
         /// <param name="callbackRate"></param>
         /// <param name="xiCallbackDoer"></param>
         public XiContext(
-            CaseInsensitiveDictionary<string?> contextParams,            
+            CaseInsensitiveOrderedDictionary<string?> contextParams,            
             uint localeId, string applicationName,
             string workstationName,
             TimeSpan callbackRate, IDispatcher xiCallbackDoer)
@@ -491,7 +491,7 @@ namespace Ssz.Xi.Client.Internal.Context
 
         private XiContextNotificationData? _pendingContextNotificationData;
 
-        private CaseInsensitiveDictionary<string?> _contextParams;
+        private CaseInsensitiveOrderedDictionary<string?> _contextParams;
 
         /// <summary>
         ///     This data member is the Endpoint Discovery object used to access the server for its

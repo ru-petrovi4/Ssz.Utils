@@ -12,7 +12,7 @@ namespace Ssz.Dcs.CentralServer
     {
         #region construction and destruction
         
-        public UtilityEventList(DataAccessServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
+        public UtilityEventList(DataAccessServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveOrderedDictionary<string?> listParams)
             : base(serverWorker, serverContext, listClientAlias, listParams)
         {
             ((ServerWorker)ServerContext.ServerWorker).UtilityEventMessageNotification += OnUtilityEventMessageNotification;

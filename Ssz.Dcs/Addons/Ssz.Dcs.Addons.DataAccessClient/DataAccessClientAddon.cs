@@ -49,7 +49,7 @@ namespace Ssz.Dcs.Addons.DataAccessClient
 
             string serverAddress = OptionsSubstituted.TryGetValue(DataAccessClient_ServerAddress_OptionName) ?? @"";
             string systemNameToConnect = OptionsSubstituted.TryGetValue(DataAccessClient_SystemNameToConnect_OptionName) ?? @"";
-            CaseInsensitiveDictionary<string?> contextParams = NameValueCollectionHelper.Parse(OptionsSubstituted.TryGetValue(DataAccessClient_ContextParams_OptionName));
+            CaseInsensitiveOrderedDictionary<string?> contextParams = NameValueCollectionHelper.Parse(OptionsSubstituted.TryGetValue(DataAccessClient_ContextParams_OptionName));
 
             IDataAccessProvider dataAccessProvider;
             if (serverAddress.EndsWith("/ServerDiscovery", StringComparison.InvariantCultureIgnoreCase) ||

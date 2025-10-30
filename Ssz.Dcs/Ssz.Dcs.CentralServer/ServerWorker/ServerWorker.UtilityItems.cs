@@ -158,7 +158,7 @@ namespace Ssz.Dcs.CentralServer
 
         private void DoWorkCentralServerUtilityItems(DateTime nowUtc, CancellationToken cancellationToken)
         {
-            CaseInsensitiveDictionary<List<string?>> clientsCsvFileData = 
+            CaseInsensitiveOrderedDictionary<List<string?>> clientsCsvFileData = 
                 _addonsManager.Addons.OfType<DcsCentralServerAddon>().Single().CsvDb.GetData(DcsCentralServerAddon.ClientsCsvFileName);
 
             UtilityItem[] centralServerUtilityItems = _utilityItems.Values
@@ -212,7 +212,7 @@ namespace Ssz.Dcs.CentralServer
             }
         }
 
-        private string GetClientWorkstationsGroup(string clientWorkstationName, CaseInsensitiveDictionary<List<string?>> clientsCsvFileData)
+        private string GetClientWorkstationsGroup(string clientWorkstationName, CaseInsensitiveOrderedDictionary<List<string?>> clientsCsvFileData)
         {            
             string clientWorkstationsGroup = @"default";
             foreach (var kvp in clientsCsvFileData)
@@ -256,7 +256,7 @@ namespace Ssz.Dcs.CentralServer
         /// <summary>
         ///     [id, UtilityItem]
         /// </summary>
-        private readonly CaseInsensitiveDictionary<UtilityItem> _utilityItems = new(256);        
+        private readonly CaseInsensitiveOrderedDictionary<UtilityItem> _utilityItems = new(256);        
 
         #endregion
 

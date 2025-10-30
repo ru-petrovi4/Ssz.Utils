@@ -76,13 +76,36 @@ namespace Ssz.Utils
         /// <param name="map"></param>
         /// <param name="tags"></param>
         /// <param name="csvDb"></param>
-        public void Initialize(CaseInsensitiveDictionary<List<string?>> map,
-            CaseInsensitiveDictionary<List<string?>> tags, CsvDb? csvDb = null)
+        public void Initialize(CaseInsensitiveOrderedDictionary<List<string?>> map,
+            CaseInsensitiveOrderedDictionary<List<string?>> tags, CsvDb? csvDb = null)
         {            
             Map = map.ToFrozenDictionary(StringComparer.InvariantCultureIgnoreCase);
             Tags = tags.ToFrozenDictionary(StringComparer.InvariantCultureIgnoreCase);
             _csvDb = csvDb;
 
+#if NET8_0_OR_GREATER
+            var values = Map.GetValueOrDefault(GenericTagMapOptionParamName);
+            if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
+                GenericTag = values[1] ?? @"";
+
+            values = Map.GetValueOrDefault(GenericPropMapOptionParamName);
+            if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
+                GenericProp = values[1] ?? @"";
+
+            values = Map.GetValueOrDefault(TagTypeSeparatorMapOptionParamName);
+            if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
+                TagTypeSeparator = values[1] ?? @"";
+
+            values = Map.GetValueOrDefault(TagAndPropSeparatorMapOptionParamName);
+            if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
+                TagAndPropSeparator = values[1] ?? @"";
+
+            values = Map.GetValueOrDefault(CommonEventMessageFieldsToAddParamName);
+            if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
+                CommonEventMessageFieldsToAdd = NameValueCollectionHelper.Parse(values[1]).ToFrozenDictionary(StringComparer.InvariantCultureIgnoreCase);
+            else
+                CommonEventMessageFieldsToAdd = new CaseInsensitiveOrderedDictionary<string?>().ToFrozenDictionary(StringComparer.InvariantCultureIgnoreCase);
+#else
             var values = Map.TryGetValue(GenericTagMapOptionParamName);
             if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
                 GenericTag = values[1] ?? @"";
@@ -103,7 +126,8 @@ namespace Ssz.Utils
             if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
                 CommonEventMessageFieldsToAdd = NameValueCollectionHelper.Parse(values[1]).ToFrozenDictionary(StringComparer.InvariantCultureIgnoreCase);
             else
-                CommonEventMessageFieldsToAdd = new CaseInsensitiveDictionary<string?>().ToFrozenDictionary(StringComparer.InvariantCultureIgnoreCase);
+                CommonEventMessageFieldsToAdd = new CaseInsensitiveOrderedDictionary<string?>().ToFrozenDictionary(StringComparer.InvariantCultureIgnoreCase);
+#endif
         }
 
         /// <summary>
@@ -117,7 +141,11 @@ namespace Ssz.Utils
             if (elementId == @"" || Map.Count == 0) 
                 return null;
 
+#if NET8_0_OR_GREATER
+            var values = Map.GetValueOrDefault(elementId);
+#else
             var values = Map.TryGetValue(elementId);
+#endif
             if (values is not null)
             {
                 if (values.Count == 1)
@@ -150,7 +178,11 @@ namespace Ssz.Utils
             if (elementId == @"" || Map.Count == 0)
                 return null;
 
+#if NET8_0_OR_GREATER
+            var values = Map.GetValueOrDefault(elementId);
+#else
             var values = Map.TryGetValue(elementId);
+#endif
             if (values is not null)
             {
                 if (values.Count == 1) 
@@ -181,7 +213,11 @@ namespace Ssz.Utils
             if (elementId == @"" || Map.Count == 0) 
                 return null;
 
+#if NET8_0_OR_GREATER
+            var values = Map.GetValueOrDefault(elementId);
+#else
             var values = Map.TryGetValue(elementId);
+#endif
             if (values is not null)
             {
                 if (values.Count == 1) 
@@ -199,7 +235,12 @@ namespace Ssz.Utils
         {
             if (string.IsNullOrEmpty(tagName))
                 return "";
+#if NET8_0_OR_GREATER
+            var tagValues = Tags.GetValueOrDefault(tagName!);
+#else
             var tagValues = Tags.TryGetValue(tagName!);
+#endif
+
             if (tagValues is null) return "";
             if (tagValues.Count < 2) return "";
             return tagValues[1] ?? @"";
@@ -239,7 +280,7 @@ namespace Ssz.Utils
             {
                 if (eventMessagesCollection.CommonFields is null)
                 {
-                    eventMessagesCollection.CommonFields = new CaseInsensitiveDictionary<string?>(commonEventMessageFieldsToAdd);
+                    eventMessagesCollection.CommonFields = new CaseInsensitiveOrderedDictionary<string?>(commonEventMessageFieldsToAdd);
                 }
                 else
                 {
@@ -253,7 +294,7 @@ namespace Ssz.Utils
             return eventMessagesCollection;
         }
 
-        #endregion        
+#endregion
 
         #region private functions
 
@@ -269,7 +310,22 @@ namespace Ssz.Utils
         private List<string?>? GetFromMapInternal(string elementId, string tagName, string prop, string? tagType, Func<string, IterationInfo, string>? getConstantValue)
         {
             List<string?>? values = null;
+
+#if NET8_0_OR_GREATER
             if (!String.IsNullOrEmpty(tagType))
+                values = Map.GetValueOrDefault(tagType + TagTypeSeparator + GenericTag + TagAndPropSeparator + prop);
+            if (values is null)
+                values = Map.GetValueOrDefault(GenericTag + TagAndPropSeparator + prop);
+            if (values is null && !String.IsNullOrEmpty(tagType))
+                values = Map.GetValueOrDefault(tagType + TagTypeSeparator + GenericTag + TagAndPropSeparator + GenericProp);
+            if (values is null)
+                values = Map.GetValueOrDefault(GenericTag + TagAndPropSeparator + GenericProp);
+            if (values is null)
+                values = Map.GetValueOrDefault(tagName + TagAndPropSeparator + GenericProp);
+            if (values is null)
+                return null;
+#else
+if (!String.IsNullOrEmpty(tagType))
                 values = Map.TryGetValue(tagType + TagTypeSeparator + GenericTag + TagAndPropSeparator + prop);
             if (values is null)
                 values = Map.TryGetValue(GenericTag + TagAndPropSeparator + prop);
@@ -281,6 +337,7 @@ namespace Ssz.Utils
                 values = Map.TryGetValue(tagName + TagAndPropSeparator + GenericProp);
             if (values is null)
                 return null;
+#endif
 
             var result = new List<string?> { elementId };
 
@@ -317,7 +374,7 @@ namespace Ssz.Utils
             return result;
         }
 
-        #endregion
+#endregion
 
         #region private fields
 

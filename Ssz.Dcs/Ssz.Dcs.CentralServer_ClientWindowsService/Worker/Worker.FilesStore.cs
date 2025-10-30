@@ -51,7 +51,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 Logger.LogDebug(ex, "Directory.CreateDirectory Exception. " + directoryInfo.FullName);
             }
 
-            var fileInfosDictionary = new CaseInsensitiveDictionary<FileInfo>();
+            var fileInfosDictionary = new CaseInsensitiveOrderedDictionary<FileInfo>();
             try
             {
                 foreach (var fileInfo in directoryInfo.GetFiles())
@@ -141,7 +141,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             if (includeSubdirectories)
             {
                 // Subdirectories
-                var childDirectoryInfosDictionary = new CaseInsensitiveDictionary<DirectoryInfo>();
+                var childDirectoryInfosDictionary = new CaseInsensitiveOrderedDictionary<DirectoryInfo>();
                 try
                 {
                     foreach (var childDirectoryInfo in directoryInfo.GetDirectories())
@@ -212,7 +212,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 return;
             }
 
-            var serverDsFilesStoreFilesDictionary = new CaseInsensitiveDictionary<DsFilesStoreFile>();
+            var serverDsFilesStoreFilesDictionary = new CaseInsensitiveOrderedDictionary<DsFilesStoreFile>();
             foreach (DsFilesStoreFile dsFilesStoreFile in serverDsFilesStoreDirectory.DsFilesStoreFilesCollection)
             {
                 serverDsFilesStoreFilesDictionary[dsFilesStoreFile.Name] = dsFilesStoreFile;

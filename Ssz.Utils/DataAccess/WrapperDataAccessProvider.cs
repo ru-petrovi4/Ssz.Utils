@@ -60,7 +60,7 @@ namespace Ssz.Utils.DataAccess
             string clientApplicationName,
             string clientWorkstationName,
             string systemNameToConnect,
-            CaseInsensitiveDictionary<string?> contextParams,
+            CaseInsensitiveOrderedDictionary<string?> contextParams,
             DataAccessProviderOptions options,
             IDispatcher? callbackDispatcher)
         {
@@ -312,7 +312,7 @@ namespace Ssz.Utils.DataAccess
         /// <summary>
         ///     This dictionary is created, because we can write to const values.
         /// </summary>
-        protected CaseInsensitiveDictionary<ConstItem> ConstItemsDictionary { get; } = new();
+        protected CaseInsensitiveOrderedDictionary<ConstItem> ConstItemsDictionary { get; } = new();
 
         protected DateTime LastValueSubscriptionsUpdatedDateTimeUtc { get; private set; } = DateTime.MinValue; 
 

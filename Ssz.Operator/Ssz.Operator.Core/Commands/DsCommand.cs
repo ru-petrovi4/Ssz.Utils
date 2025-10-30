@@ -357,7 +357,7 @@ namespace Ssz.Operator.Core.Commands
 
         [Searchable(false)] private string _commandUrl = @"";
 
-        private readonly Ssz.Utils.CaseInsensitiveDictionary<OwnedDataSerializableAndCloneable>
+        private readonly Ssz.Utils.CaseInsensitiveOrderedDictionary<OwnedDataSerializableAndCloneable>
             _dsCommandOptionsDictionary =
                 new();
 

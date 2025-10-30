@@ -56,7 +56,7 @@ namespace Ssz.Dcs.CentralServer
         /// <param name="contextParams"></param>
         /// <param name="addonDispatcher"></param>
         /// <returns></returns>
-        private static DataAccessProviderGetter_AddonBase GetNewInitializedDataAccessProviderAddon(IServiceProvider serviceProvider, string serverAddress, string systemNameToConnect, CaseInsensitiveDictionary<string?> contextParams, IDispatcher addonDispatcher)
+        private static DataAccessProviderGetter_AddonBase GetNewInitializedDataAccessProviderAddon(IServiceProvider serviceProvider, string serverAddress, string systemNameToConnect, CaseInsensitiveOrderedDictionary<string?> contextParams, IDispatcher addonDispatcher)
         {
             var addonsManager = serviceProvider.GetRequiredService<AddonsManager>();
 

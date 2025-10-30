@@ -171,14 +171,14 @@ namespace Ssz.DataAccessGrpc.Client
         }
 
         /// <summary>
-        ///     Returns null, if incomplete ElementValuesCollection.
+        /// 
         /// </summary>
         /// <param name="dataList"></param>
         /// <param name="dataChunk"></param>
-        /// <returns></returns>
-        private ClientElementValueListItem[]? ElementValuesCallback(ClientElementValueList dataList, DataChunk dataChunk)
+        private void ElementValuesCallback(ClientElementValueList dataList, DataChunk dataChunk)
         {
             ClientElementValueListItem[]? changedListItems = dataList.OnElementValuesCallback(dataChunk);
+
             if (changedListItems is not null && changedListItems.Length > 0)
             {
                 List<ValueStatusTimestamp> changeValueStatusTimestampsList = new List<ValueStatusTimestamp>(changedListItems.Length);
@@ -188,7 +188,6 @@ namespace Ssz.DataAccessGrpc.Client
                 }
                 dataList.RaiseElementValuesCallbackEvent(changedListItems, changeValueStatusTimestampsList.ToArray());
             }
-            return changedListItems;
         }
 
         private ClientElementValueListItem[]? ElementValuesCallback(ClientElementValueList dataList, List<(uint, ValueStatusTimestamp)>? elementValues)
@@ -207,27 +206,21 @@ namespace Ssz.DataAccessGrpc.Client
         }
 
         /// <summary>
-        ///     Returns null, if incomplete EventMessageArray.
+        /// 
         /// </summary>
         /// <param name="eventList"></param>
-        /// <param name="eventMessages"></param>
-        /// <returns></returns>
-        private Utils.DataAccess.EventMessagesCollection? EventMessagesCallback(ClientEventList eventList, EventMessagesCollection? eventMessagesCollection)
+        /// <param name="eventMessagesCollection"></param>
+        private void EventMessagesCallback(ClientEventList eventList, EventMessagesCollection eventMessagesCollection)
         {
-            if (eventMessagesCollection is null)
-                return null;
+            Utils.DataAccess.EventMessagesCollection? result = eventList.OnEventMessagesCallback(eventMessagesCollection);
 
-            Utils.DataAccess.EventMessagesCollection result = ClientEventList.GetEventMessagesCollection(eventMessagesCollection);
-            EventMessagesCallback(eventList, result);
-            return result;
+            if (result is not null)
+                EventMessagesCallback(eventList, result);
         }
 
         private void EventMessagesCallback(ClientEventList eventList, Utils.DataAccess.EventMessagesCollection eventMessagesCollection)
-        {            
-            if (eventMessagesCollection.EventMessages.Count > 0)
-            {
-                eventList.RaiseEventMessagesCallbackEvent(eventMessagesCollection);
-            }
+        {
+            eventList.RaiseEventMessagesCallbackEvent(eventMessagesCollection);
         }
 
         private void LongrunningPassthroughCallback(Common.LongrunningPassthroughCallback longrunningPassthroughCallback)

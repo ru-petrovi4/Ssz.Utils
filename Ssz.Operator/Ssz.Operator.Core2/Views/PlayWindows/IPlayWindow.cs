@@ -14,7 +14,7 @@ namespace Ssz.Operator.Core
 
         int RootWindowNum { get; }
 
-        CaseInsensitiveDictionary<List<object?>> WindowVariables { get; }
+        CaseInsensitiveOrderedDictionary<List<object?>> WindowVariables { get; }
     }
 
     public interface IPlayWindow : IPlayWindowBase

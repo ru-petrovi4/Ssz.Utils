@@ -34,7 +34,7 @@ namespace Ssz.Utils.DataAccess
 
         public AlarmConditionState NormalConditionState { get; } = new AlarmConditionState(AlarmConditionType.None);
 
-        public CaseInsensitiveDictionary<EventSourceArea> EventSourceAreas { get; } = new();
+        public CaseInsensitiveOrderedDictionary<EventSourceArea> EventSourceAreas { get; } = new();
 
         /// <summary>
         ///     (CategoryId, Priority)

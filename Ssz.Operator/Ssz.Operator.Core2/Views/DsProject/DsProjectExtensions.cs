@@ -169,14 +169,14 @@ namespace Ssz.Operator.Core
                     MoveCenterPointOfDsShapes = new Point(0, 0)
                 };
 
-            CaseInsensitiveDictionary<DsShapeDrawingInfo> selectedDsShapeDrawingInfos;
+            CaseInsensitiveOrderedDictionary<DsShapeDrawingInfo> selectedDsShapeDrawingInfos;
             if (string.IsNullOrEmpty(toolkitOperationOptions.ComplexDsShapeNames))
             {
                 selectedDsShapeDrawingInfos = await dsProject.GetAllComplexDsShapesDrawingInfosAsync();
             }
             else
             {
-                selectedDsShapeDrawingInfos = new CaseInsensitiveDictionary<DsShapeDrawingInfo>();
+                selectedDsShapeDrawingInfos = new CaseInsensitiveOrderedDictionary<DsShapeDrawingInfo>();
                 foreach (string complexDsShapeName in toolkitOperationOptions.ComplexDsShapeNames.Split(','))
                 {
                     string shapeFileName = complexDsShapeName.Trim();
@@ -208,7 +208,7 @@ namespace Ssz.Operator.Core
             var cancellationToken =
                 progressInfo is not null ? progressInfo.GetCancellationToken() : new CancellationToken();
 
-            var dsShapeDrawingsCache = new CaseInsensitiveDictionary<DsShapeDrawing>();
+            var dsShapeDrawingsCache = new CaseInsensitiveOrderedDictionary<DsShapeDrawing>();
 
             var changedDsShapesInLoop = new List<string>();
             for (var iteration = 0; iteration < 10; iteration += 1)
@@ -336,7 +336,7 @@ namespace Ssz.Operator.Core
 
         public static async Task<ToolkitOperationResult> RestoreComplexDsShapesAsync(this DsProject dsProject,
             IProgressInfo? progressInfo,
-            DrawingBase[] drawingsToRestoreFrom, CaseInsensitiveDictionary<DsShapeDrawing> newDrawings)
+            DrawingBase[] drawingsToRestoreFrom, CaseInsensitiveOrderedDictionary<DsShapeDrawing> newDrawings)
         {
             if (!dsProject.IsInitialized || dsProject.IsReadOnly || dsProject.FileProvider is not null)
                 return ToolkitOperationResult.DoneWithErrors;
@@ -481,8 +481,8 @@ namespace Ssz.Operator.Core
 
         private static async Task<int> UpdateComplexDsShapesAsync(DrawingInfo drawingInfo, IEnumerable<DsShapeBase> dsShapes,
             IProgressInfo? progressInfo,
-            CaseInsensitiveDictionary<DsShapeDrawingInfo> selectedDsShapeDrawingInfos,
-            CaseInsensitiveDictionary<DsShapeDrawing> dsShapeDrawingsCache,
+            CaseInsensitiveOrderedDictionary<DsShapeDrawingInfo> selectedDsShapeDrawingInfos,
+            CaseInsensitiveOrderedDictionary<DsShapeDrawing> dsShapeDrawingsCache,
             UpdateComplexDsShapesToolkitOperationOptions toolkitOperationOptions)
         {
             var changesCount = 0;
@@ -585,7 +585,7 @@ namespace Ssz.Operator.Core
         }
 
         private static async Task<DsShapeDrawing?> GetDsShapeDrawingFromCacheAsync(
-            CaseInsensitiveDictionary<DsShapeDrawing> dsShapeDrawingsCache,
+            CaseInsensitiveOrderedDictionary<DsShapeDrawing> dsShapeDrawingsCache,
             DrawingInfo dsShapeDrawingInfo)
         {
             var dsShapeDrawing = dsShapeDrawingsCache.TryGetValue(
@@ -603,7 +603,7 @@ namespace Ssz.Operator.Core
         }
 
         private static void AddDsShapeDrawingToCache(
-            CaseInsensitiveDictionary<DsShapeDrawing> dsShapeDrawingsCache,
+            CaseInsensitiveOrderedDictionary<DsShapeDrawing> dsShapeDrawingsCache,
             DsShapeDrawing dsShapeDrawing)
         {
             dsShapeDrawing.CropUnusedSpace();
@@ -612,7 +612,7 @@ namespace Ssz.Operator.Core
 
         private static async Task<bool> RestoreComplexDsShapesAsync(DsProject dsProject,
             IEnumerable<ComplexDsShape> complexDsShapes,
-            CaseInsensitiveDictionary<DsShapeDrawing> newDrawings)
+            CaseInsensitiveOrderedDictionary<DsShapeDrawing> newDrawings)
         {
             var drawingChanged = false;
 

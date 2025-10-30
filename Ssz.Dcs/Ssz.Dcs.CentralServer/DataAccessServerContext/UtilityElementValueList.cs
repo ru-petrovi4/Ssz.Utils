@@ -17,7 +17,7 @@ namespace Ssz.Dcs.CentralServer
     {
         #region construction and destruction
 
-        public UtilityElementValueList(DataAccessServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
+        public UtilityElementValueList(DataAccessServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveOrderedDictionary<string?> listParams)
             : base(serverWorker, serverContext, listClientAlias, listParams)
         {
         }

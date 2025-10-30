@@ -208,7 +208,7 @@ namespace Ssz.Operator.Core
                 if (!string.IsNullOrEmpty(fileRelativePath)) return fileRelativePath;
             }
 
-            CaseInsensitiveDictionary<List<ExtendedDsConstant>> allConstantsValues =
+            CaseInsensitiveOrderedDictionary<List<ExtendedDsConstant>> allConstantsValues =
                 DsProject.Instance.AllDsPagesCacheGetAllConstantsValues();
 
             var dsConstants = allConstantsValues.TryGetValue(tagName);
@@ -289,7 +289,7 @@ namespace Ssz.Operator.Core
             if (string.IsNullOrEmpty(tag))
                 return @"";
 
-            CaseInsensitiveDictionary<List<ExtendedDsConstant>> allConstantsValues =
+            CaseInsensitiveOrderedDictionary<List<ExtendedDsConstant>> allConstantsValues =
                 DsProject.Instance.AllDsPagesCacheGetAllConstantsValues();
 
             var dsConstants = allConstantsValues.TryGetValue(tag);

@@ -225,7 +225,7 @@ namespace Ssz.Operator.Core.DsShapes
 
 
         public override void GetDsConstants(
-            CaseInsensitiveDictionary<List<ExtendedDsConstant>> dsConstantsDictionary)
+            CaseInsensitiveOrderedDictionary<List<ExtendedDsConstant>> dsConstantsDictionary)
         {
             foreach (DsConstant dsConstant in DsConstantsCollection)
             {

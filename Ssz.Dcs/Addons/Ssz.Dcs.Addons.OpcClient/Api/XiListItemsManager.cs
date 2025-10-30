@@ -296,7 +296,7 @@ namespace Ssz.Xi.Client.Api
             get { return _clientObjectInfosDictionary; }
         }
 
-        protected CaseInsensitiveDictionary<XiListItemWrapper> XiListItemWrappersDictionary
+        protected CaseInsensitiveOrderedDictionary<XiListItemWrapper> XiListItemWrappersDictionary
         {
             get { return _xiListItemWrappersDictionary; }
         }
@@ -310,8 +310,8 @@ namespace Ssz.Xi.Client.Api
         private readonly Dictionary<object, ClientObjectInfo> _clientObjectInfosDictionary =
             new Dictionary<object, ClientObjectInfo>(256, ReferenceEqualityComparer<object>.Default);
 
-        private readonly CaseInsensitiveDictionary<XiListItemWrapper> _xiListItemWrappersDictionary =
-            new CaseInsensitiveDictionary<XiListItemWrapper>(256);
+        private readonly CaseInsensitiveOrderedDictionary<XiListItemWrapper> _xiListItemWrappersDictionary =
+            new CaseInsensitiveOrderedDictionary<XiListItemWrapper>(256);
 
         private volatile bool _xiItemsMustBeAddedOrRemoved;
         private readonly List<ClientObjectInfo> _clientObjectInfosToRemove = new List<ClientObjectInfo>(256);

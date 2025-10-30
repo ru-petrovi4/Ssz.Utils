@@ -145,7 +145,7 @@ namespace Ssz.Dcs.CentralServer
         /// <summary>
         ///     [ProcessModelingSessionId, ProcessModelingSession]
         /// </summary>
-        private readonly CaseInsensitiveDictionary<ProcessModelingSession> _processModelingSessionsCollection = new();               
+        private readonly CaseInsensitiveOrderedDictionary<ProcessModelingSession> _processModelingSessionsCollection = new();               
 
         #endregion
     }

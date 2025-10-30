@@ -18,7 +18,7 @@ namespace Ssz.Dcs.ControlEngine
         /// <summary>
         ///     [FileName, DataFileCache]
         /// </summary>
-        public CaseInsensitiveDictionary<DsBlockFileCache> DsBlockFileCachesCollection { get; } = new();
+        public CaseInsensitiveOrderedDictionary<DsBlockFileCache> DsBlockFileCachesCollection { get; } = new();
 
         /// <summary>
         /// 

@@ -38,7 +38,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             uint requestedServerContextTimeoutMs, 
             string requestedCultureName, 
             string systemNameToConnect, 
-            CaseInsensitiveDictionary<string?> contextParams)
+            CaseInsensitiveOrderedDictionary<string?> contextParams)
         {
             Logger = logger;
             ServerWorker = dataAccessServerWorker;
@@ -190,7 +190,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public string SystemNameToConnect { get; }
 
-        public CaseInsensitiveDictionary<string?> ContextParams { get; private set; }
+        public CaseInsensitiveOrderedDictionary<string?> ContextParams { get; private set; }
 
         public event EventHandler ContextParamsChanged = delegate { };
 
@@ -222,7 +222,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// </summary>
         public bool IsConcludeCalled { get; set; }        
 
-        public void UpdateContextParams(CaseInsensitiveDictionary<string?> contextParams)
+        public void UpdateContextParams(CaseInsensitiveOrderedDictionary<string?> contextParams)
         {
             ContextParams = contextParams;
             ContextParamsChanged(this, EventArgs.Empty);

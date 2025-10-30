@@ -18,9 +18,9 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="fields"></param>
         /// <returns></returns>
-        public static CaseInsensitiveDictionary<string?> FieldsToConstants(CaseInsensitiveDictionary<string?> fields)
+        public static CaseInsensitiveOrderedDictionary<string?> FieldsToConstants(CaseInsensitiveOrderedDictionary<string?> fields)
         {
-            CaseInsensitiveDictionary<string?> constants = new();
+            CaseInsensitiveOrderedDictionary<string?> constants = new();
             foreach (var kvp in fields)
             {
                 string constant = kvp.Key;

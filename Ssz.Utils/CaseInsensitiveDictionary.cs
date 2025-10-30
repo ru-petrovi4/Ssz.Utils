@@ -9,15 +9,11 @@ using System.Text.Json.Serialization;
 namespace Ssz.Utils
 {
     /// <summary>
-    ///     Case-insensitive ordered dictionary.
+    ///     Case Insensitive Dictionary
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [TypeConverter(typeof(CaseInsensitiveDictionary_TypeConverter))]
-#if NET9_0_OR_GREATER
-    public class CaseInsensitiveDictionary<T> : OrderedDictionary<string, T>
-#else
-    public class CaseInsensitiveDictionary<T> : Dictionary<string, T>
-#endif
+    public class CaseInsensitiveDictionary<T> : Dictionary<string, T>        
     {
         #region construction and destruction
 
@@ -119,8 +115,9 @@ namespace Ssz.Utils
 #endregion
     }
     
-    public static class DictionaryExtensions
+    public static class CaseInsensitiveDictionaryExtensions
     {
+#if !NET8_0_OR_GREATER
         /// <summary>
         ///     Returns null, if not found.
         /// </summary>
@@ -134,6 +131,7 @@ namespace Ssz.Utils
             dictionary.TryGetValue(key, out result);
             return result;
         }
+#endif
 
         public static CaseInsensitiveDictionary<TSource> ToCaseInsensitiveDictionary<TSource>(this IEnumerable<TSource> source, Func<TSource, string> keySelector)
         {

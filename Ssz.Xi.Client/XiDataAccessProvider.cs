@@ -56,7 +56,7 @@ namespace Ssz.Xi.Client
             string clientApplicationName,
             string clientWorkstationName,
             string systemNameToConnect,
-            CaseInsensitiveDictionary<string?> contextParams,
+            CaseInsensitiveOrderedDictionary<string?> contextParams,
             DataAccessProviderOptions options,
             IDispatcher? callbackDispatcher)
         {
@@ -540,7 +540,7 @@ namespace Ssz.Xi.Client
         /// </summary>
         protected ThreadSafeDispatcher WorkingThreadSafeDispatcher { get; } = new();        
 
-        protected CaseInsensitiveDictionary<ConstItem> ConstItemsDictionary { get; } = new();
+        protected CaseInsensitiveOrderedDictionary<ConstItem> ConstItemsDictionary { get; } = new();
 
         protected void RaiseValueSubscriptionsUpdated()
         {            
@@ -650,7 +650,7 @@ namespace Ssz.Xi.Client
                     {
                         string workstationName = ClientWorkstationName;
 #if NETSTANDARD2_0
-                        var dictionary = new CaseInsensitiveDictionary<string?>(ContextParams.Count);
+                        var dictionary = new CaseInsensitiveOrderedDictionary<string?>(ContextParams.Count);
                         foreach (var kvp in ContextParams)
                             dictionary.Add(kvp.Key, kvp.Value);                        
                         string xiContextParamsString =

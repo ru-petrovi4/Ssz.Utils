@@ -48,7 +48,7 @@ namespace Ssz.Operator.Core.DataAccess
             string serverAddress,
             string clientApplicationName,
             string systemNameToConnect,
-            CaseInsensitiveDictionary<string?> contextParams,
+            CaseInsensitiveOrderedDictionary<string?> contextParams,
             IDispatcher? callbackDispatcher)
         {
             if (Instance is not null)

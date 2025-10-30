@@ -269,7 +269,7 @@ namespace Ssz.Operator.Core.Design.Controls
                 }
             }
 
-            var groupDictionary = new CaseInsensitiveDictionary<GroupViewModel>();
+            var groupDictionary = new CaseInsensitiveOrderedDictionary<GroupViewModel>();
 
             foreach (EntityInfoViewModel entityInfoViewModel in rootGroupViewModel.Entities)
             {

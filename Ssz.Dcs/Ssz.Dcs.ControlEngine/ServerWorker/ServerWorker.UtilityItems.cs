@@ -90,7 +90,7 @@ namespace Ssz.Dcs.ControlEngine
 
         private volatile bool _utilityItemsProcessingNeeded;
 
-        private readonly CaseInsensitiveDictionary<UtilityItem> _utilityItems = new(256);        
+        private readonly CaseInsensitiveOrderedDictionary<UtilityItem> _utilityItems = new(256);        
 
         #endregion
 

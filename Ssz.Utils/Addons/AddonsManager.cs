@@ -248,7 +248,7 @@ namespace Ssz.Utils.Addons
                 CsvDb.SaveData(AddonsAvailableCsvFileName);
 
                 var addonsFileData = CsvDb.GetData(AddonsCsvFileName);
-                CaseInsensitiveDictionary<List<string?>> new_AddonsFileData = new();
+                CaseInsensitiveOrderedDictionary<List<string?>> new_AddonsFileData = new();
                 new_AddonsFileData[@"!AddonInstanceId"] = new List<string?>()
                 {
                     @"!AddonInstanceId",
@@ -759,10 +759,10 @@ namespace Ssz.Utils.Addons
                 if (AddonsManagerOptions!.CanModifyAddonsCsvFiles)
                     availableAddonClone.CsvDb.SaveData();
 
-                availableAddonClone.OptionsSubstituted = new CaseInsensitiveDictionary<string?>(availableAddonClone.CsvDb.GetData(AddonBase.OptionsCsvFileName)
+                availableAddonClone.OptionsSubstituted = new CaseInsensitiveOrderedDictionary<string?>(availableAddonClone.CsvDb.GetData(AddonBase.OptionsCsvFileName)
                     .Where(kvp => kvp.Key != @"").Select(kvp => new KeyValuePair<string, string?>(kvp.Key, kvp.Value.Count > 1 ? SubstituteOption(kvp.Value[1]) : null)));                
 
-                var observableCollectionItemIds = new CaseInsensitiveDictionary<string?>(availableAddonClone.OptionsSubstituted);                    
+                var observableCollectionItemIds = new CaseInsensitiveOrderedDictionary<string?>(availableAddonClone.OptionsSubstituted);                    
                 observableCollectionItemIds.Add(@"!addonIdentifier", availableAddonClone.Identifier);
                 observableCollectionItemIds.Add(@"!addonInstanceId", addonInstanceId);                
                 availableAddonClone.ObservableCollectionItemId = NameValueCollectionHelper.GetNameValueCollectionString(observableCollectionItemIds);

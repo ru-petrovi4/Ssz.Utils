@@ -100,7 +100,7 @@ namespace Ssz.Utils.DataAccess
         ///     Used in DataAccessGrpc Context initialization.
         ///     Can be null
         /// </summary>
-        public CaseInsensitiveDictionary<string?> ContextParams { get; private set; } = new();
+        public CaseInsensitiveOrderedDictionary<string?> ContextParams { get; private set; } = new();
 
         public DataAccessProviderOptions Options { get; private set; } = new();
 
@@ -166,7 +166,7 @@ namespace Ssz.Utils.DataAccess
             string clientApplicationName,
             string clientWorkstationName,
             string systemNameToConnect,
-            CaseInsensitiveDictionary<string?> contextParams,
+            CaseInsensitiveOrderedDictionary<string?> contextParams,
             DataAccessProviderOptions options,
             IDispatcher? callbackDispatcher)
         {
@@ -191,7 +191,7 @@ namespace Ssz.Utils.DataAccess
             IsInitialized = true;
         }
 
-        public virtual Task UpdateContextParamsAsync(CaseInsensitiveDictionary<string?> contextParams)
+        public virtual Task UpdateContextParamsAsync(CaseInsensitiveOrderedDictionary<string?> contextParams)
         {
             ContextParams = contextParams;
             return Task.CompletedTask;
@@ -237,7 +237,7 @@ namespace Ssz.Utils.DataAccess
             IsInitialized = false;
 
             ElementIdsMap = null;
-            ContextParams = new CaseInsensitiveDictionary<string?>();
+            ContextParams = new CaseInsensitiveOrderedDictionary<string?>();
             CallbackDispatcher = null;
 
             return Task.CompletedTask;
@@ -299,12 +299,12 @@ namespace Ssz.Utils.DataAccess
             return Task.FromResult<IValueSubscription[]?>(null);
         }
 
-        public virtual Task<ElementValuesJournal[]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, TypeId? calculation, CaseInsensitiveDictionary<string?>? params_, object[] valueJournalSubscriptions)
+        public virtual Task<ElementValuesJournal[]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, TypeId? calculation, CaseInsensitiveOrderedDictionary<string?>? params_, object[] valueJournalSubscriptions)
         {
             return Task.FromResult<ElementValuesJournal[]?>(null);
         }
 
-        public virtual Task<List<Utils.DataAccess.EventMessagesCollection>?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
+        public virtual Task<List<Utils.DataAccess.EventMessagesCollection>?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveOrderedDictionary<string?>? params_)
         {
             return Task.FromResult<List<Utils.DataAccess.EventMessagesCollection>?>(null);
         }        

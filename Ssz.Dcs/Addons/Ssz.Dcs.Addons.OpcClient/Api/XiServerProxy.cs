@@ -97,7 +97,7 @@ namespace Ssz.Xi.Client.Api
         /// <summary>
         ///     This method is used to connect to the server and establish a context with it.
         /// </summary>
-        public void InitiateXiContext(CaseInsensitiveDictionary<string?> contextParams, string applicationName,
+        public void InitiateXiContext(CaseInsensitiveOrderedDictionary<string?> contextParams, string applicationName,
             string workstationName, IDispatcher xiCallbackDoer)
         {
             if (_disposed) throw new ObjectDisposedException(@"Cannot access a disposed XiServerProxy.");

@@ -546,7 +546,7 @@ namespace Ssz.Operator.Core.Drawings
         {
             try
             {
-                var existingFiles = new CaseInsensitiveDictionary<FileInfo>();
+                var existingFiles = new CaseInsensitiveOrderedDictionary<FileInfo>();
                 if (Directory.Exists(DrawingFilesDirectoryFullName))
                     foreach (var f in Directory.GetFiles(DrawingFilesDirectoryFullName))
                     {
@@ -596,7 +596,7 @@ namespace Ssz.Operator.Core.Drawings
             }*/
         }
 
-        public void GetDsConstants(CaseInsensitiveDictionary<List<ExtendedDsConstant>> dsConstantsDictionary)
+        public void GetDsConstants(CaseInsensitiveOrderedDictionary<List<ExtendedDsConstant>> dsConstantsDictionary)
         {
             foreach (DsShapeBase dsShape in DsShapes)
             {

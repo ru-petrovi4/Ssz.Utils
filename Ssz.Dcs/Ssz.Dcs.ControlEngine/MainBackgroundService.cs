@@ -68,7 +68,7 @@ namespace Ssz.Dcs.ControlEngine
                 DataAccessConstants.ControlEngine_ClientApplicationName,
                 Environment.MachineName,
                 @"", // Utility context
-                new CaseInsensitiveDictionary<string?>
+                new CaseInsensitiveOrderedDictionary<string?>
                 {
                     { DataAccessConstants.ParamName_EngineSessionId, Program.Options.EngineSessionId },
                     { DataAccessConstants.ParamName_ControlEngineServerAddress, controlEngineServerAddress }
@@ -101,7 +101,7 @@ namespace Ssz.Dcs.ControlEngine
                 DataAccessConstants.ControlEngine_ClientApplicationName,
                 Environment.MachineName,
                 Program.Options.CentralServerSystemName,
-                new CaseInsensitiveDictionary<string?>(),
+                new CaseInsensitiveOrderedDictionary<string?>(),
                 new DataAccessProviderOptions(),
                 _serverWorker.ThreadSafeDispatcher);
 

@@ -352,7 +352,7 @@ namespace Ssz.Operator.Core
             }
 
             return AddXamlDesc(result, 
-                new CaseInsensitiveDictionary<string?>()
+                new CaseInsensitiveOrderedDictionary<string?>()
                 {
                     { @"", fileInfo.Name },
                     { @"Stretch", new Any(stretch).ValueAsString(false) }
@@ -446,11 +446,11 @@ namespace Ssz.Operator.Core
             return contentPreview;
         }
 
-        public static CaseInsensitiveDictionary<string?> GetXamlDesc(string xaml)
+        public static CaseInsensitiveOrderedDictionary<string?> GetXamlDesc(string xaml)
         {            
             if (String.IsNullOrEmpty(xaml))
             {
-                return new CaseInsensitiveDictionary<string?>();
+                return new CaseInsensitiveOrderedDictionary<string?>();
             }            
             if (xaml.StartsWith(XamlDescV2Begin))
             {
@@ -468,7 +468,7 @@ namespace Ssz.Operator.Core
                 var xamlDescBeginLength = XamlDescBegin.Length;
                 if (i > xamlDescBeginLength)
                     desc = xaml.Substring(xamlDescBeginLength, i - xamlDescBeginLength);
-                return new CaseInsensitiveDictionary<string?> { { @"", desc } };
+                return new CaseInsensitiveOrderedDictionary<string?> { { @"", desc } };
             }
             if (xaml.StartsWith("<!--"))
             {
@@ -478,12 +478,12 @@ namespace Ssz.Operator.Core
                 if (i > xamlDescBeginLength)
                     desc = xaml.Substring(xamlDescBeginLength, i - xamlDescBeginLength);
                 var descParts = desc.Split(',');
-                var result = new CaseInsensitiveDictionary<string?> { { @"", descParts[0] } };
+                var result = new CaseInsensitiveOrderedDictionary<string?> { { @"", descParts[0] } };
                 if (descParts.Length > 1)
                     result["Stretch"] = descParts[1];
                 return result;
             }
-            return new CaseInsensitiveDictionary<string?>();
+            return new CaseInsensitiveOrderedDictionary<string?>();
         }
 
 #if NET5_0_OR_GREATER

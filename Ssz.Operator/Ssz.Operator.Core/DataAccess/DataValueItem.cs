@@ -22,7 +22,7 @@ namespace Ssz.Operator.Core.DataAccess
         #region construction and destruction
 
         public DataValueItem(string dataSourceString,
-            CaseInsensitiveDictionary<List<object?>>? globalVariables, IPlayWindowBase? playWindow,
+            CaseInsensitiveOrderedDictionary<List<object?>>? globalVariables, IPlayWindowBase? playWindow,
             bool visualDesignMode)
         {
             _globalVariables = globalVariables;
@@ -108,7 +108,7 @@ namespace Ssz.Operator.Core.DataAccess
                     }
                     break;
                 case DataSourceType.PageExists:
-                    CaseInsensitiveDictionary<DsPageDrawing> allDsPagesCache = DsProject.Instance.AllDsPagesCache;
+                    CaseInsensitiveOrderedDictionary<DsPageDrawing> allDsPagesCache = DsProject.Instance.AllDsPagesCache;
                     if (allDsPagesCache.Count == 0) _value = new Any(true);
                     else
                         _value = new Any(allDsPagesCache.ContainsKey(_dataSourceIdString));
@@ -557,7 +557,7 @@ namespace Ssz.Operator.Core.DataAccess
                     out _variableIndex);
         }
 
-        private object GetVariableValue(CaseInsensitiveDictionary<List<object?>>? variables)
+        private object GetVariableValue(CaseInsensitiveOrderedDictionary<List<object?>>? variables)
         {
             if (variables is null || _variableName == @"") return _defaultValueString;
             List<object?>? variableValues;
@@ -566,7 +566,7 @@ namespace Ssz.Operator.Core.DataAccess
             return variableValues[_variableIndex] ?? _defaultValueString;
         }
 
-        private void SetVariableValue(CaseInsensitiveDictionary<List<object?>>? variables, object? value)
+        private void SetVariableValue(CaseInsensitiveOrderedDictionary<List<object?>>? variables, object? value)
         {
             if (variables is null || _variableName == @"") return;
             List<object?>? variableValues;
@@ -598,7 +598,7 @@ namespace Ssz.Operator.Core.DataAccess
         private readonly string _dataSourceIdString;
 
         private readonly string _defaultValueString;
-        private CaseInsensitiveDictionary<List<object?>>? _globalVariables;
+        private CaseInsensitiveOrderedDictionary<List<object?>>? _globalVariables;
 
         private string _variableName = @"";
         private int _variableIndex;

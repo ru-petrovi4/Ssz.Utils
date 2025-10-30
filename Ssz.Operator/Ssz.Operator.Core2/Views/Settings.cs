@@ -14,7 +14,7 @@ namespace Ssz.Operator.Core
     {
         #region private fields
 
-        private CaseInsensitiveDictionary<string?> _settings = new();
+        private CaseInsensitiveOrderedDictionary<string?> _settings = new();
 
         #endregion
 

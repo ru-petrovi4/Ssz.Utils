@@ -23,18 +23,18 @@ namespace Ssz.Operator.Core.ControlsCommon
         {
             InitializeComponent();
 
-            MainDataGrid.LoadingRow += MainDataGrid_LoadingRow;
-            MainDataGrid.UnloadingRow += MainDataGrid_UnloadingRow;
+            //MainDataGrid.LoadingRow += MainDataGrid_LoadingRow;
+            //MainDataGrid.UnloadingRow += MainDataGrid_UnloadingRow;
         }
 
         public GenericAlarmListControl(IList itemsSource)
         {
             InitializeComponent();
 
-            MainDataGrid.LoadingRow += MainDataGrid_LoadingRow;
-            MainDataGrid.UnloadingRow += MainDataGrid_UnloadingRow;
+            //MainDataGrid.LoadingRow += MainDataGrid_LoadingRow;
+            //MainDataGrid.UnloadingRow += MainDataGrid_UnloadingRow;
             
-            MainDataGrid.ItemsSource = itemsSource;            
+            //MainDataGrid.ItemsSource = itemsSource;            
         }        
 
         #endregion
@@ -43,63 +43,63 @@ namespace Ssz.Operator.Core.ControlsCommon
 
         public void AckAlarms()
         {
-            var eventIds = new List<EventId>(200);
+            //var eventIds = new List<EventId>(200);
 
-            for (var i = 0; i < _dataGridRows.Count; i += 1)
-            {
-                var dataGridRow = _dataGridRows[i];
-                if (TreeHelper.IsUserVisible(dataGridRow, MainDataGrid))
-                {
-                    var alarm = dataGridRow.DataContext as GenericDsAlarmInfoViewModel;
-                    if (alarm?.EventId is not null)
-                        eventIds.Add(alarm.EventId);
-                }
-            }
+            //for (var i = 0; i < _dataGridRows.Count; i += 1)
+            //{
+            //    var dataGridRow = _dataGridRows[i];
+            //    if (TreeHelper.IsUserVisible(dataGridRow, MainDataGrid))
+            //    {
+            //        var alarm = dataGridRow.DataContext as GenericDsAlarmInfoViewModel;
+            //        if (alarm?.EventId is not null)
+            //            eventIds.Add(alarm.EventId);
+            //    }
+            //}
 
-            if (eventIds.Count > 0) 
-                DsDataAccessProvider.Instance.AckAlarms("", "", eventIds.ToArray());
+            //if (eventIds.Count > 0) 
+            //    DsDataAccessProvider.Instance.AckAlarms("", "", eventIds.ToArray());
         }
 
         #endregion
 
         #region private functions
 
-        private void MainDataGrid_LoadingRow(object? sender, DataGridRowEventArgs e)
-        {
-            _dataGridRows.Add(e.Row);
-        }
+        //private void MainDataGrid_LoadingRow(object? sender, DataGridRowEventArgs e)
+        //{
+        //    _dataGridRows.Add(e.Row);
+        //}
 
-        private void MainDataGrid_UnloadingRow(object? sender, DataGridRowEventArgs e)
-        {
-            _dataGridRows.Remove(e.Row);
-        }        
+        //private void MainDataGrid_UnloadingRow(object? sender, DataGridRowEventArgs e)
+        //{
+        //    _dataGridRows.Remove(e.Row);
+        //}        
 
         private void MainDataGrid_DoubleTapped(object? sender, Avalonia.Input.TappedEventArgs e)
         {
-            if (sender is null) 
-                return;
+        //    if (sender is null) 
+        //        return;
 
-            var selectedItem = (GenericDsAlarmInfoViewModel)((DataGrid)sender).SelectedItem;
-            if (selectedItem is null)
-                return;
+        //    var selectedItem = (GenericDsAlarmInfoViewModel)((DataGrid)sender).SelectedItem;
+        //    if (selectedItem is null)
+        //        return;
 
-            var dsPageDrawing = DsProject.Instance.AllDsPagesCacheFindDsPageDrawing(selectedItem.TagName)
-                .FirstOrDefault();
-            if (dsPageDrawing is not null && !dsPageDrawing.IsFaceplate)
-                CommandsManager.NotifyCommand(PlayDsProjectView.GetPlayWindow(this)?.MainFrame,
-                    CommandsManager.JumpCommand,
-                    new JumpDsCommandOptions
-                    {
-                        TargetWindow = TargetWindow.RootWindow,
-                        FileRelativePath = DsProject.Instance.GetFileRelativePath(dsPageDrawing.FileFullName)
-                    });
+        //    var dsPageDrawing = DsProject.Instance.AllDsPagesCacheFindDsPageDrawing(selectedItem.TagName)
+        //        .FirstOrDefault();
+        //    if (dsPageDrawing is not null && !dsPageDrawing.IsFaceplate)
+        //        CommandsManager.NotifyCommand(PlayDsProjectView.GetPlayWindow(this)?.MainFrame,
+        //            CommandsManager.JumpCommand,
+        //            new JumpDsCommandOptions
+        //            {
+        //                TargetWindow = TargetWindow.RootWindow,
+        //                FileRelativePath = DsProject.Instance.GetFileRelativePath(dsPageDrawing.FileFullName)
+        //            });
         }
 
         #endregion
 
         #region private fields
 
-        private readonly List<DataGridRow> _dataGridRows = new();
+        //private readonly List<DataGridRow> _dataGridRows = new();
 
         #endregion
     }

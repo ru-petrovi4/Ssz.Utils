@@ -200,8 +200,8 @@ namespace Ssz.Operator.Core.DataEngines
 
         #region private fields
         
-        private readonly CaseInsensitiveDictionary<DataValueFrameworkElement> _tagDesc_FrameworkElementsCollection = new();
-        private readonly CaseInsensitiveDictionary<DataValueFrameworkElement> _tagNameToDisplay_FrameworkElementsCollection = new();
+        private readonly CaseInsensitiveOrderedDictionary<DataValueFrameworkElement> _tagDesc_FrameworkElementsCollection = new();
+        private readonly CaseInsensitiveOrderedDictionary<DataValueFrameworkElement> _tagNameToDisplay_FrameworkElementsCollection = new();
 
         #endregion
     }

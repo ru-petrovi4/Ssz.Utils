@@ -200,8 +200,8 @@ namespace Ssz.Operator.Core.DataEngines
 
         #region private fields
         
-        private readonly CaseInsensitiveDictionary<DataValueStyledElement> _tagDesc_ControlsCollection = new();
-        private readonly CaseInsensitiveDictionary<DataValueStyledElement> _tagNameToDisplay_ControlsCollection = new();
+        private readonly CaseInsensitiveOrderedDictionary<DataValueStyledElement> _tagDesc_ControlsCollection = new();
+        private readonly CaseInsensitiveOrderedDictionary<DataValueStyledElement> _tagNameToDisplay_ControlsCollection = new();
 
         #endregion
     }

@@ -19,7 +19,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
         public static Task ProcessFileAsync(Stream stream, 
             Encoding defaultEncoding, 
             DateTime maxProcessedTimeUtc, 
-            CaseInsensitiveDictionary<string?> options,
+            CaseInsensitiveOrderedDictionary<string?> options,
             List<EventMessage> eventMessages,
             ILoggersSet loggersSet,
             CancellationToken cancellationToken)
@@ -101,7 +101,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                             eventMessage.EventType = EventType.SystemEvent;
                             eventMessage.OccurrenceTimeUtc = timeUtc;
 
-                            CaseInsensitiveDictionary<string?> nameValueCollection = new();
+                            CaseInsensitiveOrderedDictionary<string?> nameValueCollection = new();
                             foreach (int i in Enumerable.Range(0, parts.Length))
                             {
                                 if (i >= columns.Length)
@@ -137,7 +137,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                             eventMessage.EventType = EventType.SystemEvent;
                             eventMessage.OccurrenceTimeUtc = timeUtc;
 
-                            CaseInsensitiveDictionary<string?> nameValueCollection = new()
+                            CaseInsensitiveOrderedDictionary<string?> nameValueCollection = new()
                             {
                                 { @"", parts[0] }
                             };

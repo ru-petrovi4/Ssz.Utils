@@ -352,7 +352,7 @@ namespace Ssz.Utils
                     }                    
                     else
                     {
-                        csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
+                        csvFile.Data = new CaseInsensitiveOrderedDictionary<List<string?>>();
                         csvFile.Data_FileInfo_LastModifiedUtc = null;
                     }
                 }
@@ -378,7 +378,7 @@ namespace Ssz.Utils
             if (CsvDbDirectoryHasWriteAccess)
                 csvFile.FileName = fileName!;
             csvFile.IncludeFileNamesCollection.Clear();
-            csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
+            csvFile.Data = new CaseInsensitiveOrderedDictionary<List<string?>>();
             csvFile.Data_FileInfo_LastModifiedUtc = null;                     
             csvFile.DataIsChangedByProgram = true;            
 
@@ -403,7 +403,7 @@ namespace Ssz.Utils
             
             if (!_csvFilesCollection.TryGetValue(fileName!, out CsvFile? csvFile)) return false;
             csvFile.IncludeFileNamesCollection.Clear();
-            csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
+            csvFile.Data = new CaseInsensitiveOrderedDictionary<List<string?>>();
             csvFile.Data_FileInfo_LastModifiedUtc = null;            
             csvFile.DataIsChangedByProgram = true;
             return true;
@@ -445,11 +445,11 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public CaseInsensitiveDictionary<List<string?>> GetData(string? fileName)
+        public CaseInsensitiveOrderedDictionary<List<string?>> GetData(string? fileName)
         {
-            if (string.IsNullOrWhiteSpace(fileName)) return new CaseInsensitiveDictionary<List<string?>>();
+            if (string.IsNullOrWhiteSpace(fileName)) return new CaseInsensitiveOrderedDictionary<List<string?>>();
             
-            if (!_csvFilesCollection.TryGetValue(fileName!, out CsvFile? csvFile)) return new CaseInsensitiveDictionary<List<string?>>();
+            if (!_csvFilesCollection.TryGetValue(fileName!, out CsvFile? csvFile)) return new CaseInsensitiveOrderedDictionary<List<string?>>();
 
             EnsureCsvFileDataIsLoaded(csvFile);
             
@@ -494,7 +494,8 @@ namespace Ssz.Utils
 
         public string? GetValue(string? fileName, string key, int column)
         {
-            if (string.IsNullOrWhiteSpace(fileName) || column < 0) return null;
+            if (string.IsNullOrWhiteSpace(fileName) || column < 0) 
+                return null;
             
             if (!_csvFilesCollection.TryGetValue(fileName!, out CsvFile? csvFile)) return null;
 
@@ -505,7 +506,7 @@ namespace Ssz.Utils
             return values[column];
         }
 
-        public static string? GetValue(CaseInsensitiveDictionary<List<string?>> data, string key, int column)
+        public static string? GetValue(CaseInsensitiveOrderedDictionary<List<string?>> data, string key, int column)
         {
             if (column < 0) return null;
             if (!data.TryGetValue(key, out List<string?>? values)) return null;
@@ -515,13 +516,15 @@ namespace Ssz.Utils
 
         public static string? GetValue(List<string?> values, int column)
         {
-            if (column < 0 || column >= values.Count) return null;
+            if (column < 0 || column >= values.Count) 
+                return null;
             return values[column];
         }
 
         public void SetValue(string? fileName, string key, int column, string? value)
         {
-            if (string.IsNullOrWhiteSpace(fileName) || column < 0) return;
+            if (string.IsNullOrWhiteSpace(fileName) || column < 1) 
+                return;
 
             if (!fileName!.EndsWith(@".csv", StringComparison.InvariantCultureIgnoreCase)) return;
             
@@ -529,7 +532,7 @@ namespace Ssz.Utils
             {
                 csvFile = new CsvFile();                
                 csvFile.FileName = fileName!;                
-                csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
+                csvFile.Data = new CaseInsensitiveOrderedDictionary<List<string?>>();
                 csvFile.Data_FileInfo_LastModifiedUtc = null;                              
                 _csvFilesCollection.Add(fileName!, csvFile);
             }
@@ -548,9 +551,12 @@ namespace Ssz.Utils
                 values.AddRange(Enumerable.Repeat<string?>(null, column + 1 - values.Count));
             }
 
-            if (column > 0) values[column] = value;
+            if (values[column] != value)
+            {
+                values[column] = value;
 
-            csvFile.DataIsChangedByProgram = true;
+                csvFile.DataIsChangedByProgram = true;
+            }
         }
 
         /// <summary>
@@ -568,7 +574,7 @@ namespace Ssz.Utils
             {
                 csvFile = new CsvFile();
                 csvFile.FileName = fileName!;
-                csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
+                csvFile.Data = new CaseInsensitiveOrderedDictionary<List<string?>>();
                 csvFile.Data_FileInfo_LastModifiedUtc = null;                             
                 _csvFilesCollection.Add(fileName!, csvFile);
             }
@@ -649,7 +655,7 @@ namespace Ssz.Utils
             {
                 csvFile = new CsvFile();
                 csvFile.FileName = fileName!;
-                csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
+                csvFile.Data = new CaseInsensitiveOrderedDictionary<List<string?>>();
                 csvFile.Data_FileInfo_LastModifiedUtc = null;                           
                 _csvFilesCollection.Add(fileName!, csvFile);
             }
@@ -836,7 +842,7 @@ namespace Ssz.Utils
                 }                
                 else
                 {
-                    csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
+                    csvFile.Data = new CaseInsensitiveOrderedDictionary<List<string?>>();
                     csvFile.Data_FileInfo_LastModifiedUtc = null;
                 }   
             }
@@ -901,7 +907,7 @@ namespace Ssz.Utils
             /// </summary>
             public DateTime? Data_FileInfo_LastModifiedUtc;
 
-            public CaseInsensitiveDictionary<List<string?>>? Data;            
+            public CaseInsensitiveOrderedDictionary<List<string?>>? Data;            
 
             /// <summary>            
             ///     File names

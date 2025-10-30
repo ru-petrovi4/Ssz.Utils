@@ -175,12 +175,12 @@ namespace Ssz.Dcs.CentralServer
         /// <summary>
         ///     [AdditionalCentralServerAddress, AdditionalCentralServerInfo]
         /// </summary>
-        private readonly CaseInsensitiveDictionary<AdditionalCentralServerInfo> _additionalCentralServerInfosCollection = new();
+        private readonly CaseInsensitiveOrderedDictionary<AdditionalCentralServerInfo> _additionalCentralServerInfosCollection = new();
 
         /// <summary>
         ///     [ClientWorkstationName, EnginesHostInfo]
         /// </summary>
-        private readonly CaseInsensitiveDictionary<EnginesHostInfo> _enginesHostInfosCollection = new();
+        private readonly CaseInsensitiveOrderedDictionary<EnginesHostInfo> _enginesHostInfosCollection = new();
 
         private readonly EnginesHostInfo _localEnginesHostInfo = new()
         {

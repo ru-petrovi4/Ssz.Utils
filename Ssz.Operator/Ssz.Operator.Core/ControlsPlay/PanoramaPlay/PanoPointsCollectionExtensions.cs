@@ -51,7 +51,7 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
         {
             var result = new Model3DGroup();
 
-            var points = new CaseInsensitiveDictionary<PanoPoint>();
+            var points = new CaseInsensitiveOrderedDictionary<PanoPoint>();
 
             GetNearestPoints(userAtPanoPoint, 2, points);
 
@@ -230,7 +230,7 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
         #region private functions
 
         private static void GetNearestPoints(PanoPoint point, int maxLinkCount,
-            CaseInsensitiveDictionary<PanoPoint> points)
+            CaseInsensitiveOrderedDictionary<PanoPoint> points)
         {
             if (point is null) return;
 

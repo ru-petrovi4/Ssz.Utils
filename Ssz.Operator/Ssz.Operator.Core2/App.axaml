@@ -14,7 +14,7 @@
 		
         <FluentTheme />
 
-		<StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+		<!--<StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>-->
 
 		<!-- Add the line below to get OxyPlot UI theme applied in Avalonia 11. -->
 		<StyleInclude Source="avares://OxyPlot.Avalonia/Themes/Default.axaml"/>

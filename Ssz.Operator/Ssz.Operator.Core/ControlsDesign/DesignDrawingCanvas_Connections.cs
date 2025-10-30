@@ -13,7 +13,7 @@ namespace Ssz.Operator.Core.ControlsDesign
     {
         #region private fields
 
-        private readonly CaseInsensitiveDictionary<ConnectionPointInfo> _connectionPoints = new();
+        private readonly CaseInsensitiveOrderedDictionary<ConnectionPointInfo> _connectionPoints = new();
 
         #endregion
 

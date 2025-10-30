@@ -12,7 +12,7 @@ namespace Ssz.Dcs.ControlEngine
     {
         #region public functions
 
-        public override ServerListRoot NewServerList(ServerContext serverContext, uint listClientAlias, uint listType, CaseInsensitiveDictionary<string?> listParams)
+        public override ServerListRoot NewServerList(ServerContext serverContext, uint listClientAlias, uint listType, CaseInsensitiveOrderedDictionary<string?> listParams)
         {
             switch (listType)
             {
@@ -27,7 +27,7 @@ namespace Ssz.Dcs.ControlEngine
             }
         }
         
-        public ServerListRoot NewElementValueList(ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
+        public ServerListRoot NewElementValueList(ServerContext serverContext, uint listClientAlias, CaseInsensitiveOrderedDictionary<string?> listParams)
         {
             string systemNameToConnect = serverContext.SystemNameToConnect;
             if (systemNameToConnect == @"")
@@ -40,7 +40,7 @@ namespace Ssz.Dcs.ControlEngine
             }
         }
         
-        public ServerListRoot NewElementValuesJournalList(ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
+        public ServerListRoot NewElementValuesJournalList(ServerContext serverContext, uint listClientAlias, CaseInsensitiveOrderedDictionary<string?> listParams)
         {
             string systemNameToConnect = serverContext.SystemNameToConnect;
             if (systemNameToConnect == @"")
@@ -53,7 +53,7 @@ namespace Ssz.Dcs.ControlEngine
             }
         }
         
-        public ServerListRoot NewEventList(ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
+        public ServerListRoot NewEventList(ServerContext serverContext, uint listClientAlias, CaseInsensitiveOrderedDictionary<string?> listParams)
         {
             string systemNameToConnect = serverContext.SystemNameToConnect;
             if (systemNameToConnect == @"")

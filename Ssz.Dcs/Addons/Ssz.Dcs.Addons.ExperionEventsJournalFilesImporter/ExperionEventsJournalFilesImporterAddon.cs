@@ -70,7 +70,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
 
             var elementIdsMap = ActivatorUtilities.CreateInstance<ElementIdsMap>(ServiceProvider);
             elementIdsMap.Initialize(CsvDb.GetData(ElementIdsMap.StandardMapFileName), CsvDb.GetData(ElementIdsMap.StandardTagsFileName), CsvDb);
-            var commonEventMessageFieldsToAdd = new CaseInsensitiveDictionary<string?>(elementIdsMap.CommonEventMessageFieldsToAdd);
+            var commonEventMessageFieldsToAdd = new CaseInsensitiveOrderedDictionary<string?>(elementIdsMap.CommonEventMessageFieldsToAdd);
             commonEventMessageFieldsToAdd[@"EventsSource"] = ExperionEventsSource;
             commonEventMessageFieldsToAdd[@"SourceAddonInstanceId"] = InstanceId;            
             foreach (var kvp in NameValueCollectionHelper.Parse(OptionsSubstituted.TryGetValue(DataAccessProviderGetter_CommonEventMessageFieldsToAdd_OptionName)))
@@ -84,7 +84,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                 @"Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter",
                 Environment.MachineName,
                 @"",
-                new CaseInsensitiveDictionary<string?>(),
+                new CaseInsensitiveOrderedDictionary<string?>(),
                 new DataAccessProviderOptions(),
                 Dispatcher);
 

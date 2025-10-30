@@ -724,7 +724,7 @@ namespace Ssz.Operator.Core.ControlsPlay
         private readonly List<ChildPlayWindowInfo> _childPlayWindowInfosCollection =
             new();
 
-        private readonly CaseInsensitiveDictionary<List<WindowSlot>> _windowSlots =
+        private readonly CaseInsensitiveOrderedDictionary<List<WindowSlot>> _windowSlots =
             new();
 
         private int _slotNum;

@@ -57,7 +57,7 @@ namespace Ssz.Operator.Core
 
             DsConstantsCollection.CollectionChanged += DsConstantsCollectionChanged;
 
-            AddonsCommandLineOptions = new CaseInsensitiveDictionary<string?>();
+            AddonsCommandLineOptions = new CaseInsensitiveOrderedDictionary<string?>();
             _globalUITimer = new DispatcherTimer(TimeSpan.FromMilliseconds(500), DispatcherPriority.Normal,
                 GlobalUITimerTimerCallback, Application.Current.Dispatcher);
             _globalUITimer.Start();
@@ -196,7 +196,7 @@ namespace Ssz.Operator.Core
                                         {
                                             var count = reader.ReadInt32();
                                             if (progressInfo is not null) progressInfo.ProgressBarMaxValue += count;
-                                            var allDsPagesCache = new CaseInsensitiveDictionary<DsPageDrawing>();
+                                            var allDsPagesCache = new CaseInsensitiveOrderedDictionary<DsPageDrawing>();
                                             for (var i = 0; i < count; i += 1)
                                             {
                                                 if (ct.HasValue && ct.Value.IsCancellationRequested)
@@ -610,7 +610,7 @@ namespace Ssz.Operator.Core
 
         [Browsable(false)] public bool AutoConvert { get; set; }        
 
-        [Browsable(false)] public CaseInsensitiveDictionary<string?> AddonsCommandLineOptions { get; set; }
+        [Browsable(false)] public CaseInsensitiveOrderedDictionary<string?> AddonsCommandLineOptions { get; set; }
 
         [Browsable(false)]
         public bool IsReadOnly
@@ -908,7 +908,7 @@ namespace Ssz.Operator.Core
 
         [Browsable(false)] public bool RefreshForPropertyGridIsDisabled { get; set; }
 
-        [Browsable(false)] public CaseInsensitiveDictionary<List<object?>> GlobalVariables { get; } = new();
+        [Browsable(false)] public CaseInsensitiveOrderedDictionary<List<object?>> GlobalVariables { get; } = new();
 
         [Browsable(false)]
         public ElementIdsMap ElementIdsMap { get; } = new();
@@ -1206,12 +1206,12 @@ namespace Ssz.Operator.Core
                 yield return guid;
         }
 
-        public CaseInsensitiveDictionary<DsPageDrawingInfo> GetAllDsPageDrawingInfos(
+        public CaseInsensitiveOrderedDictionary<DsPageDrawingInfo> GetAllDsPageDrawingInfos(
             List<string>? errorMessages = null)
         {
-            if (!IsInitialized) return new CaseInsensitiveDictionary<DsPageDrawingInfo>();
+            if (!IsInitialized) return new CaseInsensitiveOrderedDictionary<DsPageDrawingInfo>();
 
-            var drawingInfos = new CaseInsensitiveDictionary<DsPageDrawingInfo>();
+            var drawingInfos = new CaseInsensitiveOrderedDictionary<DsPageDrawingInfo>();
 
             if (_allDsPagesCache is not null)
             {
@@ -1233,14 +1233,14 @@ namespace Ssz.Operator.Core
             return drawingInfos;
         }
 
-        public CaseInsensitiveDictionary<DsShapeDrawingInfo> GetAllComplexDsShapesDrawingInfos(
+        public CaseInsensitiveOrderedDictionary<DsShapeDrawingInfo> GetAllComplexDsShapesDrawingInfos(
             List<string>? errorMessages = null)
         {
-            if (!IsInitialized) return new CaseInsensitiveDictionary<DsShapeDrawingInfo>();
+            if (!IsInitialized) return new CaseInsensitiveOrderedDictionary<DsShapeDrawingInfo>();
 
             if (_allDsShapeDrawingInfos is null)
             {
-                _allDsShapeDrawingInfos = new CaseInsensitiveDictionary<DsShapeDrawingInfo>();
+                _allDsShapeDrawingInfos = new CaseInsensitiveOrderedDictionary<DsShapeDrawingInfo>();
 
                 var dsShapesDirectoryInfo = DsShapesDirectoryInfo;
                 if (dsShapesDirectoryInfo is not null)
@@ -1422,7 +1422,7 @@ namespace Ssz.Operator.Core
 
         private readonly DsConstant[] _hiddenDsConstantsCollection = new DsConstant[2];
 
-        private readonly CaseInsensitiveDictionary<ConstantValueViewModel[]> _constantValuesDictionary =
+        private readonly CaseInsensitiveOrderedDictionary<ConstantValueViewModel[]> _constantValuesDictionary =
             new();        
 
         private GuidAndName _dataEngineGuidAndName = new();

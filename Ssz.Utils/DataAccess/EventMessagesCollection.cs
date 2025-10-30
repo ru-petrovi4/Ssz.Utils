@@ -8,6 +8,6 @@ namespace Ssz.Utils.DataAccess
     {
         public List<EventMessage> EventMessages { get; set; } = new();
 
-        public CaseInsensitiveDictionary<string?>? CommonFields { get; set; }
+        public CaseInsensitiveOrderedDictionary<string?>? CommonFields { get; set; }
     }
 }

@@ -22,9 +22,9 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="nameValueCollectionString"></param>
         /// <returns></returns>
-        public static CaseInsensitiveDictionary<string?> Parse(string? nameValueCollectionString)
+        public static CaseInsensitiveOrderedDictionary<string?> Parse(string? nameValueCollectionString)
         {
-            var result = new CaseInsensitiveDictionary<string?>();
+            var result = new CaseInsensitiveOrderedDictionary<string?>();
 
             if (nameValueCollectionString is null || nameValueCollectionString == @"") 
                 return result;           
@@ -256,9 +256,9 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static CaseInsensitiveDictionary<string?> GetNameValueCollectionFromObject(object? obj)
+        public static CaseInsensitiveOrderedDictionary<string?> GetNameValueCollectionFromObject(object? obj)
         {
-            var result = new CaseInsensitiveDictionary<string?>();
+            var result = new CaseInsensitiveOrderedDictionary<string?>();
 
             if (obj is null) 
                 return result;
@@ -311,7 +311,7 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="nameValueCollection"></param>
-        public static void SetNameValueCollection(object obj, CaseInsensitiveDictionary<string?>? nameValueCollection)
+        public static void SetNameValueCollection(object obj, CaseInsensitiveOrderedDictionary<string?>? nameValueCollection)
         {
             if (nameValueCollection is null) 
                 return;

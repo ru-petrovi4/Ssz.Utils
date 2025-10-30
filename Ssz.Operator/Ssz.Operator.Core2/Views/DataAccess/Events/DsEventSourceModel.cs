@@ -140,7 +140,7 @@ namespace Ssz.Operator.Core.DataAccess
                 return;
             }
 
-            CaseInsensitiveDictionary<DsPageDrawing> dsPageDrawings =
+            CaseInsensitiveOrderedDictionary<DsPageDrawing> dsPageDrawings =
                 DsProject.Instance.AllDsPagesCache;
             if (dsPageDrawings.ContainsKey(tagOrAreaOrDsPageName))
             {
@@ -178,7 +178,7 @@ namespace Ssz.Operator.Core.DataAccess
                 return;
             }
 
-            CaseInsensitiveDictionary<DsPageDrawing> dsPageDrawings =
+            CaseInsensitiveOrderedDictionary<DsPageDrawing> dsPageDrawings =
                 DsProject.Instance.AllDsPagesCache;
             if (dsPageDrawings.ContainsKey(tagOrAreaOrDsPageName))
             {

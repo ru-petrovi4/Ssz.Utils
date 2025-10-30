@@ -102,7 +102,7 @@ namespace Ssz.Utils.Addons
         ///     Gets value from appsettings.json:AddonsOptions:_Addon_Identifier_:DataAccessClient_ContextParams
         ///     Thread-safe.
         /// </summary>
-        public CaseInsensitiveDictionary<string?> OptionsSubstituted { get; internal set; } = null!;
+        public CaseInsensitiveOrderedDictionary<string?> OptionsSubstituted { get; internal set; } = null!;
 
         /// <summary>
         ///     Unique ID for addon type and options.

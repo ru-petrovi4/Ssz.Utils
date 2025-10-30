@@ -245,14 +245,14 @@ public partial class App : Application
         if (options.OperatorSessionId != @"") operatorSessionId = options.OperatorSessionId;
         else operatorSessionId = Guid.NewGuid().ToString();
         
-        CaseInsensitiveDictionary<string?> contextParams;
+        CaseInsensitiveOrderedDictionary<string?> contextParams;
         if (!String.IsNullOrEmpty(options.ContextParams))
         {
             contextParams = NameValueCollectionHelper.Parse(options.ContextParams);
         }
         else
         {
-            contextParams = new CaseInsensitiveDictionary<string?>();
+            contextParams = new CaseInsensitiveOrderedDictionary<string?>();
             contextParams[@"OperatorSessionId"] = operatorSessionId;
         }        
         await DsDataAccessProvider.StaticInitialize(
@@ -403,7 +403,7 @@ public partial class App : Application
                 @"Ssz.Operator",
                 Environment.MachineName,
                 @"", // Utility context
-                new CaseInsensitiveDictionary<string?>
+                new CaseInsensitiveOrderedDictionary<string?>
                 {
                 },
                 new DataAccessProviderOptions

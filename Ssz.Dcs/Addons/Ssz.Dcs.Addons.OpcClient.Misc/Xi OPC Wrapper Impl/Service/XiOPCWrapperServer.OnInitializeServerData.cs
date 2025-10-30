@@ -36,7 +36,7 @@ namespace Xi.OPC.Wrapper.Impl
 	//[ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, InstanceContextMode = InstanceContextMode.PerCall)]
 	public partial class XiOPCWrapperServer : ServerBase<ContextImpl, ListRoot>
 	{
-        public static void Initialize(CaseInsensitiveDictionary<string> contextParams)
+        public static void Initialize(CaseInsensitiveOrderedDictionary<string> contextParams)
         {
 			Initialize();
 

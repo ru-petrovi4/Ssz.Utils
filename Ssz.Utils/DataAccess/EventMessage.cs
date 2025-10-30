@@ -75,7 +75,7 @@ namespace Ssz.Utils.DataAccess
 		/// are specified in the EventCategories member of the Event Capabilities 
 		/// MIB Element.
 		/// </summary>
-		public CaseInsensitiveDictionary<string?>? Fields;
+		public CaseInsensitiveOrderedDictionary<string?>? Fields;
 
         #endregion
     }

@@ -31,7 +31,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// </summary>
         /// <param name="dataAccessGrpcList"></param>
         /// <param name="listParams"></param>
-        public async Task DefineListAsync(ClientListRoot dataAccessGrpcList, CaseInsensitiveDictionary<string>? listParams)
+        public async Task DefineListAsync(ClientListRoot dataAccessGrpcList, CaseInsensitiveOrderedDictionary<string>? listParams)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 

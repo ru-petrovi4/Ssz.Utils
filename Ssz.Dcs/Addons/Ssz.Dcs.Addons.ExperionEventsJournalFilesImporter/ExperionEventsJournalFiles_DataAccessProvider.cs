@@ -60,7 +60,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
             string clientApplicationName,
             string clientWorkstationName,
             string systemNameToConnect,
-            CaseInsensitiveDictionary<string?> contextParams,
+            CaseInsensitiveOrderedDictionary<string?> contextParams,
             DataAccessProviderOptions options,
             IDispatcher? callbackDispatcher)
         {
@@ -445,7 +445,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
             string journalFiles_Type,
             Encoding defaultRptFiles_Encoding,
             DateTime maxProcessedTimeUtc,
-            CaseInsensitiveDictionary<string?> options,
+            CaseInsensitiveOrderedDictionary<string?> options,
             List<EventMessage> eventMessages,
             ILoggersSet loggersSet,
             CancellationToken cancellationToken)

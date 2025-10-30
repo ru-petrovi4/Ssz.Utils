@@ -64,7 +64,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             string clientApplicationName,
             string clientWorkstationName,
             string systemNameToConnect,
-            CaseInsensitiveDictionary<string?> contextParams,
+            CaseInsensitiveOrderedDictionary<string?> contextParams,
             IDataAccessServerWorker? localDataAccessServerWorker,
             bool dangerousAcceptAnyServerCertificate,
             IDispatcher? callbackDispatcher)
@@ -174,7 +174,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// <param name="bufferingRate"> The buffering rate for the list. 0 if not used. </param>
         /// <param name="filterSet"> The filter set for the list. Null if not used. </param>
         /// <returns> Returns the new data list. </returns>
-        public async Task<ClientElementValueList> NewElementValueListAsync(CaseInsensitiveDictionary<string>? listParams)
+        public async Task<ClientElementValueList> NewElementValueListAsync(CaseInsensitiveOrderedDictionary<string>? listParams)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
 
@@ -192,7 +192,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// <param name="bufferingRate"> The buffering rate for the list. 0 if not used. </param>
         /// <param name="filterSet"> The filter set for the list. Null if not used. </param>
         /// <returns> Returns the new data list. </returns>
-        public async Task<ClientEventList> NewEventListAsync(CaseInsensitiveDictionary<string>? listParams)
+        public async Task<ClientEventList> NewEventListAsync(CaseInsensitiveOrderedDictionary<string>? listParams)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
 
@@ -210,7 +210,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// <param name="bufferingRate"> The buffering rate for the list. 0 if not used. </param>
         /// <param name="filterSet"> The filter set for the list. Null if not used. </param>
         /// <returns> Returns the new data list. </returns>
-        public async Task<ClientElementValuesJournalList> NewElementValuesJournalListAsync(CaseInsensitiveDictionary<string>? listParams)
+        public async Task<ClientElementValuesJournalList> NewElementValuesJournalListAsync(CaseInsensitiveOrderedDictionary<string>? listParams)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
 
@@ -221,7 +221,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             return list;
         }
 
-        public async Task UpdateContextParamsAsync(CaseInsensitiveDictionary<string?> contextParams)
+        public async Task UpdateContextParamsAsync(CaseInsensitiveOrderedDictionary<string?> contextParams)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
 

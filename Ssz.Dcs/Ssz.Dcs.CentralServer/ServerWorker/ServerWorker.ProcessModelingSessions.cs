@@ -51,7 +51,7 @@ namespace Ssz.Dcs.CentralServer
             if (dsFilesStoreDescriptor is null)
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid processModelName: " + processModelName));            
 
-            CaseInsensitiveDictionary<List<string?>> data = CsvHelper.LoadCsvFile(Path.Combine(FilesStoreDirectoryInfo.FullName, dsFilesStoreDescriptor.DescriptorDsFileInfo.Name), true);
+            CaseInsensitiveOrderedDictionary<List<string?>> data = CsvHelper.LoadCsvFile(Path.Combine(FilesStoreDirectoryInfo.FullName, dsFilesStoreDescriptor.DescriptorDsFileInfo.Name), true);
 
             var processModelingSession = new ProcessModelingSession(
                 Guid.NewGuid().ToString(),
@@ -93,7 +93,7 @@ namespace Ssz.Dcs.CentralServer
                         foreach (string fullFileName in Directory.EnumerateFiles(Path.Combine(FilesStoreDirectoryInfo.FullName, dsFilesStoreItem!.DsFilesStoreDirectory.Name, DsFilesStoreConstants.InstructorDataDirectoryName))
                             .Where(ffn => ffn.EndsWith(@".scenario.csv", StringComparison.InvariantCultureIgnoreCase)))
                         {
-                            CaseInsensitiveDictionary<List<string?>> scenarioData = CsvHelper.LoadCsvFile(fullFileName, true);
+                            CaseInsensitiveOrderedDictionary<List<string?>> scenarioData = CsvHelper.LoadCsvFile(fullFileName, true);
                             string fileName = Path.GetFileName(fullFileName);
                             string scenarioName = fileName.Substring(0, fileName.Length - @".scenario.csv".Length);
                             var scenario = originalScenarios.FirstOrDefault(s => String.Equals(s.ScenarioName, scenarioName, StringComparison.InvariantCultureIgnoreCase));
@@ -273,7 +273,7 @@ namespace Ssz.Dcs.CentralServer
                             _serviceProvider,
                             $"http://localhost:60080/PlatServer/ServerDiscovery",
                             systemName,
-                            new CaseInsensitiveDictionary<string?> { { @"XiSystem", systemName } },
+                            new CaseInsensitiveOrderedDictionary<string?> { { @"XiSystem", systemName } },
                             ThreadSafeDispatcher);
                         var platInstructorEngineSession = new EngineSession(Guid.NewGuid().ToString(), dataAccessProviderGetter_Addon);
                         processModelingSession.EngineSessions.Add(platInstructorEngineSession);
@@ -301,7 +301,7 @@ namespace Ssz.Dcs.CentralServer
                             _serviceProvider,
                             $"http://localhost:60080/HoneywellUsoXiServer/ServerDiscovery",
                             systemName,
-                            new CaseInsensitiveDictionary<string?> { { @"XiSystem", systemName } },
+                            new CaseInsensitiveOrderedDictionary<string?> { { @"XiSystem", systemName } },
                             ThreadSafeDispatcher);
                         var platInstructorEngineSession = new EngineSession(Guid.NewGuid().ToString(), dataAccessProviderGetter_Addon);
                         processModelingSession.EngineSessions.Add(platInstructorEngineSession);
@@ -398,7 +398,7 @@ namespace Ssz.Dcs.CentralServer
                         _serviceProvider,
                         @"",
                         @"PROCESS",
-                        new CaseInsensitiveDictionary<string?>(),
+                        new CaseInsensitiveOrderedDictionary<string?>(),
                         ThreadSafeDispatcher);
                 var controlEngineSession = new ControlEngine_TrainingEngineSession(engineSessionId, dataAccessProviderGetter_Addon);
                 processModelingSession.EngineSessions.Add(controlEngineSession);
@@ -426,7 +426,7 @@ namespace Ssz.Dcs.CentralServer
                                 _serviceProvider,
                                 $"http://localhost:60080/PlatServer/ServerDiscovery",
                                 xiSystemName,
-                                new CaseInsensitiveDictionary<string?> { { @"XiSystem", xiSystemName } },
+                                new CaseInsensitiveOrderedDictionary<string?> { { @"XiSystem", xiSystemName } },
                                 ThreadSafeDispatcher);
                         }
                         else
@@ -435,7 +435,7 @@ namespace Ssz.Dcs.CentralServer
                                 _serviceProvider,
                                 $"https://{processModelingSession.EnginesHostInfo.WorkstationName}:60060",
                                 DataAccessConstants.PlatformXiProcessModelingSessionId + xiSystemName,
-                                new CaseInsensitiveDictionary<string?>(),
+                                new CaseInsensitiveOrderedDictionary<string?>(),
                                 ThreadSafeDispatcher);
                         }
                         var platInstructorEngineSession = new EngineSession(engineSessionId, dataAccessProviderGetter_Addon2);

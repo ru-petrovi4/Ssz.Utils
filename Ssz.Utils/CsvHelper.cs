@@ -233,7 +233,7 @@ namespace Ssz.Utils
         /// <param name="includeFileNames"></param>
         /// <param name="fileProvider"></param>
         /// <returns></returns>
-        public static CaseInsensitiveDictionary<List<string?>> LoadCsvFile(
+        public static CaseInsensitiveOrderedDictionary<List<string?>> LoadCsvFile(
             string fileFullName,
             bool includeFiles,
             Dictionary<Regex, string>? defines = null,
@@ -262,7 +262,7 @@ namespace Ssz.Utils
         /// <param name="includeFileNames"></param>
         /// <param name="fileProvider"></param>
         /// <returns></returns>
-        public static async Task<CaseInsensitiveDictionary<List<string?>>> LoadCsvFileAsync(
+        public static async Task<CaseInsensitiveOrderedDictionary<List<string?>>> LoadCsvFileAsync(
             string fileFullName, 
             bool includeFiles,
             IFileProvider fileProvider,
@@ -304,7 +304,7 @@ namespace Ssz.Utils
         /// <param name="includeFileNames"></param>
         /// <param name="fileProvider"></param>
         /// <returns></returns>
-        public static CaseInsensitiveDictionary<List<string?>> LoadCsvFile(
+        public static CaseInsensitiveOrderedDictionary<List<string?>> LoadCsvFile(
             Stream csvStream,
             bool includeFiles,
             string? includeFilesDirectory,
@@ -313,7 +313,7 @@ namespace Ssz.Utils
             List<string>? includeFileNames = null)
         {
             // !!! Warning !!! Code duplicated in LoadCsvFile(...), LoadCsvFileAsync(...), ParseCsvMultiline(...)
-            var fileData = new CaseInsensitiveDictionary<List<string?>>();
+            var fileData = new CaseInsensitiveOrderedDictionary<List<string?>>();
 
             try
             {
@@ -362,7 +362,7 @@ namespace Ssz.Utils
                                         var includeFileName = line.Substring(q1 + 1, q2 - q1 - 1);
                                         if (includeFileNames is not null)
                                             includeFileNames.Add(includeFileName);
-                                        CaseInsensitiveDictionary<List<string?>> includeFileData = LoadCsvFile(
+                                        CaseInsensitiveOrderedDictionary<List<string?>> includeFileData = LoadCsvFile(
                                             Path.Combine(includeFilesDirectory ?? @"", includeFileName),
                                             false,
                                             defines,
@@ -500,7 +500,7 @@ namespace Ssz.Utils
         /// <param name="includeFileNames"></param>
         /// <param name="fileProvider"></param>
         /// <returns></returns>
-        public static async Task<CaseInsensitiveDictionary<List<string?>>> LoadCsvFileAsync(
+        public static async Task<CaseInsensitiveOrderedDictionary<List<string?>>> LoadCsvFileAsync(
             Stream csvStream,
             bool includeFiles,
             IFileProvider fileProvider,
@@ -510,7 +510,7 @@ namespace Ssz.Utils
             List<string>? includeFileNames = null)
         {
             // !!! Warning !!! Code duplicated in LoadCsvFile(...), LoadCsvFileAsync(...), ParseCsvMultiline(...)
-            var fileData = new CaseInsensitiveDictionary<List<string?>>();
+            var fileData = new CaseInsensitiveOrderedDictionary<List<string?>>();
 
             try
             {
@@ -559,7 +559,7 @@ namespace Ssz.Utils
                                         var includeFileName = line.Substring(q1 + 1, q2 - q1 - 1);
                                         if (includeFileNames is not null)
                                             includeFileNames.Add(includeFileName);
-                                        CaseInsensitiveDictionary<List<string?>> includeFileData = await LoadCsvFileAsync(
+                                        CaseInsensitiveOrderedDictionary<List<string?>> includeFileData = await LoadCsvFileAsync(
                                             Path.Combine(includeFilesDirectory ?? @"", includeFileName), 
                                             false,
                                             fileProvider,
@@ -686,7 +686,7 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="fileFullName"></param>
         /// <param name="fileData"></param>
-        public static void SaveCsvFile(string fileFullName, CaseInsensitiveDictionary<List<string?>> fileData)
+        public static void SaveCsvFile(string fileFullName, CaseInsensitiveOrderedDictionary<List<string?>> fileData)
         {
             using (var writer = new StreamWriter(File.Create(fileFullName), new UTF8Encoding(true)))
             {

@@ -1257,7 +1257,7 @@ namespace Ssz.Operator.Core.ControlsDesign
 
                 if (dlg.ShowDialog() != true) return;
 
-                CaseInsensitiveDictionary<List<string?>> fileData;
+                CaseInsensitiveOrderedDictionary<List<string?>> fileData;
                 try
                 {
                     fileData = CsvHelper.LoadCsvFile(dlg.FileName, true);

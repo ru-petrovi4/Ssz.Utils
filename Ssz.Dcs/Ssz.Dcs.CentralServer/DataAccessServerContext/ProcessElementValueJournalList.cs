@@ -26,7 +26,7 @@ namespace Ssz.Dcs.CentralServer
 	{
         #region construction and destruction
         
-        public ProcessElementValuesJournalList(DataAccessServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
+        public ProcessElementValuesJournalList(DataAccessServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveOrderedDictionary<string?> listParams)
 			: base(serverWorker, serverContext, listClientAlias, listParams)
 		{
             _engineSessions = ((ServerWorker)ServerContext.ServerWorker).GetEngineSessions(ServerContext);
@@ -54,7 +54,7 @@ namespace Ssz.Dcs.CentralServer
             DateTime secondTimeStampUtc,
             uint numValuesPerSubscription,
             Ssz.Utils.DataAccess.TypeId calculation,
-            CaseInsensitiveDictionary<string?> params_,
+            CaseInsensitiveOrderedDictionary<string?> params_,
             List<uint> serverAliases)
         {
             var result = new ElementValuesJournal[serverAliases.Count];

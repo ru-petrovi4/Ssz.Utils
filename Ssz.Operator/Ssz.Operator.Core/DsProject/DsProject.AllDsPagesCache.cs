@@ -34,7 +34,7 @@ namespace Ssz.Operator.Core
 
             _allDsPagesDsConstantsDictionary = null;
             if (_allDsPagesCache is null)
-                _allDsPagesCache = new CaseInsensitiveDictionary<DsPageDrawing>();
+                _allDsPagesCache = new CaseInsensitiveOrderedDictionary<DsPageDrawing>();
 
             await CheckDrawingsBinSerializationVersionAsync(onDriveDsPageDrawingInfos, progressInfo);
 
@@ -148,8 +148,8 @@ namespace Ssz.Operator.Core
         ///     [PageName, DsPageDrawing]
         /// </summary>
         [Browsable(false)]
-        public CaseInsensitiveDictionary<DsPageDrawing> AllDsPagesCache =>
-            _allDsPagesCache ?? new CaseInsensitiveDictionary<DsPageDrawing>();
+        public CaseInsensitiveOrderedDictionary<DsPageDrawing> AllDsPagesCache =>
+            _allDsPagesCache ?? new CaseInsensitiveOrderedDictionary<DsPageDrawing>();
 
         /// <summary>
         ///     Can be with or without .dspage at the end.
@@ -170,12 +170,12 @@ namespace Ssz.Operator.Core
         ///     [Computed Constant Value, List of ExtendedDsConstant]
         /// </summary>
         /// <returns></returns>
-        public CaseInsensitiveDictionary<List<ExtendedDsConstant>> AllDsPagesCacheGetAllConstantsValues()
+        public CaseInsensitiveOrderedDictionary<List<ExtendedDsConstant>> AllDsPagesCacheGetAllConstantsValues()
         {
             if (_allDsPagesDsConstantsDictionary is null)
             {
                 var allDsPagesDsConstantsDictionary =
-                    new CaseInsensitiveDictionary<List<ExtendedDsConstant>>();
+                    new CaseInsensitiveOrderedDictionary<List<ExtendedDsConstant>>();
 
                 foreach (DsPageDrawing drawing in AllDsPagesCache.Values)
                 {
@@ -202,7 +202,7 @@ namespace Ssz.Operator.Core
                 return new[] {dsPageDrawing};
             }
 
-            CaseInsensitiveDictionary<List<ExtendedDsConstant>> allConstantsValues =
+            CaseInsensitiveOrderedDictionary<List<ExtendedDsConstant>> allConstantsValues =
                 AllDsPagesCacheGetAllConstantsValues();
 
             var dsConstants = allConstantsValues.TryGetValue(tagName);
@@ -320,20 +320,20 @@ namespace Ssz.Operator.Core
         /// <summary>
         ///     [PageName (no extension), DsPageDrawing]
         /// </summary>
-        private CaseInsensitiveDictionary<DsPageDrawing>? _allDsPagesCache;
+        private CaseInsensitiveOrderedDictionary<DsPageDrawing>? _allDsPagesCache;
 
         private bool _allDsPagesCacheIsChanged;
 
         /// <summary>
         ///     [PageName (no extension), List]
         /// </summary>
-        private volatile CaseInsensitiveDictionary<List<ExtendedDsConstant>>?
+        private volatile CaseInsensitiveOrderedDictionary<List<ExtendedDsConstant>>?
             _allDsPagesDsConstantsDictionary;
 
         /// <summary>
         ///     [PageName (no extension), DsShapeDrawingInfo]
         /// </summary>
-        private CaseInsensitiveDictionary<DsShapeDrawingInfo>? _allDsShapeDrawingInfos;
+        private CaseInsensitiveOrderedDictionary<DsShapeDrawingInfo>? _allDsShapeDrawingInfos;
 
         #endregion
     }

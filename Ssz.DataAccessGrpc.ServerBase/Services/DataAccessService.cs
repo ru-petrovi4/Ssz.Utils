@@ -36,7 +36,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             return await GetReplyAsync(() =>
                 {
-                    CaseInsensitiveDictionary<string?> contextParams = new CaseInsensitiveDictionary<string?>(request.ContextParams
+                    CaseInsensitiveOrderedDictionary<string?> contextParams = new CaseInsensitiveOrderedDictionary<string?>(request.ContextParams
                             .Select(cp => KeyValuePair.Create(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)));
                     string dataAccessClientUserName = ConfigurationHelper.GetValue(_configuration, @"DataAccessClientUserName", @"");
                     if (dataAccessClientUserName != @"")
@@ -45,12 +45,12 @@ namespace Ssz.DataAccessGrpc.ServerBase
                         if (String.IsNullOrEmpty(dataAccessClientPasswordHash))
                             throw new RpcException(new Status(StatusCode.PermissionDenied, "Client password hash must be specified (DataAccessClientPasswordHash in appsettings.json)."));
                         byte[] dataAccessClientPasswordHashBytes = Convert.FromBase64String(dataAccessClientPasswordHash);
-                        var clientUserNameInRequest = contextParams.TryGetValue(@"ClientUserName");
+                        var clientUserNameInRequest = contextParams.GetValueOrDefault(@"ClientUserName");
                         if (String.IsNullOrEmpty(clientUserNameInRequest))
                             throw new RpcException(new Status(StatusCode.PermissionDenied, "Client user name must be specified (ClientUserName context param)."));
                         if (!String.Equals(clientUserNameInRequest, dataAccessClientUserName, StringComparison.InvariantCultureIgnoreCase))
                             throw new RpcException(new Status(StatusCode.PermissionDenied, "Invalid client user name (ClientUserName context params).")); // Invalid client user name or password (ClientUserName or ClientPassword context params)
-                        var clientPasswordInRequest = contextParams.TryGetValue(@"ClientPassword");
+                        var clientPasswordInRequest = contextParams.GetValueOrDefault(@"ClientPassword");
                         if (String.IsNullOrEmpty(clientPasswordInRequest))
                             throw new RpcException(new Status(StatusCode.PermissionDenied, "Client password must be specified (ClientPassword context param)."));
                         byte[] clientPasswordInRequestHashBytes = SHA512.HashData(new UTF8Encoding(false).GetBytes(clientPasswordInRequest));
@@ -98,7 +98,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             return await GetReplyAsync(() =>
                 {
-                    CaseInsensitiveDictionary<string?> contextParams = new CaseInsensitiveDictionary<string?>(request.ContextParams
+                    CaseInsensitiveOrderedDictionary<string?> contextParams = new CaseInsensitiveOrderedDictionary<string?>(request.ContextParams
                             .Select(cp => KeyValuePair.Create(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)));
 
                     IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"");
@@ -149,7 +149,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;                    
                     var reply = new DefineListReply();
                     reply.Result = new Common.AliasResult(serverContext.DefineList(request.ListClientAlias, request.ListType,
-                        new Utils.CaseInsensitiveDictionary<string?>(request.ListParams
+                        new Utils.CaseInsensitiveOrderedDictionary<string?>(request.ListParams
                             .Select(cp => new KeyValuePair<string, string?>(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)))));
                     return Task.FromResult(reply);
                 },
@@ -278,7 +278,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                             request.SecondTimestamp.ToDateTime(),
                             request.NumValuesPerAlias,
                             request.Calculation.ToTypeId(),
-                            new CaseInsensitiveDictionary<string?>(request.Params
+                            new CaseInsensitiveOrderedDictionary<string?>(request.Params
                                 .Select(cp => KeyValuePair.Create(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null))),                        
                             request.ServerAliases.ToList()
                         );
@@ -302,7 +302,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                             request.ListServerAlias,
                             request.FirstTimestamp.ToDateTime(),
                             request.SecondTimestamp.ToDateTime(),
-                            new Utils.CaseInsensitiveDictionary<string?>(request.Params
+                            new Utils.CaseInsensitiveOrderedDictionary<string?>(request.Params
                                 .Select(cp => new KeyValuePair<string, string?>(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null))));
                     if (fullEventMessagesCallbackMessage is not null)
                     {

@@ -57,7 +57,7 @@ namespace Ssz.Dcs.Addons.OpcClient
             string clientApplicationName,
             string clientWorkstationName,
             string systemNameToConnect,
-            CaseInsensitiveDictionary<string?> contextParams,
+            CaseInsensitiveOrderedDictionary<string?> contextParams,
             DataAccessProviderOptions options,
             IDispatcher? callbackDispatcher)
         {
@@ -528,7 +528,7 @@ namespace Ssz.Dcs.Addons.OpcClient
         /// </summary>
         protected ThreadSafeDispatcher WorkingThreadSafeDispatcher { get; } = new();        
 
-        protected CaseInsensitiveDictionary<ConstItem> ConstItemsDictionary { get; } = new();
+        protected CaseInsensitiveOrderedDictionary<ConstItem> ConstItemsDictionary { get; } = new();
 
         protected void RaiseValueSubscriptionsUpdated()
         {

@@ -79,7 +79,7 @@ namespace Ssz.DataAccessGrpc.Client
             string clientApplicationName,
             string clientWorkstationName,
             string systemNameToConnect,
-            CaseInsensitiveDictionary<string?> contextParams,
+            CaseInsensitiveOrderedDictionary<string?> contextParams,
             DataAccessProviderOptions options,
             IDispatcher? callbackDispatcher)
         {
@@ -152,7 +152,7 @@ namespace Ssz.DataAccessGrpc.Client
             }            
         }
 
-        public override async Task UpdateContextParamsAsync(CaseInsensitiveDictionary<string?> contextParams)
+        public override async Task UpdateContextParamsAsync(CaseInsensitiveOrderedDictionary<string?> contextParams)
         {
             await base.UpdateContextParamsAsync(contextParams);
 
@@ -722,7 +722,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <summary>
         ///     This dictionary is created, because we can write to const values.
         /// </summary>
-        protected CaseInsensitiveDictionary<ConstItem> ConstItemsDictionary { get; } = new();
+        protected CaseInsensitiveOrderedDictionary<ConstItem> ConstItemsDictionary { get; } = new();
 
         protected DateTime LastValueSubscriptionsUpdatedDateTimeUtc { get; private set; } = DateTime.MinValue;
 

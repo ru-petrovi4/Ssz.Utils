@@ -21,7 +21,7 @@ namespace Ssz.Operator.Core.Panorama
         public PanoPointsCollection()
         {
             PanoPoints = new List<PanoPoint>();
-            PanoPointsDictionary = new CaseInsensitiveDictionary<PanoPoint>();
+            PanoPointsDictionary = new CaseInsensitiveOrderedDictionary<PanoPoint>();
             StartDsPageName = "";
             _currentPath = new PanoPointRef[0];
         }
@@ -33,7 +33,7 @@ namespace Ssz.Operator.Core.Panorama
         public List<PanoPoint> PanoPoints { get; private set; }
 
 
-        public CaseInsensitiveDictionary<PanoPoint> PanoPointsDictionary { get; private set; }
+        public CaseInsensitiveOrderedDictionary<PanoPoint> PanoPointsDictionary { get; private set; }
 
         public string StartDsPageName { get; set; }
 
@@ -80,7 +80,7 @@ namespace Ssz.Operator.Core.Panorama
 
         public void Initialize()
         {
-            PanoPointsDictionary = new CaseInsensitiveDictionary<PanoPoint>(PanoPoints.Count);
+            PanoPointsDictionary = new CaseInsensitiveOrderedDictionary<PanoPoint>(PanoPoints.Count);
             foreach (PanoPoint panoPoint in PanoPoints) PanoPointsDictionary.Add(panoPoint.DsPageName, panoPoint);
 
             var index = 0;

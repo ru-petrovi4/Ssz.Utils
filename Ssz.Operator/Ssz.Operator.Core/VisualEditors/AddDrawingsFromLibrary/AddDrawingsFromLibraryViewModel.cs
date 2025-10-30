@@ -46,7 +46,7 @@ namespace Ssz.Operator.Core.VisualEditors.AddDrawingsFromLibrary
                     foreach (
                         DirectoryInfo di in directories)
                     {
-                        var drawingInfos = new CaseInsensitiveDictionary<DrawingInfo>();
+                        var drawingInfos = new CaseInsensitiveOrderedDictionary<DrawingInfo>();
 
                         foreach (FileInfo fi in di.GetFiles(@"*" + DsProject.DsPageFileExtension, SearchOption.TopDirectoryOnly))
                         {

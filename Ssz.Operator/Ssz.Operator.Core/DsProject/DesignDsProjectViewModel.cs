@@ -1482,7 +1482,7 @@ namespace Ssz.Operator.Core
         public async Task<ToolkitOperationResult> RestoreComplexDsShapesAsync(IProgressInfo? progressInfo,
             DrawingBase[] drawingsToRestoreFrom)
         {
-            var newDrawings = new CaseInsensitiveDictionary<DsShapeDrawing>();
+            var newDrawings = new CaseInsensitiveOrderedDictionary<DsShapeDrawing>();
             var result =
                 await DsProject.Instance.RestoreComplexDsShapesAsync(progressInfo, drawingsToRestoreFrom,
                     newDrawings);
@@ -1699,7 +1699,7 @@ namespace Ssz.Operator.Core
             var complexDsShape = dsShapeViewModel.DsShape as ComplexDsShape;
             if (complexDsShape is null) return;
 
-            CaseInsensitiveDictionary<DsShapeDrawingInfo> drawingInfos =
+            CaseInsensitiveOrderedDictionary<DsShapeDrawingInfo> drawingInfos =
                 DsProject.Instance.GetAllComplexDsShapesDrawingInfos();
             DrawingInfo? drawingInfo = null;
             if (!string.IsNullOrEmpty(complexDsShape.DsShapeDrawingName))

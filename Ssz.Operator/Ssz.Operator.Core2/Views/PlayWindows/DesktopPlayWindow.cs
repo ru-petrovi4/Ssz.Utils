@@ -105,7 +105,7 @@ namespace Ssz.Operator.Core
 
         public string WindowCategory { get; set; } = @"";
         
-        public CaseInsensitiveDictionary<List<object?>> WindowVariables { get; } = new();
+        public CaseInsensitiveOrderedDictionary<List<object?>> WindowVariables { get; } = new();
 
         #endregion
 

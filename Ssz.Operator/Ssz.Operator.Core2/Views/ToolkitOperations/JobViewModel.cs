@@ -119,12 +119,12 @@ namespace Ssz.Operator.Core
             await Task.Delay(0);
         }
 
-        public IJobProgress GetChildJobProgress(uint minProgressPercent, uint maxProgressPercent, bool parentFailedIfFailed)
+        public Task<IJobProgress> GetChildJobProgressAsync(uint minProgressPercent, uint maxProgressPercent, bool parentFailedIfFailed)
         {
-            return new ChildJobProgress(this, 
+            return Task.FromResult<IJobProgress>(new ChildJobProgress(this, 
 				minProgressPercent, 
 				maxProgressPercent,
-                parentFailedIfFailed);
+                parentFailedIfFailed));
         }        
 
 		#endregion

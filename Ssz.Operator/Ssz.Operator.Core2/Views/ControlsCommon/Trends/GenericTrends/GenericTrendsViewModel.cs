@@ -233,7 +233,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 
         private void SaveTrendGroup(string groupId)
         {
-            var data = new CaseInsensitiveDictionary<List<string?>>(
+            var data = new CaseInsensitiveOrderedDictionary<List<string?>>(
                 DsProject.Instance.CsvDb.GetData(GenericEmulationAddon.TrendGroups_FileName));
 
             foreach (var key in data.Keys.ToArray())

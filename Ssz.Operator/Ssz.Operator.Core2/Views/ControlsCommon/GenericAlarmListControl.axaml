@@ -8,7 +8,7 @@
 			 x:CompileBindings="False"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" x:Name="UserControl">
-    <DataGrid Name="MainDataGrid" AutoGenerateColumns="False" HeadersVisibility="None"
+    <!--<DataGrid Name="MainDataGrid" AutoGenerateColumns="False" HeadersVisibility="None"
               Background="{Binding Path=Background, ElementName=UserControl}"
               RowBackground="{Binding Path=Background, ElementName=UserControl}"
               Foreground="{Binding Path=Foreground, ElementName=UserControl}"
@@ -63,5 +63,5 @@
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
         </DataGrid.Columns>
-    </DataGrid>
+    </DataGrid>-->
 </UserControl>

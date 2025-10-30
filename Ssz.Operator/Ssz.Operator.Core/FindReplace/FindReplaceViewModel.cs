@@ -646,7 +646,7 @@ namespace Ssz.Operator.Core.FindReplace
             var i = 0;
 
             // Constant Type, Constant Value, List<ExtendedDsConstant>
-            var valuesInfo = new CaseInsensitiveDictionary<Dictionary<string, List<ExtendedDsConstant>>>();
+            var valuesInfo = new CaseInsensitiveOrderedDictionary<Dictionary<string, List<ExtendedDsConstant>>>();
 
             foreach (DrawingInfo drawingInfoForSearch in drawingInfosForSearch)
             {
@@ -794,7 +794,7 @@ namespace Ssz.Operator.Core.FindReplace
                 DsProject.Instance.DefaultServerAddress, 
                 @"Ssz.Operator", 
                 DsProject.Instance.DefaultSystemNameToConnect, 
-                new CaseInsensitiveDictionary<string?>(),
+                new CaseInsensitiveOrderedDictionary<string?>(),
                 dispatcherWrapper);            
 
             var drawingsCount = drawingInfosForSearch.Length;

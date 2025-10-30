@@ -219,8 +219,8 @@ namespace Ssz.Utils.Wpf
         private static readonly Dictionary<Window, WindowInfo> WindowInfosDictionary =
             new Dictionary<Window, WindowInfo>(ReferenceEqualityComparer<Window>.Default);
 
-        private static readonly CaseInsensitiveDictionary<List<WindowSlot>> WindowSlotsDictionary =
-            new CaseInsensitiveDictionary<List<WindowSlot>>();
+        private static readonly CaseInsensitiveOrderedDictionary<List<WindowSlot>> WindowSlotsDictionary =
+            new CaseInsensitiveOrderedDictionary<List<WindowSlot>>();
 
         #endregion
 

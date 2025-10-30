@@ -1037,7 +1037,7 @@ namespace Ssz.Operator.Core.DsShapes
 
 
         public virtual void GetDsConstants(
-            CaseInsensitiveDictionary<List<ExtendedDsConstant>> dsConstantsDictionary)
+            CaseInsensitiveOrderedDictionary<List<ExtendedDsConstant>> dsConstantsDictionary)
         {
         }
 

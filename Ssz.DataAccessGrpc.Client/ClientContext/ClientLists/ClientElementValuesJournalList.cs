@@ -43,7 +43,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// <param name="listParams"></param>
         /// <returns></returns>
         /// <exception cref="ObjectDisposedException"></exception>
-        public async Task DefineListAsync(CaseInsensitiveDictionary<string>? listParams)
+        public async Task DefineListAsync(CaseInsensitiveOrderedDictionary<string>? listParams)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
@@ -97,7 +97,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// <returns></returns>
         /// <exception cref="ObjectDisposedException"></exception>
         public async Task<ElementValuesJournal[]> ReadElementValuesJournalsAsync(DateTime firstTimestamp, DateTime secondTimestamp,
-            uint numValuesPerAlias, Ssz.Utils.DataAccess.TypeId? calculation, CaseInsensitiveDictionary<string?>? params_, uint[] serverAliases)
+            uint numValuesPerAlias, Ssz.Utils.DataAccess.TypeId? calculation, CaseInsensitiveOrderedDictionary<string?>? params_, uint[] serverAliases)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValuesJournalList.");
 

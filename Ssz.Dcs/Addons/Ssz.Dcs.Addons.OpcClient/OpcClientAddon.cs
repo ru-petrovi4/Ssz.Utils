@@ -90,7 +90,7 @@ namespace Ssz.Dcs.Addons.OpcClient
                 @"Ssz.Dcs.Addons.OpcClient",
                 Environment.MachineName,
                 @"",
-                new CaseInsensitiveDictionary<string?>
+                new CaseInsensitiveOrderedDictionary<string?>
                 {
                     { OpcDa_Host_OptionName, OptionsSubstituted.TryGetValue(OpcDa_Host_OptionName) },
                     { OpcAe_Host_OptionName, OptionsSubstituted.TryGetValue(OpcAe_Host_OptionName) },

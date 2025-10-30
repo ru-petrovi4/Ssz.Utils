@@ -72,7 +72,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 DataAccessConstants.CentralServer_ClientWindowsService_ClientApplicationName,
                 System.Environment.MachineName,
                 @"",
-                new CaseInsensitiveDictionary<string?>()
+                new CaseInsensitiveOrderedDictionary<string?>()
                 {
                     { DataAccessConstants.ParamName_ConnectionToMain, @"true" }
                 },
@@ -161,7 +161,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     DataAccessConstants.CentralServer_ClientWindowsService_ClientApplicationName,
                     System.Environment.MachineName,
                     @"",
-                    new CaseInsensitiveDictionary<string?>()
+                    new CaseInsensitiveOrderedDictionary<string?>()
                     {
                         { DataAccessConstants.ParamName_Engine_ProcessModelNames, ConfigurationHelper.GetValue<string>(Configuration, DataAccessConstants.ParamName_Engine_ProcessModelNames, @"") },
                         { DataAccessConstants.ParamName_RunningControlEnginesCount, new Any(_runningControlEngineServerAddresses.Count).ValueAsString(false) }
@@ -189,7 +189,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
         {            
             foreach (var additionalUtilityDataAccessProviderHolder in AdditionalUtilityDataAccessProviderHolders)
             {
-                await additionalUtilityDataAccessProviderHolder.DataAccessProvider.UpdateContextParamsAsync(new CaseInsensitiveDictionary<string?>()
+                await additionalUtilityDataAccessProviderHolder.DataAccessProvider.UpdateContextParamsAsync(new CaseInsensitiveOrderedDictionary<string?>()
                     {
                         { DataAccessConstants.ParamName_Engine_ProcessModelNames, ConfigurationHelper.GetValue<string>(Configuration, DataAccessConstants.ParamName_Engine_ProcessModelNames, @"") },
                         { DataAccessConstants.ParamName_RunningControlEnginesCount, new Any(_runningControlEngineServerAddresses.Count).ValueAsString(false) }

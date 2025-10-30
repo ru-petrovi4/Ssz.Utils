@@ -52,10 +52,10 @@ namespace Ssz.Utils.DataAccess
 
         public bool IsInitialized { get; private set; }
 
-        public CaseInsensitiveDictionary<EventSourceObject> EventSourceObjects { get; } =
+        public CaseInsensitiveOrderedDictionary<EventSourceObject> EventSourceObjects { get; } =
             new();
 
-        public CaseInsensitiveDictionary<EventSourceArea> EventSourceAreas { get; } =
+        public CaseInsensitiveOrderedDictionary<EventSourceArea> EventSourceAreas { get; } =
             new();
 
         /// <summary>

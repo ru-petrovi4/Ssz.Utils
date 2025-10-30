@@ -56,9 +56,9 @@ namespace Ssz.Utils.Diagnostics
         /// </summary>
         public const string ParamName_DrivesInfo = @"DrivesInfo";
 
-        public static async Task<CaseInsensitiveDictionary<Any>> GetSystemParamsAsync()
+        public static async Task<CaseInsensitiveOrderedDictionary<Any>> GetSystemParamsAsync()
         {
-            CaseInsensitiveDictionary<Any> systemParams = new();
+            CaseInsensitiveOrderedDictionary<Any> systemParams = new();
 
             Process currentProcess = Process.GetCurrentProcess();
             ComputerInfo computerInfo = new();

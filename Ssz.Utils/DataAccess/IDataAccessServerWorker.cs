@@ -15,7 +15,7 @@ namespace Ssz.Utils.DataAccess
             uint requestedServerContextTimeoutMs,
             string requestedCultureName,
             string systemNameToConnect,
-            CaseInsensitiveDictionary<string?> contextParams);
+            CaseInsensitiveOrderedDictionary<string?> contextParams);
 
         IDataAccessServerContext LookupServerContext(string contextId);
 

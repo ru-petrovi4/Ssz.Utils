@@ -40,7 +40,7 @@ public interface IDataAccessServerContext : IDisposable, IAsyncDisposable
 
     string SystemNameToConnect { get; }
 
-    CaseInsensitiveDictionary<string?> ContextParams { get; }
+    CaseInsensitiveOrderedDictionary<string?> ContextParams { get; }
 
     event EventHandler ContextParamsChanged;
 
@@ -69,7 +69,7 @@ public interface IDataAccessServerContext : IDisposable, IAsyncDisposable
 
     void EnableListCallback(uint listServerAlias, ref bool isEnabled);
 
-    void UpdateContextParams(CaseInsensitiveDictionary<string?> contextParams);
+    void UpdateContextParams(CaseInsensitiveOrderedDictionary<string?> contextParams);
 
     Task<List<AliasResult>?> WriteElementValuesAsync(uint listServerAlias, ReadOnlyMemory<byte> elementValuesCollectionBytes);
 
@@ -95,16 +95,16 @@ public interface IDataAccessServerContext : IDisposable, IAsyncDisposable
        DateTime secondTimeStampUtc,
        uint numValuesPerAlias,
        TypeId calculation,
-       CaseInsensitiveDictionary<string?> params_,
+       CaseInsensitiveOrderedDictionary<string?> params_,
        List<uint> serverAliases);
 
     Task<EventMessagesCallbackMessage?> ReadEventMessagesJournalAsync(
         uint listServerAlias,
         DateTime firstTimeStampUtc,
         DateTime secondTimeStampUtc,
-        CaseInsensitiveDictionary<string?> params_);
+        CaseInsensitiveOrderedDictionary<string?> params_);
 
-    AliasResult DefineList(uint listClientAlias, uint listType, CaseInsensitiveDictionary<string?> listParams);
+    AliasResult DefineList(uint listClientAlias, uint listType, CaseInsensitiveOrderedDictionary<string?> listParams);
     
     List<AliasResult> DeleteLists(List<uint> listServerAliases);
     
@@ -144,7 +144,7 @@ public class EventMessagesCallbackMessage
 
     public List<EventMessage> EventMessages = new();
 
-    public CaseInsensitiveDictionary<string?>? CommonFields;
+    public CaseInsensitiveOrderedDictionary<string?>? CommonFields;
     
     #endregion
 }

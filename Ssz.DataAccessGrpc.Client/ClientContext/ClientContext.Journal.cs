@@ -39,7 +39,7 @@ namespace Ssz.DataAccessGrpc.Client
             DateTime secondTimestampUtc,
             uint numValuesPerAlias, 
             Ssz.Utils.DataAccess.TypeId? calculation, 
-            CaseInsensitiveDictionary<string?>? params_, 
+            CaseInsensitiveOrderedDictionary<string?>? params_, 
             uint[] serverAliases)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
@@ -94,7 +94,7 @@ namespace Ssz.DataAccessGrpc.Client
             }
         }
 
-        public async Task<List<Utils.DataAccess.EventMessagesCollection>> ReadEventMessagesJournalAsync(ClientEventList eventList, DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
+        public async Task<List<Utils.DataAccess.EventMessagesCollection>> ReadEventMessagesJournalAsync(ClientEventList eventList, DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveOrderedDictionary<string?>? params_)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 

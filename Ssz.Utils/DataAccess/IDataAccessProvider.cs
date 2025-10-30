@@ -27,7 +27,7 @@ namespace Ssz.Utils.DataAccess
 
         string ClientWorkstationName { get; }
 
-        CaseInsensitiveDictionary<string?> ContextParams { get; }
+        CaseInsensitiveOrderedDictionary<string?> ContextParams { get; }
 
         DataAccessProviderOptions Options { get; }
 
@@ -74,11 +74,11 @@ namespace Ssz.Utils.DataAccess
             string clientApplicationName,
             string clientWorkstationName,
             string systemNameToConnect,
-            CaseInsensitiveDictionary<string?> contextParams,
+            CaseInsensitiveOrderedDictionary<string?> contextParams,
             DataAccessProviderOptions options,
             IDispatcher? callbackDispatcher);
 
-        Task UpdateContextParamsAsync(CaseInsensitiveDictionary<string?> contextParams);
+        Task UpdateContextParamsAsync(CaseInsensitiveOrderedDictionary<string?> contextParams);
 
         /// <summary>
         ///     Used only when <see cref="ElementIdsMap"> or <see cref="ServerAddress"> changed.
@@ -154,7 +154,7 @@ namespace Ssz.Utils.DataAccess
         /// <param name="params_"></param>
         /// <param name="valueJournalSubscriptions"></param>
         /// <returns></returns>
-        Task<ElementValuesJournal[]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, TypeId? calculation, CaseInsensitiveDictionary<string?>? params_, object[] valueJournalSubscriptions);
+        Task<ElementValuesJournal[]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, TypeId? calculation, CaseInsensitiveOrderedDictionary<string?>? params_, object[] valueJournalSubscriptions);
 
         /// <summary>
         ///     Returns null if error.
@@ -163,7 +163,7 @@ namespace Ssz.Utils.DataAccess
         /// <param name="secondTimestampUtc"></param>
         /// <param name="params_"></param>
         /// <returns></returns>
-        Task<List<Utils.DataAccess.EventMessagesCollection>?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_);
+        Task<List<Utils.DataAccess.EventMessagesCollection>?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveOrderedDictionary<string?>? params_);
         
         void AckAlarms(string operatorName, string comment, EventId[] eventIdsToAck);        
     }

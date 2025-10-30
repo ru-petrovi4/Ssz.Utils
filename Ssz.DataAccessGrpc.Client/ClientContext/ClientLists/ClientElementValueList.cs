@@ -73,7 +73,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// <param name="listParams"></param>
         /// <returns></returns>
         /// <exception cref="ObjectDisposedException"></exception>
-        public async Task DefineListAsync(CaseInsensitiveDictionary<string>? listParams)
+        public async Task DefineListAsync(CaseInsensitiveOrderedDictionary<string>? listParams)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 

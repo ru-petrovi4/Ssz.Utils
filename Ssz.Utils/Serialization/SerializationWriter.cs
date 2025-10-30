@@ -1791,7 +1791,7 @@ namespace Ssz.Utils.Serialization
             }
         }
 
-        //public void WriteCaseInsensitiveDictionary<T>(CaseInsensitiveDictionary<T> value)
+        //public void WriteCaseInsensitiveOrderedDictionary<T>(CaseInsensitiveOrderedDictionary<T> value)
         //    where T : class?
         //{
         //    Write(value.Count);

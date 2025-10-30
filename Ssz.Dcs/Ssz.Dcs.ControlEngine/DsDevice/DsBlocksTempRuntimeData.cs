@@ -114,7 +114,7 @@ namespace Ssz.Dcs.ControlEngine
         /// <summary>
         ///     [Tag, DsBlockBase]
         /// </summary>
-        public readonly CaseInsensitiveDictionary<DsBlockBase> ChildDsBlocksDictionary = new(1024);
+        public readonly CaseInsensitiveOrderedDictionary<DsBlockBase> ChildDsBlocksDictionary = new(1024);
 
         public readonly List<DsBlockBase> DescendantDsBlocks = new(1024);
 

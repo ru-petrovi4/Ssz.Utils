@@ -38,7 +38,7 @@ namespace Ssz.Dcs.CentralServer.Common
 
         public DsFilesStoreFile DescriptorDsFileInfo { get; }
 
-        public CaseInsensitiveDictionary<string?> NameValuesCollection { get; }
+        public CaseInsensitiveOrderedDictionary<string?> NameValuesCollection { get; }
 
         /// <summary>
         ///     Relative to some directory path to file or directory

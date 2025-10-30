@@ -82,7 +82,7 @@ namespace Ssz.DataAccessGrpc.Client
             }
         }
 
-        public async Task UpdateContextParamsAsync(CaseInsensitiveDictionary<string?> contextParams)
+        public async Task UpdateContextParamsAsync(CaseInsensitiveOrderedDictionary<string?> contextParams)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed Context.");
 

@@ -123,7 +123,7 @@ namespace Ssz.Dcs.CentralServer
         /// <summary>
         ///     [JobId, JobProgress]
         /// </summary>
-        private CaseInsensitiveDictionary<JobProgress> _jobProgressesCollection = new();
+        private CaseInsensitiveOrderedDictionary<JobProgress> _jobProgressesCollection = new();
 
         #endregion
 

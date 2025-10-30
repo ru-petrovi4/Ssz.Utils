@@ -21,7 +21,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
     {
         #region construction and destruction
         
-        public ServerListRoot(DataAccessServerWorkerBase dataAccessServerWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
+        public ServerListRoot(DataAccessServerWorkerBase dataAccessServerWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveOrderedDictionary<string?> listParams)
         {
             ServerWorker = dataAccessServerWorker;
             ServerContext = serverContext;
@@ -72,7 +72,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// </summary>
         public uint ListClientAlias { get; }
 
-        public CaseInsensitiveDictionary<string?> ListParams { get; }
+        public CaseInsensitiveOrderedDictionary<string?> ListParams { get; }
 
         public bool ListCallbackIsEnabled { get; protected set; }
 
@@ -117,7 +117,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             DateTime secondTimeStampUtc,
             uint numValuesPerAlias,
             Ssz.Utils.DataAccess.TypeId calculation,
-            CaseInsensitiveDictionary<string?> params_,
+            CaseInsensitiveOrderedDictionary<string?> params_,
             List<uint> serverAliases)
         {
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid List Type for this Request."));
@@ -126,7 +126,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         public virtual Task<EventMessagesCallbackMessage> ReadEventMessagesJournalAsync(
             DateTime firstTimeStampUtc,
             DateTime secondTimeStampUtc,            
-            CaseInsensitiveDictionary<string?> params_)
+            CaseInsensitiveOrderedDictionary<string?> params_)
         {
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid List Type for this Request."));
         }

@@ -21,7 +21,7 @@ namespace Ssz.Dcs.ControlEngine
     {
         #region construction and destruction
 
-        public ProcessElementValueList(DataAccessServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
+        public ProcessElementValueList(DataAccessServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveOrderedDictionary<string?> listParams)
             : base(serverWorker, serverContext, listClientAlias, listParams)
         {            
         }

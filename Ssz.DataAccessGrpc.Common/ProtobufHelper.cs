@@ -55,6 +55,33 @@ namespace Ssz.DataAccessGrpc.Common
             }
         }
 
+        public static EventMessagesCollection Combine(List<EventMessagesCollection> eventMessagesCollections)
+        {
+            if (eventMessagesCollections.Count == 0)
+                return new EventMessagesCollection();
+            if (eventMessagesCollections.Count == 1)
+            {
+                return eventMessagesCollections[0];
+            }
+            else
+            {
+                var eventMessagesCollection = new EventMessagesCollection();                
+                foreach (var emc in eventMessagesCollections)
+                {
+                    eventMessagesCollection.EventMessages.Add(emc.EventMessages);
+                    
+                    eventMessagesCollection.CommonFieldsOrdered.Add(emc.CommonFieldsOrdered);
+
+                    // Obsolete for compatibility only
+                    foreach (var kvp in emc.CommonFields)
+                    {
+                        eventMessagesCollection.CommonFields[kvp.Key] = kvp.Value;
+                    }
+                }
+                return eventMessagesCollection;
+            }
+        }
+
         /// <summary>
         ///     Result list count >= 1
         /// </summary>
@@ -108,7 +135,7 @@ namespace Ssz.DataAccessGrpc.Common
             return result;
         }
 
-        public static List<EventMessagesCollection> SplitForCorrectGrpcMessageSize(List<EventMessage> eventMessages, CaseInsensitiveDictionary<string?>? commonFields)
+        public static List<EventMessagesCollection> SplitForCorrectGrpcMessageSize(List<EventMessage> eventMessages, CaseInsensitiveOrderedDictionary<string?>? commonFields)
         {
             var result = new List<EventMessagesCollection>();
 
@@ -116,7 +143,7 @@ namespace Ssz.DataAccessGrpc.Common
             while (index < eventMessages.Count)
             {
                 var eventMessagesCollection = new EventMessagesCollection();
-                if (commonFields is not null)
+                if (index == 0 && commonFields is not null)
                 {
                     foreach (var kvp in commonFields)
                     {
@@ -125,6 +152,7 @@ namespace Ssz.DataAccessGrpc.Common
                             Name = kvp.Key,
                             Value = kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue }
                         });
+
                         // Obsolete for compatibility only
                         eventMessagesCollection.CommonFields.Add(kvp.Key,
                             kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });

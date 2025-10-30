@@ -44,13 +44,13 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
 
             if (eventMessagesCollection.CommonFieldsOrdered.Count > 0)
             {
-                result.CommonFields = new CaseInsensitiveDictionary<string?>(eventMessagesCollection.CommonFieldsOrdered
+                result.CommonFields = new CaseInsensitiveOrderedDictionary<string?>(eventMessagesCollection.CommonFieldsOrdered
                             .Select(f => new KeyValuePair<string, string?>(f.Name, f.Value.KindCase == NullableString.KindOneofCase.Data ? f.Value.Data : null)));
 
             }
             else if (eventMessagesCollection.CommonFields.Count > 0) // Obsolete for compatibility only
             {
-                result.CommonFields = new CaseInsensitiveDictionary<string?>(eventMessagesCollection.CommonFields
+                result.CommonFields = new CaseInsensitiveOrderedDictionary<string?>(eventMessagesCollection.CommonFields
                             .Select(cp => new KeyValuePair<string, string?>(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)));
 
             }
@@ -59,12 +59,37 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         }
 
         /// <summary>
+        ///     Returns changed ClientElementValueListItems or null, if waiting next message.
+        /// </summary>
+        /// <param name="elementValuesCollectionk"></param>
+        /// <returns></returns>
+        public Utils.DataAccess.EventMessagesCollection? OnEventMessagesCallback(Common.EventMessagesCollection eventMessagesCollection)
+        {
+            if (Disposed)
+                throw new ObjectDisposedException("Cannot access a disposed ClientElementValueList.");
+
+            _incompleteEventMessagesCollections.Add(eventMessagesCollection);
+
+            if (eventMessagesCollection.IsIncomplete)
+            {
+                return null;
+            }
+            else
+            {
+                var fullEventMessagesCollection = ProtobufHelper.Combine(_incompleteEventMessagesCollections);
+                _incompleteEventMessagesCollections.Clear();
+
+                return GetEventMessagesCollection(fullEventMessagesCollection);
+            }
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="listParams"></param>
         /// <returns></returns>
         /// <exception cref="ObjectDisposedException"></exception>
-        public async Task DefineListAsync(CaseInsensitiveDictionary<string>? listParams)
+        public async Task DefineListAsync(CaseInsensitiveOrderedDictionary<string>? listParams)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
@@ -97,7 +122,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
             return await Context.PollEventsChangesAsync(this);
         }
 
-        public async Task<List<Utils.DataAccess.EventMessagesCollection>> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
+        public async Task<List<Utils.DataAccess.EventMessagesCollection>> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveOrderedDictionary<string?>? params_)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
@@ -126,6 +151,12 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         ///     This event is used to notify the client application when new events are received.
         /// </summary>
         public event EventHandler<EventMessagesCallbackEventArgs> EventMessagesCallback = delegate { };
+
+        #endregion
+
+        #region private fields
+
+        private readonly List<Common.EventMessagesCollection> _incompleteEventMessagesCollections = new();
 
         #endregion
     }

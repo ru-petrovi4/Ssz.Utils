@@ -49,7 +49,7 @@ namespace Ssz.Dcs.CentralServer
         /// <summary>
         ///     [OperatorSessionId, OperatorSession]
         /// </summary>
-        internal CaseInsensitiveDictionary<OperatorSession> OperatorSessionsCollection { get; } = new();
+        internal CaseInsensitiveOrderedDictionary<OperatorSession> OperatorSessionsCollection { get; } = new();
 
         #endregion
 

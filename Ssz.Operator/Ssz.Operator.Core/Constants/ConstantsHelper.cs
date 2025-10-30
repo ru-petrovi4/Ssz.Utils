@@ -351,7 +351,7 @@ namespace Ssz.Operator.Core.Constants
         }                      
 
         private static string ComputeValueOfVariables(string originalString,
-            CaseInsensitiveDictionary<List<object?>> variables)
+            CaseInsensitiveOrderedDictionary<List<object?>> variables)
         {
             var firstLevelVariables = SszQueryHelper.FindFirstLevelSpecialText(originalString, '$', false);
             foreach (string firstLevelVariable in firstLevelVariables)
@@ -365,7 +365,7 @@ namespace Ssz.Operator.Core.Constants
         }
 
         private static string? ComputeValueOfVariable(string variable,
-            CaseInsensitiveDictionary<List<object?>> variables)
+            CaseInsensitiveOrderedDictionary<List<object?>> variables)
         {
             string v = variable.Substring(2, variable.Length - 3);
 

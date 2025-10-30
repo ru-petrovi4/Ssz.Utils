@@ -61,7 +61,7 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay.Map3D
                     constantTypes.FirstOrDefault(t => StringHelper.CompareIgnoreCase(gpi.Type, t.Trim())) is not null;
             }
 
-            var tagsAndDsPageNames = new CaseInsensitiveDictionary<string>();
+            var tagsAndDsPageNames = new CaseInsensitiveOrderedDictionary<string>();
             foreach (DsPageDrawing dsPage in DsProject.Instance.AllDsPagesCache.Values)
             foreach (ComplexDsShape complexDsShape in dsPage.DsShapes.OfType<ComplexDsShape>())
             foreach (var dsConstant in complexDsShape.DsConstantsCollection.Where(gpi => predicate(gpi)))

@@ -58,7 +58,7 @@ namespace Ssz.Utils.Addons
         /// </summary>
         public string Details { get; set; } = @"";
 
-        public CaseInsensitiveDictionary<Any> Params { get; set; } = new();
+        public CaseInsensitiveOrderedDictionary<Any> Params { get; set; } = new();
 
         public void SerializeOwnedData(SerializationWriter writer, object? context)
         {
@@ -102,9 +102,9 @@ namespace Ssz.Utils.Addons
                             Label = reader.ReadString();
                             Details = reader.ReadString();
 #if NET9_0_OR_GREATER
-                            Params = new CaseInsensitiveDictionary<Any>(reader.ReadOrderedDictionaryOfOwnedDataSerializable<Any>(() => new Any(), null)!);
+                            Params = new CaseInsensitiveOrderedDictionary<Any>(reader.ReadOrderedDictionaryOfOwnedDataSerializable<Any>(() => new Any(), null)!);
 #else
-                            Params = new CaseInsensitiveDictionary<Any>(reader.ReadDictionaryOfOwnedDataSerializable<Any>(() => new Any(), null)!);
+                            Params = new CaseInsensitiveOrderedDictionary<Any>(reader.ReadDictionaryOfOwnedDataSerializable<Any>(() => new Any(), null)!);
 #endif
                         }
                         catch (BlockEndingException)

@@ -113,7 +113,7 @@ namespace Ssz.DataAccessGrpc.Client
         public async Task InitiateAsync(uint requestedServerContextTimeoutMs,
             string requestedCultureName,
             string systemNameToConnect,
-            CaseInsensitiveDictionary<string?> contextParams)
+            CaseInsensitiveOrderedDictionary<string?> contextParams)
         {            
             var initiateRequest = new InitiateRequest
             {

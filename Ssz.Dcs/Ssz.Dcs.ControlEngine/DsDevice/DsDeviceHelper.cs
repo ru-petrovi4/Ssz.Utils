@@ -112,7 +112,7 @@ namespace Ssz.Dcs.ControlEngine
         /// <param name="partsStartIndex"></param>
         /// <param name="childDsBlocksDictionary"></param>
         /// <returns></returns>
-        private static DsBlockBase? GetDsBlock(string[] blockFullNameParts, int partsStartIndex, CaseInsensitiveDictionary<DsBlockBase> childDsBlocksDictionary)
+        private static DsBlockBase? GetDsBlock(string[] blockFullNameParts, int partsStartIndex, CaseInsensitiveOrderedDictionary<DsBlockBase> childDsBlocksDictionary)
         {
             var block = childDsBlocksDictionary.TryGetValue(blockFullNameParts[partsStartIndex]);
             if (block is null)

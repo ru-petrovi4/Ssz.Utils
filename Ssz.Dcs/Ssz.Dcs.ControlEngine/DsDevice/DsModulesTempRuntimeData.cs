@@ -70,12 +70,12 @@ namespace Ssz.Dcs.ControlEngine
         /// <summary>
         ///     [Name, DsModule]
         /// </summary>
-        public readonly CaseInsensitiveDictionary<DsModule> ModulesDictionary = new(1024);
+        public readonly CaseInsensitiveOrderedDictionary<DsModule> ModulesDictionary = new(1024);
 
         /// <summary>
         ///     [Tag, DsBlockBase]
         /// </summary>
-        public readonly CaseInsensitiveDictionary<DsBlockBase> ChildDsBlocksDictionary = new(1024);        
+        public readonly CaseInsensitiveOrderedDictionary<DsBlockBase> ChildDsBlocksDictionary = new(1024);        
 
         #endregion
     }

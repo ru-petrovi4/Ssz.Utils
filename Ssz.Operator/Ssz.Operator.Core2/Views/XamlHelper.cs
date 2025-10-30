@@ -440,7 +440,7 @@ namespace Ssz.Operator.Core
             //        break;
             //}
 
-            //return AddXamlDesc(result, new CaseInsensitiveDictionary<string?>()
+            //return AddXamlDesc(result, new CaseInsensitiveOrderedDictionary<string?>()
             //    {
             //        { @"", fileInfo.Name },
             //        { @"Stretch", new Any(stretch).ValueAsString(false) }
@@ -538,11 +538,11 @@ namespace Ssz.Operator.Core
             //return contentPreview;
         }
 
-        public static CaseInsensitiveDictionary<string?> GetXamlDesc(string xaml)
+        public static CaseInsensitiveOrderedDictionary<string?> GetXamlDesc(string xaml)
         {
             if (String.IsNullOrEmpty(xaml))
             {
-                return new CaseInsensitiveDictionary<string?>();
+                return new CaseInsensitiveOrderedDictionary<string?>();
             }
             if (xaml.StartsWith(XamlDescBegin))
             {
@@ -551,7 +551,7 @@ namespace Ssz.Operator.Core
                 var xamlDescBeginLength = XamlDescBegin.Length;
                 if (i > xamlDescBeginLength)
                     desc = xaml.Substring(xamlDescBeginLength, i - xamlDescBeginLength);
-                return new CaseInsensitiveDictionary<string?> { { @"", desc } };
+                return new CaseInsensitiveOrderedDictionary<string?> { { @"", desc } };
             }
             if (xaml.StartsWith(XamlDescV2Begin))
             {
@@ -562,7 +562,7 @@ namespace Ssz.Operator.Core
                     desc = xaml.Substring(xamlDescV2BeginLength, i - xamlDescV2BeginLength);
                 return NameValueCollectionHelper.Parse(desc);
             }
-            return new CaseInsensitiveDictionary<string?>();
+            return new CaseInsensitiveOrderedDictionary<string?>();
         }
 
         [return: NotNullIfNotNull("xaml")]
