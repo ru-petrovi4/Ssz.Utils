@@ -6,6 +6,7 @@
     <UseWPF>true</UseWPF>
   <Nullable>enable</Nullable>
   <LangVersion>Latest</LangVersion>
+  <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
   
   <ItemGroup>

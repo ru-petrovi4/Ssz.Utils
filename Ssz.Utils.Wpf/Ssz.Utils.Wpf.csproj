@@ -9,13 +9,22 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Company>SSZ</Company>
     <Version>1.0.82</Version>
+    <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">    
     <NoWarn>8981</NoWarn>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <NoWarn>8981</NoWarn>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">    
+    <NoWarn>8981</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <NoWarn>8981</NoWarn>
   </PropertyGroup>
 

@@ -6,7 +6,7 @@
 	<LangVersion>Latest</LangVersion>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	<NoWarn>$(NoWarn);1591</NoWarn>
-	<Platforms>AnyCPU</Platforms>
+	<Platforms>AnyCPU;x86</Platforms>	
   </PropertyGroup>
 
   <ItemGroup>    

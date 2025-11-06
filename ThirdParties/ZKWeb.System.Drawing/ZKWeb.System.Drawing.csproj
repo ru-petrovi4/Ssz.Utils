@@ -9,6 +9,7 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
 	<Nullable>disable</Nullable>
+	<Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>  
 
   <ItemGroup>

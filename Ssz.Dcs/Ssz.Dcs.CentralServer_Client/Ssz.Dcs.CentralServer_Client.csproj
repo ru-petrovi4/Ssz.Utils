@@ -4,6 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
 	<Nullable>enable</Nullable>
 	<LangVersion>Latest</LangVersion>
+	<Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
