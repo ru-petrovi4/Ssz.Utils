@@ -73,7 +73,7 @@ bool COpcDaDevice::Start(IOpcDaCache* pCache, COpcXmlElement& cElement, Ssz::Uti
     
     _dataAccessProvider->Initialize(nullptr, serverAddress, "Ssz_DataAccessGrpcClient_OpcServer", clientWorkstationName, 
         System::Configuration::ConfigurationManager::AppSettings["SystemNameToConnect"],
-        gcnew Ssz::Utils::CaseInsensitiveDictionary<String^>(),
+        gcnew Ssz::Utils::CaseInsensitiveOrderedDictionary<String^>(),
         gcnew Ssz::Utils::DataAccess::DataAccessProviderOptions(),
         callbackDispatcher);
     

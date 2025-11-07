@@ -111,24 +111,7 @@ namespace Ssz.Utils.Addons
         ///     Path relative to the root of the Files Store.
         ///     No '/' at the begin, file name at the end.        
         /// </summary>        
-        public string InvariantPathRelativeToRootDirectory { get; set; } = @"";
-
-        /// <summary>       
-        ///     !!! Warning: always Path.DirectorySeparatorChar as path separator !!!
-        ///     Path relative to the root of the Files Store.
-        ///     No Path.DirectorySeparatorChar at the begin, file name at the end.        
-        /// </summary>   
-        public string PathRelativeToRootDirectory
-        {
-            get
-            {
-                return InvariantPathRelativeToRootDirectory.Replace('/', Path.DirectorySeparatorChar);
-            }
-            set
-            {
-                InvariantPathRelativeToRootDirectory = value.Replace(Path.DirectorySeparatorChar, '/');
-            }
-        }
+        public string InvariantPathRelativeToRootDirectory { get; set; } = @"";        
 
         /// <summary>
         ///     FileInfo.LastWriteTimeUtc
@@ -150,6 +133,11 @@ namespace Ssz.Utils.Addons
         ///     Whether file must be deleted
         /// </summary>
         public bool IsDeleted { get; set; }
+
+        /// <summary>
+        ///     Substitites to PathRelativeToRootDirectory a platform-specific character used to separate directory levels.
+        /// </summary>
+        public string GetPathRelativeToRootDirectory_PlatformSpecific() => InvariantPathRelativeToRootDirectory.Replace('/', Path.DirectorySeparatorChar);
 
         /// <summary>
         /// 
@@ -183,12 +171,7 @@ namespace Ssz.Utils.Addons
             Length = reader.ReadInt64();
             FileData = reader.ReadNullableByteArray();
             IsDeleted = reader.ReadBoolean();
-        }
-
-        /// <summary>
-        ///     Substitites to PathRelativeToRootDirectory a platform-specific character used to separate directory levels.
-        /// </summary>
-        public string GetPathRelativeToRootDirectory_PlatformSpecific() => InvariantPathRelativeToRootDirectory.Replace('/', Path.DirectorySeparatorChar);
+        }        
 
         #endregion
     }

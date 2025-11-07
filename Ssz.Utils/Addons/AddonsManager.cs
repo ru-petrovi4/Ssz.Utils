@@ -258,11 +258,11 @@ namespace Ssz.Utils.Addons
 
                 foreach (AddonBase availableAddon in availableAddons)
                 {   
-                    var availableAddonLines = addonsFileData
+                    var addonLines = addonsFileData
                         .Where(i => i.Value.Count >= 3 && i.Value[1] == availableAddon.Identifier)
                         .Select(i => i.Value)
                         .ToList();
-                    if (availableAddonLines.Count == 0)
+                    if (addonLines.Count == 0)
                     {
                         string addonInstanceId = availableAddon.Identifier + @".1";
                         new_AddonsFileData[addonInstanceId] = new List<string?>()
@@ -271,28 +271,28 @@ namespace Ssz.Utils.Addons
                                 availableAddon.Identifier,
                                 (availableAddon.IsAlwaysSwitchedOn || availableAddon.IsSwitchedOnByDefault) ? @"true" : @"false"
                             };
-                        ProcessOptionsCsvFile(availableAddon, addonInstanceId);
+                        ProcessAddonConfigDirectory(availableAddon, addonInstanceId);
                     }
                     else
                     {                        
-                        foreach (int i in Enumerable.Range(0, availableAddonLines.Count))
+                        foreach (int i in Enumerable.Range(0, addonLines.Count))
                         {
                             if (i > 0 && !availableAddon.IsMultiInstance)
                                 break;
-                            var availableAddonLine = availableAddonLines[i];
-                            string addonInstanceId = availableAddonLine[0]!;
+                            var addonLine = addonLines[i];
+                            string addonInstanceId = addonLine[0]!;
                             bool isSwitchedOn;
                             if (availableAddon.IsAlwaysSwitchedOn)
                                 isSwitchedOn = true;
                             else
-                                isSwitchedOn = new Any(availableAddonLine[2] ?? @"").ValueAsBoolean(false);
-                            new_AddonsFileData[availableAddonLine[0]!] = new List<string?>()
+                                isSwitchedOn = new Any(addonLine[2] ?? @"").ValueAsBoolean(false);
+                            new_AddonsFileData[addonLine[0]!] = new List<string?>()
                             {
                                 addonInstanceId,
                                 availableAddon.Identifier,
                                 isSwitchedOn ? @"true" : @"false"
                             };
-                            ProcessOptionsCsvFile(availableAddon, addonInstanceId);
+                            ProcessAddonConfigDirectory(availableAddon, addonInstanceId);
                         }
                     }
                 }
@@ -307,7 +307,7 @@ namespace Ssz.Utils.Addons
             }
 
             _availableAddons = availableAddons;
-        }
+        }        
 
         /// <summary>
         ///     SourceId property is empty in result.
@@ -345,7 +345,11 @@ namespace Ssz.Utils.Addons
                     if (slashCount > 1)
                         throw new Exception("pathRelativeToRootDirectory must have no more that one '/'");
 
-                    var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, invariantPathRelativeToRootDirectory!.Replace('/', Path.DirectorySeparatorChar)));
+                    string fullPath = Path.GetFullPath(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, invariantPathRelativeToRootDirectory!.Replace('/', Path.DirectorySeparatorChar)));
+                    if (!fullPath.StartsWith(Path.GetFullPath(CsvDb.CsvDbDirectoryInfo!.FullName) + Path.DirectorySeparatorChar))
+                        throw new Exception("Unauthorized access.");
+
+                    var fileInfo = new FileInfo(fullPath);
                     if (!fileInfo.Exists)
                         throw new Exception("pathRelativeToRootDirectory: file does not exist.");
                     
@@ -408,14 +412,18 @@ namespace Ssz.Utils.Addons
                         configurationFile.FileData = StringHelper.GetUTF8BytesWithBomPreamble(fileDataString);
                     }
 
-                    var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, configurationFile.GetPathRelativeToRootDirectory_PlatformSpecific()));
+                    string fullPath = Path.GetFullPath(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, configurationFile.GetPathRelativeToRootDirectory_PlatformSpecific()));
+                    if (!fullPath.StartsWith(Path.GetFullPath(CsvDb.CsvDbDirectoryInfo!.FullName) + Path.DirectorySeparatorChar))
+                        throw new Exception("Unauthorized access.");
+
+                    var fileInfo = new FileInfo(fullPath);
                     if (fileInfo.Exists)
                     {
                         ConfigurationFile onDiskConfigurationFile = ConfigurationFile.CreateFromFileInfo(configurationFile.InvariantPathRelativeToRootDirectory, fileInfo, true);
                         if (!configurationFile.FileData!.SequenceEqual(onDiskConfigurationFile.FileData!))
                         {
                             if (FileSystemHelper.FileSystemTimeIsLess(configurationFile.LastModified.UtcDateTime, fileInfo.LastWriteTimeUtc))
-                                throw new AddonCsvFileChangedOnDiskException { FilePathRelativeToRootDirectory = configurationFile.PathRelativeToRootDirectory };
+                                throw new AddonCsvFileChangedOnDiskException { FilePathRelativeToRootDirectory = configurationFile.GetPathRelativeToRootDirectory_PlatformSpecific() };
                             configurationFilesToWrite.Add(configurationFile);
                         }
                     }
@@ -533,39 +541,6 @@ namespace Ssz.Utils.Addons
             return result;
         }
 
-        #endregion
-
-        #region private functions
-
-        private void ProcessOptionsCsvFile(AddonBase availableAddon, string addonInstanceId)
-        {
-            var addonConfigDirectoryInfo = new DirectoryInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, addonInstanceId));
-            try
-            {
-                // Creates all directories and subdirectories in the specified path unless they already exist.
-                Directory.CreateDirectory(addonConfigDirectoryInfo.FullName);
-                if (!addonConfigDirectoryInfo.Exists)
-                    addonConfigDirectoryInfo = null;
-            }
-            catch
-            {
-                addonConfigDirectoryInfo = null;
-            }
-            if (addonConfigDirectoryInfo is not null)
-            {
-                var csvDb = ActivatorUtilities.CreateInstance<CsvDb>(ServiceProvider, addonConfigDirectoryInfo.FullName);
-                var existingOptionsData = csvDb.GetData(AddonBase.OptionsCsvFileName);
-                foreach (var optionInfo in availableAddon.OptionsInfo)
-                {
-                    if (!existingOptionsData.ContainsKey(optionInfo.Item1))
-                    {
-                        csvDb.SetValues(AddonBase.OptionsCsvFileName, new string?[] { optionInfo.Item1, optionInfo.Item3 });
-                    }
-                }
-                csvDb.SaveData();
-            }
-        }
-
         #endregion        
 
         #region protected functions
@@ -589,11 +564,33 @@ namespace Ssz.Utils.Addons
         /// <summary>
         ///     Has value after Initialize()
         /// </summary>
-        protected CsvDb CsvDb { get; private set; } = null!;        
+        protected CsvDb CsvDb { get; private set; } = null!;
 
         #endregion
 
         #region private functions
+
+        private void ProcessAddonConfigDirectory(AddonBase availableAddon, string addonInstanceId)
+        {
+            var addonConfigDirectoryInfo = new DirectoryInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, addonInstanceId));
+            try
+            {
+                // Creates all directories and subdirectories in the specified path unless they already exist.
+                Directory.CreateDirectory(addonConfigDirectoryInfo.FullName);
+                if (!addonConfigDirectoryInfo.Exists)
+                    addonConfigDirectoryInfo = null;
+            }
+            catch
+            {
+                addonConfigDirectoryInfo = null;
+            }
+            if (addonConfigDirectoryInfo is not null)
+            {
+                var csvDb = ActivatorUtilities.CreateInstance<CsvDb>(ServiceProvider, addonConfigDirectoryInfo.FullName);
+
+                availableAddon.ProcessAddonConfigDirectory(csvDb);                
+            }
+        }
 
         private void OnCsvDb_CsvFileChanged(object? sender, CsvFileChangedEventArgs args)
         {

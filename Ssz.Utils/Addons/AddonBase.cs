@@ -196,6 +196,19 @@ namespace Ssz.Utils.Addons
             return Task.CompletedTask;
         }
 
+        public virtual void ProcessAddonConfigDirectory(CsvDb csvDb)
+        {
+            var existingOptionsData = csvDb.GetData(OptionsCsvFileName);
+            foreach (var optionInfo in OptionsInfo)
+            {
+                if (!existingOptionsData.ContainsKey(optionInfo.Item1))
+                {
+                    csvDb.SetValues(OptionsCsvFileName, new string?[] { optionInfo.Item1, optionInfo.Item3 });
+                }
+            }
+            csvDb.SaveData();
+        }
+
         #endregion
     }
 }
