@@ -35,6 +35,8 @@ namespace Ssz.Dcs.CentralServer
 
         public static IHost Host { get; private set; } = null!;
 
+        public static string EnvironmentName { get; private set; } = null!;
+
         #endregion
 
         //#region public functions
@@ -50,29 +52,12 @@ namespace Ssz.Dcs.CentralServer
 
         private static void Main(string[] args)
         {
-#if DEBUG
-            var originalCurrentDirectory = Directory.GetCurrentDirectory();
-#endif
             ConfigurationHelper.SetCurrentDirectory(args);
-#if DEBUG
-            var newCurrentDirectory = Directory.GetCurrentDirectory();
-            if (newCurrentDirectory != originalCurrentDirectory)
-            {
-                File.Copy(
-                    Path.Combine(originalCurrentDirectory, "appsettings.yml"),
-                    Path.Combine(newCurrentDirectory, "appsettings.yml"),
-                    true);
-                File.Copy(
-                    Path.Combine(originalCurrentDirectory, "appsettings.Development.yml"),
-                    Path.Combine(newCurrentDirectory, "appsettings.Development.yml"),
-                    true);
-            }
-#endif
 
             Host = CreateHostBuilder(args).Build();
 
             var logger = Host.Services.GetRequiredService<ILogger<Program>>();
-            logger.LogInformation($"MachineName: {Environment.MachineName}. App starting with args: {String.Join(" ", args)}");
+            logger.LogInformation($"App starting with args: \"{String.Join(" ", args)}\"; Environment: {EnvironmentName}; Working Directory: \"{Directory.GetCurrentDirectory()}\"");
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
@@ -111,6 +96,8 @@ namespace Ssz.Dcs.CentralServer
             return Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
+                    EnvironmentName = ConfigurationHelper.GetEnvironmentName(hostingContext.HostingEnvironment);
+
                     config.Sources.Clear();
 
                     config.AddEncryptedAppSettings(hostingContext.HostingEnvironment, crypter =>

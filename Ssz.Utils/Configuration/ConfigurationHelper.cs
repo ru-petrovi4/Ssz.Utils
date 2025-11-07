@@ -242,6 +242,10 @@ namespace Ssz.Utils
 
         public static void SetCurrentDirectory(string[] args)
         {
+#if DEBUG
+            var originalCurrentDirectory = Directory.GetCurrentDirectory();
+#endif
+
             int i = Array.FindIndex(args, a => String.Equals(a, "--" + ConfigurationConstants.ConfigurationKey_CurrentDirectory, StringComparison.InvariantCultureIgnoreCase) ||
                 a == ConfigurationConstants.ConfigurationKeyMapping_CurrentDirectory);
             if (i == -1 || i + 1 >= args.Length)
@@ -254,6 +258,23 @@ namespace Ssz.Utils
                 Directory.CreateDirectory(currentDirectory);
                 Directory.SetCurrentDirectory(currentDirectory);
             }
+
+#if DEBUG
+            var newCurrentDirectory = Directory.GetCurrentDirectory();
+            if (newCurrentDirectory != originalCurrentDirectory)
+            {
+                if (!File.Exists(Path.Combine(newCurrentDirectory, "appsettings.yml")))
+                    File.Copy(
+                        Path.Combine(originalCurrentDirectory, "appsettings.yml"),
+                        Path.Combine(newCurrentDirectory, "appsettings.yml"),
+                        true);
+                if (!File.Exists(Path.Combine(newCurrentDirectory, "appsettings.Development.yml")))
+                    File.Copy(
+                        Path.Combine(originalCurrentDirectory, "appsettings.Development.yml"),
+                        Path.Combine(newCurrentDirectory, "appsettings.Development.yml"),
+                        true);
+            }
+#endif
         }
 
         #endregion

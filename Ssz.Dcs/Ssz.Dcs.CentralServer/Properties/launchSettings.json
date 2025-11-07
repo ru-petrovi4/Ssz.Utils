@@ -2,7 +2,7 @@
   "profiles": {
     "Ssz.Dcs.CentralServer": {
       "commandName": "Project",
-      "commandLineArgs": "-cd \"C:\\CDT.CentralServer\"",
+      "commandLineArgs": "-cd \"C:\\CDT.PazCheck.Adapter_ProgramData\"",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

@@ -21,24 +21,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
         private static void Main(string[] args)
         {
-#if DEBUG
-            var originalCurrentDirectory = Directory.GetCurrentDirectory();
-#endif
             ConfigurationHelper.SetCurrentDirectory(args);
-#if DEBUG
-            var newCurrentDirectory = Directory.GetCurrentDirectory();
-            if (newCurrentDirectory != originalCurrentDirectory)
-            {
-                File.Copy(
-                    Path.Combine(originalCurrentDirectory, "appsettings.yml"),
-                    Path.Combine(newCurrentDirectory, "appsettings.yml"),
-                    true);
-                File.Copy(
-                    Path.Combine(originalCurrentDirectory, "appsettings.Development.yml"),
-                    Path.Combine(newCurrentDirectory, "appsettings.Development.yml"),
-                    true);
-            }
-#endif
 
             var host = CreateHostBuilder(args).Build();
 
