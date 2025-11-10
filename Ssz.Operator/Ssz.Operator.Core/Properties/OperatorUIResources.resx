@@ -144,6 +144,10 @@
   <data name="TrendGroupControlIncreaseValue" xml:space="preserve">
     <value>Enlarge Data Axis</value>
   </data>
+  <data name="TrendShowLegend" xml:space="preserve">
+    <value>Show legend</value>
+    <comment>Show/Hide TrendInfoControl </comment>
+  </data>
   <data name="TrendsInfoControlColorColumn" xml:space="preserve">
     <value>Color</value>
   </data>

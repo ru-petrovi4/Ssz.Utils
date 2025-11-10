@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using Ssz.Operator.Core.ControlsCommon.Trends.ZoomLevels;
 
@@ -14,6 +15,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
         public TrendGroupControl()
         {
             InitializeComponent();
+            TrendsInfoTableControl.Visibility = Visibility.Collapsed;
 
             UpdateTimeAxis();
         }
@@ -78,9 +80,28 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
             set => SetValue(SelectedItemProperty, value);
         }
 
+        public bool IsTrendInfoTableVisible
+        {
+            get => _isTrendInfoTableVisible;
+            set 
+            { 
+                if (_isTrendInfoTableVisible != value) 
+                { 
+                    _isTrendInfoTableVisible = value; 
+                    if(TrendsInfoTableControl != null) 
+                        TrendsInfoTableControl.Visibility = _isTrendInfoTableVisible? Visibility.Visible: Visibility.Collapsed;
+                } 
+            }
+        }
+
         #endregion
 
         #region private functions
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            TrendsInfoTableControl.Visibility = _isTrendInfoTableVisible ? Visibility.Visible : Visibility.Collapsed;
+        }
 
         private static void SelectedItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -164,6 +185,37 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
             UpdateValueAxis();
         }
 
+        /// <summary>
+        /// Show legend button has been pressed. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void onShowPensButtonClicked(object? sender, RoutedEventArgs e)
+        {
+            var btn = sender as ToggleButton;
+            if (btn == null) return;
+            bool btnIsChecked = btn.IsChecked??false;
+            IsTrendInfoTableVisible = btnIsChecked;
+
+            //if (btnIsChecked)
+            //{
+            //    if (!_isTrendInfoTableVisible)
+            //    {
+            //        _isTrendInfoTableVisible = true;
+            //        TrendsInfoTableControl.Visibility = Visibility.Visible;
+            //    }
+            //}
+            //else
+            //{
+            //    if (_isTrendInfoTableVisible)
+            //    {
+            //        _isTrendInfoTableVisible = false;
+            //        TrendsInfoTableControl.Visibility = Visibility.Collapsed;
+            //    }
+            //}
+            e.Handled = true;
+        }
+
         #endregion
 
         #region private fields
@@ -172,6 +224,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
 
         private TimeZoomLevel _currentTimeZoom = TimeZoomLevel.Three;
         private ValueZoomLevel _currentValueZoom = ValueZoomLevel.Four;
+        private bool _isTrendInfoTableVisible = true;                       // set legends control visibility
 
         #endregion
     }

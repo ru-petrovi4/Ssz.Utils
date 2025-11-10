@@ -19,7 +19,10 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0-windows'">
 	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-  </PropertyGroup>  
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Images\EpksTrendLegend.png" />
+  </ItemGroup>  
   <ItemGroup>
     <Compile Update="Properties\OperatorUIResources.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -38,6 +41,7 @@
     </Compile>    
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.32.1" />
     <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
     <PackageReference Include="SharpVectors" Version="1.8.5" />
     <PackageReference Include="System.ComponentModel.Composition" Version="9.0.10" />
@@ -68,6 +72,7 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\EpksTrendLegend.png" />
     <Resource Include="Resources\Images\SetAngle.png" />
     <Resource Include="Resources\Images\SetHorizontal.png" />
     <Resource Include="Resources\Images\SetVertical.png" />

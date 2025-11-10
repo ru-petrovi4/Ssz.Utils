@@ -144,6 +144,9 @@
   <data name="TrendGroupControlIncreaseValue" xml:space="preserve">
     <value>Увеличить ось значений</value>
   </data>
+  <data name="TrendShowLegend" xml:space="preserve">
+    <value>Показать легенду</value>
+  </data>
   <data name="TrendsInfoControlColorColumn" xml:space="preserve">
     <value>Цвет</value>
   </data>
