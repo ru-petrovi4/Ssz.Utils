@@ -1290,22 +1290,22 @@ namespace Ssz.Operator.Core.ControlsDesign
             var propertyName = args.PropertyName ?? "";
             switch (propertyName)
             {
-                case @"CenterInitialPosition":
-                case @"CenterInitialPositionAdvanced":
-                case @"WidthInitial":
-                case @"WidthInitialAdvanced":
-                case @"HeightInitial":
-                case @"HeightInitialAdvanced":
-                case @"AngleInitialAdvanced":
-                case @"Index":
-                case @"Name":
+                case nameof(DsShapeBase.CenterInitialPosition):
+                case nameof(DsShapeBase.CenterInitialPositionAdvanced):
+                case nameof(DsShapeBase.WidthInitial):
+                case nameof(DsShapeBase.WidthInitialAdvanced):
+                case nameof(DsShapeBase.HeightInitial):
+                case nameof(DsShapeBase.HeightInitialAdvanced):
+                case nameof(DsShapeBase.AngleInitialAdvanced):
+                case nameof(DsShapeBase.Index):
+                case nameof(DsShapeBase.Name):
                 case @"":
                     return;
             }
 
             var selectedItems = SelectionService.SelectedItems;
-            if (selectedItems.Length == 0 ||
-                selectedItems.Length == 1 && ReferenceEquals(selectedItems[0].DsShape, sender)) return;
+            if (selectedItems.Length == 0 || selectedItems.Length == 1)
+                return;
 
             PropertyDescriptor? propertyDescriptor = TypeDescriptor.GetProperties(sender.GetType())[propertyName];
             if (propertyDescriptor is null || !propertyDescriptor.IsBrowsable || propertyDescriptor.IsReadOnly) return;
