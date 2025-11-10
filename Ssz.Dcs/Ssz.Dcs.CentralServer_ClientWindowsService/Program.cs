@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Ssz.Utils;
 using Ssz.Dcs.CentralServer.Common.Helpers;
 using System.IO;
+using System.Text;
 
 namespace Ssz.Dcs.CentralServer_ClientWindowsService
 {
@@ -27,6 +28,8 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
             var logger = host.Services.GetRequiredService<ILogger<Program>>();
             logger.LogInformation($"MachineName: {Environment.MachineName}. App starting with args: {String.Join(" ", args)}");
+
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             IConfiguration configuration = host.Services.GetRequiredService<IConfiguration>();
             CultureHelper.InitializeUICulture(configuration, logger);            

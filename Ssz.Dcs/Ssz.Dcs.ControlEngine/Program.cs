@@ -15,6 +15,7 @@ using System.Net;
 using Ssz.Dcs.CentralServer.Common.Helpers;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text;
 
 namespace Ssz.Dcs.ControlEngine
 {
@@ -84,6 +85,8 @@ namespace Ssz.Dcs.ControlEngine
 
             var logger = Host.Services.GetRequiredService<ILogger<Program>>();
             logger.LogDebug("App starting with args: " + String.Join(" ", args));
+
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             IConfiguration configuration = Host.Services.GetRequiredService<IConfiguration>();
             CultureHelper.InitializeUICulture(configuration, logger);
