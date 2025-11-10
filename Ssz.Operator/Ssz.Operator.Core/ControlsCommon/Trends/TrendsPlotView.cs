@@ -91,7 +91,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
             RefreshLines();
         }
 
-        public PlotView? Plot { get; private set; }
+        public PlotView? Plot { get; private set; } = null;
 
         public OxyPlot.Wpf.DateTimeAxis? XAxis { get; private set; }
 

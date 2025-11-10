@@ -22,22 +22,28 @@ namespace Ssz.Utils.Wpf
         /// <returns></returns>
         public static List<List<string?>> ParseClipboardData()
         {
-            IDataObject dataObj = Clipboard.GetDataObject();
-            if (dataObj is null) return new List<List<string?>>();
-
-            object clipboardData = dataObj.GetData(DataFormats.CommaSeparatedValue);
-            if (clipboardData is not null)
+            try
             {
-                string clipboardDataString = GetClipboardDataString(clipboardData);
-                return CsvHelper.ParseCsvMultiline(CultureInfo.CurrentCulture.TextInfo.ListSeparator, clipboardDataString);
-            }
-            clipboardData = dataObj.GetData(DataFormats.Text);
-            if (clipboardData is not null)
-            {
-                string clipboardDataString = GetClipboardDataString(clipboardData);
-                return CsvHelper.ParseCsvMultiline("\t", clipboardDataString);
-            }
+                IDataObject dataObj = Clipboard.GetDataObject();
+                if (dataObj is null) return new List<List<string?>>();
 
+                object clipboardData = dataObj.GetData(DataFormats.CommaSeparatedValue);
+                if (clipboardData is not null)
+                {
+                    string clipboardDataString = GetClipboardDataString(clipboardData);
+                    return CsvHelper.ParseCsvMultiline(CultureInfo.CurrentCulture.TextInfo.ListSeparator, clipboardDataString);
+                }
+                clipboardData = dataObj.GetData(DataFormats.Text);
+                if (clipboardData is not null)
+                {
+                    string clipboardDataString = GetClipboardDataString(clipboardData);
+                    return CsvHelper.ParseCsvMultiline("\t", clipboardDataString);
+                }
+            }
+            catch (Exception ex)
+            {
+                WpfMessageBox.WpfMessageBox.Show(ex.Message);
+            }
             return new List<List<string?>>();
         }
 

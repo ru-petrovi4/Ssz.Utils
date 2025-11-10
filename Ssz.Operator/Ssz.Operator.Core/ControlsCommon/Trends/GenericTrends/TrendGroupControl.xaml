@@ -7,6 +7,9 @@
              xmlns:trends="clr-namespace:Ssz.Operator.Core.ControlsCommon.Trends"
              mc:Ignorable="d"
              d:DesignHeight="427" d:DesignWidth="722">
+    <Control.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </Control.Resources>
     <Grid Name="MainGrid" x:FieldModifier="public">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -25,10 +28,23 @@
                       HorizontalAlignment="Stretch" />
         <trends:TrendsInfoTableControl Margin="5,5,5,5" Grid.Row="2" x:Name="TrendsInfoTableControl"
                                        x:FieldModifier="public"
+                                       Visibility="Collapsed" 
+                                       d:Visibility="Visible" 
                                        Grid.ColumnSpan="2" Grid.Column="0" />
         <StackPanel Orientation="Vertical" Grid.Column="1" Grid.Row="0" x:Name="TrendsTuningControl"
                     x:FieldModifier="public">
-            <Button HorizontalAlignment="Left" Margin="5,5,5,0" VerticalAlignment="Top"
+            <ToggleButton HorizontalAlignment="Stretch" Margin="5,5,5,0" VerticalAlignment="Top"
+                    Padding="0"
+                    IsChecked="True"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    ToolTip="{x:Static res:OperatorUIResources.TrendShowLegend}"
+                    x:Name="ShowPensButton"
+                    Click="onShowPensButtonClicked" >
+                <!-- Visibility="{Binding ElementName=ShowPensButton, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}" -->
+                <Image Source="/Ssz.Operator.Core;component/Images/EpksTrendLegend.png" />
+            </ToggleButton>
+            <Button HorizontalAlignment="Left" Margin="5,15,5,0" VerticalAlignment="Top"
                     Padding="0"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
