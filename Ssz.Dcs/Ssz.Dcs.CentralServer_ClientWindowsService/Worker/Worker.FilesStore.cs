@@ -506,7 +506,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 progressInfo.Count = DsFilesStoreHelper.GetDsFilesStoreDirectoryFilesCount(serverDataOrChildDsFilesStoreDirectory) +
                         DsFilesStoreHelper.GetDsFilesStoreDirectoryFilesCount(serverBinDsFilesStoreDirectory);
 
-                await DownloadFilesStoreDirectoryAsync(serverDataOrChildDsFilesStoreDirectory, progressInfo, utilityDataAccessProvider, includeSubdirectories: true, overwriteNewerFiles: false);
+                await DownloadFilesStoreDirectoryAsync(serverDataOrChildDsFilesStoreDirectory, progressInfo, utilityDataAccessProvider, includeSubdirectories: true, overwriteNewerFiles: true);
                 await DownloadFilesStoreDirectoryAsync(serverBinDsFilesStoreDirectory, progressInfo, utilityDataAccessProvider, includeSubdirectories: true, overwriteNewerFiles: true);
 
                 processModelDirectoryInfo = new DirectoryInfo(Path.Combine(FilesStoreDirectoryInfo.FullName, serverPocessModelDsFilesStoreDirectory.PathRelativeToRootDirectory));
