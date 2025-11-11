@@ -41,7 +41,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     string dataAccessClientUserName = ConfigurationHelper.GetValue(_configuration, @"DataAccessClientUserName", @"");
                     if (dataAccessClientUserName != @"")
                     {
-                        var clientUserNameInRequest = contextParams.GetValueOrDefault(@"ClientUserName");
+                        var clientUserNameInRequest = contextParams.GetValueOrDefault(@"UserName");
                         if (String.IsNullOrEmpty(clientUserNameInRequest))
                             throw new RpcException(new Status(StatusCode.PermissionDenied, "Client user name must be specified (ClientUserName context param)."));
                         if (!String.Equals(clientUserNameInRequest, dataAccessClientUserName, StringComparison.InvariantCultureIgnoreCase))
@@ -52,7 +52,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                         {   
                             byte[] dataAccessClientPasswordHashBytes = Convert.FromBase64String(dataAccessClientPasswordHash);
 
-                            var clientPasswordInRequest = contextParams.GetValueOrDefault(@"ClientPassword");
+                            var clientPasswordInRequest = contextParams.GetValueOrDefault(@"Password");
                             if (String.IsNullOrEmpty(clientPasswordInRequest))
                                 throw new RpcException(new Status(StatusCode.PermissionDenied, "Client password must be specified (ClientPassword context param)."));
                             byte[] clientPasswordInRequestHashBytes = SHA512.HashData(new UTF8Encoding(false).GetBytes(clientPasswordInRequest));

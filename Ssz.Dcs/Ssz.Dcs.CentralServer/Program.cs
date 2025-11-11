@@ -156,7 +156,7 @@ namespace Ssz.Dcs.CentralServer
             {
                 $"Kestrel:Certificates:Default:Password",
                 $"ConnectionStrings:MainDbConnection",
-                $"ConfigurationCrypter"
+                $"Encrypted"
             };
         }
 

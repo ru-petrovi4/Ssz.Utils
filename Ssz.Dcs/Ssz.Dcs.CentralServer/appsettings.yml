@@ -43,7 +43,7 @@ DataAccessClientPasswordHash: ""
 DbType: "sqlite"
 # ConnectionStrings:
 #  MainDbConnection: "Host=localhost;Username=postgres;Password=postgres;Database=dcs;CommandTimeout=3600"
-ConfigurationCrypter:
+Encrypted:
   adapterclient_password: ""
 ...
 --- 

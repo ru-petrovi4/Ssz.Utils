@@ -114,7 +114,7 @@ namespace Ssz.Dcs.CentralServer
 
         private string GetConstantValue(string constant, IterationInfo iterationInfo)
         {
-            if (constant.StartsWith(@"%(ConfigurationCrypter:", StringComparison.InvariantCultureIgnoreCase))
+            if (constant.StartsWith(@"%(Encrypted:", StringComparison.InvariantCultureIgnoreCase))
             {
                 return ConfigurationHelper.GetValue<string>(_configuration, constant.Substring(2, constant.Length - 3), @"");
             }
