@@ -56,7 +56,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                         {
                             isTable = true;
                             int endIndex = prevLine.Length;                                
-                            foreach (string f in prevLine.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).Reverse())
+                            foreach (string f in ((IEnumerable<string>)prevLine.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries)).Reverse())
                             {
                                 int startIndex = prevLine.LastIndexOf(f, endIndex);
                                 string name;

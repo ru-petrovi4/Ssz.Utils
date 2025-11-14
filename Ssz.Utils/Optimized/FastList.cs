@@ -6,8 +6,7 @@ using System.Text;
 
 namespace Ssz.Utils;
 
-public class FastList<T> : IList<T>, IReadOnlyList<T>, IOwnedDataSerializable    
-    where T : notnull
+public class FastList<T> : IList<T>, IReadOnlyList<T>, IOwnedDataSerializable        
 {
     #region construction and destruction
 
