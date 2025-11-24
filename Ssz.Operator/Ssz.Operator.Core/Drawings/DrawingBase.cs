@@ -418,7 +418,7 @@ namespace Ssz.Operator.Core.Drawings
         public void AddDsShapes(int? atIndex, bool verifyDsShapeNames, params DsShapeBase[] newDsShapes)
         {
             if (atIndex.HasValue)
-                foreach (DsShapeBase newDsShape in newDsShapes.Reverse())
+                foreach (DsShapeBase newDsShape in ((IEnumerable<DsShapeBase>)newDsShapes).Reverse())
                 {
                     if (verifyDsShapeNames) VerifyDsShapeName(newDsShape, _dsShapes);
 

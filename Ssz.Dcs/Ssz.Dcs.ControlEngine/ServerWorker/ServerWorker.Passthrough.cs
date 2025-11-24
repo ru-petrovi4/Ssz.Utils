@@ -153,6 +153,7 @@ namespace Ssz.Dcs.ControlEngine
             catch (Exception ex)
             {
                 Logger.LogError(ex, "Step Failed.");
+
                 serverContext.AddCallbackMessage(new LongrunningPassthroughCallbackMessage
                 {
                     JobId = jobId,

@@ -6,7 +6,72 @@ using System.Text;
 
 namespace Ssz.Utils;
 
-public class FastList<T> : IList<T>, IReadOnlyList<T>, IOwnedDataSerializable        
+public interface IFastList<out T>
+{
+    //
+    // Summary:
+    //     Gets the number of elements contained in the System.Collections.Generic.ICollection`1.
+    //
+    //
+    // Returns:
+    //     The number of elements contained in the System.Collections.Generic.ICollection`1.
+    int Count { get; }
+    //
+    // Summary:
+    //     Gets a value indicating whether the System.Collections.Generic.ICollection`1
+    //     is read-only.
+    //
+    // Returns:
+    //     true if the System.Collections.Generic.ICollection`1 is read-only; otherwise,
+    //     false.
+    bool IsReadOnly { get; }
+    
+    //
+    // Summary:
+    //     Removes all items from the System.Collections.Generic.ICollection`1.
+    //
+    // Exceptions:
+    //   T:System.NotSupportedException:
+    //     The System.Collections.Generic.ICollection`1 is read-only.
+    void Clear();
+
+    //
+    // Summary:
+    //     Gets or sets the element at the specified index.
+    //
+    // Parameters:
+    //   index:
+    //     The zero-based index of the element to get or set.
+    //
+    // Returns:
+    //     The element at the specified index.
+    //
+    // Exceptions:
+    //   T:System.ArgumentOutOfRangeException:
+    //     index is not a valid index in the System.Collections.Generic.IList`1.
+    //
+    //   T:System.NotSupportedException:
+    //     The property is set and the System.Collections.Generic.IList`1 is read-only.
+    T this[int index] { get; }    
+    
+    //
+    // Summary:
+    //     Removes the System.Collections.Generic.IList`1 item at the specified index.
+    //
+    // Parameters:
+    //   index:
+    //     The zero-based index of the item to remove.
+    //
+    // Exceptions:
+    //   T:System.ArgumentOutOfRangeException:
+    //     index is not a valid index in the System.Collections.Generic.IList`1.
+    //
+    //   T:System.NotSupportedException:
+    //     The System.Collections.Generic.IList`1 is read-only.
+    void RemoveAt(int index);
+}
+
+public class FastList<T> : IFastList<T>, IList<T>, IReadOnlyList<T>, IOwnedDataSerializable        
 {
     #region construction and destruction
 
@@ -100,7 +165,14 @@ public class FastList<T> : IList<T>, IReadOnlyList<T>, IOwnedDataSerializable
 
     public void RemoveAt(int index)
     {
-        throw new NotImplementedException();
+        if (index == _count - 1)
+        {
+            _count -= 1;
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public bool Contains(T item)
