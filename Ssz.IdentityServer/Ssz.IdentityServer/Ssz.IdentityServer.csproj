@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>Enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Kerberos.NET" Version="4.6.131" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="9.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="10.0.0" />
   </ItemGroup>
 
   <ItemGroup>

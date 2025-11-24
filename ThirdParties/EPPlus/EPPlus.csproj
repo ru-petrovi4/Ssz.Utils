@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;net9.0</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
 		<AssemblyVersion>4.5.3.3</AssemblyVersion>
 		<FileVersion>4.5.3.3</FileVersion>
 		<Version>4.5.3.3</Version>
@@ -242,7 +242,7 @@
 		<DefineConstants>Core</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition=" '$(TargetFramework)' == 'net9.0'">
+	<PropertyGroup Condition=" '$(TargetFramework)' == 'net10.0'">
 		<DefineConstants>Core</DefineConstants>
 	</PropertyGroup>
 
@@ -271,20 +271,20 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.10" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.0" />
 		<PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
 		<PackageReference Include="System.Data.Common" Version="4.3.0" />
-		<PackageReference Include="System.Drawing.Common" Version="9.0.10" />			
+		<PackageReference Include="System.Drawing.Common" Version="10.0.0" />			
 		<PackageReference Include="System.Reflection" Version="4.3.0" />
 		<PackageReference Include="System.Security.Claims" Version="4.3.0" />
-		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.10" />
+		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.0" />
 		<PackageReference Include="System.Security.Cryptography.X509Certificates" Version="4.3.2" />
-		<PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.10" />
+		<PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.0" />
 		<PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
 		<PackageReference Include="System.Xml.XPath.XmlDocument" Version="4.7.0" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
     <PackageReference Include="System.Drawing.Common" Version="9.0.3" />
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.3" />
 	</ItemGroup>	

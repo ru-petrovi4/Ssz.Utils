@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>    
+    <TargetFramework>net10.0</TargetFramework>    
     <Nullable>enable</Nullable>
 	<LangVersion>Latest</LangVersion>	
 	<Platforms>AnyCPU;x86</Platforms>
@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.ComponentModel.Composition" Version="9.0.10" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="10.0.0" />
   </ItemGroup>
 
   <ItemGroup>

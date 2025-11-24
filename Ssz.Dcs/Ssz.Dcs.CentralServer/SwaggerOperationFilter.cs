@@ -1,4 +1,4 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Ssz.Dcs.CentralServer
@@ -12,7 +12,7 @@ namespace Ssz.Dcs.CentralServer
         {
             if (operation.RequestBody is not null)
             {
-                if (operation.RequestBody.Content.TryGetValue("application/*+json", out OpenApiMediaType? openApiMediaType))
+                if (operation.RequestBody.Content!.TryGetValue("application/*+json", out OpenApiMediaType? openApiMediaType))
                 {
                     operation.RequestBody.Content.Clear();
                     operation.RequestBody.Content.Add("application/vnd.api+json", openApiMediaType);

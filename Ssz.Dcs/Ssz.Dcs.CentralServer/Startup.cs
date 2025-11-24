@@ -18,7 +18,7 @@ using Ssz.Dcs.CentralServer.Common.EntityFramework;
 using JsonApiDotNetCore.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using System.IO;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 namespace Ssz.Dcs.CentralServer
 {

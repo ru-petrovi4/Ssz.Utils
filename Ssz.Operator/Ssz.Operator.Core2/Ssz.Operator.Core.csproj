@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>	
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
@@ -21,20 +21,20 @@
   </ItemGroup>
 	
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.3.8" />
-    <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.3.8" />
+    <PackageReference Include="Avalonia" Version="11.3.9" />
+    <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.3.9" />
     <PackageReference Include="Avalonia.Svg.Skia" Version="11.3.0" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.8" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.8" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.9" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.9" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-    <PackageReference Include="Avalonia.Diagnostics" Version="11.3.8">
+    <PackageReference Include="Avalonia.Diagnostics" Version="11.3.9">
       <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
       <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Avalonia.Xaml.Interactions" Version="11.3.0.6" />
-    <PackageReference Include="Classic.Avalonia.Theme" Version="11.3.0" />
+    <PackageReference Include="Classic.Avalonia.Theme" Version="11.3.0.3" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-	<PackageReference Include="MessageBox.Avalonia" Version="3.2.0" />
+	<PackageReference Include="MessageBox.Avalonia" Version="3.3.0" />
   </ItemGroup>
 
   <ItemGroup>

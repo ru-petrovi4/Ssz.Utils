@@ -24,7 +24,7 @@ namespace Ssz.Utils.Wpf
         {
             try
             {
-                IDataObject dataObj = Clipboard.GetDataObject();
+                IDataObject? dataObj = Clipboard.GetDataObject();
                 if (dataObj is null) return new List<List<string?>>();
 
                 object clipboardData = dataObj.GetData(DataFormats.CommaSeparatedValue);
