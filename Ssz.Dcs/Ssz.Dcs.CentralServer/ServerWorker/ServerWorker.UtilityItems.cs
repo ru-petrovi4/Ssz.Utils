@@ -181,31 +181,47 @@ namespace Ssz.Dcs.CentralServer
 
                 foreach (var centralServerUtilityItem in centralServerUtilityItems)
                 {
-                    string currentCentralServerAddress = centralServerUtilityItem.ValueStatusTimestamp.Value.ValueAsString(false);
+                    string centralServerUtilityItem_Value = centralServerUtilityItem.ValueStatusTimestamp.Value.ValueAsString(false);
                     AdditionalCentralServerInfo? additionalCentralServerInfo = _additionalCentralServerInfosCollection.Values
-                            .FirstOrDefault(i => String.Equals(i.ServerAddress, currentCentralServerAddress, StringComparison.InvariantCultureIgnoreCase));
+                            .FirstOrDefault(i => String.Equals(i.ServerAddress, centralServerUtilityItem_Value, StringComparison.InvariantCultureIgnoreCase));
                     if (additionalCentralServerInfo is not null)
                         additionalCentralServerInfo!.ClientWorkstationsGroups.Add(GetClientWorkstationsGroup(centralServerUtilityItem.ClientWorkstationName, clientsCsvFileData));
                 }
 
                 foreach (var centralServerUtilityItem in centralServerUtilityItems)
                 {
-                    string currentCentralServerAddress = centralServerUtilityItem.ValueStatusTimestamp.Value.ValueAsString(false);
+                    string centralServerUtilityItem_Value = centralServerUtilityItem.ValueStatusTimestamp.Value.ValueAsString(false);
                     AdditionalCentralServerInfo? additionalCentralServerInfo = _additionalCentralServerInfosCollection.Values
-                            .FirstOrDefault(i => String.Equals(i.ServerAddress, currentCentralServerAddress, StringComparison.InvariantCultureIgnoreCase));
+                            .FirstOrDefault(i => String.Equals(i.ServerAddress, centralServerUtilityItem_Value, StringComparison.InvariantCultureIgnoreCase));
                     if (additionalCentralServerInfo is null)
                     {
-                        // Find best additionalCentralServerInfo
-                        int minClientWorkstationsCount = Int32.MaxValue;
+                        var clientWorkstationsGroup = GetClientWorkstationsGroup(centralServerUtilityItem.ClientWorkstationName, clientsCsvFileData);
+
+                        // Find group
                         foreach (var i in _additionalCentralServerInfosCollection.Values)
                         {
-                            if (i.ClientWorkstationsGroups.Count < minClientWorkstationsCount)
+                            if (i.ClientWorkstationsGroups.Contains(clientWorkstationsGroup))
                             {
                                 additionalCentralServerInfo = i;
-                                minClientWorkstationsCount = i.ClientWorkstationsGroups.Count;
+                                break;
                             }
                         }
-                        additionalCentralServerInfo!.ClientWorkstationsGroups.Add(GetClientWorkstationsGroup(centralServerUtilityItem.ClientWorkstationName, clientsCsvFileData));
+
+                        if (additionalCentralServerInfo is null)
+                        {
+                            // Find best additionalCentralServerInfo
+                            int minClientWorkstationsCount = Int32.MaxValue;
+                            foreach (var i in _additionalCentralServerInfosCollection.Values)
+                            {
+                                if (i.ClientWorkstationsGroups.Count < minClientWorkstationsCount)
+                                {
+                                    additionalCentralServerInfo = i;
+                                    minClientWorkstationsCount = i.ClientWorkstationsGroups.Count;
+                                }
+                            }
+                        }
+
+                        additionalCentralServerInfo!.ClientWorkstationsGroups.Add(clientWorkstationsGroup);
                         centralServerUtilityItem.UpdateValue(additionalCentralServerInfo.ServerAddress, nowUtc);
                     }
                 }

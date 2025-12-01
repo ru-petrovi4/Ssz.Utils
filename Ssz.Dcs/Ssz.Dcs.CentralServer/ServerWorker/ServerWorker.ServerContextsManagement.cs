@@ -26,7 +26,7 @@ namespace Ssz.Dcs.CentralServer
             {
                 if (new Any(serverContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_ConnectionToMain)).ValueAsBoolean(false))
                 {
-                    if (!String.IsNullOrEmpty(serverContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_AdditionalCentralServerAddress)))
+                    if (!String.IsNullOrEmpty(serverContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_ThisCentralServerAddress)))
                         On_AdditionalCentralServer_AddedOrRemoved(serverContext, args.Added);
                 }
                 else
@@ -58,7 +58,7 @@ namespace Ssz.Dcs.CentralServer
 
         private void On_AdditionalCentralServer_AddedOrRemoved(ServerContext utilityServerContext, bool added)
         {
-            var additionalCentralServerAddress = utilityServerContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_AdditionalCentralServerAddress)!;
+            var additionalCentralServerAddress = utilityServerContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_ThisCentralServerAddress)!;
             var additionalCentralServerInfo = _additionalCentralServerInfosCollection.TryGetValue(additionalCentralServerAddress);
             if (added)
             {

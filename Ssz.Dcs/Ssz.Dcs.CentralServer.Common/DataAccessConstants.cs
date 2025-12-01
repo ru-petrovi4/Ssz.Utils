@@ -28,7 +28,7 @@ namespace Ssz.Dcs.CentralServer.Common
 
         public const string ParamName_ConnectionToMain = @"ConnectionToMain";
 
-        public const string ParamName_AdditionalCentralServerAddress = @"AdditionalCentralServerAddress";
+        public const string ParamName_ThisCentralServerAddress = @"ThisCentralServerAddress";
 
         public const string ParamName_ControlEngineServerAddress = @"ControlEngineServerAddress";
 

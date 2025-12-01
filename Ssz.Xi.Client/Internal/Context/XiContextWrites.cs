@@ -160,6 +160,7 @@ namespace Ssz.Xi.Client.Internal.Context
             }
             try
             {
+                // InvokeId != 0, so there must be ICallback.PassthroughCallback(string contextId, int invokeId, PassthroughResult passthroughResult)
                 PassthroughResult? passthroughResult = _writeEndpoint.Proxy.Passthrough(contextId, recipientId, invokeId,
                                       passthroughName, dataToSend.ToArray());
                 return Task.FromResult(taskCompletionSource.Task);

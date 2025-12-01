@@ -22,7 +22,7 @@ namespace Ssz.Dcs.CentralServer
 
         public static readonly string AddonIdentifier = @"DcsCentralServer";
 
-        public static readonly string ClientsCsvFileName = @"clents.csv";
+        public static readonly string ClientsCsvFileName = @"clients.csv";
 
         public override Guid Guid => AddonGuid;
 
