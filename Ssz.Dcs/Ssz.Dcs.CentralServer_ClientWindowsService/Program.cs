@@ -18,6 +18,8 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 {
     public class Program
     {
+        public static string EnvironmentName { get; private set; } = null!;
+
         #region private functions
 
         private static void Main(string[] args)
@@ -26,13 +28,13 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
             var host = CreateHostBuilder(args).Build();
 
-            var logger = host.Services.GetRequiredService<ILogger<Program>>();
-            logger.LogInformation($"MachineName: {Environment.MachineName}. App starting with args: {String.Join(" ", args)}");
-
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
+            var logger = host.Services.GetRequiredService<ILogger<Program>>();
             IConfiguration configuration = host.Services.GetRequiredService<IConfiguration>();
-            CultureHelper.InitializeUICulture(configuration, logger);            
+            CultureHelper.InitializeUICulture(configuration, logger);
+
+            LoggerHelper.LogProgramInformation(logger, configuration, args, EnvironmentName);
 
             host.Run();
         }
@@ -47,6 +49,8 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             return Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
+                    EnvironmentName = ConfigurationHelper.GetEnvironmentName(hostingContext.HostingEnvironment);
+
                     config.Sources.Clear();
 
                     config.AddEncryptedAppSettings(hostingContext.HostingEnvironment, crypter =>

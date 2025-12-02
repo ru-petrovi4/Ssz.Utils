@@ -88,7 +88,7 @@ namespace Ssz.Dcs.Addons.OpcClient
             dataAccessProvider.Initialize(elementIdsMap,
                 @"",
                 @"Ssz.Dcs.Addons.OpcClient",
-                Environment.MachineName,
+                ConfigurationHelper.GetWorkstationName(Configuration),
                 @"",
                 new CaseInsensitiveOrderedDictionary<string?>
                 {

@@ -66,7 +66,7 @@ namespace Ssz.Dcs.ControlEngine
             _utilityDataAccessProvider.Initialize(null,                
                 Program.Options.GetCentralServerAddress(),
                 DataAccessConstants.ControlEngine_ClientApplicationName,
-                Environment.MachineName,
+                ConfigurationHelper.GetWorkstationName(Configuration),
                 @"", // Utility context
                 new CaseInsensitiveOrderedDictionary<string?>
                 {
@@ -99,7 +99,7 @@ namespace Ssz.Dcs.ControlEngine
             _processDataAccessProvider.Initialize(device.ElementIdsMap,                
                 Program.Options.GetCentralServerAddress(),
                 DataAccessConstants.ControlEngine_ClientApplicationName,
-                Environment.MachineName,
+                ConfigurationHelper.GetWorkstationName(Configuration),
                 Program.Options.CentralServerSystemName,
                 new CaseInsensitiveOrderedDictionary<string?>(),
                 new DataAccessProviderOptions(),

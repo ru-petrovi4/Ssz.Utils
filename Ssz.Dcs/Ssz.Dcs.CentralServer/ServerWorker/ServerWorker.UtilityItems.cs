@@ -181,11 +181,29 @@ namespace Ssz.Dcs.CentralServer
 
                 foreach (var centralServerUtilityItem in centralServerUtilityItems)
                 {
+                    var clientWorkstationsGroup = GetClientWorkstationsGroup(centralServerUtilityItem.ClientWorkstationName, clientsCsvFileData);
                     string centralServerUtilityItem_Value = centralServerUtilityItem.ValueStatusTimestamp.Value.ValueAsString(false);
-                    AdditionalCentralServerInfo? additionalCentralServerInfo = _additionalCentralServerInfosCollection.Values
+
+                    // Find group
+                    AdditionalCentralServerInfo? additionalCentralServerInfo = null;
+                    foreach (var i in _additionalCentralServerInfosCollection.Values)
+                    {
+                        if (i.ClientWorkstationsGroups.Contains(clientWorkstationsGroup))
+                        {
+                            additionalCentralServerInfo = i;
+                            break;
+                        }
+                    }
+
+                    if (additionalCentralServerInfo is null)
+                        additionalCentralServerInfo = _additionalCentralServerInfosCollection.Values
                             .FirstOrDefault(i => String.Equals(i.ServerAddress, centralServerUtilityItem_Value, StringComparison.InvariantCultureIgnoreCase));
+
                     if (additionalCentralServerInfo is not null)
+                    {
                         additionalCentralServerInfo!.ClientWorkstationsGroups.Add(GetClientWorkstationsGroup(centralServerUtilityItem.ClientWorkstationName, clientsCsvFileData));
+                        centralServerUtilityItem.UpdateValue(additionalCentralServerInfo.ServerAddress, nowUtc);
+                    }
                 }
 
                 foreach (var centralServerUtilityItem in centralServerUtilityItems)

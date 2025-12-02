@@ -54,15 +54,15 @@ namespace Ssz.Dcs.CentralServer
         {
             ConfigurationHelper.SetCurrentDirectory(args);
 
-            Host = CreateHostBuilder(args).Build();
-
-            var logger = Host.Services.GetRequiredService<ILogger<Program>>();
-            logger.LogInformation($"App starting with args: \"{String.Join(" ", args)}\"; Environment: {EnvironmentName}; Working Directory: \"{Directory.GetCurrentDirectory()}\"");
+            Host = CreateHostBuilder(args).Build();                       
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
+            var logger = Host.Services.GetRequiredService<ILogger<Program>>();
             IConfiguration configuration = Host.Services.GetRequiredService<IConfiguration>();
             CultureHelper.InitializeUICulture(configuration, logger);
+
+            LoggerHelper.LogProgramInformation(logger, configuration, args, EnvironmentName);
 
             try
             {

@@ -12,6 +12,5 @@ namespace Ssz.Dcs.CentralServer.Common
         public const string ConfigurationKey_Process_SourceId = @"Process_SourceId";
 
         public const string ConfigurationKey_Process_SourceIdToDisplay = @"Process_SourceIdToDisplay";
-        
     }
 }

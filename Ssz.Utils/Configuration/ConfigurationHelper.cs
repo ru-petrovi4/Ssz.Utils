@@ -15,6 +15,10 @@ namespace Ssz.Utils
 {
     public static class ConfigurationHelper
     {
+        public const string ConfigurationKey_ThisWorkstationName = @"ThisWorkstationName";
+
+        public const string ConfigurationKey_UICulture = @"UICulture";
+
         #region public functions
 
         /// <summary>
@@ -275,6 +279,14 @@ namespace Ssz.Utils
                         true);
             }
 #endif
+        }
+
+        public static string GetWorkstationName(IConfiguration? configuration)
+        {
+            string workstationName = GetValue<string>(configuration, ConfigurationKey_ThisWorkstationName, @"");
+            if (String.IsNullOrEmpty(workstationName))
+                workstationName = Environment.MachineName;
+            return workstationName;
         }
 
         #endregion

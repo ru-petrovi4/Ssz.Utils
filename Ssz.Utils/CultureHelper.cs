@@ -22,7 +22,7 @@ namespace Ssz.Utils
         /// <param name="configuration"></param>
         public static void InitializeUICulture(IConfiguration configuration, ILogger logger)
         {            
-            string? uiCultureName = configuration["UICulture"];
+            string? uiCultureName = ConfigurationHelper.GetValue<string>(configuration, ConfigurationHelper.ConfigurationKey_UICulture, @"");
             if (!String.IsNullOrWhiteSpace(uiCultureName))
             {
                 try

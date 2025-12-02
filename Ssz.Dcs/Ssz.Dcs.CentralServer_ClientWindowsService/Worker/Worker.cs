@@ -70,7 +70,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             MainUtilityDataAccessProvider.Initialize(null,
                 mainCentralServerAddress,
                 DataAccessConstants.CentralServer_ClientWindowsService_ClientApplicationName,
-                System.Environment.MachineName,
+                ConfigurationHelper.GetWorkstationName(Configuration),
                 @"",
                 new CaseInsensitiveOrderedDictionary<string?>()
                 {
@@ -159,7 +159,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 additionalUtilityDataAccessProvider.Initialize(null,
                     addedAdditionalUtilityDataAccessProviderHolder.CentralServerAddress,
                     DataAccessConstants.CentralServer_ClientWindowsService_ClientApplicationName,
-                    System.Environment.MachineName,
+                    ConfigurationHelper.GetWorkstationName(Configuration),
                     @"",
                     new CaseInsensitiveOrderedDictionary<string?>()
                     {
