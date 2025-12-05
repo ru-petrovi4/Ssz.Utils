@@ -5,6 +5,7 @@ using Ssz.Operator.Core.CustomAttributes;
 
 using Ssz.Operator.Core.Properties;
 using Ssz.Operator.Core.Utils.Serialization;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 using Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Editors;
 
@@ -46,8 +47,11 @@ namespace Ssz.Operator.Core.DsShapes
             set => base.HorizontalContentAlignment = value;
         }
 
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] // For XAML serialization
+        [DsCategory(ResourceStrings.AppearanceCategory)]
+        [DsDisplayName(ResourceStrings.ControlDsShapeStyleInfo)]
+        [Editor(typeof(DsUIElementPropertyTypeEditor<TextBoxStyleInfoSupplier>),
+            typeof(DsUIElementPropertyTypeEditor<TextBoxStyleInfoSupplier>))]        
+        // For XAML serialization
         public override DsUIElementProperty StyleInfo
         {
             get => base.StyleInfo;

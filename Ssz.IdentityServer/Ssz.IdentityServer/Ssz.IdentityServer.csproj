@@ -44,6 +44,10 @@
     <None Update="Ssz_IdentityServer_backup.pfx">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Helpers\GSSAPI\" />
   </ItemGroup> 
 
 </Project>
