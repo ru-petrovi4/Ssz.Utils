@@ -51,7 +51,7 @@ namespace Ssz.IdentityServer
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
                     AllowedScopes =
                     {
-                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServer4.IdentityServerConstants.StandardScopes.OpenId,
                         "custom.profile",
                         "userapi"
                     },

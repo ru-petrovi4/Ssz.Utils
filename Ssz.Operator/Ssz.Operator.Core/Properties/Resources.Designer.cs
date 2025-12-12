@@ -70,15 +70,6 @@ namespace Ssz.Operator.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ssz.Operator.Play Version.
-        /// </summary>
-        public static string AddonBaseSszOperatorVersion {
-            get {
-                return ResourceManager.GetString("AddonBaseSszOperatorVersion", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Addon Description.
         /// </summary>
         public static string AddonBaseDescription {
@@ -106,20 +97,20 @@ namespace Ssz.Operator.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ssz.Operator.Play Version.
+        /// </summary>
+        public static string AddonBaseSszOperatorVersion {
+            get {
+                return ResourceManager.GetString("AddonBaseSszOperatorVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Version.
         /// </summary>
         public static string AddonBaseVersion {
             get {
                 return ResourceManager.GetString("AddonBaseVersion", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Ssz Project.
-        /// </summary>
-        public static string AddonSszDsProjectPlay {
-            get {
-                return ResourceManager.GetString("AddonSszDsProjectPlay", resourceCulture);
             }
         }
         
@@ -183,6 +174,15 @@ namespace Ssz.Operator.Core.Properties {
         public static string AddonSerializationError {
             get {
                 return ResourceManager.GetString("AddonSerializationError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ssz Project.
+        /// </summary>
+        public static string AddonSszDsProjectPlay {
+            get {
+                return ResourceManager.GetString("AddonSszDsProjectPlay", resourceCulture);
             }
         }
         
@@ -1338,7 +1338,8 @@ namespace Ssz.Operator.Core.Properties {
         ///		&lt;Setter.Value&gt;
         ///			&lt;ControlTemplate TargetType=&quot;{x:Type Slider}&quot;&gt;
         ///				&lt;Grid&gt;                        
-        ///					&lt;Track [rest of string was truncated]&quot;;.
+        ///					&lt;Track x:Name=&quot;PART_Track&quot;&gt;
+        ///				 [rest of string was truncated]&quot;;.
         /// </summary>
         public static string ContentSliderStyleXaml {
             get {
@@ -1547,8 +1548,8 @@ namespace Ssz.Operator.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can use any valid C# expression, including standard .NET library function calls. To refer to data source items, use variables of types double, int, bool, string:
-        ///d[i], i[i], b[i], s[i], where i is Data Source Item index (N). In string literals, you can use Generic Params in common format %(...).
+        ///   Looks up a localized string similar to You can use any valid C# expression, including standard .NET library function calls. To refer to data source items, use variables of types double, int, uint, bool, string:
+        ///d[i], i[i], u[i], b[i], s[i], where i is Data Source Item index (N). To refer user input use variables of types double, int, uint, bool, string: userD, userI, userU, userB, userS. In string literals, you can use Generic Params in common format %(...).
         ///If expression must results to boolean value.&quot;.
         /// </summary>
         public static string ConverterWindowHelp {
@@ -2096,132 +2097,6 @@ namespace Ssz.Operator.Core.Properties {
         public static string Delete {
             get {
                 return ResourceManager.GetString("Delete", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Change of State Category.
-        /// </summary>
-        public static string SszAlarmsInfoCategoryIdNormalizedConditionChangeOfState {
-            get {
-                return ResourceManager.GetString("SszAlarmsInfoCategoryIdNormalizedConditionChangeOfState", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to H Category.
-        /// </summary>
-        public static string SszAlarmsInfoCategoryIdNormalizedConditionH {
-            get {
-                return ResourceManager.GetString("SszAlarmsInfoCategoryIdNormalizedConditionH", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to HH Category.
-        /// </summary>
-        public static string SszAlarmsInfoCategoryIdNormalizedConditionHH {
-            get {
-                return ResourceManager.GetString("SszAlarmsInfoCategoryIdNormalizedConditionHH", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to L Category.
-        /// </summary>
-        public static string SszAlarmsInfoCategoryIdNormalizedConditionL {
-            get {
-                return ResourceManager.GetString("SszAlarmsInfoCategoryIdNormalizedConditionL", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to LL Category.
-        /// </summary>
-        public static string SszAlarmsInfoCategoryIdNormalizedConditionLL {
-            get {
-                return ResourceManager.GetString("SszAlarmsInfoCategoryIdNormalizedConditionLL", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Normal Category.
-        /// </summary>
-        public static string SszAlarmsInfoCategoryIdNormalizedConditionNormal {
-            get {
-                return ResourceManager.GetString("SszAlarmsInfoCategoryIdNormalizedConditionNormal", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Not Normal State Category.
-        /// </summary>
-        public static string SszAlarmsInfoCategoryIdNormalizedConditionNotNormalState {
-            get {
-                return ResourceManager.GetString("SszAlarmsInfoCategoryIdNormalizedConditionNotNormalState", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Other Category.
-        /// </summary>
-        public static string SszAlarmsInfoCategoryIdNormalizedConditionOther {
-            get {
-                return ResourceManager.GetString("SszAlarmsInfoCategoryIdNormalizedConditionOther", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to OFF Category.
-        /// </summary>
-        public static string SszAlarmsInfoCategoryIdNormalizedConditionSwOff {
-            get {
-                return ResourceManager.GetString("SszAlarmsInfoCategoryIdNormalizedConditionSwOff", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ON Category.
-        /// </summary>
-        public static string SszAlarmsInfoCategoryIdNormalizedConditionSwOn {
-            get {
-                return ResourceManager.GetString("SszAlarmsInfoCategoryIdNormalizedConditionSwOn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Turn OFF Category.
-        /// </summary>
-        public static string SszAlarmsInfoCategoryIdNormalizedConditionSwTurnOff {
-            get {
-                return ResourceManager.GetString("SszAlarmsInfoCategoryIdNormalizedConditionSwTurnOff", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Turn ON Category.
-        /// </summary>
-        public static string SszAlarmsInfoCategoryIdNormalizedConditionSwTurnOn {
-            get {
-                return ResourceManager.GetString("SszAlarmsInfoCategoryIdNormalizedConditionSwTurnOn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Ssz Model Engine.
-        /// </summary>
-        public static string SszDataEngineDescription {
-            get {
-                return ResourceManager.GetString("SszDataEngineDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Ssz.
-        /// </summary>
-        public static string SszDataEngineNameToDisplay {
-            get {
-                return ResourceManager.GetString("SszDataEngineNameToDisplay", resourceCulture);
             }
         }
         
@@ -6130,6 +6005,132 @@ namespace Ssz.Operator.Core.Properties {
         public static string SpecifyToolkitOperationOptionsMessage {
             get {
                 return ResourceManager.GetString("SpecifyToolkitOperationOptionsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change of State Category.
+        /// </summary>
+        public static string SszAlarmsInfoCategoryIdNormalizedConditionChangeOfState {
+            get {
+                return ResourceManager.GetString("SszAlarmsInfoCategoryIdNormalizedConditionChangeOfState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to H Category.
+        /// </summary>
+        public static string SszAlarmsInfoCategoryIdNormalizedConditionH {
+            get {
+                return ResourceManager.GetString("SszAlarmsInfoCategoryIdNormalizedConditionH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to HH Category.
+        /// </summary>
+        public static string SszAlarmsInfoCategoryIdNormalizedConditionHH {
+            get {
+                return ResourceManager.GetString("SszAlarmsInfoCategoryIdNormalizedConditionHH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to L Category.
+        /// </summary>
+        public static string SszAlarmsInfoCategoryIdNormalizedConditionL {
+            get {
+                return ResourceManager.GetString("SszAlarmsInfoCategoryIdNormalizedConditionL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LL Category.
+        /// </summary>
+        public static string SszAlarmsInfoCategoryIdNormalizedConditionLL {
+            get {
+                return ResourceManager.GetString("SszAlarmsInfoCategoryIdNormalizedConditionLL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Normal Category.
+        /// </summary>
+        public static string SszAlarmsInfoCategoryIdNormalizedConditionNormal {
+            get {
+                return ResourceManager.GetString("SszAlarmsInfoCategoryIdNormalizedConditionNormal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not Normal State Category.
+        /// </summary>
+        public static string SszAlarmsInfoCategoryIdNormalizedConditionNotNormalState {
+            get {
+                return ResourceManager.GetString("SszAlarmsInfoCategoryIdNormalizedConditionNotNormalState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Other Category.
+        /// </summary>
+        public static string SszAlarmsInfoCategoryIdNormalizedConditionOther {
+            get {
+                return ResourceManager.GetString("SszAlarmsInfoCategoryIdNormalizedConditionOther", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OFF Category.
+        /// </summary>
+        public static string SszAlarmsInfoCategoryIdNormalizedConditionSwOff {
+            get {
+                return ResourceManager.GetString("SszAlarmsInfoCategoryIdNormalizedConditionSwOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ON Category.
+        /// </summary>
+        public static string SszAlarmsInfoCategoryIdNormalizedConditionSwOn {
+            get {
+                return ResourceManager.GetString("SszAlarmsInfoCategoryIdNormalizedConditionSwOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Turn OFF Category.
+        /// </summary>
+        public static string SszAlarmsInfoCategoryIdNormalizedConditionSwTurnOff {
+            get {
+                return ResourceManager.GetString("SszAlarmsInfoCategoryIdNormalizedConditionSwTurnOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Turn ON Category.
+        /// </summary>
+        public static string SszAlarmsInfoCategoryIdNormalizedConditionSwTurnOn {
+            get {
+                return ResourceManager.GetString("SszAlarmsInfoCategoryIdNormalizedConditionSwTurnOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ssz Model Engine.
+        /// </summary>
+        public static string SszDataEngineDescription {
+            get {
+                return ResourceManager.GetString("SszDataEngineDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ssz.
+        /// </summary>
+        public static string SszDataEngineNameToDisplay {
+            get {
+                return ResourceManager.GetString("SszDataEngineNameToDisplay", resourceCulture);
             }
         }
         

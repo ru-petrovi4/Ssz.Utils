@@ -575,7 +575,8 @@
   </data>
   <data name="ConverterWindowHelp" xml:space="preserve">
     <value>Можно использовать выражения на языке C#. Используются типы данных: double, int, uint, bool, string. Для того что бы получить значение из модели нужно писать соответственно: 
-d[i], i[i], u[i], b[i], s[i], где i это индекс источника данных.</value>
+d[i], i[i], u[i], b[i], s[i], где i это индекс источника данных. Для того что бы получить значение от пользователя нужно писать соответственно: 
+userD, userI, userU, userB, userS.</value>
   </data>
   <data name="ConverterWindowHelp2" xml:space="preserve">
     <value />

@@ -19,20 +19,20 @@ namespace Ssz.IdentityServer.Helpers
         public static LdapConnection CreateLdapConnection(IConfiguration configuration, ILogger logger)
         {
             LdapConnectionOptions ldapConnectionOptions = new();            
-            if (ConfigurationHelper.GetValue(configuration, @"ActiveDirectory:UseSsl", false))
+            if (ConfigurationHelper.GetValue(configuration, IdentityServerConstants.ConfigurationKey_ActiveDirectory_UseSsl, false))
                 ldapConnectionOptions.UseSsl();
-            if (ConfigurationHelper.GetValue(configuration, @"ActiveDirectory:CheckCertificateRevocation", false))
+            if (ConfigurationHelper.GetValue(configuration, IdentityServerConstants.ConfigurationKey_ActiveDirectory_CheckCertificateRevocation, false))
                 ldapConnectionOptions.CheckCertificateRevocation();
             return new LdapConnection(ldapConnectionOptions);
         }
 
         public static async Task<LdapConnection?> CreatePreparedLdapConnectionAsync(IConfiguration configuration, IConfigurationProcessor? configurationProcessor, ILogger logger)
         {
-            string ldapHost = ConfigurationHelper.GetValue(configuration, @"ActiveDirectory:Server", @"");            
-            int ldapPort = ConfigurationHelper.GetValue(configuration, @"ActiveDirectory:LdapPort", LdapConnection.DefaultPort);
-            int ldapVersion = ConfigurationHelper.GetValue(configuration, @"ActiveDirectory:LdapVersion", LdapConnection.LdapV3);
-            string activeDirectory_ServiceAccount_DN = ConfigurationHelper.GetValue(configuration, @"ActiveDirectory:ServiceAccount:DN", @"");
-            string activeDirectory_ServiceAccount_Password = ConfigurationHelper.GetValue(configuration, @"ActiveDirectory:ServiceAccount:Password", @"");
+            string ldapHost = ConfigurationHelper.GetValue(configuration, IdentityServerConstants.ConfigurationKey_ActiveDirectory_Server, @"");            
+            int ldapPort = ConfigurationHelper.GetValue(configuration, IdentityServerConstants.ConfigurationKey_ActiveDirectory_LdapPort, LdapConnection.DefaultPort);
+            int ldapVersion = ConfigurationHelper.GetValue(configuration, IdentityServerConstants.ConfigurationKey_ActiveDirectory_LdapVersion, LdapConnection.LdapV3);
+            string activeDirectory_ServiceAccount_DN = ConfigurationHelper.GetValue(configuration, IdentityServerConstants.ConfigurationKey_ActiveDirectory_ServiceAccount_DN, @"");
+            string activeDirectory_ServiceAccount_Password = ConfigurationHelper.GetValue(configuration, IdentityServerConstants.ConfigurationKey_ActiveDirectory_ServiceAccount_Password, @"");
             if (configurationProcessor is not null)
             {
                 ldapHost = configurationProcessor.ProcessValue(ldapHost);                
@@ -85,7 +85,7 @@ namespace Ssz.IdentityServer.Helpers
 
         public static async Task<List<Claim>> GetClaims(string user, Dictionary<string, string>? allRoles, IConfiguration configuration, IConfigurationProcessor? configurationProcessor, ILogger logger)
         {            
-            string activeDirectory_UsersDN = ConfigurationHelper.GetValue(configuration, @"ActiveDirectory:UsersDN", @"");
+            string activeDirectory_UsersDN = ConfigurationHelper.GetValue(configuration, IdentityServerConstants.ConfigurationKey_ActiveDirectory_UsersDN, @"");
             if (configurationProcessor is not null)
                 activeDirectory_UsersDN = configurationProcessor.ProcessValue(activeDirectory_UsersDN);
 
@@ -185,7 +185,7 @@ namespace Ssz.IdentityServer.Helpers
         {
             var groups = new HashSet<string>();
 
-            string activeDirectory_UsersDN = ConfigurationHelper.GetValue(configuration, @"ActiveDirectory:UsersDN", @"");
+            string activeDirectory_UsersDN = ConfigurationHelper.GetValue(configuration, IdentityServerConstants.ConfigurationKey_ActiveDirectory_UsersDN, @"");
             foreach (string group in await GetGroups(preparedLdapConnection, activeDirectory_UsersDN, user))
             {
                 groups.Add(group);
@@ -199,7 +199,7 @@ namespace Ssz.IdentityServer.Helpers
 
         public static async Task<string> GetDnForUser(string user, IConfiguration configuration, IConfigurationProcessor? configurationProcessor, ILogger logger)
         {            
-            string activeDirectory_UsersDN = ConfigurationHelper.GetValue(configuration, @"ActiveDirectory:UsersDN", @"");
+            string activeDirectory_UsersDN = ConfigurationHelper.GetValue(configuration, IdentityServerConstants.ConfigurationKey_ActiveDirectory_UsersDN, @"");
             if (configurationProcessor is not null)
                 activeDirectory_UsersDN = configurationProcessor.ProcessValue(activeDirectory_UsersDN);
 

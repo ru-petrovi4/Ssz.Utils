@@ -646,8 +646,8 @@ to File</value>
     <value>Set UI to</value>
   </data>
   <data name="ConverterWindowHelp" xml:space="preserve">
-    <value>You can use any valid C# expression, including standard .NET library function calls. To refer to data source items, use variables of types double, int, bool, string:
-d[i], i[i], b[i], s[i], where i is Data Source Item index (N). In string literals, you can use Generic Params in common format %(...).
+    <value>You can use any valid C# expression, including standard .NET library function calls. To refer to data source items, use variables of types double, int, uint, bool, string:
+d[i], i[i], u[i], b[i], s[i], where i is Data Source Item index (N). To refer user input use variables of types double, int, uint, bool, string: userD, userI, userU, userB, userS. In string literals, you can use Generic Params in common format %(...).
 If expression must results to boolean value."</value>
   </data>
   <data name="ConverterWindowHelp2" xml:space="preserve">
