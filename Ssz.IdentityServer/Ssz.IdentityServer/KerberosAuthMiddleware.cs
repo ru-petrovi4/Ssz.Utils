@@ -48,56 +48,53 @@ public class KerberosAuthMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        // Пропускаем
-        if (!context.Request.Path.StartsWithSegments("/connect/token") || 
-            !String.IsNullOrEmpty(context.Request.Form[@"username"]))
+        if (context.Request.Path == @"/connect/token" &&
+                context.Request.Form.ContainsKey(@"username") &&
+                String.IsNullOrEmpty(context.Request.Form[@"username"]))
         {
-            await _nextMiddleware(context);
-            return;
-        }        
-
-        try
-        {
-            string userName = @"";
-
-            if (_authenticator is not null)
+            try
             {
-                // Проверяем Authorization: Negotiate заголовок
-                var authHeader = context.Request.Headers.Authorization.FirstOrDefault();
-                
-                if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Negotiate "))
+                string userName = @"";
+
+                if (_authenticator is not null)
                 {
-                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                    context.Response.Headers["WWW-Authenticate"] = "Negotiate";                          
-                    return;
+                    // Проверяем Authorization: Negotiate заголовок
+                    var authHeader = context.Request.Headers.Authorization.FirstOrDefault();
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Negotiate "))
+                    {
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        context.Response.Headers["WWW-Authenticate"] = "Negotiate";
+                        return;
+                    }
+
+                    var tokenBase64 = authHeader.Substring("Negotiate ".Length).Trim();
+
+                    ClaimsIdentity identity;
+                    try
+                    {
+                        identity = await _authenticator.Authenticate(tokenBase64);
+                        userName = identity?.Name ?? @""; // обычно user@G-NEFT.LOCAL
+                        int i = userName.IndexOf("@");
+                        if (i > 0)
+                            userName = userName.Substring(0, i);
+                    }
+                    catch
+                    {
+                    }
                 }
 
-                var tokenBase64 = authHeader.Substring("Negotiate ".Length).Trim();
-
-                ClaimsIdentity identity;
-                try
-                {
-                    identity = await _authenticator.Authenticate(tokenBase64);
-                    userName = identity?.Name ?? @""; // обычно user@G-NEFT.LOCAL
-                    int i = userName.IndexOf("@");
-                    if (i > 0)
-                        userName = userName.Substring(0, i);
-                }
-                catch
-                {
-                }
+                // Кладём проверенное имя в заголовок ответа
+                context.Response.Headers[IdentityServerConstants.Header_Authorization_Kerberos_GSSAPI_SPNEGO] = userName;                
             }
-
-            // Кладём проверенное имя в заголовок ответа
-            context.Response.Headers[IdentityServerConstants.Header_Authorization_Kerberos_GSSAPI_SPNEGO] = userName;
-
-            await _nextMiddleware(context);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Необработанное исключение в KerberosAuthMiddleware");
+                throw;
+            }            
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Необработанное исключение в KerberosAuthMiddleware");
-            throw;
-        }
+
+        await _nextMiddleware(context);
     }
 
     #region private fields
