@@ -541,6 +541,82 @@ namespace Ssz.Utils.Addons
             return result;
         }
 
+        /// <summary>
+        ///     Must be called in Dispatcher
+        /// </summary>
+        public void RefreshAddons()
+        {
+            if (Dispatcher is null)
+                return;
+
+            List<AddonBase> switchedOnAddons = new();
+            List<AddonBase> switchedOffAddons = new();
+
+            foreach (var line in CsvDb.GetData(AddonsCsvFileName).Values)
+            {
+                if (line.Count < 2 || String.IsNullOrEmpty(line[0]) || line[0]!.StartsWith("!"))
+                    continue;
+
+                string addonInstanceId = line[0]!;
+                string addonIdentifier = line[1] ?? @"";
+                bool isSwitchedOn = true;
+                if (line.Count >= 3 && !String.IsNullOrEmpty(line[2]))
+                    isSwitchedOn = new Any(line[2] ?? @"").ValueAsBoolean(false);
+
+                var availableAddon = _availableAddons!.FirstOrDefault(
+                    p => String.Equals(p.Identifier, addonIdentifier, StringComparison.InvariantCultureIgnoreCase));
+
+                if (availableAddon is not null)
+                {
+                    if (availableAddon.IsAlwaysSwitchedOn || isSwitchedOn)
+                    {
+                        var availableAddonClone = CreateAvailableAddonInternal(availableAddon, addonInstanceId, null, Dispatcher);
+
+                        if (availableAddonClone is not null)
+                            switchedOnAddons.Add(availableAddonClone);
+                    }
+                    else
+                    {
+                        switchedOffAddons.Add(availableAddon);
+                    }
+                }
+            }
+
+            foreach (var availableAddon in _availableAddons!)
+            {
+                if (switchedOnAddons.Any(a => a.Guid == availableAddon.Guid))
+                    continue;
+
+                if (availableAddon.IsAlwaysSwitchedOn ||
+                    (availableAddon.IsSwitchedOnByDefault && !switchedOffAddons.Any(a => a.Guid == availableAddon.Guid)))
+                {
+                    var availableAddonClone = CreateAvailableAddonInternal(availableAddon, availableAddon.Identifier + @".1", null, Dispatcher);
+
+                    if (availableAddonClone is not null)
+                        switchedOnAddons.Add(availableAddonClone);
+                }
+            }
+
+            var catalog = new AggregateCatalog();
+
+            foreach (var newAddon in switchedOnAddons)
+            {
+                newAddon.Initialized += (s, a) => { ((AddonBase)s!).CsvDb.CsvFileChanged += OnAddonCsvDb_CsvFileChanged; };
+                newAddon.Closed += (s, a) => { ((AddonBase)s!).CsvDb.CsvFileChanged -= OnAddonCsvDb_CsvFileChanged; };
+
+                if (!String.IsNullOrEmpty(newAddon.DllFileFullName))
+                    catalog.Catalogs.Add(new DirectoryCatalog(
+                            Path.GetDirectoryName(newAddon.DllFileFullName)!,
+                            Path.GetFileName(newAddon.DllFileFullName)));
+            }
+
+            _container = new CompositionContainer(catalog);
+
+            Addons.Update(switchedOnAddons.OrderBy(a => ((IObservableCollectionItem)a).ObservableCollectionItemId).ToArray(), CancellationToken.None);
+
+            _addonsThreadSafe = Addons.ToArray();
+        }
+
         #endregion        
 
         #region protected functions
@@ -608,79 +684,6 @@ namespace Ssz.Utils.Addons
 
             if (String.Equals(args.CsvFileName, AddonBase.OptionsCsvFileName, StringComparison.InvariantCultureIgnoreCase))
                 RefreshAddons();
-        }
-
-        private void RefreshAddons()
-        {
-            if (Dispatcher is null)
-                return;
-
-            List<AddonBase> switchedOnAddons = new();
-            List<AddonBase> switchedOffAddons = new();            
-
-            foreach (var line in CsvDb.GetData(AddonsCsvFileName).Values)
-            {
-                if (line.Count < 2 || String.IsNullOrEmpty(line[0]) || line[0]!.StartsWith("!"))
-                    continue;
-
-                string addonInstanceId = line[0]!;
-                string addonIdentifier = line[1] ?? @"";
-                bool isSwitchedOn = true;
-                if (line.Count >= 3 && !String.IsNullOrEmpty(line[2]))
-                    isSwitchedOn = new Any(line[2] ?? @"").ValueAsBoolean(false);
-
-                var availableAddon = _availableAddons!.FirstOrDefault(
-                    p => String.Equals(p.Identifier, addonIdentifier, StringComparison.InvariantCultureIgnoreCase));
-                
-                if (availableAddon is not null)
-                {
-                    if (availableAddon.IsAlwaysSwitchedOn || isSwitchedOn)
-                    {
-                        var availableAddonClone = CreateAvailableAddonInternal(availableAddon, addonInstanceId, null, Dispatcher);
-
-                        if (availableAddonClone is not null)
-                            switchedOnAddons.Add(availableAddonClone);
-                    }
-                    else
-                    {
-                        switchedOffAddons.Add(availableAddon);
-                    }
-                }                
-            }
-
-            foreach (var availableAddon in _availableAddons!)
-            {
-                if (switchedOnAddons.Any(a => a.Guid == availableAddon.Guid))
-                    continue;
-
-                if (availableAddon.IsAlwaysSwitchedOn ||
-                    (availableAddon.IsSwitchedOnByDefault && !switchedOffAddons.Any(a => a.Guid == availableAddon.Guid)))
-                {
-                    var availableAddonClone = CreateAvailableAddonInternal(availableAddon, availableAddon.Identifier + @".1", null, Dispatcher);
-
-                    if (availableAddonClone is not null)
-                        switchedOnAddons.Add(availableAddonClone);
-                }
-            }
-
-            var catalog = new AggregateCatalog();
-
-            foreach (var newAddon in switchedOnAddons)
-            {
-                newAddon.Initialized += (s, a) => { ((AddonBase)s!).CsvDb.CsvFileChanged += OnAddonCsvDb_CsvFileChanged; };
-                newAddon.Closed += (s, a) => { ((AddonBase)s!).CsvDb.CsvFileChanged -= OnAddonCsvDb_CsvFileChanged; };                
-
-                if (!String.IsNullOrEmpty(newAddon.DllFileFullName))
-                    catalog.Catalogs.Add(new DirectoryCatalog(
-                            Path.GetDirectoryName(newAddon.DllFileFullName)!,
-                            Path.GetFileName(newAddon.DllFileFullName)));
-            }
-
-            _container = new CompositionContainer(catalog);
-
-            Addons.Update(switchedOnAddons.OrderBy(a => ((IObservableCollectionItem)a).ObservableCollectionItemId).ToArray(), CancellationToken.None);
-
-            _addonsThreadSafe = Addons.ToArray();
         }
 
         /// <summary>

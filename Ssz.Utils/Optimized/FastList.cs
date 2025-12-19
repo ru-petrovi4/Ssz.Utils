@@ -2,6 +2,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Ssz.Utils;
@@ -261,7 +263,7 @@ public class FastList<T> : IFastList<T>, IList<T>, IReadOnlyList<T>, IOwnedDataS
                     break;
             }
         }
-    }
+    }    
 
     #endregion
 
@@ -323,5 +325,13 @@ public class FastList<T> : IFastList<T>, IList<T>, IReadOnlyList<T>, IOwnedDataS
             _index = 0;
             _current = default;
         }
+    }
+}
+
+public static class FastListExtensions
+{
+    public static FastList<T> ToFastList<T>(this IEnumerable<T> enumerable)
+    {
+        return new FastList<T>(enumerable.ToArray());
     }
 }

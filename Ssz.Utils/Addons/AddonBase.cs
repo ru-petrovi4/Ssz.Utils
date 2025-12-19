@@ -97,9 +97,7 @@ namespace Ssz.Utils.Addons
 
         /// <summary>
         ///     Do not changes after addon creation.
-        ///     All values substituted. 
-        ///     E.g value 'appsettings.json:DataAccessClient_ContextParams'.
-        ///     Gets value from appsettings.json:AddonsOptions:_Addon_Identifier_:DataAccessClient_ContextParams
+        ///     All values substituted.        
         ///     Thread-safe.
         /// </summary>
         public CaseInsensitiveOrderedDictionary<string?> OptionsSubstituted { get; internal set; } = null!;

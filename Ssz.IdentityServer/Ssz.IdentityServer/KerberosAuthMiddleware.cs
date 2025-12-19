@@ -75,12 +75,14 @@ public class KerberosAuthMiddleware
                     {
                         identity = await _authenticator.Authenticate(tokenBase64);
                         userName = identity?.Name ?? @""; // обычно user@G-NEFT.LOCAL
+                        _logger.LogInformation("KerberosAuthenticator.Authenticate succeeded. Raw UserName: " + userName);
                         int i = userName.IndexOf("@");
                         if (i > 0)
-                            userName = userName.Substring(0, i);
+                            userName = userName.Substring(0, i);                        
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        _logger.LogError(ex, "KerberosAuthenticator.Authenticate error.");
                     }
                 }
 

@@ -18,6 +18,7 @@ using System.Linq;
 using Ssz.Dcs.CentralServer.Common.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Ssz.Dcs.CentralServer.Common.EntityFramework;
+using Microsoft.Extensions.Primitives;
 
 namespace Ssz.Dcs.CentralServer
 {
@@ -74,6 +75,11 @@ namespace Ssz.Dcs.CentralServer
                     AddonsSearchPattern = @"Ssz.Dcs.Addons.*.dll",
                     CanModifyAddonsCsvFiles = ConfigurationHelper.IsMainProcess(_configuration)
                 });
+            ChangeToken.OnChange(
+                () => _configuration.GetReloadToken(),
+                () => {
+                    _addonsManager.Dispatcher!.BeginInvoke(ct => _addonsManager.RefreshAddons());
+                });
         }
 
         public override async Task<int> DoWorkAsync(DateTime nowUtc, CancellationToken cancellationToken)
@@ -114,9 +120,10 @@ namespace Ssz.Dcs.CentralServer
 
         private string GetConstantValue(string constant, IterationInfo iterationInfo)
         {
-            if (constant.StartsWith(@"%(Encrypted:", StringComparison.InvariantCultureIgnoreCase))
+            if (constant.StartsWith(@"%(yml:", StringComparison.InvariantCultureIgnoreCase))
             {
-                return ConfigurationHelper.GetValue<string>(_configuration, constant.Substring(2, constant.Length - 3), @"");
+                var length = @"%(yml:".Length;
+                return _configuration.GetValue<string>(@"Encypted:" + constant.Substring(length, constant.Length - length - 1)) ?? @"";
             }
             else if (String.Equals(constant, @"%(Port)", StringComparison.InvariantCultureIgnoreCase))
             {
