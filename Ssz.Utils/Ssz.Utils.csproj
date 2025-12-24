@@ -24,12 +24,6 @@
 		<PackageReference Include="System.Collections.Immutable" Version="10.0.0" />	
 	</ItemGroup>
 
-	
-
-	<ItemGroup>
-    <ProjectReference Include="..\ThirdParties\YamlDotNet\YamlDotNet.csproj" PrivateAssets="all" />
-  </ItemGroup>
-
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>

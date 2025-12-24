@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using Ssz.Utils.ConfigurationCrypter.Crypters;
-using YamlDotNet.Core;
-using YamlDotNet.RepresentationModel;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
+using Ssz.Utils.YamlDotNet.Core;
+using Ssz.Utils.YamlDotNet.RepresentationModel;
+using Ssz.Utils.YamlDotNet.Serialization;
+using Ssz.Utils.YamlDotNet.Serialization.NamingConventions;
 
 namespace Ssz.Utils.ConfigurationCrypter.ConfigurationCrypters.Yaml
 {

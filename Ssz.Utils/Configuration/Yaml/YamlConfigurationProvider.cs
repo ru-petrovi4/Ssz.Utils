@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using Ssz.Utils.Properties;
-using YamlDotNet.Core;
+using Ssz.Utils.YamlDotNet.Core;
 
 namespace Ssz.Utils.Yaml
 {

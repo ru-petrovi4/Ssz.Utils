@@ -7,7 +7,7 @@ using System.IO;
 using Microsoft.Extensions.FileProviders;
 using Ssz.Utils.Properties;
 using Ssz.Utils.Yaml;
-using YamlDotNet.Core;
+using Ssz.Utils.YamlDotNet.Core;
 
 namespace Microsoft.Extensions.Configuration
 {

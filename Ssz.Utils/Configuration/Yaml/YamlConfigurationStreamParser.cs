@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Ssz.Utils.Properties;
-using YamlDotNet.RepresentationModel;
+using Ssz.Utils.YamlDotNet.RepresentationModel;
 
 namespace Ssz.Utils.Yaml
 {
@@ -123,7 +123,7 @@ namespace Ssz.Utils.Yaml
 
         private bool IsNullValue(YamlScalarNode yamlScalarNode)
         {
-            return yamlScalarNode.Style == YamlDotNet.Core.ScalarStyle.Plain
+            return yamlScalarNode.Style == Ssz.Utils.YamlDotNet.Core.ScalarStyle.Plain
                 && (
                     yamlScalarNode.Value == "~"
                     || yamlScalarNode.Value == "null"
