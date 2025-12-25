@@ -70,7 +70,7 @@ namespace Ssz.Dcs.CentralServer
 
             try
             {
-                using (var dbContext = _dbContextFactory.CreateDbContext())
+                using (var dbContext = DbContextFactory.CreateDbContext())
                 {
                     if (dbContext.IsConfigured)
                     {
@@ -158,7 +158,7 @@ namespace Ssz.Dcs.CentralServer
             {
                 if (processModelingSession.DbEnity_ProcessModelingSessionId is not null)
                 {
-                    using (var dbContext = _dbContextFactory.CreateDbContext())
+                    using (var dbContext = DbContextFactory.CreateDbContext())
                     {
                         if (dbContext.IsConfigured)
                         {
@@ -270,7 +270,7 @@ namespace Ssz.Dcs.CentralServer
                         };
 
                         DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon = GetNewInitializedDataAccessProviderAddon(
-                            _serviceProvider,
+                            ServiceProvider,
                             $"http://localhost:60080/PlatServer/ServerDiscovery",
                             systemName,
                             new CaseInsensitiveOrderedDictionary<string?> { { @"XiSystem", systemName } },
@@ -298,7 +298,7 @@ namespace Ssz.Dcs.CentralServer
                         };
 
                         DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon = GetNewInitializedDataAccessProviderAddon(
-                            _serviceProvider,
+                            ServiceProvider,
                             $"http://localhost:60080/HoneywellUsoXiServer/ServerDiscovery",
                             systemName,
                             new CaseInsensitiveOrderedDictionary<string?> { { @"XiSystem", systemName } },
@@ -395,7 +395,7 @@ namespace Ssz.Dcs.CentralServer
                 Generate_LaunchEngine_SystemEvent(processModelingSession.EnginesHostInfo.WorkstationName, processModelingSession, DsFilesStoreDirectoryType.ControlEngineBin, DsFilesStoreDirectoryType.ControlEngineData, @"", engineSessionId);
 
                 DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon = GetNewInitializedDataAccessProviderAddon(
-                        _serviceProvider,
+                        ServiceProvider,
                         @"",
                         @"PROCESS",
                         new CaseInsensitiveOrderedDictionary<string?>(),
@@ -423,7 +423,7 @@ namespace Ssz.Dcs.CentralServer
                         if (String.Equals(processModelingSession.EnginesHostInfo.WorkstationName, @"localhost", StringComparison.InvariantCultureIgnoreCase))
                         {
                             dataAccessProviderGetter_Addon2 = GetNewInitializedDataAccessProviderAddon(
-                                _serviceProvider,
+                                ServiceProvider,
                                 $"http://localhost:60080/PlatServer/ServerDiscovery",
                                 xiSystemName,
                                 new CaseInsensitiveOrderedDictionary<string?> { { @"XiSystem", xiSystemName } },
@@ -432,7 +432,7 @@ namespace Ssz.Dcs.CentralServer
                         else
                         {
                             dataAccessProviderGetter_Addon2 = GetNewInitializedDataAccessProviderAddon(
-                                _serviceProvider,
+                                ServiceProvider,
                                 $"https://{processModelingSession.EnginesHostInfo.WorkstationName}:60060",
                                 DataAccessConstants.PlatformXiProcessModelingSessionId + xiSystemName,
                                 new CaseInsensitiveOrderedDictionary<string?>(),

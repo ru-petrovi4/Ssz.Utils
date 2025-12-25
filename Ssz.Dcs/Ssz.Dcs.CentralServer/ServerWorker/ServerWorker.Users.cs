@@ -28,7 +28,7 @@ namespace Ssz.Dcs.CentralServer
         {
             try
             {
-                using (var dbContext = _dbContextFactory.CreateDbContext())
+                using (var dbContext = DbContextFactory.CreateDbContext())
                 {
                     if (dbContext.IsConfigured)
                     {
@@ -54,7 +54,7 @@ namespace Ssz.Dcs.CentralServer
         {
             try
             {
-                using (var dbContext = _dbContextFactory.CreateDbContext())
+                using (var dbContext = DbContextFactory.CreateDbContext())
                 {
                     if (dbContext.IsConfigured)
                     {
@@ -100,7 +100,7 @@ namespace Ssz.Dcs.CentralServer
         {
             try
             {
-                using (var dbContext = _dbContextFactory.CreateDbContext())
+                using (var dbContext = DbContextFactory.CreateDbContext())
                 {
                     if (dbContext.IsConfigured)
                     {
@@ -133,7 +133,7 @@ namespace Ssz.Dcs.CentralServer
             {
                 var request = new GetUsersRequest();
                 SerializationHelper.SetOwnedData(request, dataToSend);
-                using (var dbContext = _dbContextFactory.CreateDbContext())
+                using (var dbContext = DbContextFactory.CreateDbContext())
                 {
                     var reply = new GetUsersReply();
                     if (dbContext.IsConfigured)
@@ -175,7 +175,7 @@ namespace Ssz.Dcs.CentralServer
                         .Select(os => os.Value.DbEnity_OperatorSessionId)
                         .ToArray();
 
-                    using (var dbContext = _dbContextFactory.CreateDbContext())
+                    using (var dbContext = DbContextFactory.CreateDbContext())
                     {
                         if (dbContext.IsConfigured)
                         {

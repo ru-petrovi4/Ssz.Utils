@@ -14,6 +14,30 @@ namespace Ssz.Dcs.CentralServer
 {
     public partial class ServerWorker : DataAccessServerWorkerBase
     {
+        #region protected functions
+
+        public void NotifyJournalEvent(string processModelingSessionId, EventType eventType, DateTime occurrenceTimeUtc, string textMessage)
+        {
+            ProcessModelingSession processModelingSession = GetProcessModelingSession(processModelingSessionId);
+
+            Action<ServerContext, Ssz.Utils.DataAccess.EventMessage>? processEventMessageNotification = ProcessEventMessageNotification;
+            if (processEventMessageNotification is null)
+                return;
+
+            var eventMessage = new Ssz.Utils.DataAccess.EventMessage(null);
+
+            eventMessage.EventType = eventType;
+            eventMessage.OccurrenceTimeUtc = occurrenceTimeUtc;
+            eventMessage.TextMessage = textMessage;
+
+            foreach (var processServerContext in processModelingSession.ProcessServerContextsCollection)
+            {
+                processEventMessageNotification(processServerContext, eventMessage);
+            }
+        }
+
+        #endregion        
+
         #region internal functions
 
         internal void OnChangeElementValueAction(
@@ -55,27 +79,7 @@ namespace Ssz.Dcs.CentralServer
             {
                 processEventMessageNotification(processServerContext, eventMessage);
             }
-        }
-
-        internal void NotifyJournalEvent(string processModelingSessionId, EventType eventType, DateTime occurrenceTimeUtc, string textMessage)
-        {
-            ProcessModelingSession processModelingSession = GetProcessModelingSession(processModelingSessionId);
-
-            Action<ServerContext, Ssz.Utils.DataAccess.EventMessage>? processEventMessageNotification = ProcessEventMessageNotification;
-            if (processEventMessageNotification is null) 
-                return;
-
-            var eventMessage = new Ssz.Utils.DataAccess.EventMessage(null);
-
-            eventMessage.EventType = eventType;
-            eventMessage.OccurrenceTimeUtc = occurrenceTimeUtc;
-            eventMessage.TextMessage = textMessage;
-
-            foreach (var processServerContext in processModelingSession.ProcessServerContextsCollection)
-            {
-                processEventMessageNotification(processServerContext, eventMessage);
-            }            
-        }
+        }        
 
         #endregion        
     }

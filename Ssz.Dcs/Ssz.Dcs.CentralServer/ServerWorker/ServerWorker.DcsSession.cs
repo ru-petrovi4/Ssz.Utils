@@ -18,13 +18,13 @@ namespace Ssz.Dcs.CentralServer
     {
         #region public functions
 
-        public ObservableCollection<EngineSession> Dcs_EngineSessions { get; } = new();        
+        public ObservableCollection<EngineSession> Dcs_EngineSessions { get; } = new();
 
         #endregion
 
-        #region private functions
+        #region protected functions
 
-        private void OnAddons_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        protected void OnAddons_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
@@ -42,6 +42,10 @@ namespace Ssz.Dcs.CentralServer
                     break;
             }
         }
+
+        #endregion
+
+        #region private functions        
 
         private void OnDcsCentralServerAddons_Added(IEnumerable<DcsCentralServerAddon> addedDcsCentralServerAddons)
         {

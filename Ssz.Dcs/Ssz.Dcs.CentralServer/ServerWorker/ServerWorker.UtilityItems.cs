@@ -159,7 +159,7 @@ namespace Ssz.Dcs.CentralServer
         private void DoWorkCentralServerUtilityItems(DateTime nowUtc, CancellationToken cancellationToken)
         {
             CaseInsensitiveOrderedDictionary<List<string?>> clientsCsvFileData = 
-                _addonsManager.Addons.OfType<DcsCentralServerAddon>().Single().CsvDb.GetData(DcsCentralServerAddon.ClientsCsvFileName);
+                AddonsManager.Addons.OfType<DcsCentralServerAddon>().Single().CsvDb.GetData(DcsCentralServerAddon.ClientsCsvFileName);
 
             UtilityItem[] centralServerUtilityItems = _utilityItems.Values
                     .Where(mi => String.Equals(mi.ElementId, DataAccessConstants.UtilityItem_CentralServer, StringComparison.InvariantCultureIgnoreCase)).ToArray();

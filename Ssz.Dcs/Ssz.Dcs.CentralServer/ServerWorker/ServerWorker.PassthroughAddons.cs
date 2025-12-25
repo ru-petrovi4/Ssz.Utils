@@ -25,14 +25,14 @@ namespace Ssz.Dcs.CentralServer
 
         private async Task<byte[]> GetAddonStatusesPassthroughAsync(ServerContext serverContext)
         {
-            var dcsCentralServerAddon = _addonsManager.Addons.OfType<DcsCentralServerAddon>().Single();
+            var dcsCentralServerAddon = AddonsManager.Addons.OfType<DcsCentralServerAddon>().Single();
 
-            AddonStatuses addonStatuses = await _addonsManager.GetAddonStatusesAsync();
+            AddonStatuses addonStatuses = await AddonsManager.GetAddonStatusesAsync();
             foreach (var addonStatus in addonStatuses.AddonStatusesCollection)
             {
                 addonStatus.SourcePath = @"";                
-                addonStatus.SourceId = ConfigurationHelper.GetValue(_configuration, DcsCentralServerConstants.ConfigurationKey_Process_SourceId, @"Ssz.Dcs.CentralServer");
-                addonStatus.SourceIdToDisplay = ConfigurationHelper.GetValue(_configuration, DcsCentralServerConstants.ConfigurationKey_Process_SourceIdToDisplay, @"Ssz.Dcs.CentralServer");
+                addonStatus.SourceId = ConfigurationHelper.GetValue(Configuration, DcsCentralServerConstants.ConfigurationKey_Process_SourceId, @"Ssz.Dcs.CentralServer");
+                addonStatus.SourceIdToDisplay = ConfigurationHelper.GetValue(Configuration, DcsCentralServerConstants.ConfigurationKey_Process_SourceIdToDisplay, @"Ssz.Dcs.CentralServer");
             }
 
             try
@@ -90,16 +90,16 @@ namespace Ssz.Dcs.CentralServer
         {
             ObservableCollection<EngineSession> engineSessions = GetEngineSessions(serverContext);
             ConfigurationFiles configurationFiles;
-            var dcsCentralServerAddon = _addonsManager.Addons.OfType<DcsCentralServerAddon>().Single();
+            var dcsCentralServerAddon = AddonsManager.Addons.OfType<DcsCentralServerAddon>().Single();
 
             if (dataToSend.Length == 0)
             {
-                configurationFiles = _addonsManager.ReadConfiguration(null);
+                configurationFiles = AddonsManager.ReadConfiguration(null);
                 foreach (var configurationFile in configurationFiles.ConfigurationFilesCollection)
                 {
                     configurationFile.SourcePath = @"";
-                    configurationFile.SourceId = ConfigurationHelper.GetValue(_configuration, DcsCentralServerConstants.ConfigurationKey_Process_SourceId, @"Ssz.Dcs.CentralServer");
-                    configurationFile.SourceIdToDisplay = ConfigurationHelper.GetValue(_configuration, DcsCentralServerConstants.ConfigurationKey_Process_SourceIdToDisplay, @"Ssz.Dcs.CentralServer");                    
+                    configurationFile.SourceId = ConfigurationHelper.GetValue(Configuration, DcsCentralServerConstants.ConfigurationKey_Process_SourceId, @"Ssz.Dcs.CentralServer");
+                    configurationFile.SourceIdToDisplay = ConfigurationHelper.GetValue(Configuration, DcsCentralServerConstants.ConfigurationKey_Process_SourceIdToDisplay, @"Ssz.Dcs.CentralServer");                    
                 }
 
                 try
@@ -155,12 +155,12 @@ namespace Ssz.Dcs.CentralServer
                           
                 if (String.IsNullOrEmpty(recipientPath))
                 {
-                    configurationFiles = _addonsManager.ReadConfiguration(invariantPathRelativeToRootDirectory);
+                    configurationFiles = AddonsManager.ReadConfiguration(invariantPathRelativeToRootDirectory);
                     foreach (var configurationFile in configurationFiles.ConfigurationFilesCollection)
                     {
                         configurationFile.SourcePath = @"";
-                        configurationFile.SourceId = ConfigurationHelper.GetValue(_configuration, DcsCentralServerConstants.ConfigurationKey_Process_SourceId, @"Ssz.Dcs.CentralServer");
-                        configurationFile.SourceIdToDisplay = ConfigurationHelper.GetValue(_configuration, DcsCentralServerConstants.ConfigurationKey_Process_SourceIdToDisplay, @"Ssz.Dcs.CentralServer");
+                        configurationFile.SourceId = ConfigurationHelper.GetValue(Configuration, DcsCentralServerConstants.ConfigurationKey_Process_SourceId, @"Ssz.Dcs.CentralServer");
+                        configurationFile.SourceIdToDisplay = ConfigurationHelper.GetValue(Configuration, DcsCentralServerConstants.ConfigurationKey_Process_SourceIdToDisplay, @"Ssz.Dcs.CentralServer");
                     }
                 }
                 else
@@ -236,7 +236,7 @@ namespace Ssz.Dcs.CentralServer
                     {
                         tasks.Add(Task.Run(() =>
                         {
-                            _addonsManager.WriteConfigurationThreadSafe(configurationFiles);
+                            AddonsManager.WriteConfigurationThreadSafe(configurationFiles);
                             return ReadOnlyMemory<byte>.Empty;
                         }));
                     }

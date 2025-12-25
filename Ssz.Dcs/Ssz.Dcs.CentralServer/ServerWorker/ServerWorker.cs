@@ -35,10 +35,10 @@ namespace Ssz.Dcs.CentralServer
             base(                
                 logger)
         {
-            _configuration = configuration;
-            _serviceProvider = serviceProvider;
-            _addonsManager = addonsManager;
-            _dbContextFactory = dbContextFactory;
+            Configuration = configuration;
+            ServiceProvider = serviceProvider;
+            AddonsManager = addonsManager;
+            DbContextFactory = dbContextFactory;
 
             // Creates all directories and subdirectories in the specified path unless they already exist.
             Directory.CreateDirectory(@"FilesStore");
@@ -48,8 +48,8 @@ namespace Ssz.Dcs.CentralServer
             
             // Creates all directories and subdirectories in the specified path unless they already exist.
             Directory.CreateDirectory(@"CsvDb");
-            _csvDb = ActivatorUtilities.CreateInstance<CsvDb>(
-                _serviceProvider, new DirectoryInfo(@"CsvDb").FullName, ThreadSafeDispatcher);
+            CsvDb = ActivatorUtilities.CreateInstance<CsvDb>(
+                ServiceProvider, new DirectoryInfo(@"CsvDb").FullName, ThreadSafeDispatcher);
             //_csvDb.CsvFileChanged += CsvDbOnCsvFileChanged;
             //CsvDbOnCsvFileChanged(CsvFileChangeAction.Added, null);      
         }        
@@ -60,25 +60,23 @@ namespace Ssz.Dcs.CentralServer
 
         public DirectoryInfo FilesStoreDirectoryInfo { get; private set; }
 
-        public override async Task InitializeAsync(CancellationToken cancellationToken)
+        public virtual void InitializeAddonsManager()
         {
-            await base.InitializeAsync(cancellationToken);
-
-            _addonsManager.Addons.CollectionChanged += OnAddons_CollectionChanged;
-            _addonsManager.Initialize(null,
+            AddonsManager.Addons.CollectionChanged += OnAddons_CollectionChanged;
+            AddonsManager.Initialize(null,
                 new AddonBase[] { new DcsCentralServerAddon() },
-                _csvDb,
+                CsvDb,
                 ThreadSafeDispatcher,
                 SubstituteAddonOption,
                 new AddonsManagerOptions
                 {
                     AddonsSearchPattern = @"Ssz.Dcs.Addons.*.dll",
-                    CanModifyAddonsCsvFiles = ConfigurationHelper.IsMainProcess(_configuration)
+                    CanModifyAddonsCsvFiles = ConfigurationHelper.IsMainProcess(Configuration)
                 });
             ChangeToken.OnChange(
-                () => _configuration.GetReloadToken(),
+                () => Configuration.GetReloadToken(),
                 () => {
-                    _addonsManager.Dispatcher!.BeginInvoke(ct => _addonsManager.RefreshAddons());
+                    AddonsManager.Dispatcher!.BeginInvoke(ct => AddonsManager.RefreshAddons());
                 });
         }
 
@@ -87,7 +85,7 @@ namespace Ssz.Dcs.CentralServer
             if (cancellationToken.IsCancellationRequested) 
                 return 0;
 
-            foreach (AddonBase addon in _addonsManager.AddonsThreadSafe)
+            foreach (AddonBase addon in AddonsManager.AddonsThreadSafe)
             {
                 await addon.DoWorkAsync(nowUtc, cancellationToken);
             }
@@ -102,32 +100,30 @@ namespace Ssz.Dcs.CentralServer
             return await base.DoWorkAsync(nowUtc, cancellationToken);
         }
 
-        public override async Task CloseAsync()
+        public virtual void CloseAddonsManager()
         {
-            _addonsManager.Close();
-
-            await base.CloseAsync();
+            AddonsManager.Close();
         }
 
         #endregion
 
-        #region private functions
+        #region protected functions
 
-        private string? SubstituteAddonOption(string? optionValue)
+        protected string? SubstituteAddonOption(string? optionValue)
         {
             return SszQueryHelper.ComputeValueOfSszQueries(optionValue, GetConstantValue);            
         }
 
-        private string GetConstantValue(string constant, IterationInfo iterationInfo)
+        protected string GetConstantValue(string constant, IterationInfo iterationInfo)
         {
             if (constant.StartsWith(@"%(yml:", StringComparison.InvariantCultureIgnoreCase))
             {
                 var length = @"%(yml:".Length;
-                return _configuration.GetValue<string>(@"Encypted:" + constant.Substring(length, constant.Length - length - 1)) ?? @"";
+                return Configuration.GetValue<string>(@"Encypted:" + constant.Substring(length, constant.Length - length - 1)) ?? @"";
             }
             else if (String.Equals(constant, @"%(Port)", StringComparison.InvariantCultureIgnoreCase))
             {
-                var url = ConfigurationHelper.GetValue<string>(_configuration, @"Kestrel:Endpoints:HttpsDefaultCert:Url", @"");
+                var url = ConfigurationHelper.GetValue<string>(Configuration, @"Kestrel:Endpoints:HttpsDefaultCert:Url", @"");
                 int i = url.LastIndexOf(':');
                 if (i > 0)
                     return url.Substring(i + 1);
@@ -139,15 +135,15 @@ namespace Ssz.Dcs.CentralServer
 
         #region private fields
 
-        private readonly IConfiguration _configuration;
+        protected IConfiguration Configuration { get; }
 
-        private readonly IServiceProvider _serviceProvider;
+        protected IServiceProvider ServiceProvider { get; }
 
-        private readonly CsvDb _csvDb;
+        protected CsvDb CsvDb { get; } = null!;
 
-        private readonly AddonsManager _addonsManager;
+        protected AddonsManager AddonsManager { get; } = null!;
 
-        private readonly IDbContextFactory<DcsCentralServerDbContext> _dbContextFactory;
+        protected IDbContextFactory<DcsCentralServerDbContext> DbContextFactory { get; }
 
         /// <summary>
         ///     [ProcessModelingSessionId, ProcessModelingSession]

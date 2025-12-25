@@ -262,7 +262,7 @@ namespace Ssz.Dcs.CentralServer
                     {
                         try
                         {
-                            using (var dbContext = _dbContextFactory.CreateDbContext())
+                            using (var dbContext = DbContextFactory.CreateDbContext())
                             {
                                 if (dbContext.IsConfigured) 
                                 {
@@ -293,7 +293,7 @@ namespace Ssz.Dcs.CentralServer
                     {
                         if (operatorSession.DbEnity_OperatorSessionId is not null)
                         {
-                            using (var dbContext = _dbContextFactory.CreateDbContext())
+                            using (var dbContext = DbContextFactory.CreateDbContext())
                             {
                                 if (dbContext.IsConfigured)
                                 {
