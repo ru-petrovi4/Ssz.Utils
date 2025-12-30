@@ -47,13 +47,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                 result.CommonFields = new CaseInsensitiveOrderedDictionary<string?>(eventMessagesCollection.CommonFieldsOrdered
                             .Select(f => new KeyValuePair<string, string?>(f.Name, f.Value.KindCase == NullableString.KindOneofCase.Data ? f.Value.Data : null)));
 
-            }
-            else if (eventMessagesCollection.CommonFields.Count > 0) // Obsolete for compatibility only
-            {
-                result.CommonFields = new CaseInsensitiveOrderedDictionary<string?>(eventMessagesCollection.CommonFields
-                            .Select(cp => new KeyValuePair<string, string?>(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)));
-
-            }
+            }            
 
             return result;
         }

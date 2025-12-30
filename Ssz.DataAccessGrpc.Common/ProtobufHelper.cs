@@ -71,12 +71,6 @@ namespace Ssz.DataAccessGrpc.Common
                     eventMessagesCollection.EventMessages.Add(emc.EventMessages);
                     
                     eventMessagesCollection.CommonFieldsOrdered.Add(emc.CommonFieldsOrdered);
-
-                    // Obsolete for compatibility only
-                    foreach (var kvp in emc.CommonFields)
-                    {
-                        eventMessagesCollection.CommonFields[kvp.Key] = kvp.Value;
-                    }
                 }
                 return eventMessagesCollection;
             }
@@ -152,10 +146,6 @@ namespace Ssz.DataAccessGrpc.Common
                             Name = kvp.Key,
                             Value = kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue }
                         });
-
-                        // Obsolete for compatibility only
-                        eventMessagesCollection.CommonFields.Add(kvp.Key,
-                            kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
                     }
                 }
                 int length;

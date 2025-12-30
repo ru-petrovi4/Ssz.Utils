@@ -213,8 +213,7 @@ message Field {
 }
 
 message EventMessagesCollection {
-  repeated EventMessage event_messages = 1;
-  map<string, NullableString> common_fields = 2;
+  repeated EventMessage event_messages = 1;  
   bool is_incomplete = 3;
   repeated Field common_fields_ordered = 4;
 }
@@ -227,8 +226,7 @@ message EventMessage {
   uint32 category_id = 5;
   uint32 priority = 6;
   string operator_name = 7;
-  AlarmMessageData alarm_message_data = 8; 
-  map<string, NullableString> fields = 9;
+  AlarmMessageData alarm_message_data = 8;   
   repeated Field fields_ordered = 10;
 }
 
