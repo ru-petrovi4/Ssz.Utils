@@ -1571,16 +1571,36 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
+        ///     Use ReadOptimizedArrayOfInt32() for reading.
+        /// </summary>
+        /// <param name="values"></param>
+        public void WriteOptimizedArrayOfInt32(int[] values, long? longLength = null)
+        {
+            if (longLength is null)
+                longLength = values.LongLength;
+
+            WriteOptimized(longLength.Value);
+
+            for (long i = 0; i < longLength.Value; i++)
+            {
+                WriteOptimized(values[i]);
+            }            
+        }
+
+        /// <summary>
         ///     Use ReadArrayOfSingle() for reading.
         /// </summary>
         /// <param name="values"></param>
-        public void WriteArrayOfSingle(float[] values)
-        {            
-            WriteOptimized(values.LongLength);
+        public void WriteArrayOfSingle(float[] values, long? longLength = null)
+        {
+            if (longLength is null)
+                longLength = values.LongLength;
 
-            foreach (float value in values)
+            WriteOptimized(longLength.Value);
+
+            for (long i = 0; i < longLength.Value; i++)
             {
-                _binaryWriter.Write(value);
+                Write(values[i]);
             }
         }
 
@@ -1588,13 +1608,16 @@ namespace Ssz.Utils.Serialization
         ///     Use ReadArrayOfDouble() for reading.
         /// </summary>
         /// <param name="values"></param>
-        public void WriteArrayOfDouble(double[] values)
-        {            
-            WriteOptimized(values.LongLength);
+        public void WriteArrayOfDouble(double[] values, long? longLength = null)
+        {
+            if (longLength is null)
+                longLength = values.LongLength;
 
-            foreach (double value in values)
+            WriteOptimized(longLength.Value);
+
+            for (long i = 0; i < longLength.Value; i++)
             {
-                _binaryWriter.Write(value);
+                Write(values[i]);
             }
         }
 
@@ -1603,11 +1626,14 @@ namespace Ssz.Utils.Serialization
         ///     All elements are stored optimized.
         /// </summary>
         /// <param name="values"></param>
-        public void WriteArrayOfDecimal(decimal[] values)
-        {            
-            WriteOptimized(values.LongLength);
+        public void WriteArrayOfDecimal(decimal[] values, long? longLength = null)
+        {
+            if (longLength is null)
+                longLength = values.LongLength;
 
-            for (long i = 0; i < values.LongLength; i++)
+            WriteOptimized(longLength.Value);
+
+            for (long i = 0; i < longLength.Value; i++)
             {
                 WriteOptimized(values[i]);
             }
@@ -1693,6 +1719,25 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
+        ///     use ReadFastListOfOwnedDataSerializable(...) for reading.
+        ///     Writes list of same type not null objects.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="fastList"></param>
+        /// <param name="writer"></param>
+        /// <param name="context"></param>
+        public void WriteFastListOfOwnedDataSerializable<T>(FastList<T> fastList, object? context)
+            where T : IOwnedDataSerializable?
+        {
+            WriteOptimized(fastList.Count);
+            for (int mcx = 0; mcx < fastList.Count; mcx += 1)
+            {
+                var o = fastList[mcx];
+                o!.SerializeOwnedData(this, context);
+            }
+        }
+
+        /// <summary>
         ///     use ReadListOfOwnedDataSerializable(...) for reading.
         ///     Writes list of same type not null objects.         
         /// </summary>        
@@ -1728,8 +1773,6 @@ namespace Ssz.Utils.Serialization
                 WriteOwnedDataSerializable(v, typeIdFunc(v), context);
             }
         }
-
-
 
         /// <summary>
         ///     use ReadListOfStrings() for reading.
@@ -2994,9 +3037,9 @@ namespace Ssz.Utils.Serialization
             }
         }
 
-#endregion
+        #endregion
 
-#region private fields
+        #region private fields
         
         private static readonly BitArray AllFalseBitArray = new BitArray(0);
                 

@@ -217,6 +217,14 @@ public class FastList<T> : IFastList<T>, IList<T>, IReadOnlyList<T>, IOwnedDataS
                     writer.Write(items[i]);
                 }
             }
+            else if (typeof(T) == typeof(double))
+            {
+                var items = (_items as double[])!;
+                for (int i = 0; i < _count; i++)
+                {
+                    writer.Write(items[i]);
+                }
+            }
             else
             {                
                 for (int i = 0; i < _count; i++)
@@ -251,6 +259,14 @@ public class FastList<T> : IFastList<T>, IList<T>, IReadOnlyList<T>, IOwnedDataS
                         for (int i = 0; i < _count; i++)
                         {
                             items[i] = reader.ReadSingle();
+                        }
+                    }
+                    else if (typeof(T) == typeof(double))
+                    {
+                        var items = (_items as double[])!;
+                        for (int i = 0; i < _count; i++)
+                        {
+                            items[i] = reader.ReadDouble();
                         }
                     }
                     else

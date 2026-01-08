@@ -932,6 +932,22 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
+        ///     Use WriteOptimizedArrayOfInt32(...) for writing.
+        /// </summary>
+        /// <returns> A Single[]. </returns>
+        public int[] ReadOptimizedArrayOfInt32()
+        {
+            var result = new int[ReadOptimizedInt64()];
+
+            for (long i = 0; i < result.LongLength; i++)
+            {
+                result[i] = ReadOptimizedInt32();
+            }
+
+            return result;
+        }
+
+        /// <summary>
         ///     Use WriteArrayOfSingle(...) for writing.
         /// </summary>
         /// <returns> A Single[]. </returns>
@@ -1076,6 +1092,34 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
+        ///     Use WriteFastListOfOwnedDataSerializable(...) for writing.
+        ///     Reads list of same objects.
+        ///     func is constructor function, where int is item index.              
+        /// </summary>     
+        /// <typeparam name="T"></typeparam>
+        /// <param name="reader"></param>
+        /// <param name="context"></param>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public FastList<T> ReadFastListOfOwnedDataSerializable<T>(Func<int, T> func, object? context)
+            where T : IOwnedDataSerializable?
+        {
+            if (IsBlockEnding())
+                throw new BlockEndingException();
+
+            var count = ReadOptimizedInt32()!;
+            T[] items = new T[count];
+            for (int mcx = 0; mcx < count; mcx += 1)
+            {
+                var o = func(mcx);
+                o!.DeserializeOwnedData(this, context);
+                items[mcx] = o;
+            }
+            return new FastList<T>(items);
+        }
+
+        /// <summary>
         ///     Use WriteListOfOwnedDataSerializable(...) for writing.
         ///     Reads list of same objects.
         ///     func is constructor function.              
@@ -1101,7 +1145,6 @@ namespace Ssz.Utils.Serialization
             return result;
         }
 
-
         /// <summary>
         ///     Use WriteListOfOwnedDataSerializable<T>(ICollection<T> values, Func<T, int> typeIdFunc,
         ///         object? context) for writing.
@@ -1121,7 +1164,6 @@ namespace Ssz.Utils.Serialization
             else
                 return new List<T>();
         }
-
 
         /// <summary>
         ///     Use WriteListOfStrings(...) for writing.
