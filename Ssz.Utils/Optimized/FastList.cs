@@ -102,7 +102,7 @@ public class FastList<T> : IFastList<T>, IList<T>, IReadOnlyList<T>, IOwnedDataS
     public void Add(T item)
     {
         if (_count >= _items.Length)
-            IncreaseSize(_items.Length * 2);
+            IncreaseSize(_items.Length == 0 ? DefaultCapacity : _items.Length * 2);
 
         _items[_count] = item;
         _count += 1;

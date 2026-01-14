@@ -136,9 +136,16 @@ namespace Ssz.Utils.Addons
 
                 var addonsFileInfos = new List<FileInfo>();
 
-                addonsFileInfos.AddRange(
-                    Directory.GetFiles(exeDirectory, AddonsManagerOptions.AddonsSearchPattern, SearchOption.TopDirectoryOnly)
-                        .Select(fn => new FileInfo(fn)));
+                foreach (string? addonsSearchPattern in CsvHelper.ParseCsvLine(@",", AddonsManagerOptions.AddonsSearchPattern))
+                {
+                    if (String.IsNullOrEmpty(addonsSearchPattern))
+                        continue;
+
+                    addonsFileInfos.AddRange(
+                        Directory.GetFiles(exeDirectory, addonsSearchPattern, SearchOption.TopDirectoryOnly)
+                            .Select(fn => new FileInfo(fn)));
+                }
+
                 try
                 {
                     string addonsDirerctoryFullname = Path.Combine(exeDirectory, @"Addons");

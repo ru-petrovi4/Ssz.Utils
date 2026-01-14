@@ -146,21 +146,24 @@ namespace Ssz.Operator.Core.DsShapes
                 switch (block.Version)
                 {
                     case 4:
-                    {
-                        base.DeserializeOwnedData(reader, context);
+                        {
+                            base.DeserializeOwnedData(reader, context);
 
-                        DsShapeDrawingGuid = reader.ReadGuid();
-                        DsShapeDrawingName = reader.ReadString();
-                        DsShapeDrawingDesc = reader.ReadString();
-                        DsShapeDrawingGroup = reader.ReadString();
-                        DsShapeDrawingWidth = reader.ReadDouble();
-                        DsShapeDrawingHeight = reader.ReadDouble();
-                        DsShapeDrawingCenterRelativePosition = reader.ReadPoint();
-                        List<DsConstant> dsConstantsCollection = reader.ReadList<DsConstant>();
-                        DsConstantsCollection.Clear();
-                        foreach (DsConstant dsConstant in dsConstantsCollection) DsConstantsCollection.Add(dsConstant);
-                        DsShapes = reader.ReadDsShapes(context, VisualDesignMode, LoadXamlContent);
-                    }
+                            DsShapeDrawingGuid = reader.ReadGuid();
+                            DsShapeDrawingName = reader.ReadString();
+                            DsShapeDrawingDesc = reader.ReadString();
+                            DsShapeDrawingGroup = reader.ReadString();
+                            DsShapeDrawingWidth = reader.ReadDouble();
+                            DsShapeDrawingHeight = reader.ReadDouble();
+                            DsShapeDrawingCenterRelativePosition = reader.ReadPoint();
+                            List<DsConstant> dsConstantsCollection = reader.ReadList<DsConstant>();
+                            DsConstantsCollection.Clear();
+                            foreach (DsConstant dsConstant in dsConstantsCollection)
+                            {
+                                DsConstantsCollection.Add(dsConstant);
+                            }
+                            DsShapes = reader.ReadDsShapes(context, VisualDesignMode, LoadXamlContent);
+                        }
                         break;
                     default:
                         throw new BlockUnsupportedVersionException();

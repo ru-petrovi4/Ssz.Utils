@@ -41,10 +41,10 @@
     </Compile>    
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Google.Protobuf" Version="3.33.1" />
+    <PackageReference Include="Google.Protobuf" Version="3.33.4" />
     <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
     <PackageReference Include="SharpVectors" Version="1.8.5" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="10.0.0" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="10.0.2" />
   </ItemGroup>
   <ItemGroup>
 	<Reference Include="PresentationFramework.Classic" Condition="'$(TargetFramework)' != 'net10.0-windows'" />
