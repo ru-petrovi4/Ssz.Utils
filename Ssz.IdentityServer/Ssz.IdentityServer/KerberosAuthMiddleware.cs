@@ -86,8 +86,9 @@ public class KerberosAuthMiddleware
                     }
                 }
 
-                // Кладём проверенное имя в заголовок ответа
-                context.Response.Headers[IdentityServerConstants.Header_Authorization_Kerberos_GSSAPI_SPNEGO] = userName;                
+                // Кладём проверенное имя в заголовок
+                if (!String.IsNullOrWhiteSpace(userName))
+                    context.Request.Headers[IdentityServerConstants.Header_Authorization_Kerberos_GSSAPI_SPNEGO] = userName;                
             }
             catch (Exception ex)
             {
