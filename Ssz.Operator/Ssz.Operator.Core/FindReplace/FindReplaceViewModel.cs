@@ -753,7 +753,7 @@ namespace Ssz.Operator.Core.FindReplace
                 if (drawing is not null)
                     drawing = (DrawingBase) drawing.Clone();
                 else
-                    drawing = DsProject.ReadDrawing(drawingInfoForSearch.FileInfo, false, false);
+                    drawing = DsProject.ReadDrawing(drawingInfoForSearch.FileInfo, false, loadXamlContent: false);
                 if (drawing is null) continue;
 
                 drawing.ReplaceConstants(drawing);
@@ -808,7 +808,7 @@ namespace Ssz.Operator.Core.FindReplace
 
                 var drawing = openedDrawings.FirstOrDefault(
                     d => FileSystemHelper.Compare(d.FileFullName, drawingInfoForSearch.FileInfo.FullName));
-                if (drawing is null) drawing = DsProject.ReadDrawing(drawingInfoForSearch.FileInfo, false, false);
+                if (drawing is null) drawing = DsProject.ReadDrawing(drawingInfoForSearch.FileInfo, false, loadXamlContent: false);
                 if (drawing is null) continue;
 
                 var searchResultViewModelsCollection = new List<SearchResultViewModel>();
@@ -888,7 +888,7 @@ namespace Ssz.Operator.Core.FindReplace
 
                 var drawing = openedDrawings.FirstOrDefault(
                     d => FileSystemHelper.Compare(d.FileFullName, drawingInfoForSearch.FileInfo.FullName));
-                if (drawing is null) drawing = DsProject.ReadDrawing(drawingInfoForSearch.FileInfo, false, false);
+                if (drawing is null) drawing = DsProject.ReadDrawing(drawingInfoForSearch.FileInfo, false, loadXamlContent: false);
                 if (drawing is not null)
                 {
                     var searchResultViewModelsCollection = new List<SearchResultViewModel>();

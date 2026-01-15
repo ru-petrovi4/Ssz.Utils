@@ -145,6 +145,10 @@ namespace Ssz.Operator.Core.Design.Controls
                 new EntityInfoViewModel(new EntityInfo(ConnectorDsShape.DsShapeTypeNameToDisplay,
                     ConnectorDsShape.DsShapeTypeGuid, "", "")));
 
+            entities.Add(
+                new EntityInfoViewModel(new EntityInfo(MapDsShape.DsShapeTypeNameToDisplay,
+                    MapDsShape.DsShapeTypeGuid, "", "")));
+
             rootGroupViewModel.Entities = entities.OrderBy(e => e.Header).ToList();
 
         }

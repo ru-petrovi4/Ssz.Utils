@@ -20,9 +20,66 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay.Map3D
 {
     public partial class Map3DControl : UserControl
     {
-        #region private fields
+        #region construction and destruction
 
-        private bool _disposed;
+        public Map3DControl()
+        {
+            InitializeComponent();
+
+            var wpfModel3DPlayWindowParams = DsProject.Instance.GetAddon<WpfModel3DAddon>();
+            if (wpfModel3DPlayWindowParams.DsFont is not null)
+            {
+                double size;
+                double.TryParse(
+                    ConstantsHelper.ComputeValue(DsProject.Instance, wpfModel3DPlayWindowParams.DsFont.Size),
+                    NumberStyles.Any, CultureInfo.InvariantCulture,
+                    out size);
+                if (size > 0.0)
+                    MainViewport3D.TitleSize = size;
+                MainViewport3D.TitleFontFamily = wpfModel3DPlayWindowParams.DsFont.Family;
+            }
+
+            if (wpfModel3DPlayWindowParams.BackgroundDsBrush is not null)
+                MainViewport3D.Background = wpfModel3DPlayWindowParams.BackgroundDsBrush.GetBrush(DsProject.Instance);
+            if (wpfModel3DPlayWindowParams.TitleDsBrush is not null)
+                MainViewport3D.TextBrush = wpfModel3DPlayWindowParams.TitleDsBrush.GetBrush(DsProject.Instance);
+            if (wpfModel3DPlayWindowParams.AmbientLightColor != default)
+            {
+                var mg = new ModelVisual3D { Content = new AmbientLight(wpfModel3DPlayWindowParams.AmbientLightColor) };
+                MainViewport3D.Children.Add(mg);
+            }
+            else
+            {
+                var mg = new ModelVisual3D { Content = new AmbientLight(Color.FromRgb(20, 20, 20)) };
+                MainViewport3D.Children.Add(mg);
+            }
+
+            TagsComboBox.CurrentItemChanged += TagsComboBoxOnCurrentItemChanged;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (_disposed) return;
+            if (disposing)
+            {
+                // Release and Dispose managed resources.
+            }
+
+            // Release unmanaged resources.
+            // Set large fields to null.            
+            _disposed = true;
+        }
+
+        ~Map3DControl()
+        {
+            Dispose(false);
+        }
 
         #endregion
 
@@ -74,73 +131,7 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay.Map3D
             TagsComboBox.ItemsSource = itemsSource;
         }
 
-        #endregion
-
-        #region construction and destruction
-
-        public Map3DControl()
-        {
-            InitializeComponent();
-
-            var wpfModel3DPlayWindowParams = DsProject.Instance.GetAddon<WpfModel3DAddon>();
-            if (wpfModel3DPlayWindowParams.DsFont is not null)
-            {
-                double size;
-                double.TryParse(
-                    ConstantsHelper.ComputeValue(DsProject.Instance, wpfModel3DPlayWindowParams.DsFont.Size),
-                    NumberStyles.Any, CultureInfo.InvariantCulture,
-                    out size);
-                if (size > 0.0)
-                    MainViewport3D.TitleSize = size;
-                MainViewport3D.TitleFontFamily = wpfModel3DPlayWindowParams.DsFont.Family;
-            }
-
-            if (wpfModel3DPlayWindowParams.BackgroundDsBrush is not null)
-                MainViewport3D.Background = wpfModel3DPlayWindowParams.BackgroundDsBrush.GetBrush(DsProject.Instance);
-            if (wpfModel3DPlayWindowParams.TitleDsBrush is not null)
-                MainViewport3D.TextBrush = wpfModel3DPlayWindowParams.TitleDsBrush.GetBrush(DsProject.Instance);
-            if (wpfModel3DPlayWindowParams.AmbientLightColor != default)
-            {
-                var mg = new ModelVisual3D {Content = new AmbientLight(wpfModel3DPlayWindowParams.AmbientLightColor)};
-                MainViewport3D.Children.Add(mg);
-            }
-            else
-            {
-                var mg = new ModelVisual3D {Content = new AmbientLight(Color.FromRgb(20, 20, 20))};
-                MainViewport3D.Children.Add(mg);
-            }
-
-            TagsComboBox.CurrentItemChanged += TagsComboBoxOnCurrentItemChanged;
-        }
-
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-
-        private void Dispose(bool disposing)
-        {
-            if (_disposed) return;
-            if (disposing)
-            {
-                // Release and Dispose managed resources.
-            }
-
-            // Release unmanaged resources.
-            // Set large fields to null.            
-            _disposed = true;
-        }
-
-
-        ~Map3DControl()
-        {
-            Dispose(false);
-        }
-
-        #endregion
+        #endregion        
 
         #region private functions
 
@@ -173,6 +164,17 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay.Map3D
             Dispatcher.BeginInvoke(new Action(() =>
                 panoramaAddon.PanoPointsCollection.ShowPath(tagViewModel.DsPageName)));
         }
+
+        private void ShowPointNumbersCheckBox_CheckedUncheckedChanged(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+        }
+
+        #endregion
+
+        #region private fields
+
+        private bool _disposed;
 
         #endregion
     }

@@ -254,7 +254,7 @@ namespace Ssz.Operator.Core.Commands.DsCommandOptions
 
             var drawing =
                 DsProject.ReadDrawing(DsProject.Instance.GetExistingDsPageFileInfoOrNull(FileRelativePath), false,
-                    false) as DsPageDrawing;
+                    loadXamlContent: false) as DsPageDrawing;
             if (drawing is not null) ConstantsHelper.FindConstants(drawing.DsConstantsCollection, constants);
         }
 

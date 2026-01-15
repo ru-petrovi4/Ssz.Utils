@@ -64,7 +64,7 @@ namespace Ssz.Operator.Core
 
                     i += 1;
 
-                    dsPageDrawing = ReadDrawing(drawingInfo.FileInfo, false, false) as DsPageDrawing;
+                    dsPageDrawing = ReadDrawing(drawingInfo.FileInfo, false, loadXamlContent: false) as DsPageDrawing;
                     if (dsPageDrawing is not null)
                     {
                         DsPageDrawing cacheDsPageDrawing = PrepareForCache(dsPageDrawing);

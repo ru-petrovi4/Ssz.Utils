@@ -8,7 +8,14 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <map3D:TagsFilteredComboBox x:Name="TagsComboBox" />
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="4*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <map3D:TagsFilteredComboBox x:Name="TagsComboBox" />
+            <!--<CheckBox Content="Show point numbers" Grid.Column="1" x:Name="ShowPointNumbersCheckBox" Checked="ShowPointNumbersCheckBox_CheckedUncheckedChanged" Unchecked="CheckBox_CheckedUncheckedChanged" />-->
+        </Grid>        
         <h:HelixViewport3D x:Name="MainViewport3D"
                            Grid.Row="1"
                            Background="#FF382F30"

@@ -750,7 +750,7 @@ namespace Ssz.Operator.Core
                 DrawingBase.IsDsPageFile(destinationDrawingFileInfo) &&
                 FileSystemHelper.Compare(destinationDrawingFileInfo.Directory?.FullName, DsPagesDirectoryInfo!.FullName))
             {
-                var dsPageDrawing = ReadDrawing(destinationDrawingFileInfo, false, false) as DsPageDrawing;
+                var dsPageDrawing = ReadDrawing(destinationDrawingFileInfo, false, loadXamlContent: false) as DsPageDrawing;
                 if (dsPageDrawing is not null)
                 {
                     DsPageDrawing cacheDsPageDrawing = PrepareForCache(dsPageDrawing);
