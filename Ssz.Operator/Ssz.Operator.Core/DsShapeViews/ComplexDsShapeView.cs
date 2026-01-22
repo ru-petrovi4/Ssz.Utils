@@ -140,13 +140,21 @@ namespace Ssz.Operator.Core.DsShapeViews
 
         private void PlayCanvasOnSizeChanged(object? sender, SizeChangedEventArgs args)
         {
-            var scaleX = args.NewSize.Width / args.PreviousSize.Width;
-            var scaleY = args.NewSize.Height / args.PreviousSize.Height;
+            double previousSizeWidth = args.PreviousSize.Width;
+            if (previousSizeWidth < 0.000001)
+                previousSizeWidth = _complexDsShape.WidthInitialNotRounded;
+            double previousSizeHeight = args.PreviousSize.Height;
+            if (previousSizeHeight < 0.000001)
+                previousSizeHeight = _complexDsShape.HeightInitialNotRounded;
+            var scaleX = args.NewSize.Width / previousSizeWidth;
+            var scaleY = args.NewSize.Height / previousSizeHeight;
             if (!double.IsNaN(scaleX) && !double.IsInfinity(scaleX) &&
-                !double.IsNaN(scaleY) && !double.IsInfinity(scaleY) &&
-                (scaleX != 1.0 || scaleY != 1.0))
+                    !double.IsNaN(scaleY) && !double.IsInfinity(scaleY) &&
+                    (scaleX != 1.0 || scaleY != 1.0))
                 foreach (DsShapeBase dsShape in _complexDsShape.DsShapes)
+                {
                     dsShape.Transform(scaleX, scaleY);
+                }
         }
 
         #endregion

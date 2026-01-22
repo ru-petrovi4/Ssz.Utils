@@ -32,8 +32,7 @@ namespace Ssz.Operator.Core.DsShapeViews
 
             ResizeDecoratorIsVisible = true;
 
-            if (VisualDesignMode) 
-                DsShape.PropertyChanged += DsShapeOnPropertyChanged;
+            DsShape.PropertyChanged += DsShapeOnPropertyChanged;
         }
 
 

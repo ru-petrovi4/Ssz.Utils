@@ -29,7 +29,7 @@ namespace Ssz.Dcs.CentralServer
     {
         #region public functions        
 
-        public string InitiateProcessModelingSession(
+        public ProcessModelingSession InitiateProcessModelingSession(
             string clientApplicationName,
             string clientWorkstationName,
             string processModelName, 
@@ -145,7 +145,7 @@ namespace Ssz.Dcs.CentralServer
             }
             Logger.LogInformation($"Process modeling session initiated. Instructor workstation: {clientWorkstationName}");
 
-            return processModelingSession.ProcessModelingSessionId;
+            return processModelingSession;
         }        
 
         public async void ConcludeProcessModelingSession(string processModelingSessionId)
@@ -197,7 +197,7 @@ namespace Ssz.Dcs.CentralServer
                 catch
                 {
                 }
-            }            
+            }
 
             ThreadSafeDispatcher.BeginInvoke(ct =>
             {
@@ -220,6 +220,8 @@ namespace Ssz.Dcs.CentralServer
 
                 if (utilityItemsProcessingNeeded)
                     _utilityItemsDoWorkNeeded = true;
+
+                processModelingSession.Dispose();
             });            
         }
 
@@ -517,7 +519,7 @@ namespace Ssz.Dcs.CentralServer
 
         #endregion
 
-        public class ProcessModelingSession
+        public class ProcessModelingSession : IDisposable
         {
             #region construction and destruction
 
@@ -540,9 +542,16 @@ namespace Ssz.Dcs.CentralServer
                 Mode = mode;
             }
 
+            public void Dispose()
+            {
+                ObjDisposable?.Dispose();
+            }
+
             #endregion
 
             #region public functions
+
+            public IDisposable? ObjDisposable { get; set; }
 
             public string ProcessModelingSessionId { get; }
 
@@ -608,9 +617,9 @@ namespace Ssz.Dcs.CentralServer
                                 ProcessTimeSeconds = 0;
                             }
                         });
-            }
+            }            
 
-            #endregion         
+            #endregion
 
             #region private fields
 

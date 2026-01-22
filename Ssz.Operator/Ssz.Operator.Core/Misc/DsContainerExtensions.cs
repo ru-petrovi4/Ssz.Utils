@@ -100,12 +100,12 @@ namespace Ssz.Operator.Core
             container.FindConstants(constants);
 
             var newDsConstants = container.DsConstantsCollection.ToList();
-            foreach (string s in constants)
+            foreach (string s in constants.OrderByDescending(it => it.Contains(DataBindingItem.DataSourceStringSeparator)))
             {
                 string constant;
                 string constantType;
                 string constantDesc;
-                if (!s.EndsWith(@")"))
+                if (s.Contains(DataBindingItem.DataSourceStringSeparator))
                 {
                     var i = s.IndexOf(")" + DataBindingItem.DataSourceStringSeparator);
                     if (i == -1) continue;

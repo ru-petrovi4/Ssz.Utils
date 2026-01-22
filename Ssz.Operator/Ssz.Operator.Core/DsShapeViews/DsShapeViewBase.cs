@@ -22,7 +22,8 @@ namespace Ssz.Operator.Core.DsShapeViews
             DsShapeViewModel = new DsShapeViewModel(dsShape, frame is not null ? frame.PlayWindow : null);
             DataContext = DsShapeViewModel;
 
-            if (VisualDesignMode) DsShapeViewModel.DsShapeChanged += OnDsShapeChanged;
+            if (VisualDesignMode) 
+                DsShapeViewModel.DsShapeChanged += OnDsShapeChanged;
         }
 
         public void Dispose()
@@ -273,14 +274,11 @@ namespace Ssz.Operator.Core.DsShapeViews
             {
                 if (dsShape.WidthDeltaInfo.IsConst)
                 {
-                    if (VisualDesignMode)
-                        SetBinding(WidthProperty, new Binding
-                        {
-                            Path = GetPropertyPath(() => dsShapeViewModel.WidthInitial),
-                            Mode = BindingMode.OneWay
-                        });
-                    else
-                        Width = dsShape.WidthInitialNotRounded;
+                    SetBinding(WidthProperty, new Binding
+                    {
+                        Path = GetPropertyPath(() => dsShapeViewModel.WidthInitial),
+                        Mode = BindingMode.OneWay
+                    }); // Needed for dynamic width change
                 }
                 else
                 {
@@ -321,14 +319,11 @@ namespace Ssz.Operator.Core.DsShapeViews
 
                 if (dsShape.HeightDeltaInfo.IsConst)
                 {
-                    if (VisualDesignMode)
-                        SetBinding(HeightProperty, new Binding
-                        {
-                            Path = GetPropertyPath(() => dsShapeViewModel.HeightInitial),
-                            Mode = BindingMode.OneWay
-                        });
-                    else
-                        Height = dsShape.HeightInitialNotRounded;
+                    SetBinding(HeightProperty, new Binding
+                    {
+                        Path = GetPropertyPath(() => dsShapeViewModel.HeightInitial),
+                        Mode = BindingMode.OneWay
+                    }); // Needed for dynamic width change
                 }
                 else
                 {
@@ -369,15 +364,12 @@ namespace Ssz.Operator.Core.DsShapeViews
 
                 if (dsShape.CenterDeltaPositionXInfo.IsConst && dsShape.WidthDeltaInfo.IsConst)
                 {
-                    if (VisualDesignMode)
-                        BindingOperations.SetBinding(this, Canvas.LeftProperty, new Binding
-                        {
-                            Path =
+                    BindingOperations.SetBinding(this, Canvas.LeftProperty, new Binding
+                    {
+                        Path =
                                 GetPropertyPath(() => dsShapeViewModel.LeftNotTransformed),
-                            Mode = BindingMode.OneWay
-                        });
-                    else
-                        Canvas.SetLeft(this, dsShape.LeftNotTransformed);
+                        Mode = BindingMode.OneWay
+                    }); // Needed for dynamic width change
                 }
                 else
                 {
@@ -441,15 +433,12 @@ namespace Ssz.Operator.Core.DsShapeViews
                 if (dsShape.CenterDeltaPositionYInfo.IsConst &&
                     dsShape.HeightDeltaInfo.IsConst)
                 {
-                    if (VisualDesignMode)
-                        BindingOperations.SetBinding(this, Canvas.TopProperty, new Binding
-                        {
-                            Path =
+                    BindingOperations.SetBinding(this, Canvas.TopProperty, new Binding
+                    {
+                        Path =
                                 GetPropertyPath(() => dsShapeViewModel.TopNotTransformed),
-                            Mode = BindingMode.OneWay
-                        });
-                    else
-                        Canvas.SetTop(this, dsShape.TopNotTransformed);
+                        Mode = BindingMode.OneWay
+                    }); // Needed for dynamic width change
                 }
                 else
                 {

@@ -30,7 +30,7 @@ namespace Ssz.Dcs.CentralServer
         {
             return await GetReplyAsync(() =>
                 {
-                    string processModelingSessionId = _serverWorker.InitiateProcessModelingSession(
+                    var processModelingSession = _serverWorker.InitiateProcessModelingSession(
                         request.ClientApplicationName ?? @"",
                         request.ClientWorkstationName ?? @"",
                         request.ProcessModelName ?? @"",
@@ -39,7 +39,7 @@ namespace Ssz.Dcs.CentralServer
                         request.Mode ?? @"");
                     var reply = new InitiateProcessModelingSessionReply
                     {
-                        ProcessModelingSessionId = processModelingSessionId
+                        ProcessModelingSessionId = processModelingSession.ProcessModelingSessionId
                     };
                     return reply;
                 },

@@ -13,11 +13,13 @@ namespace Ssz.Operator.Core.ControlsCommon.Converters
 
         public object? Convert(object?[]? values, Type? targetType, object? parameter, CultureInfo culture)
         {
-            if (values is null) return Binding.DoNothing;
-            if (values.Length != 3) return Binding.DoNothing;
-            if (targetType != typeof(double)) return Binding.DoNothing;
+            if (values is null) 
+                return Binding.DoNothing;
+            if (values.Length != 3) 
+                return Binding.DoNothing;            
             if (values[0] == DependencyProperty.UnsetValue || values[1] == DependencyProperty.UnsetValue ||
-                values[2] == DependencyProperty.UnsetValue) return Binding.DoNothing;
+                    values[2] == DependencyProperty.UnsetValue) 
+                return Binding.DoNothing;
 
             try
             {
@@ -25,10 +27,13 @@ namespace Ssz.Operator.Core.ControlsCommon.Converters
                 var delta = (double) (values[1] ?? throw new InvalidOperationException());
                 var final = (double) (values[2] ?? throw new InvalidOperationException());
 
-                if (double.IsNaN(delta) || double.IsInfinity(delta)) return Binding.DoNothing;
+                if (double.IsNaN(delta) || double.IsInfinity(delta)) 
+                    return Binding.DoNothing;
 
-                if (delta < 0) delta = 0;
-                else if (delta > 1) delta = 1;
+                if (delta < 0) 
+                    delta = 0;
+                else if (delta > 1) 
+                    delta = 1;
 
                 return initial + (final - initial) * delta;
             }
