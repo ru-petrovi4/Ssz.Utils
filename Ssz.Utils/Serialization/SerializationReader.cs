@@ -1507,20 +1507,25 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     Returns a Type from the stream.
-        ///     Throws an exception if the Type cannot be found.
+        ///     Returns a Type from the stream.        
         /// </summary>
         /// <returns> A Type instance. </returns>
         private Type? ReadOptimizedType()
         {
-            return GetType(ReadOptimizedOrNotString()!, true);
+            return GetType(ReadOptimizedOrNotString()!);
         }        
 
-        private Type? GetType(string typeString, bool throwOnError)
+        private Type? GetType(string typeString)
         {
-            string[] typeStringParts = typeString.Split(',');            
-            return Type.GetType(typeStringParts[0], false) ?? 
-                Type.GetType(typeStringParts[0] + "," + typeStringParts[1], throwOnError);   
+            if (!typeString.Contains(','))
+                return Type.GetType(typeString, throwOnError: false);
+            string[] typeStringParts = typeString.Split(',');
+            Type? type = Type.GetType(typeStringParts[0], throwOnError: false);
+            if (type is not null)
+                return type;
+            if (typeStringParts.Length > 1)
+                return Type.GetType(typeStringParts[0] + "," + typeStringParts[1], throwOnError: false);
+            return null;
         }
 
         /// <summary>
@@ -1703,7 +1708,8 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.OtherType:
                 {
                     var type = ReadOptimizedType();
-                    if (type is null) return null;
+                    if (type is null)
+                            return null;
                     string s = ReadOptimizedOrNotString()!;
                     return JsonSerializer.Deserialize(s, type, new JsonSerializerOptions
                         {
@@ -1759,7 +1765,7 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.BitArrayType:
                     return ReadOptimizedBitArray();
                 case SerializedType.TypeType:
-                    return GetType(ReadOptimizedOrNotString()!, false);
+                    return GetType(ReadOptimizedOrNotString()!);
                 case SerializedType.ArrayListType:
                     return new ArrayList(ReadOptimizedObjectArray(typeof (object)));
                 case SerializedType.OwnedDataSerializableType:
@@ -1767,7 +1773,7 @@ namespace Ssz.Utils.Serialization
                     object? result;
                     string typeString = ReadOptimizedOrNotString()!;
                     long length = _binaryReader.ReadInt64();
-                    var type = GetType(typeString, false);                    
+                    var type = GetType(typeString);                    
                     if (type is null)
                     {   
                         result = new UnknownObject()
@@ -1797,7 +1803,8 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.OptimizedEnumType:
                 {
                     Type? enumType = ReadOptimizedType();
-                    if (enumType is null) return null;
+                    if (enumType is null)
+                            return null;
                     Type underlyingType = Enum.GetUnderlyingType(enumType);
 
                     if ((underlyingType == typeof (int)) || (underlyingType == typeof (uint)) ||
@@ -1811,7 +1818,8 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.EnumType:
                 {
                     Type? enumType = ReadOptimizedType();
-                    if (enumType is null) return null;
+                    if (enumType is null) 
+                            return null;
                     Type underlyingType = Enum.GetUnderlyingType(enumType);
 
                     if (underlyingType == typeof (Int32)) return Enum.ToObject(enumType, ReadInt32());
@@ -2144,9 +2152,9 @@ namespace Ssz.Utils.Serialization
                 {
                     var deserializedElementType = ReadOptimizedType();
                     if (deserializedElementType is not null &&
-                        elementType is not null &&
-                        deserializedElementType != elementType)
-                            throw new InvalidOperationException();
+                            elementType is not null &&
+                            deserializedElementType != elementType)
+                       throw new InvalidOperationException();
                     return Array.CreateInstance((deserializedElementType ?? elementType) ?? typeof(object), 0);
                 }                    
                 case SerializedType.ObjectArrayType:
