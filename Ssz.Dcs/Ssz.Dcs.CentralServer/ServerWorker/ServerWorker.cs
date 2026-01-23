@@ -64,7 +64,11 @@ namespace Ssz.Dcs.CentralServer
         {
             AddonsManager.Addons.CollectionChanged += OnAddons_CollectionChanged;
             AddonsManager.Initialize(null,
-                new AddonBase[] { new DcsCentralServerAddon() },
+                new AddonBase[]
+                {
+                    new DcsCentralServerAddon(),
+                    new DataAccessClientAddon()
+                },
                 CsvDb,
                 ThreadSafeDispatcher,
                 SubstituteAddonOption,

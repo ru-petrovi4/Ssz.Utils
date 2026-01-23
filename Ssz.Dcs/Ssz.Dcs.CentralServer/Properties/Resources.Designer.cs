@@ -61,6 +61,33 @@ namespace Ssz.Dcs.CentralServer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Context params.
+        /// </summary>
+        public static string ContextParams_Option {
+            get {
+                return ResourceManager.GetString("ContextParams_Option", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Accept any server certificate (dangerous).
+        /// </summary>
+        public static string DangerousAcceptAnyServerCertificate_Option {
+            get {
+                return ResourceManager.GetString("DangerousAcceptAnyServerCertificate_Option", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data access client.
+        /// </summary>
+        public static string DataAccessClientAddon_Desc {
+            get {
+                return ResourceManager.GetString("DataAccessClientAddon_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Base module.
         /// </summary>
         public static string DcsCentralServerAddon_Desc {
@@ -192,6 +219,24 @@ namespace Ssz.Dcs.CentralServer.Properties {
         public static string OperatorSessionDescription_OperatorRoleName {
             get {
                 return ResourceManager.GetString("OperatorSessionDescription_OperatorRoleName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data access server address.
+        /// </summary>
+        public static string ServerAddress_Option {
+            get {
+                return ResourceManager.GetString("ServerAddress_Option", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to System name to connect.
+        /// </summary>
+        public static string SystemNameToConnect_Option {
+            get {
+                return ResourceManager.GetString("SystemNameToConnect_Option", resourceCulture);
             }
         }
         

@@ -14,7 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using JsonApiDotNetCore.Services;
 
-namespace Ssz.Dcs.Addons.DataAccessClient
+namespace Ssz.Dcs.CentralServer
 {
     [Export(typeof(AddonBase))]
     public class DataAccessClientAddon : DataAccessProviderGetter_AddonBase

@@ -117,6 +117,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ContextParams_Option" xml:space="preserve">
+    <value>Context Params</value>
+  </data>
+  <data name="DangerousAcceptAnyServerCertificate_Option" xml:space="preserve">
+    <value>Принимать любые сертификаты сервера (небезопасно)</value>
+  </data>
+  <data name="DataAccessClientAddon_Desc" xml:space="preserve">
+    <value>Data Access клиент</value>
+  </data>
   <data name="DcsCentralServerAddon_Desc" xml:space="preserve">
     <value>Базовый модуль</value>
   </data>
@@ -161,6 +170,12 @@
   </data>
   <data name="OperatorSessionDescription_OperatorRoleName" xml:space="preserve">
     <value>Роль:</value>
+  </data>
+  <data name="ServerAddress_Option" xml:space="preserve">
+    <value>Адрес Data Access сервера</value>
+  </data>
+  <data name="SystemNameToConnect_Option" xml:space="preserve">
+    <value>System Name для подключения</value>
   </data>
   <data name="UpdateUserError" xml:space="preserve">
     <value>Невозможно обновить данные пользователя</value>

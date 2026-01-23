@@ -447,9 +447,11 @@ namespace Ssz.Utils
         /// <returns></returns>
         public CaseInsensitiveOrderedDictionary<List<string?>> GetData(string? fileName)
         {
-            if (string.IsNullOrWhiteSpace(fileName)) return new CaseInsensitiveOrderedDictionary<List<string?>>();
+            if (string.IsNullOrWhiteSpace(fileName)) 
+                return new CaseInsensitiveOrderedDictionary<List<string?>>();
             
-            if (!_csvFilesCollection.TryGetValue(fileName!, out CsvFile? csvFile)) return new CaseInsensitiveOrderedDictionary<List<string?>>();
+            if (!_csvFilesCollection.TryGetValue(fileName!, out CsvFile? csvFile))
+                return new CaseInsensitiveOrderedDictionary<List<string?>>();
 
             EnsureCsvFileDataIsLoaded(csvFile);
             

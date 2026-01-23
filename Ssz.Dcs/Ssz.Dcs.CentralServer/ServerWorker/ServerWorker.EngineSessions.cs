@@ -60,7 +60,7 @@ namespace Ssz.Dcs.CentralServer
         {
             var addonsManager = serviceProvider.GetRequiredService<AddonsManager>();
 
-            var dataAccessClient_Addon = (DataAccessProviderGetter_AddonBase)addonsManager.CreateAvailableAddon(@"DataAccessClient", @"",
+            var dataAccessClient_Addon = (DataAccessProviderGetter_AddonBase)addonsManager.CreateAvailableAddon(DataAccessClientAddon.AddonIdentifier, @"",
                 new[]
                 {
                         new [] { DataAccessProviderGetter_AddonBase.DataAccessClient_ServerAddress_OptionName, serverAddress },
