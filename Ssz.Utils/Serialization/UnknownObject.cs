@@ -6,7 +6,7 @@ namespace Ssz.Utils.Serialization
 {
     public class UnknownObject
     {
-        public string TypeString { get; set; } = null!;
+        public string TypeString { get; set; } = @"";
 
         public byte[] Data { get; set; } = null!;
     }
