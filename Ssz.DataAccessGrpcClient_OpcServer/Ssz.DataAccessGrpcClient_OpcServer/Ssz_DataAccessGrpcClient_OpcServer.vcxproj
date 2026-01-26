@@ -246,8 +246,29 @@ attrib -R  "$(OutDir)%(Filename)%(Extension)"
     <Midl Include="Ssz_DataAccessGrpcClient_OpcServer.idl" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="CommunityToolkit.HighPerformance">
+      <HintPath>..\Ssz.DataAccessGrpcClient_OpcServer.Common\bin\x86\Debug\net48\CommunityToolkit.HighPerformance.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Protobuf">
+      <HintPath>..\Ssz.DataAccessGrpcClient_OpcServer.Common\bin\x86\Debug\net48\Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="Grpc.Net.Client">
+      <HintPath>..\Ssz.DataAccessGrpcClient_OpcServer.Common\bin\x86\Debug\net48\Grpc.Net.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Grpc.Net.Client.Web">
+      <HintPath>..\Ssz.DataAccessGrpcClient_OpcServer.Common\bin\x86\Debug\net48\Grpc.Net.Client.Web.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable">
+      <HintPath>..\Ssz.DataAccessGrpcClient_OpcServer.Common\bin\x86\Debug\net48\System.Collections.Immutable.dll</HintPath>
+    </Reference>
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Net.Http.WinHttpHandler">
+      <HintPath>..\Ssz.DataAccessGrpcClient_OpcServer.Common\bin\x86\Debug\net48\System.Net.Http.WinHttpHandler.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple">
+      <HintPath>..\packages\System.ValueTuple.4.6.1\lib\net462\System.ValueTuple.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Additional Files\OpcServer.binary.xml" />
