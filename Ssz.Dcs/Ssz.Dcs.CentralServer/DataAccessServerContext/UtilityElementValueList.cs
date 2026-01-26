@@ -97,7 +97,7 @@ namespace Ssz.Dcs.CentralServer
         /// <summary>
         ///     Returns failed AliasResults only.
         /// </summary>
-        /// <param name="items"></param>
+        /// <param name="items"></param>        
         /// <returns></returns>
         protected override Task<List<AliasResult>> OnWriteValuesAsync(List<UtilityElementValueListItem> items)
         {
@@ -111,7 +111,7 @@ namespace Ssz.Dcs.CentralServer
                 ValueStatusTimestamp? valueStatusTimestamp = item.PendingWriteValueStatusTimestamp;
                 if (valueStatusTimestamp is not null)
                 {
-                    var statusCode = ((ServerWorker)ServerContext.ServerWorker).WriteUtilityElementValueListItem(item, valueStatusTimestamp.Value.Value);
+                    var statusCode = ((ServerWorker)ServerContext.ServerWorker).WriteUtilityElementValueListItem(item, valueStatusTimestamp.Value.Value, ServerContext.ClientWorkstationName);
                     if (!StatusCodes.IsGood(statusCode))
                         failedAliasResults.Add(new AliasResult
                             {

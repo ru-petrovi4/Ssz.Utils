@@ -57,18 +57,19 @@ namespace Ssz.Dcs.CentralServer
         /// </summary>
         /// <param name="listItem"></param>
         /// <param name="value"></param>
-        public uint WriteUtilityElementValueListItem(UtilityElementValueListItem listItem, Any value)
+        /// <param name="clientWorkstationName"></param>
+        public uint WriteUtilityElementValueListItem(UtilityElementValueListItem listItem, Any value, string clientWorkstationName)
         {
-            //string elementId = listItem.ElementId;
+            string elementId = listItem.ElementId;
 
-            //if (!_utilityItems.TryGetValue(elementId, out UtilityItem? utilityItem))
-            //{
-            //    utilityItem = new UtilityItem(elementId);
-            //    _utilityItems.Add(elementId, utilityItem);                
-            //}
-            //utilityItem.UpdateValue(value.ValueAsString(false), DateTime.UtcNow);
+            if (!_utilityItems.TryGetValue(elementId, out UtilityItem? utilityItem))
+            {
+                utilityItem = new UtilityItem(elementId, clientWorkstationName);
+                _utilityItems.Add(elementId, utilityItem);
+            }
+            utilityItem.UpdateValue(value.ValueAsString(false), DateTime.UtcNow);
 
-            //_utilityItemsDoWorkNeeded = true;
+            _utilityItemsDoWorkNeeded = true;
 
             return StatusCodes.Good;
         }
