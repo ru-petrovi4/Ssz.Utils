@@ -8,10 +8,11 @@ namespace Ssz.Utils.Avalonia;
 
 public partial class InputDialog : UserControl
 {
-    public InputDialog(string label)
+    public InputDialog(string label, string defaultValue)
     {
         InitializeComponent();
 
         LabelTextBlock.Text = label;
+        InputTextBox.Text = defaultValue;
     }
 }

@@ -16,6 +16,10 @@
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
   </PropertyGroup>
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -252,18 +256,19 @@ attrib -R  "$(OutDir)%(Filename)%(Extension)"
   <ItemGroup>
     <ProjectReference Include="..\..\Ssz.DataAccessGrpc.Client\Ssz.DataAccessGrpc.Client.csproj">
       <Project>{fe6737a8-f52c-4d57-9f68-d630252f55de}</Project>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
     </ProjectReference>
     <ProjectReference Include="..\..\Ssz.DataAccessGrpc.Common\Ssz.DataAccessGrpc.Common.csproj">
       <Project>{4f3f2430-581a-e5d5-0686-aaede1a5c8d9}</Project>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
     </ProjectReference>
     <ProjectReference Include="..\..\Ssz.Utils\Ssz.Utils.csproj">
       <Project>{a86c5a82-ee13-4080-b61a-7748321da0b0}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ThirdParties\YamlDotNet\YamlDotNet.csproj">
-      <Project>{5375b1e7-e39a-4c53-b859-80dbad73f2c5}</Project>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
     </ProjectReference>
     <ProjectReference Include="..\Ssz.DataAccessGrpcClient_OpcServer.Common\Ssz.DataAccessGrpcClient_OpcServer.Common.csproj">
       <Project>{9acc4e31-9346-4458-9332-2f06f290c855}</Project>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
