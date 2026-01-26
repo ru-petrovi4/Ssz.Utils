@@ -106,11 +106,11 @@ namespace Ssz.DataAccessGrpc.Client
 
                     CallbackMessage current = callbackStreamReader.Current;
                     _workingDispatcher.BeginInvoke(ct =>
-                    {    
-                        var ct2 = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, ct).Token;
+                    { 
                         try
                         {
-                            ct2.ThrowIfCancellationRequested();                            
+                            ct.ThrowIfCancellationRequested();
+                            cancellationToken.ThrowIfCancellationRequested();
 
                             switch (current.OptionalMessageCase)
                             {
@@ -132,7 +132,7 @@ namespace Ssz.DataAccessGrpc.Client
                                     break;
                             }
                         }
-                        catch when (ct2.IsCancellationRequested)
+                        catch when (ct.IsCancellationRequested || cancellationToken.IsCancellationRequested)
                         {                            
                         }
                         catch (Exception ex)
