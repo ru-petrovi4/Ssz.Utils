@@ -1779,7 +1779,7 @@ namespace Ssz.Utils.Serialization
                     string typeString = ReadOptimizedOrNotString()!;
                     long length = _binaryReader.ReadInt64();
                     var type = GetType(typeString);                    
-                    if (type is null)
+                    if (type is null || !typeof(IOwnedDataSerializable).IsAssignableFrom(type))
                     {   
                         result = new UnknownObject()
                         {
@@ -1800,7 +1800,7 @@ namespace Ssz.Utils.Serialization
                         }
                         else
                         {
-                            ((IOwnedDataSerializable)result).DeserializeOwnedData(this, null);
+                            ((IOwnedDataSerializable)result).DeserializeOwnedData(this, null);                            
                         }                               
                     }
                     return result;
