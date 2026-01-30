@@ -1517,14 +1517,19 @@ namespace Ssz.Utils.Serialization
 
         private Type? GetType(string typeString)
         {
-            if (!typeString.Contains(','))
-                return Type.GetType(typeString, throwOnError: false);
-            string[] typeStringParts = typeString.Split(',');
-            Type? type = Type.GetType(typeStringParts[0], throwOnError: false);
-            if (type is not null)
-                return type;
-            if (typeStringParts.Length > 1)
+            try
+            {
+                if (!typeString.Contains(','))
+                    return Type.GetType(typeString, throwOnError: false);
+                string[] typeStringParts = typeString.Split(',');
+                Type? type = Type.GetType(typeStringParts[0], throwOnError: false);
+                if (type is not null)
+                    return type;
                 return Type.GetType(typeStringParts[0] + "," + typeStringParts[1], throwOnError: false);
+            }
+            catch
+            {
+            }
             return null;
         }
 

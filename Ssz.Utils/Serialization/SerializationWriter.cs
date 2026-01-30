@@ -834,7 +834,7 @@ namespace Ssz.Utils.Serialization
                 return;
             }
 
-            if (IsOwnedDataSerializableAndRecreatable(value.GetType()))
+            if (typeof(IOwnedDataSerializable).IsAssignableFrom(value.GetType()))
             {
                 WriteSerializedType(SerializedType.OwnedDataSerializableType);
                 WriteOptimized(value.GetType());
@@ -1331,7 +1331,7 @@ namespace Ssz.Utils.Serialization
                 return;
             }
 
-            if (IsOwnedDataSerializableAndRecreatable(value.GetType()))
+            if (typeof(IOwnedDataSerializable).IsAssignableFrom(value.GetType()))
             {
                 WriteSerializedType(SerializedType.OwnedDataSerializableType);
                 WriteOptimized(value.GetType());
@@ -1921,38 +1921,9 @@ namespace Ssz.Utils.Serialization
         internal static readonly BitVector32.Section MillisecondsSection = BitVector32.CreateSection(1024,
             SecondsSection); // 10 bits - total 31 bits = 4 bytes
 
-#endregion
+        #endregion
 
-#region private functions
-
-        /// <summary>
-        ///     Checks whether instances of a Type can be created.
-        /// </summary>
-        /// <remarks>
-        ///     A Value Type only needs to implement IOwnedDataSerializable.
-        ///     A Reference Type needs to implement IOwnedDataSerializableAndRecreatable and provide a default constructor.
-        /// </remarks>
-        /// <param name="type"> The Type to check </param>
-        /// <returns> true if the Type is recreatable; false otherwise. </returns>
-        private static bool IsOwnedDataSerializableAndRecreatable(Type type)
-        {
-#if DEBUG && EXTDEBUG
-            Console.WriteLine("IsOwnedDataSerializableAndRecreatable");
-            var s = (!type.IsValueType) ? "not" : "";
-            Console.WriteLine($"The type {type} is {s} ValueType");
-            s = typeof(IOwnedDataSerializable).IsAssignableFrom(type) ? "True" : "False";
-            Console.WriteLine($"typeof(IOwnedDataSerializable).IsAssignableFrom({type}) is {s}.");
-#endif
-            if (type.IsValueType) return typeof (IOwnedDataSerializable).IsAssignableFrom(type);
-#if DEBUG && EXTDEBUG            
-            // !!! Reflection requared!
-            s = type.GetConstructor(Type.EmptyTypes) is not null ? "Constructor found." : "";
-
-            Console.WriteLine($"type.GetConstructor(Type.EmptyTypes) {s}");
-#endif
-            return typeof (IOwnedDataSerializable).IsAssignableFrom(type) &&
-                   type.GetConstructor(Type.EmptyTypes) is not null;
-        }
+        #region private functions        
 
         private void WriteOtherType(object value)
         {
@@ -2864,7 +2835,7 @@ namespace Ssz.Utils.Serialization
                 return;
             }
 
-            if (IsOwnedDataSerializableAndRecreatable(elementType))
+            if (typeof(IOwnedDataSerializable).IsAssignableFrom(elementType))
             {
                 bool allObjectsSameType = true;
                 foreach (object? v in values)
