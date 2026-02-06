@@ -19,7 +19,7 @@ namespace Ssz.Utils.DataAccess
 
         IDataAccessServerContext LookupServerContext(string contextId);
 
-        IDataAccessServerContext? TryLookupServerContext(string contextId);
+        IDataAccessServerContext? TryLookupServerContext_ThreadSafe(string contextId);
 
         void RemoveServerContext(IDataAccessServerContext serverContext);
     }

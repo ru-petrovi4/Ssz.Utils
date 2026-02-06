@@ -116,12 +116,14 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public override async Task<ConcludeReply> Conclude(ConcludeRequest request, ServerCallContext context)
         {
+            IDataAccessServerContext? serverContext = _dataAccessServerWorker.TryLookupServerContext_ThreadSafe(request.ContextId ?? @"");
+            if (serverContext is not null)
+                serverContext.IsConcludeCalled = true; // Optimization
             return await GetReplyAsync(() =>
                 {
-                    IDataAccessServerContext? serverContext = _dataAccessServerWorker.TryLookupServerContext(request.ContextId ?? @"");
+                    IDataAccessServerContext? serverContext = _dataAccessServerWorker.TryLookupServerContext_ThreadSafe(request.ContextId ?? @"");
                     if (serverContext is not null)
                     {
-                        serverContext.IsConcludeCalled = true;
                         _dataAccessServerWorker.RemoveServerContext(serverContext);
                         serverContext.Dispose();
                     }
@@ -134,7 +136,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             return await GetReplyAsync(() =>
                 {
-                    IDataAccessServerContext? serverContext = _dataAccessServerWorker.TryLookupServerContext(request.ContextId ?? @"");
+                    IDataAccessServerContext? serverContext = _dataAccessServerWorker.TryLookupServerContext_ThreadSafe(request.ContextId ?? @"");
                     if (serverContext is not null)
                     {
                         serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;

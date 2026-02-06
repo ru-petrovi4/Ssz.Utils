@@ -106,7 +106,7 @@ namespace Ssz.Dcs.ControlEngine
 
             try
             {                
-                foreach (ServerContext sc in ServerContextsDictionary.Values.ToArray())
+                foreach (ServerContext sc in ServerContexts_ImmutableDictionary.Values.ToArray())
                 {
                     foreach (var list in sc.Lists)
                     {

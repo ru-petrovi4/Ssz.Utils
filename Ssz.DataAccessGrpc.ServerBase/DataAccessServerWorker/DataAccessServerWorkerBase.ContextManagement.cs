@@ -4,6 +4,7 @@ using Ssz.Utils;
 using Ssz.Utils.DataAccess;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -33,9 +34,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
                         requestedCultureName,
                         systemNameToConnect,
                         contextParams
-                        );            
+                        );
 
-            _serverContextsDictionary.Add(serverContext.ContextId, serverContext);
+            _serverContexts_ImmutableDictionary = _serverContexts_ImmutableDictionary.Add(serverContext.ContextId, serverContext);
 
             ServerContextAddedOrRemoved(this, new ServerContextAddedOrRemovedEventArgs { ServerContext = serverContext, Added = true });
 
@@ -50,7 +51,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         public IDataAccessServerContext LookupServerContext(string contextId)
         {
             ServerContext? serverContext;
-            _serverContextsDictionary.TryGetValue(contextId, out serverContext);
+            _serverContexts_ImmutableDictionary.TryGetValue(contextId, out serverContext);
             if (serverContext is null)
             {
                 if (Logger.IsEnabled(LogLevel.Warning))
@@ -74,10 +75,10 @@ namespace Ssz.DataAccessGrpc.ServerBase
             return serverContext;
         }
 
-        public IDataAccessServerContext? TryLookupServerContext(string contextId)
+        public IDataAccessServerContext? TryLookupServerContext_ThreadSafe(string contextId)
         {
             ServerContext? serverContext;
-            _serverContextsDictionary.TryGetValue(contextId, out serverContext);            
+            _serverContexts_ImmutableDictionary.TryGetValue(contextId, out serverContext);            
             return serverContext;
         }        
 
@@ -87,7 +88,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <param name="serverContext"></param>
         public void RemoveServerContext(IDataAccessServerContext serverContext)
         {
-            _serverContextsDictionary.Remove(serverContext.ContextId);
+            _serverContexts_ImmutableDictionary = _serverContexts_ImmutableDictionary.Remove(serverContext.ContextId);
 
             ServerContextAddedOrRemoved(this, new ServerContextAddedOrRemovedEventArgs { ServerContext = serverContext, Added = false });
         }
@@ -96,7 +97,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         #region protected functions  
 
-        protected IReadOnlyDictionary<string, ServerContext> ServerContextsDictionary => _serverContextsDictionary;
+        protected ImmutableDictionary<string, ServerContext> ServerContexts_ImmutableDictionary => _serverContexts_ImmutableDictionary;
 
         protected void ServerContextsAbort(ServerContext[] serverContexts)
         {
@@ -125,7 +126,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <summary>
         ///  Contexts.
         /// </summary>
-        private readonly Dictionary<string, ServerContext> _serverContextsDictionary = new Dictionary<string, ServerContext>(20);
+        private ImmutableDictionary<string, ServerContext> _serverContexts_ImmutableDictionary = ImmutableDictionary.Create<string, ServerContext>();
 
         #endregion
     }

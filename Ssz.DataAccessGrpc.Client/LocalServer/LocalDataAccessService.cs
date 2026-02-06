@@ -109,7 +109,7 @@ namespace Ssz.DataAccessGrpc.Client.LocalServer
         {
             return await GetReplyAsync(() =>
             {
-                IDataAccessServerContext? serverContext = _localDataAccessServerWorker.TryLookupServerContext(request.ContextId ?? @"");
+                IDataAccessServerContext? serverContext = _localDataAccessServerWorker.TryLookupServerContext_ThreadSafe(request.ContextId ?? @"");
                 if (serverContext is not null)
                 {
                     serverContext.IsConcludeCalled = true;
@@ -124,7 +124,7 @@ namespace Ssz.DataAccessGrpc.Client.LocalServer
         {
             return await GetReplyAsync(() =>
             {
-                IDataAccessServerContext? serverContext = _localDataAccessServerWorker.TryLookupServerContext(request.ContextId ?? @"");
+                IDataAccessServerContext? serverContext = _localDataAccessServerWorker.TryLookupServerContext_ThreadSafe(request.ContextId ?? @"");
                 if (serverContext is not null)
                 {
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;

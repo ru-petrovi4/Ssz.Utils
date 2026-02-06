@@ -179,7 +179,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
                             {
                                 StateCode = contextStatusMessage.StateCode
                             };
-                            await _responseStreamWriter.WriteAsync(callbackMessage);
+                            if (!IsConcludeCalled) // Optimization
+                                await _responseStreamWriter.WriteAsync(callbackMessage);
                         }
                         finally
                         {
@@ -205,7 +206,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
                             {
                                 ElementValuesCallback = elementValuesCallback
                             };
-                            await _responseStreamWriter.WriteAsync(callbackMessage);
+                            if (!IsConcludeCalled) // Optimization
+                                await _responseStreamWriter.WriteAsync(callbackMessage);
                         }
                     }
                 }
@@ -227,7 +229,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
                             {
                                 EventMessagesCallback = eventMessagesCallback
                             };
-                            await _responseStreamWriter.WriteAsync(callbackMessage);
+                            if (!IsConcludeCalled) // Optimization
+                                await _responseStreamWriter.WriteAsync(callbackMessage);
                         }
                     }
                 }
@@ -254,7 +257,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
                                 StatusCode = longrunningPassthroughCallbackMessage.StatusCode,
                             }
                         };
-                        await _responseStreamWriter.WriteAsync(callbackMessage);
+                        if (!IsConcludeCalled) // Optimization
+                            await _responseStreamWriter.WriteAsync(callbackMessage);
                     }
                 }
             }

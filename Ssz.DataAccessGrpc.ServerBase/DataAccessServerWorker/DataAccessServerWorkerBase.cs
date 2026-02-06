@@ -75,7 +75,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             if (cancellationToken.IsCancellationRequested) 
                 return 0;
             
-            foreach (ServerContext serverContext in _serverContextsDictionary.Values.ToArray())
+            foreach (ServerContext serverContext in _serverContexts_ImmutableDictionary.Values.ToArray())
             {
                 if (cancellationToken.IsCancellationRequested) 
                     return result; 
@@ -99,8 +99,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public virtual async Task CloseAsync()
         {
-            var serverContexts = _serverContextsDictionary.Values.ToArray();
-            _serverContextsDictionary.Clear();
+            var serverContexts = _serverContexts_ImmutableDictionary.Values.ToArray();
+            _serverContexts_ImmutableDictionary = _serverContexts_ImmutableDictionary.Clear();
             await ServerContextsAbortAsync(serverContexts);
         }        
 
