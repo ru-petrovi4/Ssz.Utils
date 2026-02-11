@@ -86,7 +86,7 @@ namespace Ssz.DataAccessGrpc.Common
                 return new List<DataChunk> { new DataChunk { Bytes = ByteString.Empty } };
 
             string compression = @"";
-            if (bytes.Length > 1024 * 1024) // 1M
+            if (bytes.Length > Constants.MaxReplyObjectSize)
             {
                 using var output = new MemoryStream();
                 using (var compressionStream = new DeflateStream(output, CompressionLevel.Fastest))
