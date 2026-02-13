@@ -819,6 +819,8 @@ namespace Ssz.Utils.Serialization
         /// <param name="value"> The object to store. </param>
         public void WriteObject(object? value)
         {
+            // Warning!!! Code partially duplicated in void WriteObjectTyped(object? value)
+
             if (value is null)
             {
                 WriteSerializedType(SerializedType.NullType);
@@ -1325,9 +1327,20 @@ namespace Ssz.Utils.Serialization
         public void WriteObjectTyped<T>(T? value)
             where T : class
         {
+            // Warning!!! Code partially duplicated in void WriteObject(object? value)
+
             if (value is null)
             {
                 WriteSerializedType(SerializedType.NullType);
+                return;
+            }
+
+            if (value is UnknownObject unknownObject)
+            {
+                WriteSerializedType(SerializedType.OwnedDataSerializableType);
+                WriteOptimizedOrNot(unknownObject.TypeString);
+                _binaryWriter.Write(unknownObject.Data.LongLength);
+                _binaryWriter.Write(unknownObject.Data);
                 return;
             }
 
@@ -1335,7 +1348,14 @@ namespace Ssz.Utils.Serialization
             {
                 WriteSerializedType(SerializedType.OwnedDataSerializableType);
                 WriteOptimized(value.GetType());
+                // it will store the block length
+                long beginPosition = _baseStream.Position;
+                _binaryWriter.Write((long)0);
                 ((IOwnedDataSerializable)value).SerializeOwnedData(this, null);
+                long endPosition = _baseStream.Position;
+                _baseStream.Position = beginPosition;
+                _binaryWriter.Write(endPosition - beginPosition - sizeof(long));
+                _baseStream.Position = endPosition;
                 return;
             }
             
