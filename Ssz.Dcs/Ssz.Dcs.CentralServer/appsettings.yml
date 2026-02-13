@@ -32,6 +32,7 @@ Kestrel:
       # пароль от файла сертификата
       Password: "identityserver"
       AllowInvalid: "true"
+UseGrpcWeb: "true"
 Process_SourceId: "Dcs.CentralServer"
 Process_SourceIdToDisplay: "Центральный сервер DCS"
 AllowedHosts: "*"

@@ -19,11 +19,17 @@ using JsonApiDotNetCore.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using System.IO;
 using Microsoft.OpenApi;
+using Microsoft.Extensions.Configuration;
 
 namespace Ssz.Dcs.CentralServer
 {
     public class Startup
     {
+        public Startup(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         #region public functions
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -95,7 +101,8 @@ namespace Ssz.Dcs.CentralServer
             }); // http://localhost:60060/swagger    
 #endif
 
-            app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true }); // For NETSTANDARD2.0 Clients
+            if (ConfigurationHelper.GetValue<bool>(_configuration, @"UseGrpcWeb", false))
+                app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true }); // For NETSTANDARD2.0 Clients
 
             app.UseEndpoints(endpoints =>
             {
@@ -114,6 +121,8 @@ namespace Ssz.Dcs.CentralServer
         #endregion
 
         private const string RouteNamespace = @"/api/v1";
+
+        private readonly IConfiguration _configuration;
     }
 }
 

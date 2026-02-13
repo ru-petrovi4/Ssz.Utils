@@ -67,6 +67,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             CaseInsensitiveOrderedDictionary<string?> contextParams,
             IDataAccessServerWorker? localDataAccessServerWorker,
             bool dangerousAcceptAnyServerCertificate,
+            bool useGrpcWeb,
             IDispatcher? callbackDispatcher)
         {
             if (_disposed) throw new ObjectDisposedException(@"Cannot access a disposed DataAccessGrpcServerProxy.");
@@ -103,15 +104,32 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                     if (dangerousAcceptAnyServerCertificate)
                         httpClientHandler.ServerCertificateCustomValidationCallback = (httpRequestMessage, x509Certificate2, x509Chain, sslPolicyErrors) => true;
 #endif
-                    var grpcWebHandler = new GrpcWebHandler(
+
+                    if (useGrpcWeb)
+                    {
+                        var grpcWebHandler = new GrpcWebHandler(
                             GrpcWebMode.GrpcWeb,
                             httpClientHandler);
-                    grpcChannel = GrpcChannel.ForAddress(serverAddress,
-                        new GrpcChannelOptions
-                        {
-                            HttpVersion = HttpVersion.Version11,
-                            HttpHandler = grpcWebHandler
-                        });
+                        grpcChannel = GrpcChannel.ForAddress(serverAddress,
+                            new GrpcChannelOptions
+                            {
+                                HttpVersion = HttpVersion.Version11,
+                                HttpHandler = grpcWebHandler
+                            });
+                    }
+                    else
+                    {                        
+                        grpcChannel = GrpcChannel.ForAddress(serverAddress, 
+                            new GrpcChannelOptions
+                            {
+                                HttpHandler = httpClientHandler,            // обычный HTTP/2 gRPC
+#if NET10_0_OR_GREATER
+                                HttpVersion = HttpVersion.Version20
+#else
+                                HttpVersion = HttpVersion.Version11
+#endif
+                            });
+                    }
 
                     dataAccessService = new RemoteDataAccessService(new DataAccess.DataAccessClient(grpcChannel));
                 }
@@ -136,10 +154,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             catch
             { 
                 LastFailedConnectionDateTimeUtc = DateTime.UtcNow;
-                if (grpcChannel is not null)
-                {                    
-                    grpcChannel.Dispose();
-                }
+                grpcChannel?.Dispose();                
                 throw;
             }
             
@@ -317,7 +332,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             await _clientContext.KeepContextAliveIfNeededAsync(ct, nowUtc);                      
         }
 
-        #endregion
+#endregion
 
         #region private fields
 
@@ -329,6 +344,6 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
         private ClientContext? _clientContext;
 
-        #endregion  
+        #endregion
     }
 }

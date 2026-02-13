@@ -513,7 +513,7 @@ namespace Ssz.DataAccessGrpc.Client
             if (!_clientContextManager.ContextIsOperational)
                 throw new ConnectionDoesNotExistException();            
 
-            WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
             {
                 ReadOnlyMemory<byte> returnData;
                 try
@@ -567,7 +567,7 @@ namespace Ssz.DataAccessGrpc.Client
 
             var taskCompletionSource = new TaskCompletionSource<ReadOnlyMemory<byte>>();
 
-            WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
             {                
                 try
                 {
@@ -802,6 +802,7 @@ namespace Ssz.DataAccessGrpc.Client
                             ContextParams, 
                             Options.LocalDataAccessServerWorker,
                             Options.DangerousAcceptAnyServerCertificate,
+                            Options.UseGrpcWeb,
                             CallbackDispatcher);
 
                         LoggersSet.Logger.LogDebug("End Connecting");

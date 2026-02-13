@@ -218,6 +218,8 @@ namespace Ssz.Utils.DataAccess
 
         public bool DangerousAcceptAnyServerCertificate { get; set; } = true;
 
-        public IDataAccessServerWorker? LocalDataAccessServerWorker { get; set; }
+        public bool UseGrpcWeb { get; set; } = true;
+
+        public IDataAccessServerWorker? LocalDataAccessServerWorker { get; set; }        
     }
 }
