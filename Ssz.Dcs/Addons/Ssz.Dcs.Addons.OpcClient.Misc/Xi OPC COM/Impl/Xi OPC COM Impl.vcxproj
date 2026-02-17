@@ -14,7 +14,7 @@
     <ProjectName>Xi.OPC.COM.Impl</ProjectName>
     <ProjectGuid>{DFFB40E3-BE18-4B82-99D3-2AA382EF418C}</ProjectGuid>
     <RootNamespace>OPCWrapper.Implementation</RootNamespace>
-    <TargetFramework>netcoreapp9.0</TargetFramework>
+    <TargetFramework>netcoreapp10.0</TargetFramework>
     <SccProjectName>
     </SccProjectName>
     <SccAuxPath>
@@ -25,6 +25,7 @@
     </SccProvider>
     <Keyword>AtlProj</Keyword>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformMinVersion>7.0</WindowsTargetPlatformMinVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
