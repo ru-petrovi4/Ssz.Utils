@@ -192,10 +192,10 @@ namespace Ssz.Dcs.CentralServer
             //context.CancellationToken.Register(() => taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);
             _serverWorker.ThreadSafeDispatcher.BeginInvoke(ct =>
             {
-                ct.Register(() => taskCompletionSource.TrySetException(new OperationCanceledException()));
-
                 try
                 {
+                    ct.ThrowIfCancellationRequested();
+
                     taskCompletionSource.TrySetResult(func());
                 }
                 catch (Exception ex)

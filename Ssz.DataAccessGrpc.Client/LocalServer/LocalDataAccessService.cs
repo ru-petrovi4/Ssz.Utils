@@ -383,11 +383,11 @@ namespace Ssz.DataAccessGrpc.Client.LocalServer
             //context.CancellationToken.Register(() => taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);
             _localDataAccessServerWorker.ThreadSafeDispatcher.BeginInvoke(async ct =>
             {
-                ct.Register(() => taskCompletionSource.TrySetException(new OperationCanceledException()));
-
                 _logger.LogTrace("Processing client call in worker thread: " + parentMethodName);
                 try
                 {
+                    ct.ThrowIfCancellationRequested();
+
                     var result = await func();
                     taskCompletionSource.TrySetResult(result);
                 }
