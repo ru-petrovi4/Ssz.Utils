@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.DataAccessGrpc.Common
 {
-    internal interface IDataAccessService
+    internal interface IDataAccessService : IDisposable
     {
         Task<InitiateReply> InitiateAsync(InitiateRequest request);
 

@@ -121,6 +121,10 @@ namespace Ssz.Dcs.CentralServer
                     })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.Configure<HostOptions>(o =>
+                    {
+                        o.ShutdownTimeout = TimeSpan.FromSeconds(30);
+                    });
                     //services.Configure<HostOptions>(hostOptions =>
                     //{
                     //    hostOptions.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;

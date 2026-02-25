@@ -1,6 +1,7 @@
 using Google.Protobuf;
 using Grpc.Core;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Ssz.DataAccessGrpc.Common;
 using Ssz.Utils;
@@ -20,10 +21,17 @@ namespace Ssz.DataAccessGrpc.Client.LocalServer
     {
         #region construction and destruction
 
-        public LocalDataAccessService(ILogger logger, IDataAccessServerWorker localDataAccessServerWorker)
+        public LocalDataAccessService(
+            ILogger logger, 
+            IDataAccessServerWorker localDataAccessServerWorker)
         {
             _logger = logger;            
             _localDataAccessServerWorker = localDataAccessServerWorker;            
+        }
+
+        public void Dispose()
+        {
+            _cancellationTokenSource.Cancel();
         }
 
         #endregion
@@ -353,7 +361,7 @@ namespace Ssz.DataAccessGrpc.Client.LocalServer
 
         #region private functions
 
-        private Task<T> GetReplyAsync<T>(Func<Task<T>> func)
+        private Task<TReply> GetReplyAsync<TReply>(Func<Task<TReply>> func)
         {
             string parentMethodName = "";
             if (_logger.IsEnabled(LogLevel.Trace))
@@ -370,10 +378,13 @@ namespace Ssz.DataAccessGrpc.Client.LocalServer
                 }
             }
 
-            var taskCompletionSource = new TaskCompletionSource<T>();
+            var taskCompletionSource = new TaskCompletionSource<TReply>();
+            _cancellationTokenSource.Token.Register(() => taskCompletionSource.TrySetException(new OperationCanceledException()));
             //context.CancellationToken.Register(() => taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);
             _localDataAccessServerWorker.ThreadSafeDispatcher.BeginInvoke(async ct =>
             {
+                ct.Register(() => taskCompletionSource.TrySetException(new OperationCanceledException()));
+
                 _logger.LogTrace("Processing client call in worker thread: " + parentMethodName);
                 try
                 {
@@ -415,6 +426,7 @@ namespace Ssz.DataAccessGrpc.Client.LocalServer
 
         private readonly ILogger _logger;        
         private readonly IDataAccessServerWorker _localDataAccessServerWorker;
+        private readonly CancellationTokenSource _cancellationTokenSource = new();
 
         #endregion
     }

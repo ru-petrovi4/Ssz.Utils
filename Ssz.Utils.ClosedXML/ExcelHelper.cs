@@ -48,7 +48,7 @@ public static class ExcelHelper
         return name;
     }
 
-    public static void AdjustToContents(this IXLWorksheet worksheet, int maxColumnWidth = 80)
+    public static void AdjustToContents(this IXLWorksheet worksheet, int maxColumnWidth = 80, int firstColumnNumberInclusive = 1, int firstRowNumberInclusive = 1)
     {
         // Включаем перенос текста для всех ячеек
         worksheet.Cells().Style.Alignment.WrapText = true;
@@ -57,6 +57,8 @@ public static class ExcelHelper
         // Ограничиваем максимальную ширину колонок (например, 40)
         foreach (var col in worksheet.ColumnsUsed())
         {
+            if (col.ColumnNumber() < firstColumnNumberInclusive)
+                continue;
             col.AdjustToContents();
             if (col.Width > maxColumnWidth)
                 col.Width = maxColumnWidth;
@@ -65,6 +67,8 @@ public static class ExcelHelper
         // Настраиваем высоту строк под содержимое (учитывает WrapText)        
         foreach (var row in worksheet.RowsUsed())
         {
+            if (row.RowNumber() < firstRowNumberInclusive)
+                continue;
             row.AdjustToContents();
             row.ClearHeight();
         }

@@ -22,6 +22,10 @@ namespace Ssz.DataAccessGrpc.Client
             _resourceManagementClient = resourceManagementClient;
         }
 
+        public void Dispose()
+        {
+        }
+
         #endregion
 
         #region public functions
@@ -275,7 +279,7 @@ namespace Ssz.DataAccessGrpc.Client
         public async Task<LongrunningPassthroughCancelReply> LongrunningPassthroughCancelAsync(LongrunningPassthroughCancelRequest request)
         {
             return await _resourceManagementClient.LongrunningPassthroughCancelAsync(request);
-        }
+        }        
 
         #endregion
 

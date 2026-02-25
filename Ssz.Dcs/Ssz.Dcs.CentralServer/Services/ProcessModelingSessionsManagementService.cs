@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
 
 namespace Ssz.Dcs.CentralServer
 {
@@ -16,10 +17,14 @@ namespace Ssz.Dcs.CentralServer
     {
         #region construction and destruction
 
-        public ProcessModelingSessionsManagementService(ILogger<ProcessModelingSessionsManagementService> logger, DataAccessServerWorkerBase serverWorker)
+        public ProcessModelingSessionsManagementService(
+            ILogger<ProcessModelingSessionsManagementService> logger, 
+            DataAccessServerWorkerBase serverWorker,
+            IHostApplicationLifetime hostApplicationLifetime)
         {
             _logger = logger;            
             _serverWorker = (ServerWorker)serverWorker;
+            _hostApplicationLifetime = hostApplicationLifetime;
         }
 
         #endregion
@@ -182,10 +187,13 @@ namespace Ssz.Dcs.CentralServer
 
         private async Task<TReply> GetReplyAsync<TReply>(Func<TReply> func, ServerCallContext context)
         {
-            var taskCompletionSource = new TaskCompletionSource<TReply>();            
+            var taskCompletionSource = new TaskCompletionSource<TReply>();
+            _hostApplicationLifetime.ApplicationStopping.Register(() => taskCompletionSource.TrySetException(new OperationCanceledException()));
             //context.CancellationToken.Register(() => taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);
             _serverWorker.ThreadSafeDispatcher.BeginInvoke(ct =>
             {
+                ct.Register(() => taskCompletionSource.TrySetException(new OperationCanceledException()));
+
                 try
                 {
                     taskCompletionSource.TrySetResult(func());
@@ -226,6 +234,8 @@ namespace Ssz.Dcs.CentralServer
         private readonly ILogger<ProcessModelingSessionsManagementService> _logger;
         
         private readonly ServerWorker _serverWorker;
+
+        private readonly IHostApplicationLifetime _hostApplicationLifetime;
 
         #endregion
     }

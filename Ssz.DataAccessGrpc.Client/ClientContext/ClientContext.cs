@@ -64,7 +64,8 @@ namespace Ssz.DataAccessGrpc.Client
                 {
                 }
             }
-            
+            _dataAccessService.Dispose();
+
             ServerContextNotification = delegate { };
 
             GrpcChannel?.Dispose();

@@ -74,6 +74,10 @@ namespace Ssz.Dcs.ControlEngine
                     })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.Configure<HostOptions>(o =>
+                    {
+                        o.ShutdownTimeout = TimeSpan.FromSeconds(30);
+                    });
                     services.AddSingleton<DataAccessServerWorkerBase, ServerWorker>();                    
                     services.AddHostedService<MainBackgroundService>();                    
                 });

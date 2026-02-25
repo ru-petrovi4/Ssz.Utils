@@ -1,6 +1,8 @@
 using Google.Protobuf;
 using Grpc.Core;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Ssz.DataAccessGrpc.Common;
 using Ssz.Utils;
@@ -21,11 +23,16 @@ namespace Ssz.DataAccessGrpc.ServerBase
     {
         #region construction and destruction
 
-        public DataAccessService(ILogger<DataAccessService> logger, IConfiguration configuration, DataAccessServerWorkerBase dataAccessServerWorker)
+        public DataAccessService(
+            ILogger<DataAccessService> logger, 
+            IConfiguration configuration, 
+            DataAccessServerWorkerBase dataAccessServerWorker,
+            IHostApplicationLifetime hostApplicationLifetime)
         {
             _logger = logger;
             _configuration = configuration;
-            _dataAccessServerWorker = dataAccessServerWorker;            
+            _dataAccessServerWorker = dataAccessServerWorker;
+            _hostApplicationLifetime = hostApplicationLifetime;
         }
 
         #endregion
@@ -117,8 +124,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
         public override async Task<ConcludeReply> Conclude(ConcludeRequest request, ServerCallContext context)
         {
             IDataAccessServerContext? serverContext = _dataAccessServerWorker.TryLookupServerContext_ThreadSafe(request.ContextId ?? @"");
-            if (serverContext is not null)
-                serverContext.IsConcludeCalled = true; // Optimization
+            if (serverContext is null)
+                return new ConcludeReply();
+            serverContext.IsConcludeCalled = true; // Optimization
             return await GetReplyAsync(() =>
                 {
                     IDataAccessServerContext? serverContext = _dataAccessServerWorker.TryLookupServerContext_ThreadSafe(request.ContextId ?? @"");
@@ -433,7 +441,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         #region private functions
 
-        private Task<T> GetReplyAsync<T>(Func<Task<T>> func, ServerCallContext context)
+        private Task<TReply> GetReplyAsync<TReply>(Func<Task<TReply>> func, ServerCallContext context)
         {
             string parentMethodName = "";
             if (_logger.IsEnabled(LogLevel.Trace))
@@ -450,10 +458,13 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 }
             }
 
-            var taskCompletionSource = new TaskCompletionSource<T>();
+            var taskCompletionSource = new TaskCompletionSource<TReply>();
+            _hostApplicationLifetime.ApplicationStopping.Register(() => taskCompletionSource.TrySetException(new OperationCanceledException()));
             //context.CancellationToken.Register(() => taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);
             _dataAccessServerWorker.ThreadSafeDispatcher.BeginInvoke(async ct =>
             {
+                ct.Register(() => taskCompletionSource.TrySetException(new OperationCanceledException()));
+
                 _logger.LogTrace("Processing client call in worker thread: " + parentMethodName);
                 try
                 {
@@ -495,7 +506,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         private readonly ILogger<DataAccessService> _logger;
         private readonly IConfiguration _configuration;
-        private readonly DataAccessServerWorkerBase _dataAccessServerWorker;        
+        private readonly DataAccessServerWorkerBase _dataAccessServerWorker;
+        private readonly IHostApplicationLifetime _hostApplicationLifetime;
 
         #endregion
     }
