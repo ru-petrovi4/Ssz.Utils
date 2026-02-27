@@ -115,12 +115,15 @@ namespace Ssz.DataAccessGrpc.Client.LocalServer
 
         public async Task<ConcludeReply> ConcludeAsync(ConcludeRequest request)
         {
+            IDataAccessServerContext? serverContext = _localDataAccessServerWorker.TryLookupServerContext_ThreadSafe(request.ContextId ?? @"");
+            if (serverContext is null)
+                return new ConcludeReply();
+            serverContext.IsConcludeCalledByClient = true; // Optimization
             return await GetReplyAsync(() =>
             {
                 IDataAccessServerContext? serverContext = _localDataAccessServerWorker.TryLookupServerContext_ThreadSafe(request.ContextId ?? @"");
                 if (serverContext is not null)
-                {
-                    serverContext.IsConcludeCalled = true;
+                {                    
                     _localDataAccessServerWorker.RemoveServerContext(serverContext);
                     serverContext.Dispose();
                 }

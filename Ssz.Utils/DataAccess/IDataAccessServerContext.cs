@@ -59,7 +59,7 @@ public interface IDataAccessServerContext : IDisposable, IAsyncDisposable
     /// <summary>
     ///     Did the client call Conclude(...)
     /// </summary>
-    bool IsConcludeCalled { get; set; }
+    bool IsConcludeCalledByClient { get; set; }
 
     /// <summary>
     ///     Must be IAsyncStreamWriter CallbackMessage

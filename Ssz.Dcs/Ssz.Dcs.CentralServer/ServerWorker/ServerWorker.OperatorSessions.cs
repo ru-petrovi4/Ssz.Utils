@@ -235,7 +235,7 @@ namespace Ssz.Dcs.CentralServer
                         operatorSession.OperatorSession_ProcessServerContextsCollection.Remove(processServerContext);
                         if (operatorSession.OperatorSession_ProcessServerContextsCollection.Count == 0)
                         {
-                            if (!processServerContext.IsConcludeCalled)
+                            if (!processServerContext.IsConcludeCalledByClient)
                             {
                                 operatorSession.ForTimeout_LastDateTimeUtc = DateTime.UtcNow;
                             }

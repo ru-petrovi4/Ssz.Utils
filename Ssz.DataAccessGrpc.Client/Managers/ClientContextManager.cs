@@ -54,7 +54,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
         public GrpcChannel? GrpcChannel => _clientContext?.GrpcChannel;        
 
-        public DateTime LastFailedConnectionDateTimeUtc { get; protected set; }
+        public DateTime LastFailedConnectionDateTimeUtc { get; protected set; } = DateTime.MinValue;
 
         public DateTime LastSuccessfulConnectionDateTimeUtc { get; protected set; }
 
@@ -179,6 +179,8 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             {
                 await _clientContext.DisposeAsync();
                 _clientContext = null;
+
+                LastFailedConnectionDateTimeUtc = DateTime.UtcNow;
             }
         }
 

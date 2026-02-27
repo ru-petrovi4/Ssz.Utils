@@ -83,7 +83,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 if (nowUtc - serverContext.LastAccessDateTimeUtc > TimeSpan.FromMilliseconds(serverContext.ContextTimeoutMs))
                 {
                     // Expired
-                    serverContext.IsConcludeCalled = true; // Context is not operational
+                    serverContext.IsConcludeCalledByClient = true; // Context is not operational
                     RemoveServerContext(serverContext);
                     serverContext.Dispose();
                     Logger.LogWarning("Timeout out Context {0}", serverContext.ContextId);

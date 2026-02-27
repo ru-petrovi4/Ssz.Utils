@@ -196,9 +196,9 @@ namespace Ssz.DataAccessGrpc.Client
                         ContextId = _serverContextId
                     }, cancellationToken: ct);                    
                 }
-                catch
+                catch (Exception ex)
                 {
-                    _contextIsOperational = false;                    
+                    ProcessRemoteMethodCallException(ex);          
                 }
             }
         }
@@ -236,14 +236,17 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="ex"> The exception that was thrown. </param>
         private void ProcessRemoteMethodCallException(Exception ex)
         {   
-            if (ex is RpcException)
+            if (ex is RpcException rpcException)
             {
                 if (!_contextIsOperational) 
                     return;
 
-                _contextIsOperational = false;                
+                if (rpcException.StatusCode != StatusCode.Cancelled)
+                {
+                    _contextIsOperational = false;
 
-                _logger.LogDebug(ex, "RpcException when server method call. Client reconnecting..");
+                    _logger.LogDebug(ex, "RpcException when server method call. Client reconnecting..");
+                }
             }
 
             _logger.LogDebug(ex, "Exception when server method call.");

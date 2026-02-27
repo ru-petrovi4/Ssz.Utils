@@ -179,7 +179,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                             {
                                 StateCode = contextStatusMessage.StateCode
                             };
-                            if (!IsConcludeCalled) // Optimization
+                            if (!IsConcludeCalledByClient) // Optimization
                                 await _responseStreamWriter.WriteAsync(callbackMessage);
                         }
                         finally
@@ -206,7 +206,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                             {
                                 ElementValuesCallback = elementValuesCallback
                             };
-                            if (!IsConcludeCalled) // Optimization
+                            if (!IsConcludeCalledByClient) // Optimization
                                 await _responseStreamWriter.WriteAsync(callbackMessage);
                         }
                     }
@@ -229,7 +229,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                             {
                                 EventMessagesCallback = eventMessagesCallback
                             };
-                            if (!IsConcludeCalled) // Optimization
+                            if (!IsConcludeCalledByClient) // Optimization
                                 await _responseStreamWriter.WriteAsync(callbackMessage);
                         }
                     }
@@ -257,7 +257,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                                 StatusCode = longrunningPassthroughCallbackMessage.StatusCode,
                             }
                         };
-                        if (!IsConcludeCalled) // Optimization
+                        if (!IsConcludeCalledByClient) // Optimization
                             await _responseStreamWriter.WriteAsync(callbackMessage);
                     }
                 }

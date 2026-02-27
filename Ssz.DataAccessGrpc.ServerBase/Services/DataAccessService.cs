@@ -126,7 +126,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             IDataAccessServerContext? serverContext = _dataAccessServerWorker.TryLookupServerContext_ThreadSafe(request.ContextId ?? @"");
             if (serverContext is null)
                 return new ConcludeReply();
-            serverContext.IsConcludeCalled = true; // Optimization
+            serverContext.IsConcludeCalledByClient = true; // Optimization
             return await GetReplyAsync(() =>
                 {
                     IDataAccessServerContext? serverContext = _dataAccessServerWorker.TryLookupServerContext_ThreadSafe(request.ContextId ?? @"");

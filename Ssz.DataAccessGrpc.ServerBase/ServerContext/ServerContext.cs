@@ -90,7 +90,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             if (disposing)
             {
-                if (!IsConcludeCalled)
+                if (!IsConcludeCalledByClient)
                 {
                     lock (_messagesSyncRoot)
                     {
@@ -117,7 +117,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         protected virtual async ValueTask DisposeAsyncCore()
         {
-            if (!IsConcludeCalled)
+            if (!IsConcludeCalledByClient)
             {
                 lock (_messagesSyncRoot)
                 {
@@ -220,7 +220,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <summary>
         ///     Did the client call Conclude(...)
         /// </summary>
-        public bool IsConcludeCalled { get; set; }        
+        public bool IsConcludeCalledByClient { get; set; }        
 
         public void UpdateContextParams(CaseInsensitiveOrderedDictionary<string?> contextParams)
         {
@@ -248,7 +248,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             if (LastContextStatusCallbackDateTimeUtc is null ||
                 nowUtc - LastContextStatusCallbackDateTimeUtc.Value >= TimeSpan.FromMilliseconds(ContextStatusCallbackPeriodMs))
             {
-                if (!IsConcludeCalled)
+                if (!IsConcludeCalledByClient)
                 {
                     AddCallbackMessage(
                             new ContextStatusMessage

@@ -65,13 +65,13 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     builder =>
                         builder.ClearProviders()
                             .AddSszLogger()
-                    )
+                    )                
+                .UseWindowsService()
                 .ConfigureServices((hostContext, services) =>
                     {
                         services.AddTransient<Worker>();
                         services.AddHostedService<MainBackgroundService>();
-                    })
-                .UseWindowsService();
+                    });
         }
 
         /// <summary>
