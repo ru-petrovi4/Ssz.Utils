@@ -140,6 +140,8 @@ namespace Ssz.Dcs.ControlEngine
             await _serverWorker.CloseAsync();
             
             await _utilityDataAccessProvider.DisposeAsync();
+
+            await Program.SafeShutdownAsync();
         }
 
         #endregion
