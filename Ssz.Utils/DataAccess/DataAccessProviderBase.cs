@@ -50,6 +50,8 @@ namespace Ssz.Utils.DataAccess
 
         #region public functions    
 
+        public object SyncRoot => _syncRoot;
+
         public ILoggersSet LoggersSet { get; }
 
         /// <summary>
@@ -338,11 +340,13 @@ namespace Ssz.Utils.DataAccess
         /// <summary>
         ///     Dispatcher for callbacks to client.
         /// </summary>
-        protected IDispatcher? CallbackDispatcher { get; private set; }             
+        protected IDispatcher? CallbackDispatcher { get; private set; }
 
         #endregion
 
-        #region private fields        
+        #region private fields     
+
+        private object _syncRoot = new();
 
         private bool _isInitialized;
 
