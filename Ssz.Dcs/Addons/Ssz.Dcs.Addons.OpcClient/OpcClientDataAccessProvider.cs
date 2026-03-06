@@ -649,7 +649,9 @@ namespace Ssz.Dcs.Addons.OpcClient
                         //Logger?.LogDebug("End Connecting");
 
                         //Logger.Info("XiDataProvider connected to " + _serverAddress);
-                        
+
+                        IsConnectedEventWaitHandle.Set();
+
                         сallbackDispatcher = CallbackDispatcher;
                         if (сallbackDispatcher is not null)
                         {
@@ -723,6 +725,8 @@ namespace Ssz.Dcs.Addons.OpcClient
         /// </summary>
         private void Unsubscribe(bool clearClientSubscriptions)
         {
+            IsConnectedEventWaitHandle.Reset();
+
             var сallbackDispatcher = CallbackDispatcher;
             if (сallbackDispatcher is not null)
             {

@@ -116,13 +116,7 @@ namespace Ssz.Utils.DataAccess
             protected set
             {
                 if (SetValue(ref _isConnected, value))
-                {
                     OnPropertyChanged(nameof(IsDisconnected));
-                    if (_isConnected)
-                        IsConnectedEventWaitHandle.Set();
-                    else
-                        IsConnectedEventWaitHandle.Reset();
-                }
             }
         }
 

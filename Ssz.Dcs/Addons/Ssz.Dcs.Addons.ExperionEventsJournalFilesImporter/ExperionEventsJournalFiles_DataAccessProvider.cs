@@ -189,9 +189,12 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
             }
             if (!journalFilesDirectoryInfo.Exists)
             {
+                IsConnectedEventWaitHandle.Reset();
                 IsConnected = false;
                 return;
             }
+
+            IsConnectedEventWaitHandle.Set();
             IsConnected = true;
 
             string? maxProcessedTimeUtcString = Addon.CsvDb.GetValue(

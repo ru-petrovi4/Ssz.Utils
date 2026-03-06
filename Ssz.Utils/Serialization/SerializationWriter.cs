@@ -1396,7 +1396,7 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     Use ReadOwnedDataSerializable(...) for read.
+        ///     Use ReadOwnedDataSerializable(IOwnedDataSerializable target, object? context) for read.
         ///     Allows any object implementing IOwnedDataSerializable to serialize itself
         ///     into this SerializationWriter.
         ///     A context may also be used to give the object an indication of what data
@@ -1410,7 +1410,7 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     Use ReadOwnedDataSerializable( Func<int,IOwnedDateSerializable?>, object?) for read.
+        ///     Use ReadOwnedDataSerializable(Func(int, IOwnedDataSerializable?) func, object? context) for read.
         ///     Allows any object supply serialization typeId and implementing IOwnedDataSerializable to serialize itself
         ///     into this SerializationWriter.
         ///     A context may also be used to give the object an indication of what data
@@ -1432,7 +1432,7 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     Use ReadOwnedDataSerializable( Func<string,IOwnedDateSerializable?>, object?) for read.
+        ///     Use ReadOwnedDataSerializable(Func(string, IOwnedDataSerializable?) func, object? context) for read.
         ///     Allows any object supply serialization typeStringId and implementing IOwnedDataSerializable to serialize itself
         ///     into this SerializationWriter.
         ///     A context may also be used to give the object an indication of what data
@@ -1459,7 +1459,7 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     Use ReadOwnedDataSerializable( Func<Guid,IOwnedDateSerializable?>, object?) for read.
+        ///     Use ReadOwnedDataSerializable(Func(Guid, IOwnedDataSerializable?) func, object? context) for read.
         ///     Allows any object supply serialization Guid and implementing IOwnedDataSerializable to serialize itself
         ///     into this SerializationWriter.
         ///     A context may also be used to give the object an indication of what data
@@ -1487,7 +1487,7 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     Use ReadOwnedDataSerializable( Func<Type,IOwnedDateSerializable?>, object?) for read.
+        ///     Use ReadOwnedDataSerializableWithType(Func(string, IOwnedDataSerializable?) func, object? context) for read.
         ///     Allows any object supply serialization Guid and implementing IOwnedDataSerializable to serialize itself
         ///     into this SerializationWriter.
         ///     A context may also be used to give the object an indication of what data
@@ -1515,14 +1515,13 @@ namespace Ssz.Utils.Serialization
         }
 
 
-
         /// <summary>
-        ///     Use ReadOwnedDataSerializableAndRecreatable(...) for read.
+        ///     Use ReadOwnedDataSerializable_NullableFixedType(...) for read.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
         /// <param name="context"></param>
-        public void WriteOwnedDataSerializableAndRecreatable<T>(T? value, object? context)
+        public void WriteOwnedDataSerializable_NullableFixedType<T>(T? value, object? context)
             where T : class, IOwnedDataSerializable
         {
             if (value is null)

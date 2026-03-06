@@ -678,7 +678,7 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     Use WriteOwnedDataSerializable(...) for writing.
+        ///     Use WriteOwnedDataSerializable(IOwnedDataSerializable target, object? context) for writing.
         ///     Allows an existing object, implementing IOwnedDataSerializable, to
         ///     retrieve its owned data from the stream.
         /// </summary>
@@ -692,46 +692,13 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     Use WriteOwnedDataSerializableAndRecreatable(...) for writing.
-        ///     Throws if saved object not correct type;
+        ///     Use WriteOwnedDataSerializable(IOwnedDataSerializable? target, int typeId, object? context) for writing.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <param name="func"></param>
+        /// <param name="context"></param>
         /// <returns></returns>
-        public T? ReadOwnedDataSerializableAndRecreatable<T>(object? context)
-            where T : class, IOwnedDataSerializable, new()
-        {
-            if (IsBlockEnding()) throw new BlockEndingException();
-
-            var serializedType = (SerializedType)_binaryReader.ReadByte();
-            if (serializedType == SerializedType.NullType) 
-                return null;
-
-            var t = new T();
-            t.DeserializeOwnedData(this, context);
-            return t;
-        }
-
-        /// <summary>
-        ///     Use WriteOwnedDataSerializableAndRecreatable(...) for writing.
-        ///     Throws if saved object not correct type;
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public T? ReadOwnedDataSerializableAndRecreatable<T>(Func<T> func, object? context)
-            where T : class, IOwnedDataSerializable
-        {
-            if (IsBlockEnding()) throw new BlockEndingException();
-
-            var serializedType = (SerializedType)_binaryReader.ReadByte();
-            if (serializedType == SerializedType.NullType)
-                return null;
-
-            var t = func();
-            t.DeserializeOwnedData(this, context);
-            return t;
-        }
-
-        public IOwnedDataSerializable? ReadOwnedDataSerializable(Func<int, IOwnedDataSerializable?> func , object? context)
+        /// <exception cref="BlockEndingException"></exception>
+        public IOwnedDataSerializable? ReadOwnedDataSerializable(Func<int, IOwnedDataSerializable?> func, object? context)
         {
             if (IsBlockEnding()) throw new BlockEndingException();
 
@@ -761,9 +728,16 @@ namespace Ssz.Utils.Serialization
             }
             if (result != null)
                 ReadOwnedDataSerializable(result, context);
-            return result;  
+            return result;
         }
 
+        /// <summary>
+        ///     Use WriteOwnedDataSerializable(IOwnedDataSerializable? target, string typeStringId, object? context) for writing.
+        /// </summary>
+        /// <param name="func"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        /// <exception cref="BlockEndingException"></exception>
         public IOwnedDataSerializable? ReadOwnedDataSerializable(Func<string, IOwnedDataSerializable?> func, object? context)
         {
             if (IsBlockEnding()) throw new BlockEndingException();
@@ -784,8 +758,8 @@ namespace Ssz.Utils.Serialization
                 //    result = func(reader.ReadOptimizedType()); break;     // Type
                 //    
                 case SerializedType.StringDirect                          // Type Id  (string)
-                    or SerializedType.EmptyStringType or SerializedType.EmptyStringType 
-                    or SerializedType.SingleSpaceType or SerializedType.YStringType 
+                    or SerializedType.EmptyStringType or SerializedType.EmptyStringType
+                    or SerializedType.SingleSpaceType or SerializedType.YStringType
                     or SerializedType.NStringType or SerializedType.SingleCharStringType
                     or SerializedType.OptimizedStringType:
                     result = func(ReadOptimizedOrNotStringInternal(stypeId)); break;
@@ -797,6 +771,13 @@ namespace Ssz.Utils.Serialization
             return result;
         }
 
+        /// <summary>
+        ///     Use WriteOwnedDataSerializable(IOwnedDataSerializable? target, Guid typeGuidId, object? context) for writing.
+        /// </summary>
+        /// <param name="func"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        /// <exception cref="BlockEndingException"></exception>
         public IOwnedDataSerializable? ReadOwnedDataSerializable(Func<Guid, IOwnedDataSerializable?> func, object? context)
         {
             if (IsBlockEnding()) throw new BlockEndingException();
@@ -830,9 +811,8 @@ namespace Ssz.Utils.Serialization
             return result;
         }
 
-
         /// <summary>
-        /// Read object, saved using WriteOwnedDataSerializableWithType(IOwnedDataSerializable? target, object? context)
+        ///     Use WriteOwnedDataSerializableWithType(IOwnedDataSerializable? target, object? context) for writing.
         /// </summary>
         /// <param name="func">constructors for stored objects indexed by type</param>
         /// <param name="context"></param>
@@ -859,7 +839,7 @@ namespace Ssz.Utils.Serialization
                     var typeString = ReadOptimizedOrNotString()!;
                     if (typeString != null)
                         result = func(typeString); break;                       // Type
-                    
+
                 //case SerializedType.StringDirect                              // Type Id  (string)
                 //    or SerializedType.EmptyStringType or SerializedType.EmptyStringType
                 //    or SerializedType.SingleSpaceType or SerializedType.YStringType
@@ -874,7 +854,45 @@ namespace Ssz.Utils.Serialization
             return result;
         }
 
+        /// <summary>
+        ///     Use WriteOwnedDataSerializable_NullableFixedTypee(...) for writing.
+        ///     Throws if saved object not correct type;
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T? ReadOwnedDataSerializable_NullableFixedType<T>(object? context)
+            where T : class, IOwnedDataSerializable, new()
+        {
+            if (IsBlockEnding()) throw new BlockEndingException();
 
+            var serializedType = (SerializedType)_binaryReader.ReadByte();
+            if (serializedType == SerializedType.NullType) 
+                return null;
+
+            var t = new T();
+            t.DeserializeOwnedData(this, context);
+            return t;
+        }
+
+        /// <summary>
+        ///     Use WriteOwnedDataSerializable_NullableFixedType(...) for writing.
+        ///     Throws if saved object not correct type;
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T? ReadOwnedDataSerializable_NullableFixedType<T>(Func<T> func, object? context)
+            where T : class, IOwnedDataSerializable
+        {
+            if (IsBlockEnding()) throw new BlockEndingException();
+
+            var serializedType = (SerializedType)_binaryReader.ReadByte();
+            if (serializedType == SerializedType.NullType)
+                return null;
+
+            var t = func();
+            t.DeserializeOwnedData(this, context);
+            return t;
+        }
 
         /// <summary>
         ///     Use WriteNullable<T>() for reading.
