@@ -188,7 +188,7 @@ namespace Ssz.Dcs.CentralServer
         private async Task<TReply> GetReplyAsync<TReply>(Func<TReply> func, ServerCallContext context)
         {
             var taskCompletionSource = new TaskCompletionSource<TReply>();
-            _hostApplicationLifetime.ApplicationStopping.Register(() => taskCompletionSource.TrySetException(new OperationCanceledException()));
+            using var registration = _hostApplicationLifetime.ApplicationStopping.Register(() => taskCompletionSource.TrySetException(new OperationCanceledException()));
             //context.CancellationToken.Register(() => taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);
             _serverWorker.ThreadSafeDispatcher.BeginInvoke(ct =>
             {

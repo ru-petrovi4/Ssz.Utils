@@ -459,7 +459,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             }
 
             var taskCompletionSource = new TaskCompletionSource<TReply>();
-            _hostApplicationLifetime.ApplicationStopping.Register(() => taskCompletionSource.TrySetException(new OperationCanceledException()));
+            using var registration = _hostApplicationLifetime.ApplicationStopping.Register(() => taskCompletionSource.TrySetException(new OperationCanceledException()));
             //context.CancellationToken.Register(() => taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);
             _dataAccessServerWorker.ThreadSafeDispatcher.BeginInvoke(async ct =>
             {

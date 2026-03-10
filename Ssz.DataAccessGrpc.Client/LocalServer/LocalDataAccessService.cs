@@ -382,7 +382,7 @@ namespace Ssz.DataAccessGrpc.Client.LocalServer
             }
 
             var taskCompletionSource = new TaskCompletionSource<TReply>();
-            _cancellationTokenSource.Token.Register(() => taskCompletionSource.TrySetException(new OperationCanceledException()));
+            using var registration = _cancellationTokenSource.Token.Register(() => taskCompletionSource.TrySetException(new OperationCanceledException()));
             //context.CancellationToken.Register(() => taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);
             _localDataAccessServerWorker.ThreadSafeDispatcher.BeginInvoke(async ct =>
             {
