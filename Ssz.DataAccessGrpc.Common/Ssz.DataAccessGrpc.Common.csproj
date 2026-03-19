@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.4.0" />
+    <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.4.1" />
     <PackageReference Include="Google.Protobuf" Version="3.34.0" />    
     <PackageReference Include="Grpc.Net.ClientFactory" Version="2.76.0" />
     <PackageReference Include="Grpc.Tools" Version="2.78.0">

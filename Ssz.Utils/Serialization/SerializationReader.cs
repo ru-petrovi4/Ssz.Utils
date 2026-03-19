@@ -1001,7 +1001,7 @@ namespace Ssz.Utils.Serialization
         ///     Use WriteArrayOfDecimal(...) for writing.
         /// </summary>
         /// <returns> A Decimal[]. </returns>
-        private decimal[] ReadArrayOfDecimal()
+        public decimal[] ReadArrayOfDecimal()
         {
             var result = new decimal[ReadOptimizedInt64()];
 
@@ -1011,7 +1011,23 @@ namespace Ssz.Utils.Serialization
             }
 
             return result;
-        }        
+        }
+
+        /// <summary>
+        ///     Use WriteArrayOfUInt64(...) for writing.
+        /// </summary>
+        /// <returns> A Decimal[]. </returns>
+        public UInt64[] ReadArrayOfUInt64()
+        {
+            var result = new UInt64[ReadOptimizedInt64()];
+
+            for (long i = 0; i < result.LongLength; i++)
+            {
+                result[i] = ReadOptimizedUInt64();
+            }
+
+            return result;
+        }
 
         /// <summary>
         ///     Use WriteArrayOfOwnedDataSerializable(...) for writing.

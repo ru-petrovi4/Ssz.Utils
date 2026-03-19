@@ -1659,6 +1659,24 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
+        ///     Use ReadArrayOfUInt64() for reading.
+        ///     All elements are stored optimized.
+        /// </summary>
+        /// <param name="values"></param>
+        public void WriteArrayOfUInt64(UInt64[] values, long? longLength = null)
+        {
+            if (longLength is null)
+                longLength = values.LongLength;
+
+            WriteOptimized(longLength.Value);
+
+            for (long i = 0; i < longLength.Value; i++)
+            {
+                WriteOptimized(values[i]);
+            }
+        }
+
+        /// <summary>
         ///     use ReadArrayOfOwnedDataSerializable(...) for reading.
         ///     Writes array of same type not null objects.         
         /// </summary>        
