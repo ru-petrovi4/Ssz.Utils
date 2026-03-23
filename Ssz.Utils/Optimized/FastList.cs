@@ -125,6 +125,22 @@ public class FastList<T> : IFastList<T>, IList<T>, IReadOnlyList<T>, IOwnedDataS
         _count += span.Length;
     }
 
+    public void AddRangeOfDefault(int count)
+    {
+        int required = _count + count;
+
+        if (required > _items.Length)
+        {
+            int newCapacity = _items.Length == 0 ? DefaultCapacity : _items.Length;
+            while (newCapacity < required)
+                newCapacity *= 2;
+
+            IncreaseSize(newCapacity);
+        }
+
+        _count += count;
+    }
+
     public void Swap(FastList<T> that)
     {
         (that._items, that._count, _items, _count) = 

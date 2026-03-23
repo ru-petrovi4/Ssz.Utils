@@ -78,7 +78,7 @@ internal class OpenGlContent
         gl.Enable(GL_DEPTH_TEST);
 
         List<Point3DWithColor>? points = null;
-        float[]? lineVertexData = null;
+        Span<float> lineVertexData = Span<float>.Empty;
         int lineVertexCount = 0;
 
         if (model3DMessage.Model3DScene is not null)
@@ -97,7 +97,9 @@ internal class OpenGlContent
 
                 if (lineVertexCount > 0)
                 {
-                    lineVertexData = new float[lineVertexCount * 7];
+                    _linesBuffer.Clear();
+                    _linesBuffer.AddRangeOfDefault(lineVertexCount * 7);
+                    lineVertexData = _linesBuffer.Items;
                     int offset = 0;
                     foreach (var multiline in lines)
                     {
@@ -158,7 +160,9 @@ internal class OpenGlContent
         // --- Отрисовка точек (GL_POINTS = 0) ---
         if (points is not null && points.Count > 0)
         {
-            float[] vertexData = new float[points.Count * 7];
+            _pointsBuffer.Clear();
+            _pointsBuffer.AddRangeOfDefault(points.Count * 7);
+            Span<float> vertexData = _pointsBuffer.Items;
             for (int i = 0; i < points.Count; i++)
             {
                 int off = i * 7;
@@ -176,7 +180,7 @@ internal class OpenGlContent
         }
 
         // --- Отрисовка линий (GL_LINES = 1) ---
-        if (lineVertexData is not null && lineVertexCount > 0)
+        if (!lineVertexData.IsEmpty && lineVertexCount > 0)
         {
             _vertexBufferObject!.BufferData(lineVertexData);
             gl.DrawArrays(1, 0, lineVertexCount);
@@ -252,6 +256,9 @@ void main()
     private BufferObject<float>? _vertexBufferObject;    
     private VertexArrayObject<float>? _vertexArrayObject;
     private GlVersion _glVersion;
+
+    private readonly FastList<float> _pointsBuffer = new();
+    private readonly FastList<float> _linesBuffer = new();
 
     #endregion    
 }
