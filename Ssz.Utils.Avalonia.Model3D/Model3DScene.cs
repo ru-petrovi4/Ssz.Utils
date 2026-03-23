@@ -1,11 +1,14 @@
-﻿using System.Numerics;
+﻿using System.Collections.Generic;
+using System.Numerics;
 
 namespace Ssz.Utils.Avalonia.Model3D;
 
 
 public class Model3DScene
 {
-    public Point3DWithColor[]? Point3DWithColorArray;
+    public List<Point3DWithColor>? Points;
+
+    public List<List<Point3DWithColor>>? Lines;
 }
 
 public class Point3DWithColor

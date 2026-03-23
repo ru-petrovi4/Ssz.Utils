@@ -1,14 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.OpenGL;
 using static Avalonia.OpenGL.GlConsts;
 using static Ssz.Utils.Avalonia.Model3D.Model3DControl;
-// ReSharper disable StringLiteralTypo
 
 namespace Ssz.Utils.Avalonia.Model3D;
 
@@ -77,14 +76,16 @@ internal class OpenGlContent
         gl.ClearColor((float)0, (float)0, (float)0, (float)0);
         gl.Clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         gl.Enable(GL_DEPTH_TEST);
-        
+
+        List<Point3DWithColor>? points = null;
+
         if (model3DMessage.Model3DScene is not null)
         {
-            var points = model3DMessage.Model3DScene.Point3DWithColorArray;
+            points = model3DMessage.Model3DScene.Points;
             if (points is not null)
             {
-                float[] vertexData = new float[points.Length * 7];
-                for (int i = 0; i < points.Length; i += 1)
+                float[] vertexData = new float[points.Count * 7];
+                for (int i = 0; i < points.Count; i += 1)
                 {
                     int offset = i * 7;
                     vertexData[offset] = points[i].Position.X;
@@ -95,8 +96,7 @@ internal class OpenGlContent
                     vertexData[offset + 5] = points[i].Color.Z;
                     vertexData[offset + 6] = points[i].Color.W;
                 }
-                _vertexBufferObject!.BufferData(vertexData);
-                _points = points;
+                _vertexBufferObject!.BufferData(vertexData);                
             }
         }
        
@@ -120,8 +120,8 @@ internal class OpenGlContent
 
         _vertexArrayObject!.Bind();
 
-        if (_points is not null)
-            gl.DrawArrays(0, 0, _points.Length);
+        if (points is not null)
+            gl.DrawArrays(0, 0, points.Count);
         CheckError(gl);
     }
 
@@ -185,9 +185,7 @@ void main()
         int err;
         while ((err = gl.GetError()) != GL_NO_ERROR)
             Console.WriteLine(err);
-    }    
-
-    static Stopwatch St = Stopwatch.StartNew();
+    }        
 
     #region private fields
 
@@ -195,8 +193,6 @@ void main()
     private BufferObject<float>? _vertexBufferObject;    
     private VertexArrayObject<float>? _vertexArrayObject;
     private GlVersion _glVersion;
-
-    private Point3DWithColor[]? _points;
 
     #endregion    
 }
