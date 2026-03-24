@@ -8,7 +8,6 @@ using Avalonia;
 using Avalonia.OpenGL;
 using static Avalonia.OpenGL.GlConsts;
 using static Ssz.Utils.Avalonia.Model3D.Model3DControl;
-// ReSharper disable StringLiteralTypo
 
 namespace Ssz.Utils.Avalonia.Model3D;
 
@@ -32,7 +31,7 @@ internal class OpenGlContent
         });
         CheckError(gl);
 
-        // Create the vertex buffer object (VBO) for the vertex data.
+        // Create the vertex buffer object (VBO) for the points data.
         _vertexBufferObject = new BufferObject<float>(gl, GL_ARRAY_BUFFER);
         CheckError(gl);
 
@@ -41,6 +40,19 @@ internal class OpenGlContent
 
         _vertexArrayObject.VertexAttributePointer(0, 3, GL_FLOAT, 7, 0); // aPosition
         _vertexArrayObject.VertexAttributePointer(1, 4, GL_FLOAT, 7, 3); // aColor
+        gl.EnableVertexAttribArray(0);
+        gl.EnableVertexAttribArray(1);
+        CheckError(gl);
+
+        // Create the vertex buffer object (VBO) for the lines data.
+        _linesVertexBufferObject = new BufferObject<float>(gl, GL_ARRAY_BUFFER);
+        CheckError(gl);
+
+        _linesVertexArrayObject = new VertexArrayObject<float>(gl);
+        CheckError(gl);
+
+        _linesVertexArrayObject.VertexAttributePointer(0, 3, GL_FLOAT, 7, 0); // aPosition
+        _linesVertexArrayObject.VertexAttributePointer(1, 4, GL_FLOAT, 7, 3); // aColor
         gl.EnableVertexAttribArray(0);
         gl.EnableVertexAttribArray(1);
         CheckError(gl);
@@ -57,6 +69,9 @@ internal class OpenGlContent
         // Delete all resources.
         _vertexBufferObject?.Dispose();
         _vertexArrayObject?.Dispose();
+
+        _linesVertexBufferObject?.Dispose();
+        _linesVertexArrayObject?.Dispose();
 
         _shader?.Dispose();
     }
@@ -80,13 +95,13 @@ internal class OpenGlContent
 
         if (model3DMessage.Model3DScene is not null)
         {
-            var points = model3DMessage.Model3DScene.Points?.ToArray();
+            var points = model3DMessage.Model3DScene.Points;
             if (points is not null)
             {
                 _pointsBuffer.Clear();
-                _pointsBuffer.AddRangeOfDefault(points.Length * 7);
+                _pointsBuffer.AddRangeOfDefault(points.Count * 7);
                 Span<float> vertexData = _pointsBuffer.Items;
-                for (int i = 0; i < points.Length; i += 1)
+                for (int i = 0; i < points.Count; i += 1)
                 {
                     int offset = i * 7;
                     vertexData[offset] = points[i].Position.X;
@@ -97,12 +112,59 @@ internal class OpenGlContent
                     vertexData[offset + 5] = points[i].Color.Z;
                     vertexData[offset + 6] = points[i].Color.W;
                 }
-                _vertexBufferObject!.BufferData(vertexData);                
+                _vertexBufferObject!.Bind();
+                _vertexBufferObject!.BufferData(vertexData);
+            }
+
+            var lines = model3DMessage.Model3DScene.Lines;
+            if (lines is not null)
+            {
+                _linesBuffer.Clear();
+                int totalLineVertices = 0;
+
+                // Считаем общее количество вершин для отрезков
+                foreach (var polyline in lines)
+                {
+                    if (polyline is null || polyline.Count < 2) continue;
+                    totalLineVertices += (polyline.Count - 1) * 2;
+                }
+
+                _linesBuffer.AddRangeOfDefault(totalLineVertices * 7);
+                Span<float> lineData = _linesBuffer.Items;
+                int offset = 0;
+
+                // Заполняем буфер линиями
+                foreach (var polyline in lines)
+                {
+                    if (polyline is null || polyline.Count < 2) continue;
+                    for (int i = 0; i < polyline.Count - 1; i++)
+                    {
+                        var p1 = polyline[i];
+                        var p2 = polyline[i + 1];
+
+                        // Вершина 1 (Начало отрезка)
+                        lineData[offset++] = p1.Position.X;
+                        lineData[offset++] = p1.Position.Y;
+                        lineData[offset++] = p1.Position.Z;
+                        lineData[offset++] = p1.Color.X;
+                        lineData[offset++] = p1.Color.Y;
+                        lineData[offset++] = p1.Color.Z;
+                        lineData[offset++] = p1.Color.W;
+
+                        // Вершина 2 (Конец отрезка). Цвет берется от первой вершины p1
+                        lineData[offset++] = p2.Position.X;
+                        lineData[offset++] = p2.Position.Y;
+                        lineData[offset++] = p2.Position.Z;
+                        lineData[offset++] = p1.Color.X;
+                        lineData[offset++] = p1.Color.Y;
+                        lineData[offset++] = p1.Color.Z;
+                        lineData[offset++] = p1.Color.W;
+                    }
+                }
+                _linesVertexBufferObject!.Bind();
+                _linesVertexBufferObject!.BufferData(lineData);
             }
         }
-
-        _vertexBufferObject!.Bind();
-        _vertexArrayObject!.Bind();
 
         _shader!.Use();
         CheckError(gl);
@@ -119,12 +181,26 @@ internal class OpenGlContent
             gl.UniformMatrix4fv(gl.GetUniformLocationString(_shader.ProgramHandle, "projection"), 1, false, &projection);
         }
 
-        _vertexArrayObject!.Bind();
+        // Отрисовка точек
+        if (_pointsBuffer.Count > 0)
+        {
+            _vertexBufferObject!.Bind();
+            _vertexArrayObject!.Bind();
+            const int GL_POINTS = 0;
+            // Делим на 7, так как Count - это размер в float, а нам нужно количество вершин
+            gl.DrawArrays(GL_POINTS, 0, _pointsBuffer.Count / 7);
+            CheckError(gl);
+        }
 
-        //if (_pointsBuffer.Count > 0)
-        const int GL_POINTS = 0;
-        gl.DrawArrays(GL_POINTS, 0, _pointsBuffer.Count);
-        CheckError(gl);
+        // Отрисовка линий
+        if (_linesBuffer.Count > 0)
+        {
+            _linesVertexBufferObject!.Bind();
+            _linesVertexArrayObject!.Bind();
+            const int GL_LINES = 1;
+            gl.DrawArrays(GL_LINES, 0, _linesBuffer.Count / 7);
+            CheckError(gl);
+        }
     }
 
     #endregion
@@ -132,55 +208,34 @@ internal class OpenGlContent
     private string GetShader(bool fragment, string shader)
     {
         return shader;
-        //var version = (GlVersion.Type == GlProfileType.OpenGL
-        //    ? RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? 150 : 120
-        //    : 100);
-        //var data = "#version " + version + "\n";
-        //if (GlVersion.Type == GlProfileType.OpenGLES)
-        //    data += "precision mediump float;\n";
-        //if (version >= 150)
-        //{
-        //    shader = shader.Replace("attribute", "in");
-        //    if (fragment)
-        //        shader = shader
-        //            .Replace("varying", "in")
-        //            .Replace("//DECLAREGLFRAG", "out vec4 outFragColor;")
-        //            .Replace("gl_FragColor", "outFragColor");
-        //    else
-        //        shader = shader.Replace("varying", "out");
-        //}
-
-        //data += shader;
-
-        //return data;
     }
 
     private string VertexShaderSource => GetShader(false, """ 
-#version 100
-precision mediump float;
-attribute vec3 aPosition;
-attribute vec4 aColor;
-varying vec4 vertexColor;
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
-void main()
-{
-    gl_Position = projection * view * model * vec4(aPosition, 1.0);
-    vertexColor = aColor;
-    gl_PointSize = 2.0;
-}
-""");
+        #version 100
+        precision mediump float;
+        attribute vec3 aPosition;
+        attribute vec4 aColor;
+        varying vec4 vertexColor;
+        uniform mat4 model;
+        uniform mat4 view;
+        uniform mat4 projection;
+        void main()
+        {
+            gl_Position = projection * view * model * vec4(aPosition, 1.0);
+            vertexColor = aColor;
+            gl_PointSize = 2.0;
+        }
+        """);
 
-    private string FragmentShaderSource => GetShader(true, """  
-#version 100
-precision mediump float;
-varying vec4 vertexColor;
-void main()
-{
-    gl_FragColor = vertexColor;
-}
-""");
+    private string FragmentShaderSource => GetShader(true, """ 
+        #version 100
+        precision mediump float;
+        varying vec4 vertexColor;
+        void main()
+        {
+            gl_FragColor = vertexColor;
+        }
+        """);
 
     private static void CheckError(GlInterface gl)
     {
@@ -196,10 +251,12 @@ void main()
     private Shader? _shader;
     private BufferObject<float>? _vertexBufferObject;
     private VertexArrayObject<float>? _vertexArrayObject;
+    private BufferObject<float>? _linesVertexBufferObject;
+    private VertexArrayObject<float>? _linesVertexArrayObject;
     private GlVersion _glVersion;
 
     private readonly FastList<float> _pointsBuffer = new();
     private readonly FastList<float> _linesBuffer = new();
 
-    #endregion    
+    #endregion
 }
