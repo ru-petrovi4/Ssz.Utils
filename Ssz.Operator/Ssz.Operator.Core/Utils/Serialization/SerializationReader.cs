@@ -68,6 +68,8 @@ namespace Ssz.Operator.Core.Utils.Serialization
                         long streamCurrentPosition = _baseStream.Position;
                         _baseStream.Seek(stringsListInfoPosition + stringsListPositionDelta, SeekOrigin.Begin);
                         int count = _binaryReader.ReadInt32();
+                        if (count < 0 || count > 10000000) // Broken files FIX
+                            count = 0;
                         _stringsList = new List<string>(count);
                         for (int i = 0; i < count; i += 1)
                         {
@@ -1037,7 +1039,10 @@ namespace Ssz.Operator.Core.Utils.Serialization
                     return _binaryReader.ReadString();
                 case SerializedType.OptimizedStringType:
                     int index = ReadOptimizedInt32();
-                    return _stringsList[index];
+                    if (index < _stringsList.Count)
+                        return _stringsList[index];
+                    else
+                        return @"";
                 default:
                     throw new InvalidOperationException("Unrecognized TypeCode");
             }

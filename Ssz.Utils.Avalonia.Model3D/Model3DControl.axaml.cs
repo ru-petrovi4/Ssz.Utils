@@ -114,7 +114,7 @@ public partial class Model3DControl : UserControl
     private void OnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
     {
         _zoom -= (float)e.Delta.Y * 0.5f;
-        _zoom = Math.Max(1.0f, Math.Min(10.0f, _zoom));
+        _zoom = Math.Max(0.1f, Math.Min(10.0f, _zoom));
         _visual?.SendHandlerMessage(new Model3DMessage
         {
             Model3DScene = null,

@@ -79,13 +79,13 @@ public class FastList<T> : IFastList<T>, IList<T>, IReadOnlyList<T>, IOwnedDataS
 
     public FastList(int capacity = DefaultCapacity)
     {
-        _items = new T[capacity];
+        ItemsBuffer = new T[capacity];
         _count = 0;
     }
 
     public FastList(T[] items)
     {
-        _items = items;
+        ItemsBuffer = items;
         _count = items.Length;
     }
 
@@ -93,7 +93,9 @@ public class FastList<T> : IFastList<T>, IList<T>, IReadOnlyList<T>, IOwnedDataS
 
     #region public functions
 
-    public Span<T> Items => _items.AsSpan(0, _count);
+    public T[] ItemsBuffer;
+
+    public Span<T> Items => ItemsBuffer.AsSpan(0, _count);    
 
     public int Count => _count;
 
@@ -101,10 +103,10 @@ public class FastList<T> : IFastList<T>, IList<T>, IReadOnlyList<T>, IOwnedDataS
 
     public void Add(T item)
     {
-        if (_count >= _items.Length)
-            IncreaseSize(_items.Length == 0 ? DefaultCapacity : _items.Length * 2);
+        if (_count >= ItemsBuffer.Length)
+            IncreaseSize(ItemsBuffer.Length == 0 ? DefaultCapacity : ItemsBuffer.Length * 2);
 
-        _items[_count] = item;
+        ItemsBuffer[_count] = item;
         _count += 1;
     }
 
@@ -112,39 +114,44 @@ public class FastList<T> : IFastList<T>, IList<T>, IReadOnlyList<T>, IOwnedDataS
     {
         int required = _count + span.Length;
 
-        if (required > _items.Length)
+        if (required > ItemsBuffer.Length)
         {
-            int newCapacity = _items.Length == 0 ? DefaultCapacity : _items.Length;
+            int newCapacity = ItemsBuffer.Length == 0 ? DefaultCapacity : ItemsBuffer.Length;
             while (newCapacity < required)
                 newCapacity *= 2;
 
             IncreaseSize(newCapacity);
         }
 
-        span.CopyTo(_items.AsSpan(_count));
+        span.CopyTo(ItemsBuffer.AsSpan(_count));
         _count += span.Length;
     }
 
     public void AddRangeOfDefault(int count)
     {
+        if (count < 1)
+            return;
+
         int required = _count + count;
 
-        if (required > _items.Length)
+        if (required > ItemsBuffer.Length)
         {
-            int newCapacity = _items.Length == 0 ? DefaultCapacity : _items.Length;
+            int newCapacity = ItemsBuffer.Length == 0 ? DefaultCapacity : ItemsBuffer.Length;
             while (newCapacity < required)
                 newCapacity *= 2;
 
             IncreaseSize(newCapacity);
         }
+
+        Array.Clear(ItemsBuffer, _count, count);
 
         _count += count;
     }
 
     public void Swap(FastList<T> that)
     {
-        (that._items, that._count, _items, _count) = 
-            (_items, _count, that._items, that._count);
+        (that.ItemsBuffer, that._count, ItemsBuffer, _count) = 
+            (ItemsBuffer, _count, that.ItemsBuffer, that._count);
     }
 
     public void Clear()
@@ -154,8 +161,8 @@ public class FastList<T> : IFastList<T>, IList<T>, IReadOnlyList<T>, IOwnedDataS
 
     public T this[int index]
     {
-        get => _items[index]; // Без проверок на выход за пределы
-        set => _items[index] = value; // Без проверок на выход за пределы
+        get => ItemsBuffer[index]; // Без проверок на выход за пределы
+        set => ItemsBuffer[index] = value; // Без проверок на выход за пределы
     }
 
     /// <summary>
@@ -166,14 +173,14 @@ public class FastList<T> : IFastList<T>, IList<T>, IReadOnlyList<T>, IOwnedDataS
     {
         var newArray = new T[newSize];
         for (int i = 0; i < _count; i++)
-            newArray[i] = _items[i];
+            newArray[i] = ItemsBuffer[i];
 
-        _items = newArray;
+        ItemsBuffer = newArray;
     }
 
     public int IndexOf(T item)
     {
-        return Array.IndexOf(_items, item, 0, _count);
+        return Array.IndexOf(ItemsBuffer, item, 0, _count);
     }
 
     public void Insert(int index, T item)
@@ -195,12 +202,12 @@ public class FastList<T> : IFastList<T>, IList<T>, IReadOnlyList<T>, IOwnedDataS
 
     public bool Contains(T item)
     {
-        return Array.IndexOf(_items, item, 0, _count) > -1;
+        return Array.IndexOf(ItemsBuffer, item, 0, _count) > -1;
     }
 
     public void CopyTo(T[] array, int arrayIndex)
     {
-        Array.Copy(_items, 0, array, arrayIndex, _count);
+        Array.Copy(ItemsBuffer, 0, array, arrayIndex, _count);
     }
 
     public bool Remove(T item)
@@ -219,7 +226,7 @@ public class FastList<T> : IFastList<T>, IList<T>, IReadOnlyList<T>, IOwnedDataS
             writer.WriteOptimized(_count);
             if (typeof(T) == typeof(Int32))
             {
-                var items = (_items as int[])!;
+                var items = (ItemsBuffer as int[])!;
                 for (int i = 0; i < _count; i++)
                 {
                     writer.WriteOptimized(items[i]);
@@ -227,7 +234,7 @@ public class FastList<T> : IFastList<T>, IList<T>, IReadOnlyList<T>, IOwnedDataS
             }
             else if (typeof(T) == typeof(float))
             {
-                var items = (_items as float[])!;
+                var items = (ItemsBuffer as float[])!;
                 for (int i = 0; i < _count; i++)
                 {
                     writer.Write(items[i]);
@@ -235,7 +242,7 @@ public class FastList<T> : IFastList<T>, IList<T>, IReadOnlyList<T>, IOwnedDataS
             }
             else if (typeof(T) == typeof(double))
             {
-                var items = (_items as double[])!;
+                var items = (ItemsBuffer as double[])!;
                 for (int i = 0; i < _count; i++)
                 {
                     writer.Write(items[i]);
@@ -245,7 +252,7 @@ public class FastList<T> : IFastList<T>, IList<T>, IReadOnlyList<T>, IOwnedDataS
             {                
                 for (int i = 0; i < _count; i++)
                 {
-                    writer.WriteObject(_items[i]);
+                    writer.WriteObject(ItemsBuffer[i]);
                 }
             }
         }
@@ -259,11 +266,11 @@ public class FastList<T> : IFastList<T>, IList<T>, IReadOnlyList<T>, IOwnedDataS
             {
                 case 1:
                     _count = reader.ReadOptimizedInt32();
-                    if (_count >= _items.Length)
-                        _items = new T[_count];
+                    if (_count >= ItemsBuffer.Length)
+                        ItemsBuffer = new T[_count];
                     if (typeof(T) == typeof(Int32))
                     {
-                        var items = (_items as int[])!;
+                        var items = (ItemsBuffer as int[])!;
                         for (int i = 0; i < _count; i++)
                         {
                             items[i] = reader.ReadOptimizedInt32();
@@ -271,7 +278,7 @@ public class FastList<T> : IFastList<T>, IList<T>, IReadOnlyList<T>, IOwnedDataS
                     }
                     else if (typeof(T) == typeof(float))
                     {
-                        var items = (_items as float[])!;
+                        var items = (ItemsBuffer as float[])!;
                         for (int i = 0; i < _count; i++)
                         {
                             items[i] = reader.ReadSingle();
@@ -279,7 +286,7 @@ public class FastList<T> : IFastList<T>, IList<T>, IReadOnlyList<T>, IOwnedDataS
                     }
                     else if (typeof(T) == typeof(double))
                     {
-                        var items = (_items as double[])!;
+                        var items = (ItemsBuffer as double[])!;
                         for (int i = 0; i < _count; i++)
                         {
                             items[i] = reader.ReadDouble();
@@ -289,7 +296,7 @@ public class FastList<T> : IFastList<T>, IList<T>, IReadOnlyList<T>, IOwnedDataS
                     {
                         for (int i = 0; i < _count; i++)
                         {
-                            _items[i] = (T)reader.ReadObject()!;
+                            ItemsBuffer[i] = (T)reader.ReadObject()!;
                         }
                     }
                     break;
@@ -301,9 +308,7 @@ public class FastList<T> : IFastList<T>, IList<T>, IReadOnlyList<T>, IOwnedDataS
 
     #region private fields
 
-    private const int DefaultCapacity = 16;
-
-    private T[] _items;
+    private const int DefaultCapacity = 16;    
 
     private int _count;
 
@@ -334,7 +339,7 @@ public class FastList<T> : IFastList<T>, IList<T>, IReadOnlyList<T>, IOwnedDataS
 
             if ((uint)_index < (uint)localList._count)
             {
-                _current = localList._items[_index];
+                _current = localList.ItemsBuffer[_index];
                 _index++;
                 return true;
             }
