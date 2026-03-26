@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -31,7 +31,6 @@ internal class OpenGlContent
         });
         CheckError(gl);
 
-        // Create the vertex buffer object (VBO) for the points data.
         _vertexBufferObject = new BufferObject<float>(gl, GL_ARRAY_BUFFER);
         CheckError(gl);
 
@@ -44,7 +43,6 @@ internal class OpenGlContent
         gl.EnableVertexAttribArray(1);
         CheckError(gl);
 
-        // Create the vertex buffer object (VBO) for the lines data.
         _linesVertexBufferObject = new BufferObject<float>(gl, GL_ARRAY_BUFFER);
         CheckError(gl);
 
@@ -60,13 +58,11 @@ internal class OpenGlContent
 
     public void Deinit(GlInterface gl)
     {
-        // Unbind everything
         gl.BindBuffer(GL_ARRAY_BUFFER, 0);
         gl.BindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         gl.BindVertexArray(0);
         gl.UseProgram(0);
 
-        // Delete all resources.
         _vertexBufferObject?.Dispose();
         _vertexArrayObject?.Dispose();
 
@@ -122,7 +118,6 @@ internal class OpenGlContent
                 _linesBuffer.Clear();
                 int totalLineVertices = 0;
 
-                // Считаем общее количество вершин для отрезков
                 foreach (var polyline in lines)
                 {
                     if (polyline is null || polyline.Count < 2) continue;
@@ -133,7 +128,6 @@ internal class OpenGlContent
                 Span<float> lineData = _linesBuffer.Items;
                 int offset = 0;
 
-                // Заполняем буфер линиями
                 foreach (var polyline in lines)
                 {
                     if (polyline is null || polyline.Count < 2) continue;
@@ -142,7 +136,6 @@ internal class OpenGlContent
                         var p1 = polyline[i];
                         var p2 = polyline[i + 1];
 
-                        // Вершина 1 (Начало отрезка)
                         lineData[offset++] = p1.Position.X;
                         lineData[offset++] = p1.Position.Y;
                         lineData[offset++] = p1.Position.Z;
@@ -151,7 +144,6 @@ internal class OpenGlContent
                         lineData[offset++] = p1.Color.Z;
                         lineData[offset++] = p1.Color.W;
 
-                        // Вершина 2 (Конец отрезка). Цвет берется от первой вершины p1
                         lineData[offset++] = p2.Position.X;
                         lineData[offset++] = p2.Position.Y;
                         lineData[offset++] = p2.Position.Z;
@@ -169,10 +161,29 @@ internal class OpenGlContent
         _shader!.Use();
         CheckError(gl);
 
-        // Матрицы трансформации
-        var model = Matrix4x4.Identity * Matrix4x4.CreateRotationX(model3DMessage.RotationX) * Matrix4x4.CreateRotationY(model3DMessage.RotationY);
-        var view = Matrix4x4.CreateLookAt(new Vector3(0, 0, -model3DMessage.Zoom), Vector3.Zero, Vector3.UnitY);
-        var projection = Matrix4x4.CreatePerspectiveFieldOfView(MathF.PI / 4, (float)size.Width / (float)size.Height, 0.1f, 100.0f);
+        // Build rotation matrix (model local rotation around world center)
+        var rotation = Matrix4x4.CreateRotationX(model3DMessage.RotationX) *
+                       Matrix4x4.CreateRotationY(model3DMessage.RotationY);
+
+        // Camera position sits on negative Z axis at zoom distance
+        var cameraPos = new Vector3(0, 0, -model3DMessage.Zoom);
+
+        // Pan: shift the look-at target and camera eye together in view-right/up plane.
+        // We compute right/up vectors from the current rotation to pan in world space.
+        var right = new Vector3(rotation.M11, rotation.M21, rotation.M31); // rotation column 0
+        var up    = new Vector3(rotation.M12, rotation.M22, rotation.M32); // rotation column 1
+
+        var panOffset = right * model3DMessage.PanX + up * model3DMessage.PanY;
+
+        var eye    = cameraPos - panOffset;
+        var target = Vector3.Zero - panOffset;
+
+        var model      = Matrix4x4.Identity * rotation;
+        var view       = Matrix4x4.CreateLookAt(eye, target, Vector3.UnitY);
+        var projection = Matrix4x4.CreatePerspectiveFieldOfView(
+            MathF.PI / 4,
+            (float)size.Width / (float)size.Height,
+            0.01f, 1000.0f);
 
         unsafe
         {
@@ -181,18 +192,15 @@ internal class OpenGlContent
             gl.UniformMatrix4fv(gl.GetUniformLocationString(_shader.ProgramHandle, "projection"), 1, false, &projection);
         }
 
-        // Отрисовка точек
         if (_pointsBuffer.Count > 0)
         {
             _vertexBufferObject!.Bind();
             _vertexArrayObject!.Bind();
             const int GL_POINTS = 0;
-            // Делим на 7, так как Count - это размер в float, а нам нужно количество вершин
             gl.DrawArrays(GL_POINTS, 0, _pointsBuffer.Count / 7);
             CheckError(gl);
         }
 
-        // Отрисовка линий
         if (_linesBuffer.Count > 0)
         {
             _linesVertexBufferObject!.Bind();
@@ -210,7 +218,7 @@ internal class OpenGlContent
         return shader;
     }
 
-    private string VertexShaderSource => GetShader(false, """ 
+    private string VertexShaderSource => GetShader(false, """
         #version 100
         precision mediump float;
         attribute vec3 aPosition;
@@ -227,7 +235,7 @@ internal class OpenGlContent
         }
         """);
 
-    private string FragmentShaderSource => GetShader(true, """ 
+    private string FragmentShaderSource => GetShader(true, """
         #version 100
         precision mediump float;
         varying vec4 vertexColor;

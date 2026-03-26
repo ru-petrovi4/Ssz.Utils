@@ -28,9 +28,10 @@ public partial class Model3DControl : UserControl
         Border.PointerPressed += OnPointerPressed;
         Border.PointerMoved += OnPointerMoved;
         Border.PointerWheelChanged += OnPointerWheelChanged;
+        Border.DoubleTapped += OnDoubleTapped;
 
         PropertyChanged += OnPropertyChanged;
-    }    
+    }
 
     #endregion
 
@@ -76,8 +77,8 @@ public partial class Model3DControl : UserControl
     {
         _visual?.SendHandlerMessage(new DisposeMessage());
         _visual = null;
-        ElementComposition.SetElementChildVisual(Viewport, null);        
-    }   
+        ElementComposition.SetElementChildVisual(Viewport, null);
+    }
 
     private void UpdateVisualSize(Size size)
     {
@@ -88,39 +89,66 @@ public partial class Model3DControl : UserControl
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
         _lastMousePos = e.GetPosition(this);
+        e.Pointer.Capture(Border);
     }
 
     private void OnPointerMoved(object? sender, PointerEventArgs e)
     {
-        if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
-        {
-            var currentPos = e.GetPosition(this);
-            var delta = currentPos - _lastMousePos;
+        var point = e.GetCurrentPoint(this);
+        var currentPos = e.GetPosition(this);
+        var delta = currentPos - _lastMousePos;
 
+        if (point.Properties.IsLeftButtonPressed)
+        {
+            // Left button — orbit rotation
             _rotationY += (float)delta.X * 0.005f;
             _rotationX += (float)delta.Y * 0.005f;
 
             _lastMousePos = currentPos;
-            _visual?.SendHandlerMessage(new Model3DMessage
-            {
-                Model3DScene = null,
-                RotationX = _rotationX,
-                RotationY = _rotationY,
-                Zoom = _zoom
-            });
+            SendCurrentState();
+        }
+        else if (point.Properties.IsRightButtonPressed || point.Properties.IsMiddleButtonPressed)
+        {
+            // Right/Middle button — pan (translate camera target)
+            // Scale pan speed proportionally to current zoom distance
+            float panSpeed = _zoom * 0.001f;
+            _panX += (float)delta.X * panSpeed;
+            _panY -= (float)delta.Y * panSpeed;
+
+            _lastMousePos = currentPos;
+            SendCurrentState();
         }
     }
 
     private void OnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
     {
-        _zoom -= (float)e.Delta.Y * 0.5f;
-        _zoom = Math.Max(0.1f, Math.Min(10.0f, _zoom));
+        // Zoom: move camera closer/farther along view direction
+        _zoom -= (float)e.Delta.Y * _zoom * 0.1f;
+        _zoom = Math.Max(0.05f, Math.Min(100.0f, _zoom));
+        SendCurrentState();
+    }
+
+    private void OnDoubleTapped(object? sender, TappedEventArgs e)
+    {
+        // Double-click — reset to default view
+        _rotationX = 0f;
+        _rotationY = 0f;
+        _zoom = 5.0f;
+        _panX = 0f;
+        _panY = 0f;
+        SendCurrentState();
+    }
+
+    private void SendCurrentState(bool withScene = false)
+    {
         _visual?.SendHandlerMessage(new Model3DMessage
         {
-            Model3DScene = null,
+            Model3DScene = withScene ? Data : null,
             RotationX = _rotationX,
             RotationY = _rotationY,
-            Zoom = _zoom
+            Zoom = _zoom,
+            PanX = _panX,
+            PanY = _panY,
         });
     }
 
@@ -137,7 +165,9 @@ public partial class Model3DControl : UserControl
             Model3DScene = Data,
             RotationX = _rotationX,
             RotationY = _rotationY,
-            Zoom = _zoom
+            Zoom = _zoom,
+            PanX = _panX,
+            PanY = _panY,
         });
     }
 
@@ -145,9 +175,10 @@ public partial class Model3DControl : UserControl
 
     #region private fields
 
-    private CompositionCustomVisual? _visual;        
+    private CompositionCustomVisual? _visual;
     private float _rotationX, _rotationY;
     private float _zoom = 5.0f;
+    private float _panX, _panY;
     private Point _lastMousePos;
 
     #endregion
@@ -187,7 +218,6 @@ public partial class Model3DControl : UserControl
                     var gl = glContext.GlInterface;
                     if (_glContext != glContext)
                     {
-                        // The old context is lost
                         _fbo = null;
                         _contentInitialized = false;
                         _glContext = glContext;
@@ -269,7 +299,7 @@ public partial class Model3DControl : UserControl
             base.OnMessage(message);
         }
 
-        #endregion        
+        #endregion
 
         #region private fields
 
@@ -285,7 +315,6 @@ public partial class Model3DControl : UserControl
 
     public class DisposeMessage
     {
-
     }
 
     public class Model3DMessage
@@ -294,5 +323,7 @@ public partial class Model3DControl : UserControl
         public float RotationX;
         public float RotationY;
         public float Zoom;
+        public float PanX;
+        public float PanY;
     }
 }
