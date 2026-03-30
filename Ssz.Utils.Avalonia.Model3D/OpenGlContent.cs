@@ -159,31 +159,26 @@ internal class OpenGlContent
         }
 
         _shader!.Use();
-        CheckError(gl);
+        CheckError(gl);        
 
-        // Build rotation matrix (model local rotation around world center)
-        var rotation = Matrix4x4.CreateRotationX(model3DMessage.RotationX) *
-                       Matrix4x4.CreateRotationY(model3DMessage.RotationY);
+        // Камера как в Helix-подобной orbit navigation:
+        // eye = target - forward * distance
+        var forward = new Vector3(
+            MathF.Cos(model3DMessage.Pitch) * MathF.Cos(model3DMessage.Yaw),
+            MathF.Sin(model3DMessage.Pitch),
+            MathF.Cos(model3DMessage.Pitch) * MathF.Sin(model3DMessage.Yaw));
 
-        // Camera position sits on negative Z axis at zoom distance
-        var cameraPos = new Vector3(0, 0, -model3DMessage.Zoom);
+        forward = Vector3.Normalize(forward);
 
-        // Pan: shift the look-at target and camera eye together in view-right/up plane.
-        // We compute right/up vectors from the current rotation to pan in world space.
-        var right = new Vector3(rotation.M11, rotation.M21, rotation.M31); // rotation column 0
-        var up    = new Vector3(rotation.M12, rotation.M22, rotation.M32); // rotation column 1
+        var eye = model3DMessage.Target - forward * model3DMessage.Distance;
 
-        var panOffset = right * model3DMessage.PanX + up * model3DMessage.PanY;
-
-        var eye    = cameraPos - panOffset;
-        var target = Vector3.Zero - panOffset;
-
-        var model      = Matrix4x4.Identity * rotation;
-        var view       = Matrix4x4.CreateLookAt(eye, target, Vector3.UnitY);
+        var model = Matrix4x4.Identity;
+        var view = Matrix4x4.CreateLookAt(eye, model3DMessage.Target, Vector3.UnitY);
         var projection = Matrix4x4.CreatePerspectiveFieldOfView(
             MathF.PI / 4,
             (float)size.Width / (float)size.Height,
-            0.01f, 1000.0f);
+            0.01f,
+            5000.0f);
 
         unsafe
         {

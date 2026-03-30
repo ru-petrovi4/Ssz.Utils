@@ -1,9 +1,8 @@
 using System;
+using System.Numerics;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.LogicalTree;
-using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.OpenGL;
 using Avalonia.Platform;
@@ -27,8 +26,8 @@ public partial class Model3DControl : UserControl
 
         Border.PointerPressed += OnPointerPressed;
         Border.PointerMoved += OnPointerMoved;
+        Border.PointerReleased += OnPointerReleased;
         Border.PointerWheelChanged += OnPointerWheelChanged;
-        Border.DoubleTapped += OnDoubleTapped;
 
         PropertyChanged += OnPropertyChanged;
     }
@@ -66,6 +65,7 @@ public partial class Model3DControl : UserControl
         var visual = ElementComposition.GetElementVisual(Viewport);
         if (visual == null)
             return;
+
         _visual = visual.Compositor.CreateCustomVisual(new GlVisual(new OpenGlContent()));
         ElementComposition.SetElementChildVisual(Viewport, _visual);
         UpdateVisualSize(Bounds.Size);
@@ -83,73 +83,73 @@ public partial class Model3DControl : UserControl
     private void UpdateVisualSize(Size size)
     {
         if (_visual != null)
-            _visual.Size = new Vector(size.Width, size.Height);
+            _visual.Size = new global::Avalonia.Vector(size.Width, size.Height);
     }
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        _lastMousePos = e.GetPosition(this);
-        e.Pointer.Capture(Border);
+        _lastMousePos = e.GetPosition(Border);
+
+        var p = e.GetCurrentPoint(Border).Properties;
+        if (p.IsLeftButtonPressed)
+            _dragMode = DragMode.Rotate;
+        else if (p.IsRightButtonPressed || p.IsMiddleButtonPressed)
+            _dragMode = DragMode.Pan;
+        else
+            _dragMode = DragMode.None;
+
+        if (_dragMode != DragMode.None)
+            e.Pointer.Capture(Border);
+
+        e.Handled = true;
+    }
+
+    private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+        _dragMode = DragMode.None;
+        e.Pointer.Capture(null);
+        e.Handled = true;
     }
 
     private void OnPointerMoved(object? sender, PointerEventArgs e)
     {
-        var point = e.GetCurrentPoint(this);
-        var currentPos = e.GetPosition(this);
+        if (_dragMode == DragMode.None)
+            return;
+
+        var currentPos = e.GetPosition(Border);
         var delta = currentPos - _lastMousePos;
+        _lastMousePos = currentPos;
 
-        if (point.Properties.IsLeftButtonPressed)
+        switch (_dragMode)
         {
-            // Left button — orbit rotation
-            _rotationY += (float)delta.X * 0.005f;
-            _rotationX += (float)delta.Y * 0.005f;
+            case DragMode.Rotate:
+                _yaw -= (float)delta.X * RotateSensitivity;
+                _pitch += (float)delta.Y * RotateSensitivity;
+                _pitch = Math.Clamp(_pitch, -MaxPitch, MaxPitch);
+                break;
 
-            _lastMousePos = currentPos;
-            SendCurrentState();
-        }
-        else if (point.Properties.IsRightButtonPressed || point.Properties.IsMiddleButtonPressed)
-        {
-            // Right/Middle button — pan (translate camera target)
-            // Scale pan speed proportionally to current zoom distance
-            float panSpeed = _zoom * 0.001f;
-            _panX += (float)delta.X * panSpeed;
-            _panY -= (float)delta.Y * panSpeed;
+            case DragMode.Pan:
+                {
+                    var (forward, right, up) = GetCameraBasis();
+                    var scale = _distance * PanSensitivity;
 
-            _lastMousePos = currentPos;
-            SendCurrentState();
+                    _target += (-right * (float)delta.X * scale);
+                    _target += (up * (float)delta.Y * scale);
+                    break;
+                }
         }
+
+        SendCurrentState();
+        e.Handled = true;
     }
 
     private void OnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
     {
-        // Zoom: move camera closer/farther along view direction
-        _zoom -= (float)e.Delta.Y * _zoom * 0.1f;
-        _zoom = Math.Max(0.05f, Math.Min(100.0f, _zoom));
-        SendCurrentState();
-    }
+        _distance *= MathF.Exp(-(float)e.Delta.Y * ZoomSensitivity);
+        _distance = Math.Clamp(_distance, 0.05f, 5000f);
 
-    private void OnDoubleTapped(object? sender, TappedEventArgs e)
-    {
-        // Double-click — reset to default view
-        _rotationX = 0f;
-        _rotationY = 0f;
-        _zoom = 5.0f;
-        _panX = 0f;
-        _panY = 0f;
         SendCurrentState();
-    }
-
-    private void SendCurrentState(bool withScene = false)
-    {
-        _visual?.SendHandlerMessage(new Model3DMessage
-        {
-            Model3DScene = withScene ? Data : null,
-            RotationX = _rotationX,
-            RotationY = _rotationY,
-            Zoom = _zoom,
-            PanX = _panX,
-            PanY = _panY,
-        });
+        e.Handled = true;
     }
 
     private void OnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
@@ -160,15 +160,90 @@ public partial class Model3DControl : UserControl
 
     private void OnDataPropertyChanged()
     {
+        FitViewToScene(Data);
+        SendCurrentState(withScene: true);
+    }
+
+    private void SendCurrentState(bool withScene = false)
+    {
         _visual?.SendHandlerMessage(new Model3DMessage
         {
-            Model3DScene = Data,
-            RotationX = _rotationX,
-            RotationY = _rotationY,
-            Zoom = _zoom,
-            PanX = _panX,
-            PanY = _panY,
+            Model3DScene = withScene ? Data : null,
+            Target = _target,
+            Yaw = _yaw,
+            Pitch = _pitch,
+            Distance = _distance,
         });
+    }
+
+    private void FitViewToScene(Model3DScene? scene)
+    {
+        if (scene is null)
+            return;
+
+        bool hasAny = false;
+        var min = new Vector3(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
+        var max = new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
+
+        void Include(Vector3 p)
+        {
+            min = Vector3.Min(min, p);
+            max = Vector3.Max(max, p);
+            hasAny = true;
+        }
+
+        if (scene.Points is not null)
+        {
+            foreach (var point in scene.Points)
+                Include(point.Position);
+        }
+
+        if (scene.Lines is not null)
+        {
+            foreach (var polyline in scene.Lines)
+            {
+                if (polyline is null)
+                    continue;
+
+                foreach (var point in polyline)
+                    Include(point.Position);
+            }
+        }
+
+        if (!hasAny)
+            return;
+
+        _target = (min + max) * 0.5f;
+
+        var extent = max - min;
+        var radius = MathF.Max(extent.Length() * 0.5f, 1f);
+
+        // Стартовый вид как в примере Helix: камера стоит на +X и смотрит в центр.
+        _yaw = MathF.PI;
+        _pitch = 0f;
+
+        // FOV = 45°, небольшой запас по краям.
+        _distance = MathF.Max(radius / MathF.Tan(MathF.PI / 8f) * 1.2f, 1f);
+    }
+
+    private (Vector3 Forward, Vector3 Right, Vector3 Up) GetCameraBasis()
+    {
+        var forward = new Vector3(
+            MathF.Cos(_pitch) * MathF.Cos(_yaw),
+            MathF.Sin(_pitch),
+            MathF.Cos(_pitch) * MathF.Sin(_yaw));
+
+        forward = Vector3.Normalize(forward);
+
+        var right = Vector3.Cross(forward, Vector3.UnitY);
+        if (right.LengthSquared() < 1e-6f)
+            right = Vector3.UnitZ;
+        else
+            right = Vector3.Normalize(right);
+
+        var up = Vector3.Normalize(Vector3.Cross(right, forward));
+
+        return (forward, right, up);
     }
 
     #endregion
@@ -176,25 +251,37 @@ public partial class Model3DControl : UserControl
     #region private fields
 
     private CompositionCustomVisual? _visual;
-    private float _rotationX, _rotationY;
-    private float _zoom = 5.0f;
-    private float _panX, _panY;
     private Point _lastMousePos;
+
+    private Vector3 _target = Vector3.Zero;
+
+    // Стартовая камера: Position="10,0,0", LookDirection="-10,0,0"
+    private float _yaw = MathF.PI;
+    private float _pitch = 0f;
+    private float _distance = 10f;
+
+    private DragMode _dragMode;
+
+    private const float RotateSensitivity = 0.01f;
+    private const float PanSensitivity = 0.0025f;
+    private const float ZoomSensitivity = 0.12f;
+    private const float MaxPitch = 1.553343f; // ~89°
+
+    private enum DragMode
+    {
+        None,
+        Rotate,
+        Pan
+    }
 
     #endregion
 
     class GlVisual : CompositionCustomVisualHandler
     {
-        #region construction and destruction
-
         public GlVisual(OpenGlContent content)
         {
             _content = content;
         }
-
-        #endregion
-
-        #region public functions
 
         public override void OnRender(ImmediateDrawingContext drawingContext)
         {
@@ -209,6 +296,7 @@ public partial class Model3DControl : UserControl
                 var grContext = skiaLease.GrContext;
                 if (grContext == null)
                     return;
+
                 SKImage? snapshot;
                 using (var platformApiLease = skiaLease.TryLeasePlatformGraphicsApi())
                 {
@@ -281,15 +369,16 @@ public partial class Model3DControl : UserControl
                             {
                                 if (_contentInitialized)
                                     _content.Deinit(_glContext.GlInterface);
+
                                 _contentInitialized = false;
                                 _fbo?.Dispose();
                                 _fbo = null;
                             }
                         }
                     }
-                    catch (Exception e)
+                    catch (Exception ex)
                     {
-                        Console.WriteLine(e.ToString());
+                        Console.WriteLine(ex);
                     }
 
                     _glContext = null;
@@ -299,18 +388,12 @@ public partial class Model3DControl : UserControl
             base.OnMessage(message);
         }
 
-        #endregion
-
-        #region private fields
-
-        private OpenGlContent _content;
+        private readonly OpenGlContent _content;
         private Model3DMessage? _currentModel3DMessage;
         private bool _contentInitialized;
         private OpenGlFbo? _fbo;
         private bool _reRender;
         private IGlContext? _glContext;
-
-        #endregion
     }
 
     public class DisposeMessage
@@ -320,10 +403,9 @@ public partial class Model3DControl : UserControl
     public class Model3DMessage
     {
         public Model3DScene? Model3DScene;
-        public float RotationX;
-        public float RotationY;
-        public float Zoom;
-        public float PanX;
-        public float PanY;
+        public Vector3 Target;
+        public float Yaw;
+        public float Pitch;
+        public float Distance;
     }
 }
