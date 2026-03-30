@@ -45,6 +45,12 @@ public partial class Model3DControl : UserControl
         set => SetValue(DataProperty, value);
     }
 
+    public void ResetCamera()
+    {
+        FitViewToScene(Data);
+        SendCurrentState(withScene: false);
+    }
+
     #endregion
 
     #region protected functions
@@ -90,11 +96,11 @@ public partial class Model3DControl : UserControl
     {
         _lastMousePos = e.GetPosition(Border);
 
-        var p = e.GetCurrentPoint(Border).Properties;
-        if (p.IsLeftButtonPressed)
-            _dragMode = DragMode.Rotate;
-        else if (p.IsRightButtonPressed || p.IsMiddleButtonPressed)
+        var p = e.GetCurrentPoint(Border).Properties;        
+        if (p.IsLeftButtonPressed || p.IsMiddleButtonPressed)
             _dragMode = DragMode.Pan;
+        else if (p.IsRightButtonPressed)
+            _dragMode = DragMode.Rotate;
         else
             _dragMode = DragMode.None;
 
@@ -160,8 +166,21 @@ public partial class Model3DControl : UserControl
 
     private void OnDataPropertyChanged()
     {
-        FitViewToScene(Data);
-        SendCurrentState(withScene: true);
+        if (!_cameraInitialized)
+        {
+            FitViewToScene(Data);
+            _cameraInitialized = true;
+        }
+
+        // Передаём новую сцену, но положение камеры не трогаем
+        _visual?.SendHandlerMessage(new Model3DMessage
+        {
+            Model3DScene = Data,
+            Target = _target,
+            Yaw = _yaw,
+            Pitch = _pitch,
+            Distance = _distance,
+        });
     }
 
     private void SendCurrentState(bool withScene = false)
@@ -252,6 +271,8 @@ public partial class Model3DControl : UserControl
 
     private CompositionCustomVisual? _visual;
     private Point _lastMousePos;
+
+    private bool _cameraInitialized;
 
     private Vector3 _target = Vector3.Zero;
 
