@@ -159,26 +159,45 @@ internal class OpenGlContent
         }
 
         _shader!.Use();
-        CheckError(gl);        
+        CheckError(gl);
 
-        // Камера как в Helix-подобной orbit navigation:
-        // eye = target - forward * distance
+        // Камера для Z-up: Z зависит от Pitch, Yaw в плоскости XY
         var forward = new Vector3(
             MathF.Cos(model3DMessage.Pitch) * MathF.Cos(model3DMessage.Yaw),
-            MathF.Sin(model3DMessage.Pitch),
-            MathF.Cos(model3DMessage.Pitch) * MathF.Sin(model3DMessage.Yaw));
+            MathF.Cos(model3DMessage.Pitch) * MathF.Sin(model3DMessage.Yaw),
+            MathF.Sin(model3DMessage.Pitch));
 
         forward = Vector3.Normalize(forward);
 
         var eye = model3DMessage.Target - forward * model3DMessage.Distance;
 
         var model = Matrix4x4.Identity;
-        var view = Matrix4x4.CreateLookAt(eye, model3DMessage.Target, Vector3.UnitY);
+        // Передаем Vector3.UnitZ в качестве вектора "вверх"
+        var view = Matrix4x4.CreateLookAt(eye, model3DMessage.Target, Vector3.UnitZ);
         var projection = Matrix4x4.CreatePerspectiveFieldOfView(
             MathF.PI / 4,
             (float)size.Width / (float)size.Height,
             0.01f,
             5000.0f);
+
+        //// Камера как в Helix-подобной orbit navigation:
+        //// eye = target - forward * distance
+        //var forward = new Vector3(
+        //    MathF.Cos(model3DMessage.Pitch) * MathF.Cos(model3DMessage.Yaw),
+        //    MathF.Sin(model3DMessage.Pitch),
+        //    MathF.Cos(model3DMessage.Pitch) * MathF.Sin(model3DMessage.Yaw));
+
+        //forward = Vector3.Normalize(forward);
+
+        //var eye = model3DMessage.Target - forward * model3DMessage.Distance;
+
+        //var model = Matrix4x4.Identity;
+        //var view = Matrix4x4.CreateLookAt(eye, model3DMessage.Target, Vector3.UnitY);
+        //var projection = Matrix4x4.CreatePerspectiveFieldOfView(
+        //    MathF.PI / 4,
+        //    (float)size.Width / (float)size.Height,
+        //    0.01f,
+        //    5000.0f);
 
         unsafe
         {

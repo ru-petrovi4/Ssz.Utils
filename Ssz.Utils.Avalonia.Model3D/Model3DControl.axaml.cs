@@ -235,11 +235,16 @@ public partial class Model3DControl : UserControl
         _target = (min + max) * 0.5f;
 
         var extent = max - min;
-        var radius = MathF.Max(extent.Length() * 0.5f, 1f);
+        var radius = MathF.Max(extent.Length() * 0.5f, 1f);        
 
-        // Стартовый вид как в примере Helix: камера стоит на +X и смотрит в центр.
-        _yaw = MathF.PI;
+        // Стартовый вид: камера смотрит вдоль оси +Y.
+        // При Pitch = 0 и Yaw = PI/2 вектор Forward будет (0, 1, 0).
+        _yaw = MathF.PI / 2f;
         _pitch = 0f;
+
+        //// Стартовый вид как в примере Helix: камера стоит на +X и смотрит в центр.
+        //_yaw = MathF.PI;
+        //_pitch = 0f;
 
         // FOV = 45°, небольшой запас по краям.
         _distance = MathF.Max(radius / MathF.Tan(MathF.PI / 8f) * 1.2f, 1f);
@@ -247,18 +252,28 @@ public partial class Model3DControl : UserControl
 
     private (Vector3 Forward, Vector3 Right, Vector3 Up) GetCameraBasis()
     {
+        // Сферические координаты для Z-up системы:
+        // Z - это высота (Pitch), X и Y - плоскость вращения (Yaw)
         var forward = new Vector3(
             MathF.Cos(_pitch) * MathF.Cos(_yaw),
-            MathF.Sin(_pitch),
-            MathF.Cos(_pitch) * MathF.Sin(_yaw));
+            MathF.Cos(_pitch) * MathF.Sin(_yaw),
+            MathF.Sin(_pitch));
 
         forward = Vector3.Normalize(forward);
 
-        var right = Vector3.Cross(forward, Vector3.UnitY);
+        // Глобальный вектор вверх теперь Z
+        var globalUp = Vector3.UnitZ;
+
+        var right = Vector3.Cross(forward, globalUp);
         if (right.LengthSquared() < 1e-6f)
-            right = Vector3.UnitZ;
+        {
+            // Если смотрим ровно вверх или вниз
+            right = Vector3.UnitX;
+        }
         else
+        {
             right = Vector3.Normalize(right);
+        }
 
         var up = Vector3.Normalize(Vector3.Cross(right, forward));
 
@@ -277,7 +292,7 @@ public partial class Model3DControl : UserControl
     private Vector3 _target = Vector3.Zero;
 
     // Стартовая камера: Position="10,0,0", LookDirection="-10,0,0"
-    private float _yaw = MathF.PI;
+    private float _yaw = 0f;
     private float _pitch = 0f;
     private float _distance = 10f;
 
