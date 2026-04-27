@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+	  <LangVersion>Latest</LangVersion>
+	  <Nullable>Enable</Nullable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>    
+    <Company>SSZ</Company>
+    <Version>1.0.85</Version>
+    <Platforms>AnyCPU;x86</Platforms>
+    <EnforceExtendedAnalyzerRules>True</EnforceExtendedAnalyzerRules>
+  </PropertyGroup>
+
+  <ItemGroup>    
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="5.3.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.5" />
+    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="10.0.5" />
+  </ItemGroup>
+  
+</Project>

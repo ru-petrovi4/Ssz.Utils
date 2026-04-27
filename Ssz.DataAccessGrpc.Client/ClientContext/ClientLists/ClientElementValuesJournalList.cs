@@ -96,12 +96,12 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// <param name="serverAliases"></param>
         /// <returns></returns>
         /// <exception cref="ObjectDisposedException"></exception>
-        public async Task<ElementValuesJournal[]> ReadElementValuesJournalsAsync(DateTime firstTimestamp, DateTime secondTimestamp,
+        public async Task<ElementValuesJournal[]> ReadElementValuesJournals_FireAndForgetAsync(DateTime firstTimestamp, DateTime secondTimestamp,
             uint numValuesPerAlias, Ssz.Utils.DataAccess.TypeId? calculation, CaseInsensitiveOrderedDictionary<string?>? params_, uint[] serverAliases)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValuesJournalList.");
 
-            return await Context.ReadElementValuesJournalsAsync(this,
+            return await Context.ReadElementValuesJournals_FireAndForgetAsync(this,
                 firstTimestamp,
                 secondTimestamp,
                 numValuesPerAlias,

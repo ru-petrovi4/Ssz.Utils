@@ -36,7 +36,7 @@ namespace Ssz.DataAccessGrpc.Client
                 {
                     if (clientEventList.Disposed) return;
 
-                    await clientEventList.AckAlarmsAsync(operatorName, comment, eventIdsToAck);
+                    await clientEventList.AckAlarms_FireAndForgetAsync(operatorName, comment, eventIdsToAck);
                 }
                 catch (Exception ex)
                 {

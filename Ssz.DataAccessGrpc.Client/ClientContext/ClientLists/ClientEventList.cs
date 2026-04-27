@@ -98,11 +98,11 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// <param name="comment"></param>
         /// <param name="eventIdsToAck"></param>
         /// <returns></returns>
-        public async Task<Common.EventIdResult[]> AckAlarmsAsync(string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] eventIdsToAck)
+        public async Task<Common.EventIdResult[]> AckAlarms_FireAndForgetAsync(string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] eventIdsToAck)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
-            return await Context.AckAlarmsAsync(ListServerAlias, operatorName, comment, eventIdsToAck);
+            return await Context.AckAlarms_FireAndForgetAsync(ListServerAlias, operatorName, comment, eventIdsToAck);
         }
 
         /// <summary>
@@ -116,11 +116,11 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
             return await Context.PollEventsChangesAsync(this);
         }
 
-        public async Task<List<Utils.DataAccess.EventMessagesCollection>> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveOrderedDictionary<string?>? params_)
+        public async Task<List<Utils.DataAccess.EventMessagesCollection>> ReadEventMessagesJournal_FireAndForgetAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveOrderedDictionary<string?>? params_)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
-            return await Context.ReadEventMessagesJournalAsync(this, firstTimestampUtc, secondTimestampUtc, params_);
+            return await Context.ReadEventMessagesJournal_FireAndForgetAsync(this, firstTimestampUtc, secondTimestampUtc, params_);
         }
 
         /// <summary>

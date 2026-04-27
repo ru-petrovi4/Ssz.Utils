@@ -33,7 +33,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <returns></returns>
         /// <exception cref="ObjectDisposedException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        public async Task<ElementValuesJournal[]> ReadElementValuesJournalsAsync(
+        public async Task<ElementValuesJournal[]> ReadElementValuesJournals_FireAndForgetAsync(
             ClientElementValuesJournalList elementValuesJournalList, 
             DateTime firstTimestampUtc,
             DateTime secondTimestampUtc,
@@ -94,7 +94,7 @@ namespace Ssz.DataAccessGrpc.Client
             }
         }
 
-        public async Task<List<Utils.DataAccess.EventMessagesCollection>> ReadEventMessagesJournalAsync(ClientEventList eventList, DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveOrderedDictionary<string?>? params_)
+        public async Task<List<Utils.DataAccess.EventMessagesCollection>> ReadEventMessagesJournal_FireAndForgetAsync(ClientEventList eventList, DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveOrderedDictionary<string?>? params_)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 

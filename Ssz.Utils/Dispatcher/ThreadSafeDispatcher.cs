@@ -21,8 +21,7 @@ namespace Ssz.Utils
 
         #region public functions          
 
-        /// <summary>
-        ///     If action is async, it is NOT awaited in InvokeActionsInQueueAsync(...)
+        /// <summary>        
         /// </summary>
         /// <param name="action"></param>
         public void BeginInvoke(Action<CancellationToken> action)
@@ -33,6 +32,23 @@ namespace Ssz.Utils
             {
                 actions2 = actions;
                 Action<CancellationToken>? actions3 = (Action<CancellationToken>?)Delegate.Combine(actions2, action);
+                actions = Interlocked.CompareExchange(ref _actions, actions3, actions2);
+            }
+            while (actions != actions2);
+        }
+
+        /// <summary>
+        ///     asyncAction is NOT awaited in InvokeActionsInQueueAsync(...)
+        /// </summary>
+        /// <param name="asyncAction"></param>
+        public void BeginInvoke(Func<CancellationToken, Task> asyncAction)
+        {
+            Action<CancellationToken>? actions2;
+            Action<CancellationToken>? actions = _actions;
+            do
+            {
+                actions2 = actions;
+                Action<CancellationToken>? actions3 = (Action<CancellationToken>?)Delegate.Combine(actions2, asyncAction);
                 actions = Interlocked.CompareExchange(ref _actions, actions3, actions2);
             }
             while (actions != actions2);

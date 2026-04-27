@@ -54,7 +54,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="comment"></param>
         /// <param name="eventIdsToAck"></param>
         /// <returns></returns>
-        public async Task<EventIdResult[]> AckAlarmsAsync(uint listServerAlias,
+        public async Task<EventIdResult[]> AckAlarms_FireAndForgetAsync(uint listServerAlias,
             string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] eventIdsToAck)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
@@ -82,7 +82,14 @@ namespace Ssz.DataAccessGrpc.Client
             }
         }
 
-        public async Task UpdateContextParamsAsync(CaseInsensitiveOrderedDictionary<string?> contextParams)
+        /// <summary>
+        ///     
+        /// </summary>
+        /// <param name="contextParams"></param>
+        /// <returns></returns>
+        /// <exception cref="ObjectDisposedException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        public async Task UpdateContextParams_FireAndForgetAsync(CaseInsensitiveOrderedDictionary<string?> contextParams)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed Context.");
 
@@ -109,7 +116,7 @@ namespace Ssz.DataAccessGrpc.Client
             }
         }
 
-        public async Task<ReadOnlyMemory<byte>> PassthroughAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
+        public async Task<ReadOnlyMemory<byte>> Passthrough_FireAndForgetAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed Context.");
 
@@ -138,7 +145,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <returns></returns>
         /// <exception cref="ObjectDisposedException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        public async Task<Task<uint>> LongrunningPassthroughAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend,
+        public async Task<Task<uint>> LongrunningPassthrough_FireAndForgetAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend,
             Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackAction)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed Context.");

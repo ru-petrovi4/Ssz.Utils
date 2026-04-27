@@ -138,7 +138,7 @@ namespace Ssz.Xi.Client.Internal.Context
         /// <param name="dataToSend"></param>
         /// <param name="callbackAction"></param>
         /// <returns></returns>
-        public Task<Task<uint>> LongrunningPassthroughAsync(string recipientId, string passthroughName, ReadOnlyMemory<byte> dataToSend,
+        public Task<Task<uint>> LongrunningPassthrough_FireAndForgetAsync(string recipientId, string passthroughName, ReadOnlyMemory<byte> dataToSend,
             Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackAction)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");

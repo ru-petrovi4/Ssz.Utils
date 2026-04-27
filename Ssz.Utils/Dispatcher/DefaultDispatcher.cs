@@ -36,6 +36,20 @@ namespace Ssz.Utils
             }, null);
         }
 
+        public void BeginInvoke(Func<CancellationToken, Task> action)
+        {
+            _synchronizationContext?.Post(state =>
+            {
+                try
+                {
+                    action(CancellationToken.None);
+                }
+                catch
+                {
+                }
+            }, null);
+        }
+
         public void BeginInvokeEx(Func<CancellationToken, Task> action)
         {
             _synchronizationContext?.Post(async state =>

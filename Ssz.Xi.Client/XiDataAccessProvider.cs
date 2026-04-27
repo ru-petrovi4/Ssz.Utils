@@ -510,7 +510,7 @@ namespace Ssz.Xi.Client
                 {
                     if (_xiServerProxy is null) throw new InvalidOperationException();
 
-                    statusCodeTask = await _xiServerProxy.LongrunningPassthroughAsync(recipientId, passthroughName,
+                    statusCodeTask = await _xiServerProxy.LongrunningPassthrough_FireAndForgetAsync(recipientId, passthroughName,
                         dataToSend, callbackActionDispatched);
                 }
                 catch

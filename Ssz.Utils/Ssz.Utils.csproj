@@ -6,22 +6,22 @@
 	  <Nullable>Enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>    
     <Company>SSZ</Company>
-    <Version>1.0.85</Version>
+    <Version>1.0.86</Version>
     <Platforms>AnyCPU;x86</Platforms>  
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.4.2" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.5" />
-    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="10.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.7" />
+    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="10.0.7" />
     <PackageReference Include="protobuf-net" Version="3.2.56" />    
-    <PackageReference Include="System.ComponentModel.Composition" Version="10.0.5" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="10.0.7" />
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.7.2" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.5" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.7" />
   </ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-		<PackageReference Include="System.Collections.Immutable" Version="10.0.5" />	
+		<PackageReference Include="System.Collections.Immutable" Version="10.0.7" />	
 	</ItemGroup>
 
   <ItemGroup>

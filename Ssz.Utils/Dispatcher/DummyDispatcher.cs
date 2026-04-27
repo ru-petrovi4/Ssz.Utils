@@ -21,6 +21,17 @@ namespace Ssz.Utils
             }
         }
 
+        public void BeginInvoke(Func<CancellationToken, Task> action)
+        {
+            try
+            {
+                action(CancellationToken.None);
+            }
+            catch
+            {
+            }
+        }
+
         public async void BeginInvokeEx(Func<CancellationToken, Task> action)
         {
             try

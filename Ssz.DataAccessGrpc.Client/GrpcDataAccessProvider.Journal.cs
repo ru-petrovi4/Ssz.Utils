@@ -22,7 +22,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="valueSubscription"></param>
         public override void JournalAddItem(string elementId, object valueSubscription)
         {
-            WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
             {
                 if (!IsInitialized)
                     return;
@@ -62,7 +62,7 @@ namespace Ssz.DataAccessGrpc.Client
             {
                 try
                 {
-                    var result = await _clientElementValuesJournalListManager.ReadElementValuesJournalsAsync(firstTimestampUtc, secondTimestampUtc, numValuesPerSubscription, calculation, params_, valueSubscriptionsCollection);
+                    var result = await _clientElementValuesJournalListManager.ReadElementValuesJournals_FireAndForgetAsync(firstTimestampUtc, secondTimestampUtc, numValuesPerSubscription, calculation, params_, valueSubscriptionsCollection);
 
                     taskCompletionSource.SetResult(result);
                 }
@@ -89,7 +89,7 @@ namespace Ssz.DataAccessGrpc.Client
                 {
                     if (clientEventList.Disposed) return;                    
 
-                    var result = await clientEventList.ReadEventMessagesJournalAsync(firstTimestampUtc, secondTimestampUtc, params_);
+                    var result = await clientEventList.ReadEventMessagesJournal_FireAndForgetAsync(firstTimestampUtc, secondTimestampUtc, params_);
                     foreach (var eventMessagesCollection in result)
                     {
                         ElementIdsMap?.AddCommonFieldsToEventMessagesCollection(eventMessagesCollection);
@@ -120,7 +120,7 @@ namespace Ssz.DataAccessGrpc.Client
             _clientElementValuesJournalListManager.AddItem(elementId, clientObj);
             await _clientElementValuesJournalListManager.SubscribeAsync(_clientContextManager, Options.UnsubscribeValuesJournalListItemsFromServer);
 
-            var data = await _clientElementValuesJournalListManager.ReadElementValuesJournalsAsync(firstTimestampUtc, secondTimestampUtc, uint.MaxValue, new Ssz.Utils.DataAccess.TypeId(), null, new[] { clientObj });
+            var data = await _clientElementValuesJournalListManager.ReadElementValuesJournals_FireAndForgetAsync(firstTimestampUtc, secondTimestampUtc, uint.MaxValue, new Ssz.Utils.DataAccess.TypeId(), null, new[] { clientObj });
             if (data is not null)
                 return data[0];
 

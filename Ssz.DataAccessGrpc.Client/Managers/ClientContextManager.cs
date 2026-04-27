@@ -238,34 +238,34 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             return list;
         }
 
-        public async Task UpdateContextParamsAsync(CaseInsensitiveOrderedDictionary<string?> contextParams)
+        public async Task UpdateContextParams_FireAndForgetAsync(CaseInsensitiveOrderedDictionary<string?> contextParams)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
 
             if (_clientContext is null) throw new ConnectionDoesNotExistException();
 
-            await _clientContext.UpdateContextParamsAsync(contextParams);
+            await _clientContext.UpdateContextParams_FireAndForgetAsync(contextParams);
         }
 
-        public async Task<ReadOnlyMemory<byte>> PassthroughAsync(string recipientPath,
+        public async Task<ReadOnlyMemory<byte>> Passthrough_FireAndForgetAsync(string recipientPath,
                                       string passthroughName, ReadOnlyMemory<byte> dataToSend)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
 
             if (_clientContext is null) throw new ConnectionDoesNotExistException();
             
-            return await _clientContext.PassthroughAsync(recipientPath,
+            return await _clientContext.Passthrough_FireAndForgetAsync(recipientPath,
                                       passthroughName, dataToSend);
         }
 
-        public async Task<Task<uint>> LongrunningPassthroughAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend,
+        public async Task<Task<uint>> LongrunningPassthrough_FireAndForgetAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend,
             Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackAction)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
 
             if (_clientContext is null) throw new ConnectionDoesNotExistException();
 
-            return await _clientContext.LongrunningPassthroughAsync(recipientPath,
+            return await _clientContext.LongrunningPassthrough_FireAndForgetAsync(recipientPath,
                                       passthroughName, dataToSend, callbackAction);
         }
 

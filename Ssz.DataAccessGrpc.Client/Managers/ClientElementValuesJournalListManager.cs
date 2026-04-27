@@ -74,7 +74,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// <param name="params_"></param>
         /// <param name="valueSubscriptionsCollection"></param>
         /// <returns></returns>
-        public async Task<ElementValuesJournal[]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId? calculation,
+        public async Task<ElementValuesJournal[]?> ReadElementValuesJournals_FireAndForgetAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId? calculation,
             CaseInsensitiveOrderedDictionary<string?>? params_,
             object[] valueSubscriptionsCollection)
         {
@@ -99,7 +99,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                         }
                     }
 
-                    result = await dataAccessGrpcList.ReadElementValuesJournalsAsync(firstTimestampUtc, secondTimestampUtc, numValuesPerSubscription, calculation, params_, serverAliases.ToArray());
+                    result = await dataAccessGrpcList.ReadElementValuesJournals_FireAndForgetAsync(firstTimestampUtc, secondTimestampUtc, numValuesPerSubscription, calculation, params_, serverAliases.ToArray());
                 }
                 else
                 {

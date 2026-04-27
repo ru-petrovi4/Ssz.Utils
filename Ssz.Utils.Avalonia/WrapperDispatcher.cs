@@ -61,11 +61,18 @@ public class WrapperDispatcher : IDispatcher, IDisposable
         _dispatcher.Post(() => action(CancellationToken.None));
     }
 
-    public void BeginInvokeEx(Func<CancellationToken, Task> action)
+    public void BeginInvoke(Func<CancellationToken, Task> asyncAction)
     {
         if (Disposed) return;
 
-        _dispatcher.Post(() => action(CancellationToken.None));
+        _dispatcher.Post(() => asyncAction(CancellationToken.None));
+    }
+
+    public void BeginInvokeEx(Func<CancellationToken, Task> asyncAction)
+    {
+        if (Disposed) return;
+
+        _dispatcher.Post(() => asyncAction(CancellationToken.None));
     }
 
     #endregion

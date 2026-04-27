@@ -166,7 +166,7 @@ namespace Ssz.DataAccessGrpc.Client
             {
                 try
                 {
-                    await _clientContextManager.UpdateContextParamsAsync(contextParams);                    
+                    await _clientContextManager.UpdateContextParams_FireAndForgetAsync(contextParams);                    
                 }
                 catch (RpcException ex)
                 {
@@ -292,7 +292,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             var taskCompletionSource = new TaskCompletionSource<IValueSubscription[]?>();
 
-            WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
             {
                 if (!IsInitialized)
                 {
@@ -418,7 +418,7 @@ namespace Ssz.DataAccessGrpc.Client
 
             var taskCompletionSource = new TaskCompletionSource<ResultInfo>();
 
-            WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
             {
                 var resultInfo = ResultInfo.GoodResultInfo;
 
@@ -474,7 +474,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             var taskCompletionSource = new TaskCompletionSource<(IValueSubscription[], ResultInfo[])>();
 
-            WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
             {
                 if (!IsInitialized)
                 {
@@ -518,7 +518,7 @@ namespace Ssz.DataAccessGrpc.Client
                 ReadOnlyMemory<byte> returnData;
                 try
                 {
-                    returnData = await _clientContextManager.PassthroughAsync(recipientPath, passthroughName, dataToSend);                    
+                    returnData = await _clientContextManager.Passthrough_FireAndForgetAsync(recipientPath, passthroughName, dataToSend);                    
                 }
                 catch (RpcException ex)
                 {
@@ -571,7 +571,7 @@ namespace Ssz.DataAccessGrpc.Client
             {                
                 try
                 {
-                    ReadOnlyMemory<byte> returnData = await _clientContextManager.PassthroughAsync(recipientPath, passthroughName, dataToSend);
+                    ReadOnlyMemory<byte> returnData = await _clientContextManager.Passthrough_FireAndForgetAsync(recipientPath, passthroughName, dataToSend);
                     taskCompletionSource.SetResult(returnData);                    
                 }
                 catch (RpcException ex)
@@ -665,7 +665,7 @@ namespace Ssz.DataAccessGrpc.Client
                 Task<uint> statusCodeTask;
                 try
                 {
-                    statusCodeTask = await _clientContextManager.LongrunningPassthroughAsync(recipientPath, passthroughName,
+                    statusCodeTask = await _clientContextManager.LongrunningPassthrough_FireAndForgetAsync(recipientPath, passthroughName,
                         dataToSend, callbackActionDispatched);
                 }
                 catch (RpcException ex)
