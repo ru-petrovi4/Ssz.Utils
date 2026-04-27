@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Text.Json;
@@ -1553,18 +1554,43 @@ namespace Ssz.Utils.Serialization
         {
             try
             {
-                if (!typeString.Contains(','))
-                    return Type.GetType(typeString, throwOnError: false);
-                string[] typeStringParts = typeString.Split(',');
-                Type? type = Type.GetType(typeStringParts[0], throwOnError: false);
-                if (type is not null)
-                    return type;
-                return Type.GetType(typeStringParts[0] + "," + typeStringParts[1], throwOnError: false);
+                // Используем встроенный парсер .NET, который корректно обрабатывает Generics.
+                // assemblyResolver позволяет нам игнорировать версию и загружать сборку только по имени.
+                return Type.GetType(
+                    typeString,
+                    assemblyResolver: assemblyName =>
+                    {
+                        try
+                        {
+                            // Загружаем сборку по её простому имени (например, "ClientServerUtils")
+                            return Assembly.Load(new AssemblyName(assemblyName.Name!));
+                        }
+                        catch
+                        {
+                            return null;
+                        }
+                    },
+                    typeResolver: null,
+                    throwOnError: false);
             }
             catch
             {
             }
             return null;
+            //try
+            //{
+            //    if (!typeString.Contains(','))
+            //        return Type.GetType(typeString, throwOnError: false);
+            //    string[] typeStringParts = typeString.Split(',');
+            //    Type? type = Type.GetType(typeStringParts[0], throwOnError: false);
+            //    if (type is not null)
+            //        return type;
+            //    return Type.GetType(typeStringParts[0] + "," + typeStringParts[1], throwOnError: false);
+            //}
+            //catch
+            //{
+            //}
+            //return null;
         }
 
         /// <summary>
