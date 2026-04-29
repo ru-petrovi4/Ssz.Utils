@@ -43,15 +43,15 @@ namespace Ssz.Utils
         /// <param name="asyncAction"></param>
         public void BeginInvoke(Func<CancellationToken, Task> asyncAction)
         {
-            Action<CancellationToken>? actions2;
-            Action<CancellationToken>? actions = _actions;
+            Func<CancellationToken, Task>? asyncActions2;
+            Func<CancellationToken, Task>? asyncActions = _asyncActions;
             do
             {
-                actions2 = actions;
-                Action<CancellationToken>? actions3 = (Action<CancellationToken>?)Delegate.Combine(actions2, asyncAction);
-                actions = Interlocked.CompareExchange(ref _actions, actions3, actions2);
+                asyncActions2 = asyncActions;
+                Func<CancellationToken, Task>? asyncActions3 = (Func<CancellationToken, Task>?)Delegate.Combine(asyncActions2, asyncAction);
+                asyncActions = Interlocked.CompareExchange(ref _asyncActions, asyncActions3, asyncActions2);
             }
-            while (actions != actions2);
+            while (asyncActions != asyncActions2);
         }
 
         /// <summary>

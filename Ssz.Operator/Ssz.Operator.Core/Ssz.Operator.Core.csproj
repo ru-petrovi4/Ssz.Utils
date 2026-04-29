@@ -44,7 +44,7 @@
     <PackageReference Include="Google.Protobuf" Version="3.34.1" />
     <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
     <PackageReference Include="SharpVectors" Version="1.8.5" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="10.0.5" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="10.0.7" />
   </ItemGroup>
   <ItemGroup>
 	<Reference Include="PresentationFramework.Classic" Condition="'$(TargetFramework)' != 'net10.0-windows'" />
