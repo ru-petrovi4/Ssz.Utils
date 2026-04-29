@@ -19,7 +19,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
         private void RunControlEngineExe(string processModelingSessionId, DirectoryInfo processModelDirectoryInfo, DirectoryInfo binDirectoryInfo, string controlEngineServerAddress, IDataAccessProvider utilityDataAccessProvider, string instanceInfo)
         {
-            string exeFileFullName = Path.Combine(binDirectoryInfo.FullName, DataAccessConstants.ControlEngine_ClientApplicationName + @".exe");
+            string exeFileFullName = Path.Combine(binDirectoryInfo.FullName, @"Ssz.Dcs.ControlEngine.exe");
             string arguments = "-d \"" + processModelDirectoryInfo.FullName +
                 "\" --CentralServerAddress=" + utilityDataAccessProvider.ServerAddress +
                 " --CentralServerSystemName=\"" + processModelingSessionId + "\"" +
