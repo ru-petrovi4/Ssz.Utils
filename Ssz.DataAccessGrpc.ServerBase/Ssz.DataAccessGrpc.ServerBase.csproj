@@ -5,6 +5,9 @@
 	<LangVersion>Latest</LangVersion>
 	<Nullable>Enable</Nullable>
 	<Platforms>AnyCPU;x86</Platforms>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Company>SSZ</Company>
+    <Version>1.0.86</Version>
   </PropertyGroup>
 
   <ItemGroup>
