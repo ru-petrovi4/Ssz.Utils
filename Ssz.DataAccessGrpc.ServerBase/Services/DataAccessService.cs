@@ -441,6 +441,14 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         #region private functions
 
+        /// <summary>
+        ///     func is NOT awaited
+        /// </summary>
+        /// <typeparam name="TReply"></typeparam>
+        /// <param name="func"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        /// <exception cref="RpcException"></exception>
         private Task<TReply> GetReplyAsync<TReply>(Func<Task<TReply>> func, ServerCallContext context)
         {
             string parentMethodName = "";

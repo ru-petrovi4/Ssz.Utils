@@ -188,7 +188,7 @@ namespace Ssz.Utils.Addons
         {
             return @"";
         }
-
+        
         public virtual Task AddonTestAsync(string options, ILoggersSet loggersSet)
         {
             return Task.CompletedTask;
