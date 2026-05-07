@@ -174,8 +174,16 @@ namespace Ssz.Operator.Core
                     return null;
                 }
             });
-        }        
+        }
 
+        /// <summary>
+        ///    Может быть:
+        ///    <para>XAML</para>
+        ///    <para>file_name.ext&Stretch=stretch_type</para>
+        /// </summary>
+        /// <param name="xamlWithDesc"></param>
+        /// <param name="filesDirectoryFullName"></param>
+        /// <returns></returns>
         public static async Task<object?> LoadFromXamlWithDescAsync(string xamlWithDesc, string? filesDirectoryFullName)
         {
             if (string.IsNullOrWhiteSpace(xamlWithDesc))
@@ -184,10 +192,10 @@ namespace Ssz.Operator.Core
             try
             {
                 var xamlDesc = GetXamlDesc(xamlWithDesc);
-                var desc = xamlDesc.TryGetValue(@"");
-                if (String.IsNullOrEmpty(desc))
+                var defaultValue = xamlDesc.TryGetValue(@"");
+                if (String.IsNullOrEmpty(defaultValue))
                     return null;
-                if (String.Equals(desc, @"XAML", StringComparison.InvariantCultureIgnoreCase))
+                if (String.Equals(defaultValue, @"XAML", StringComparison.InvariantCultureIgnoreCase))
                 {
                     string? xamlWithoutDesc = GetXamlWithoutDesc(xamlWithDesc);
                     if (string.IsNullOrWhiteSpace(xamlWithoutDesc))
@@ -202,7 +210,7 @@ namespace Ssz.Operator.Core
                     });
                 }
 
-                var stream = await DsProject.GetStreamAsync(Path.Combine(filesDirectoryFullName ?? @"", desc));
+                var stream = await DsProject.GetStreamAsync(Path.Combine(filesDirectoryFullName ?? @"", defaultValue));
                 if (stream is null)
                     return null;
 
@@ -213,7 +221,7 @@ namespace Ssz.Operator.Core
                         Stretch stretch = Stretch.Fill;
                         if (xamlDesc.TryGetValue(@"Stretch", out string? stretchString) && !String.IsNullOrEmpty(stretchString))
                             stretch = new Any(stretchString).ValueAs<Stretch>(false);
-                        string extension = Path.GetExtension(desc) ?? @"";
+                        string extension = Path.GetExtension(defaultValue) ?? @"";
                         switch (extension.ToUpperInvariant())
                         {
                             case ".GIF":

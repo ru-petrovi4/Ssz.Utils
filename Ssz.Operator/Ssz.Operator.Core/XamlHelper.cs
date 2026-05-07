@@ -275,7 +275,6 @@ namespace Ssz.Operator.Core
             return sb.ToString();
         }
 
-
         public static string GetXamlWithAbsolutePaths(FileInfo fileInfo, Stretch stretch, out Size? contentOriginalSize)
         {
             string? result = null;
@@ -320,9 +319,9 @@ namespace Ssz.Operator.Core
                         stretch + "\" />";
                     break;
                 case ".GIF":
-                    result =
-                        "<Image xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" xmlns:wpfAnimatedGif=\"clr-namespace:Ssz.Utils.Wpf.WpfAnimatedGif;assembly=Ssz.Utils.Wpf\" wpfAnimatedGif:ImageBehavior.AnimatedSource=\"" +
-                        GetFileUriStringWithAbsolutePath(fileInfo.FullName) + "\" Stretch=\"" + stretch + "\" />";
+                    result = @""; // Load from file
+                    //"<Image xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" xmlns:wpfAnimatedGif=\"clr-namespace:Ssz.Utils.Wpf.WpfAnimatedGif;assembly=Ssz.Utils.Wpf\" wpfAnimatedGif:ImageBehavior.AnimatedSource=\"" +
+                    //    GetFileUriStringWithAbsolutePath(fileInfo.FullName) + "\" Stretch=\"" + stretch + "\" />";
                     try
                     {
                         System.Drawing.Image img = System.Drawing.Image.FromFile(fileInfo.FullName);
@@ -334,10 +333,13 @@ namespace Ssz.Operator.Core
                     }
 
                     break;
+                case ".SVG":
+                    result = @""; // Load from file
+                    break;
                 default:
-                    result =
-                        "<Image xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" Source=\"" +
-                        GetFileUriStringWithAbsolutePath(fileInfo.FullName) + "\" Stretch=\"" + stretch + "\" />";
+                    result = @""; // Load from file
+                        //"<Image xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" Source=\"" +
+                        //GetFileUriStringWithAbsolutePath(fileInfo.FullName) + "\" Stretch=\"" + stretch + "\" />";
                     try
                     {
                         System.Drawing.Image img = System.Drawing.Image.FromFile(fileInfo.FullName);
