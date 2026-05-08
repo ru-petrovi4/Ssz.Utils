@@ -560,7 +560,7 @@
     <value>Current Content:</value>
   </data>
   <data name="ContentEditorSelectFileButtonText" xml:space="preserve">
-    <value>Select File (image, animated GIF, XPS, OXPS, XAML, HTML)</value>
+    <value>Select File (image, SVG, animated GIF, XPS, OXPS, XAML, HTML)</value>
   </data>
   <data name="ContentEditorSelectFileFromLibraryButtonText" xml:space="preserve">
     <value>Select Image from Library</value>

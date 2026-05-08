@@ -187,9 +187,9 @@ namespace Ssz.Utils
 
             foreach (var kvp in nameValueCollection)
             {
-                if (kvp.Item2 == @"")
+                if (kvp.Item1 == @"")
                 {
-                    items.Add(kvp.Item1 ?? @"%null");
+                    items.Add(kvp.Item2 ?? @"%null");
                 }
                 else
                 {

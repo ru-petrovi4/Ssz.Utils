@@ -8,9 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Shapes;
-
-
-
+using SharpVectors.Converters;
 using Ssz.Operator.Core.Drawings;
 using Ssz.Operator.Core.DsShapes;
 using Ssz.Operator.Core.Utils;
@@ -86,7 +84,8 @@ namespace Ssz.Operator.Core.ControlsDesign
         private bool ExtractDsShapesFromUIElement(DsPageDrawing dsPageDrawing, UIElement? uiElement,
             List<DsShapeBase> extractedDsShapes)
         {
-            if (uiElement is null) return false;
+            if (uiElement is null || uiElement is Image || uiElement is SvgViewbox) 
+                return false;
 
             var path = uiElement as Path;
             if (path is not null)
@@ -106,9 +105,9 @@ namespace Ssz.Operator.Core.ControlsDesign
                 return ExtractDsShapesFromUIElement(dsPageDrawing, viewbox.Child, extractedDsShapes);
             }
 
-            var FixedPage = uiElement as FixedPage;
-            if (FixedPage is not null)
-                return ExtractDsShapesFromUIElements(dsPageDrawing, FixedPage.Children.OfType<UIElement>(),
+            var fixedPage = uiElement as FixedPage;
+            if (fixedPage is not null)
+                return ExtractDsShapesFromUIElements(dsPageDrawing, fixedPage.Children.OfType<UIElement>(),
                     extractedDsShapes);
 
             var canvas = uiElement as Canvas;

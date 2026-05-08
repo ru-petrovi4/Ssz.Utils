@@ -58,7 +58,7 @@ namespace Ssz.Operator.Core
             object? result;
             try
             {
-                result = XamlHelper.Load(ConstValue.Xaml);
+                result = XamlHelper.LoadFromXamlWithDesc(ConstValue.Xaml, null);
             }
             catch
             {

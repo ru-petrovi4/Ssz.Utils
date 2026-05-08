@@ -38,7 +38,7 @@ namespace Ssz.Operator.Core.VisualEditors.SelectImageFromLibrary
                     string contentDesc;
                     Stretch contentStretch;
                     var contentPreview =
-                        XamlHelper.GetContentPreview(xaml, out contentDesc, out contentStretch) as FrameworkElement;
+                        XamlHelper.GetContentPreview(xaml, null, out contentDesc, out contentStretch) as FrameworkElement;
 
                     var bytes = XamlHelper.CreatePreviewImageBytes(contentPreview, imageWidth, imageWidth);
                     if (bytes is null) return null;

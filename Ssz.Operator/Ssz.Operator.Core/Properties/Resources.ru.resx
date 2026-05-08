@@ -490,7 +490,7 @@
     <value>Текущий контент:</value>
   </data>
   <data name="ContentEditorSelectFileButtonText" xml:space="preserve">
-    <value>Выберите файл (XPS, OXPS, XAML, HTML, image, animated GIF)</value>
+    <value>Выберите файл (image, SVG, animated GIF, XPS, OXPS, XAML, HTML)</value>
   </data>
   <data name="ContentEditorSelectFileFromLibraryButtonText" xml:space="preserve">
     <value>выбрать картинку из библиотеки</value>

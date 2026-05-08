@@ -191,15 +191,10 @@ namespace Ssz.Operator.Core
 
             try
             {
-                var xamlDesc = GetXamlDesc(xamlWithDesc);
-                var defaultValue = xamlDesc.TryGetValue(@"");
-                if (String.IsNullOrEmpty(defaultValue))
-                    return null;
-                if (String.Equals(defaultValue, @"XAML", StringComparison.InvariantCultureIgnoreCase))
+                // XAML
+                string? xamlWithoutDesc = GetXamlWithoutDesc(xamlWithDesc);
+                if (!string.IsNullOrWhiteSpace(xamlWithoutDesc))
                 {
-                    string? xamlWithoutDesc = GetXamlWithoutDesc(xamlWithDesc);
-                    if (string.IsNullOrWhiteSpace(xamlWithoutDesc))
-                        return null;
                     xamlWithoutDesc = PrepareObsoleteXaml(xamlWithoutDesc);
                     if (string.IsNullOrWhiteSpace(xamlWithoutDesc))
                         return null;
@@ -209,6 +204,11 @@ namespace Ssz.Operator.Core
                         return AvaloniaRuntimeXamlLoader.Parse(xamlWithoutDesc);
                     });
                 }
+
+                var xamlDesc = GetXamlDesc(xamlWithDesc);
+                var defaultValue = xamlDesc.TryGetValue(@"");
+                if (string.IsNullOrWhiteSpace(defaultValue))
+                    return null;
 
                 var stream = await DsProject.GetStreamAsync(Path.Combine(filesDirectoryFullName ?? @"", defaultValue));
                 if (stream is null)

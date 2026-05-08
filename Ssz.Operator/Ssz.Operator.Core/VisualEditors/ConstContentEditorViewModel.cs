@@ -22,7 +22,7 @@ namespace Ssz.Operator.Core.VisualEditors
 
                 string contentDesc;
                 Stretch contentStretch;
-                ContentPreview = XamlHelper.GetContentPreview(_xaml, out contentDesc, out contentStretch);
+                ContentPreview = XamlHelper.GetContentPreview(_xaml, null, out contentDesc, out contentStretch);
                 ContentDesc = contentDesc;
                 if (contentStretch != _contentStretch)
                 {

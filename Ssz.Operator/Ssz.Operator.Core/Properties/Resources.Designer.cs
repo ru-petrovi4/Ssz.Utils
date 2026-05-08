@@ -1267,7 +1267,7 @@ namespace Ssz.Operator.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select File (image, animated GIF, XPS, OXPS, XAML, HTML).
+        ///   Looks up a localized string similar to Select File (image, SVG, animated GIF, XPS, OXPS, XAML, HTML).
         /// </summary>
         public static string ContentEditorSelectFileButtonText {
             get {

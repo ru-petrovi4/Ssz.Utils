@@ -56,7 +56,7 @@ namespace Ssz.Operator.Core.Drawings
             if (dsPageDrawing.UnderlyingXaml.IsEmpty) return null;
             try
             {
-                return XamlHelper.Load(dsPageDrawing.UnderlyingXaml.Xaml);
+                return XamlHelper.LoadFromXamlWithDesc(dsPageDrawing.UnderlyingXaml.Xaml, null);
             }
             catch
             {

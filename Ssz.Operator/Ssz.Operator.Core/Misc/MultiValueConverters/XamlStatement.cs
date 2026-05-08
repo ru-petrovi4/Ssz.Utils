@@ -110,7 +110,7 @@ namespace Ssz.Operator.Core.MultiValueConverters
             {
                 try
                 {
-                    _constObject = XamlHelper.Load(_constDsXaml.Xaml);
+                    _constObject = XamlHelper.LoadFromXamlWithDesc(_constDsXaml.Xaml, null);
                 }
                 catch
                 {
