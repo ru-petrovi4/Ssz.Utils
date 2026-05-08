@@ -403,7 +403,7 @@ namespace Ssz.Operator.Core
                     return;
                 string relativePath = Uri.UnescapeDataString(defaultValue);
                 if (Path.HasExtension(relativePath))
-                    usedFileNames.Add(relativePath);
+                    usedFileNames.Add(Path.GetFileName(relativePath));
             }
             else
             {
