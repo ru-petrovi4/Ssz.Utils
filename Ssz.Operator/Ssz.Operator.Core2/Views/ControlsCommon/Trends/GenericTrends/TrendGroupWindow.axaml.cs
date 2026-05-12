@@ -54,30 +54,30 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
         {
             (Content as IDisposable)?.Dispose();
 
-            switch (windowType)
-            {
-                case WindowType.TrendGroup:
-                    {
-                        var userTrendGroupControl = new TrendGroupControl();
-                        userTrendGroupControl.Jump(param_, @"");
-                        Content = userTrendGroupControl;
-                    }
-                    break;
-                case WindowType.UserTrendGroup:
-                    {
-                        var userTrendGroupControl = new TrendGroupControl();
-                        userTrendGroupControl.Jump(param_, @"");
-                        Content = userTrendGroupControl;
-                    }
-                    break;
-                case WindowType.TrendForTag:
-                    {
-                        var userTrendGroupControl = new TrendGroupControl();
-                        userTrendGroupControl.Jump(@"", param_);
-                        Content = userTrendGroupControl;
-                    }
-                    break;
-            }            
+            //switch (windowType)
+            //{
+            //    case WindowType.TrendGroup:
+            //        {
+            //            var userTrendGroupControl = new TrendGroupControl();
+            //            userTrendGroupControl.Jump(param_, @"");
+            //            Content = userTrendGroupControl;
+            //        }
+            //        break;
+            //    case WindowType.UserTrendGroup:
+            //        {
+            //            var userTrendGroupControl = new TrendGroupControl();
+            //            userTrendGroupControl.Jump(param_, @"");
+            //            Content = userTrendGroupControl;
+            //        }
+            //        break;
+            //    case WindowType.TrendForTag:
+            //        {
+            //            var userTrendGroupControl = new TrendGroupControl();
+            //            userTrendGroupControl.Jump(@"", param_);
+            //            Content = userTrendGroupControl;
+            //        }
+            //        break;
+            //}            
         }
 
         #endregion

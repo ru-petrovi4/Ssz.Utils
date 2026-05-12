@@ -38,6 +38,7 @@ using Ssz.Utils.Logging;
 using GuidAndName = Ssz.Operator.Core.Utils.GuidAndName;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.FileProviders;
+using Ssz.Utils.Avalonia;
 
 namespace Ssz.Operator.Core
 {

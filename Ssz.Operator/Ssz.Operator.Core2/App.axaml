@@ -10,13 +10,13 @@
     </Application.DataTemplates>
 
     <Application.Styles>
-		<ClassicTheme />
+		<!--<ClassicTheme />-->
 		
-        <FluentTheme />
+    <FluentTheme />
 
 		<!--<StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>-->
 
 		<!-- Add the line below to get OxyPlot UI theme applied in Avalonia 11. -->
-		<StyleInclude Source="avares://OxyPlot.Avalonia/Themes/Default.axaml"/>
+		<!--<StyleInclude Source="avares://OxyPlot.Avalonia/Themes/Default.axaml"/>-->
     </Application.Styles>
 </Application>

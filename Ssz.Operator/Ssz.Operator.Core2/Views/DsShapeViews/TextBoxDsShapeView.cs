@@ -147,12 +147,12 @@ namespace Ssz.Operator.Core.DsShapeViews
                     var valueConverter = (ValueConverterBase)_textBindingExpression.Item2!.Converter!;
                     valueConverter.ConvertBack(Control.Text, DsShapeViewModel, null, CultureInfo.InvariantCulture);
                     Dispatcher.UIThread.InvokeAsync(new Action(() => { valueConverter.DisableUpdatingTarget = false; }));                    
-                    TopLevel.GetTopLevel(this)?.FocusManager?.ClearFocus();
+                    TopLevel.GetTopLevel(this)?.Focus();
                     break;
                 case Key.Escape:
                     ((ValueConverterBase)_textBindingExpression.Item2.Converter!)
                         .DisableUpdatingTarget = false;
-                    TopLevel.GetTopLevel(this)?.FocusManager?.ClearFocus();
+                    TopLevel.GetTopLevel(this)?.Focus();
                     break;
                 default:
                     ((ValueConverterBase)_textBindingExpression.Item2.Converter!)

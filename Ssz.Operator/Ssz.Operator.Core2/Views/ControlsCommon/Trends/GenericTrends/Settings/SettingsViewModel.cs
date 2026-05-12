@@ -1,86 +1,85 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Avalonia.Media;
-using Ssz.Operator.Core.ControlsCommon.Trends;
-using Ssz.Utils;
+﻿//using System.Collections.Generic;
+//using System.Linq;
+//using Avalonia.Media;
+//using Ssz.Operator.Core.ControlsCommon.Trends;
+//using Ssz.Utils;
 
-namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends.Settings
-{
-    public class SettingsViewModel : ViewModelBase
-    {
-        #region construction and destruction
+//namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends.Settings;
 
-        public SettingsViewModel(TrendsPlotView plot)
-        {
-            _plot = plot;
+//public class SettingsViewModel : ViewModelBase
+//{
+//    #region construction and destruction
 
-            _initialPlotSettings = ColorPreset.FromPlotValues(plot);
-            _selectedPreset = ColorPresets.First();
-        }
+//    public SettingsViewModel(TrendsPlotView plot)
+//    {
+//        _plot = plot;
 
-        #endregion
+//        _initialPlotSettings = ColorPreset.FromPlotValues(plot);
+//        _selectedPreset = ColorPresets.First();
+//    }
 
-        #region public functions
+//    #endregion
 
-        public IEnumerable<ColorPreset> ColorPresets
-        {
-            get { return ColorPreset.Presets; }
-        }
+//    #region public functions
 
-        public ColorPreset SelectedPreset
-        {
-            get { return _selectedPreset; }
-            set
-            {
-                if (SetValue(ref _selectedPreset, value) && value != null)
-                    _selectedPreset.Apply(_plot);
-            }
-        }
+//    public IEnumerable<ColorPreset> ColorPresets
+//    {
+//        get { return ColorPreset.Presets; }
+//    }
 
-        public ColorPreset CustomPreset
-        {
-            get { return _customPreset; }
-            private set { SetValue(ref _customPreset, value); }
-        }
+//    public ColorPreset SelectedPreset
+//    {
+//        get { return _selectedPreset; }
+//        set
+//        {
+//            if (SetValue(ref _selectedPreset, value) && value != null)
+//                _selectedPreset.Apply(_plot);
+//        }
+//    }
 
-        public void ApplySelectedPredefinedPreset()
-        {
-            if (_selectedPreset != null)
-                _selectedPreset.Apply(_plot);
-        }
+//    public ColorPreset CustomPreset
+//    {
+//        get { return _customPreset; }
+//        private set { SetValue(ref _customPreset, value); }
+//    }
 
-        public void ApplyCustomPreset()
-        {
-            CustomPreset.Apply(_plot);
-        }
+//    public void ApplySelectedPredefinedPreset()
+//    {
+//        if (_selectedPreset != null)
+//            _selectedPreset.Apply(_plot);
+//    }
 
-        public void RestoreInitialPlotSettings()
-        {
-            _initialPlotSettings.Apply(_plot);
-        }
+//    public void ApplyCustomPreset()
+//    {
+//        CustomPreset.Apply(_plot);
+//    }
 
-        public void ChangeCustomPresetPlotBackgroundColor(Color color)
-        {
-            CustomPreset = CustomPreset.WithPlotBackgroundColor(color);
-            ApplyCustomPreset();
-        }
+//    public void RestoreInitialPlotSettings()
+//    {
+//        _initialPlotSettings.Apply(_plot);
+//    }
 
-        public void ChangeCustomPresetPlotAreaBackgroundColor(Color color)
-        {
-            CustomPreset = CustomPreset.WithPlotAreaBackgroundColor(color);
-            ApplyCustomPreset();
-        }
+//    public void ChangeCustomPresetPlotBackgroundColor(Color color)
+//    {
+//        CustomPreset = CustomPreset.WithPlotBackgroundColor(color);
+//        ApplyCustomPreset();
+//    }
 
-        #endregion
+//    public void ChangeCustomPresetPlotAreaBackgroundColor(Color color)
+//    {
+//        CustomPreset = CustomPreset.WithPlotAreaBackgroundColor(color);
+//        ApplyCustomPreset();
+//    }
 
-        #region private fields
+//    #endregion
 
-        private ColorPreset _selectedPreset;
-        private readonly TrendsPlotView _plot;
+//    #region private fields
 
-        private ColorPreset _customPreset = ColorPreset.Custom();
-        private readonly ColorPreset _initialPlotSettings;
+//    private ColorPreset _selectedPreset;
+//    private readonly TrendsPlotView _plot;
 
-        #endregion
-    }
-}
+//    private ColorPreset _customPreset = ColorPreset.Custom();
+//    private readonly ColorPreset _initialPlotSettings;
+
+//    #endregion
+//}

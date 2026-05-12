@@ -126,7 +126,7 @@ namespace Ssz.Operator.Core.DsShapeViews
                 string dataSourceString = DataItemHelper.GetDataSourceString(dataBindingItem.Type,
                                              dataBindingItem.IdString, dataBindingItem.DefaultValue, container);
                 CompiledBindingExtension binding =
-                    new CompiledBindingExtension(new CompiledBindingPathBuilder(1).Property(
+                    new CompiledBindingExtension(new CompiledBindingPathBuilder().Property( // !!!WARNING CompiledBindingPathBuilder(1)
                         new ClrPropertyInfo("Item",
                             obj0 => ((DataValueViewModel)obj0)[dataSourceString],
                             (obj0, obj1) => ((DataValueViewModel)obj0)[dataSourceString] = obj1,

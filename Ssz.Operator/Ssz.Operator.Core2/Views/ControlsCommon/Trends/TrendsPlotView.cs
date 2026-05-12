@@ -1,263 +1,262 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Data;
-using Avalonia.Media;
-using Ssz.Operator.Core;
-using Ssz.Operator.Core.ControlsPlay;
-using Ssz.Operator.Core.ControlsCommon.Trends;
-using Ssz.Operator.Core.ControlsCommon.Trends.Converters;
-using OxyPlot.Avalonia;
-using Avalonia.Controls.Metadata;
-using Avalonia.Controls.Primitives;
-using OxyPlot;
+//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Reflection;
+//using Avalonia;
+//using Avalonia.Controls;
+//using Avalonia.Data;
+//using Avalonia.Media;
+//using Ssz.Operator.Core;
+//using Ssz.Operator.Core.ControlsPlay;
+//using Ssz.Operator.Core.ControlsCommon.Trends;
+//using Ssz.Operator.Core.ControlsCommon.Trends.Converters;
+//using OxyPlot.Avalonia;
+//using Avalonia.Controls.Metadata;
+//using Avalonia.Controls.Primitives;
+//using OxyPlot;
 
-namespace Ssz.Operator.Core.ControlsCommon.Trends
-{
-    [TemplatePart(Name = Plot_PART, Type = typeof(Plot))]
-    [TemplatePart(Name = XAxis_PART, Type = typeof(DateTimeAxis))]
-    public abstract class TrendsPlotView : TemplatedControl
-    {
-        #region construction and destruction    
+//namespace Ssz.Operator.Core.ControlsCommon.Trends;
 
-        protected TrendsPlotView()
-        {
-            Loaded += (s, e) =>
-            {
-                DsProject.Instance.GlobalUITimerEvent += OnGlobalUITimerEvent;
-            };
+//[TemplatePart(Name = Plot_PART, Type = typeof(Plot))]
+//[TemplatePart(Name = XAxis_PART, Type = typeof(DateTimeAxis))]
+//public abstract class TrendsPlotView : TemplatedControl
+//{
+//    #region construction and destruction    
 
-            Unloaded += (s, e) =>
-            {
-                DsProject.Instance.GlobalUITimerEvent -= OnGlobalUITimerEvent;
-            };
-        }
+//    protected TrendsPlotView()
+//    {
+//        Loaded += (s, e) =>
+//        {
+//            DsProject.Instance.GlobalUITimerEvent += OnGlobalUITimerEvent;
+//        };
 
-        #endregion
+//        Unloaded += (s, e) =>
+//        {
+//            DsProject.Instance.GlobalUITimerEvent -= OnGlobalUITimerEvent;
+//        };
+//    }
 
-        #region public functions
+//    #endregion
 
-        public const string Plot_PART = "Plot";
-        public const string XAxis_PART = "XAxis";        
+//    #region public functions
 
-        public bool RefreshOnTimerTick = true;        
+//    public const string Plot_PART = "Plot";
+//    public const string XAxis_PART = "XAxis";        
 
-        public Plot? Plot { get; private set; }
+//    public bool RefreshOnTimerTick = true;        
 
-        public DateTimeAxis? XAxis { get; private set; }
+//    public Plot? Plot { get; private set; }
 
-        #endregion
+//    public DateTimeAxis? XAxis { get; private set; }
 
-        #region protected functions
+//    #endregion
 
-        protected static readonly AvaloniaProperty MinimumVisibleTimeProperty = AvaloniaProperty.Register<TrendsPlotView, DateTime>("MinimumVisibleTime", DateTime.MinValue);
+//    #region protected functions
 
-        protected static readonly AvaloniaProperty MaximumVisibleTimeProperty = AvaloniaProperty.Register<TrendsPlotView, DateTime>("MaximumVisibleTime", DateTime.MaxValue);
+//    protected static readonly AvaloniaProperty MinimumVisibleTimeProperty = AvaloniaProperty.Register<TrendsPlotView, DateTime>("MinimumVisibleTime", DateTime.MinValue);
 
-        private static readonly AvaloniaProperty ItemsProperty = AvaloniaProperty.Register<TrendsPlotView, IEnumerable<TrendViewModel>>("Items");
+//    protected static readonly AvaloniaProperty MaximumVisibleTimeProperty = AvaloniaProperty.Register<TrendsPlotView, DateTime>("MaximumVisibleTime", DateTime.MaxValue);
 
-        protected static readonly AvaloniaProperty SelectedItemProperty = AvaloniaProperty.Register<TrendsPlotView, TrendViewModel>("SelectedItem");
+//    private static readonly AvaloniaProperty ItemsProperty = AvaloniaProperty.Register<TrendsPlotView, IEnumerable<TrendViewModel>>("Items");
 
-        protected DateTime MinimumVisibleTime
-        {
-            get { return (DateTime)GetValue(MinimumVisibleTimeProperty)!; }
-        }
+//    protected static readonly AvaloniaProperty SelectedItemProperty = AvaloniaProperty.Register<TrendsPlotView, TrendViewModel>("SelectedItem");
 
-        protected DateTime MaximumVisibleTime
-        {
-            get { return (DateTime)GetValue(MaximumVisibleTimeProperty)!; }
-        }
+//    protected DateTime MinimumVisibleTime
+//    {
+//        get { return (DateTime)GetValue(MinimumVisibleTimeProperty)!; }
+//    }
 
-        protected IEnumerable<TrendViewModel> Items
-        {
-            get { return (IEnumerable<TrendViewModel>)GetValue(ItemsProperty)!; }
-        }
+//    protected DateTime MaximumVisibleTime
+//    {
+//        get { return (DateTime)GetValue(MaximumVisibleTimeProperty)!; }
+//    }
 
-        protected TrendViewModel? SelectedItem
-        {
-            get { return (TrendViewModel?)GetValue(SelectedItemProperty); }
-        }
+//    protected IEnumerable<TrendViewModel> Items
+//    {
+//        get { return (IEnumerable<TrendViewModel>)GetValue(ItemsProperty)!; }
+//    }
 
-        protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-        {
-            base.OnApplyTemplate(e);
+//    protected TrendViewModel? SelectedItem
+//    {
+//        get { return (TrendViewModel?)GetValue(SelectedItemProperty); }
+//    }
 
-            Plot = e.NameScope.Find(Plot_PART) as Plot;
-            XAxis = e.NameScope.Find(XAxis_PART) as DateTimeAxis;
+//    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+//    {
+//        base.OnApplyTemplate(e);
 
-            Bind(MinimumVisibleTimeProperty, new Binding("VisibleDateRange.Minimum") { Mode = BindingMode.OneWay });
-            Bind(MaximumVisibleTimeProperty, new Binding("VisibleDateRange.Maximum") { Mode = BindingMode.OneWay });
+//        Plot = e.NameScope.Find(Plot_PART) as Plot;
+//        XAxis = e.NameScope.Find(XAxis_PART) as DateTimeAxis;
 
-            Bind(ItemsProperty, new Binding("Items"));
-            Bind(SelectedItemProperty, new Binding("SelectedItem"));
+//        Bind(MinimumVisibleTimeProperty, new Binding("VisibleDateRange.Minimum") { Mode = BindingMode.OneWay });
+//        Bind(MaximumVisibleTimeProperty, new Binding("VisibleDateRange.Maximum") { Mode = BindingMode.OneWay });
 
-            if (XAxis != null)
-            {
-                XAxis.Bind(Axis.MinimumProperty, new Binding("VisibleDateRange.Minimum")
-                {
-                    Converter = new DateTimeToDoubleConverter()
-                });
+//        Bind(ItemsProperty, new Binding("Items"));
+//        Bind(SelectedItemProperty, new Binding("SelectedItem"));
 
-                XAxis.Bind(Axis.MaximumProperty, new Binding("VisibleDateRange.Maximum")
-                {
-                    Converter = new DateTimeToDoubleConverter()
-                });
-            }
+//        if (XAxis != null)
+//        {
+//            XAxis.Bind(Axis.MinimumProperty, new Binding("VisibleDateRange.Minimum")
+//            {
+//                Converter = new DateTimeToDoubleConverter()
+//            });
 
-            //if (Plot != null)
-            //{
-            //    try
-            //    {
-            //        Plot.ApplyTemplate();
-            //        //FixBugWithNotRegisteringMouseClickedOnPlotArea();
-            //    }
-            //    catch
-            //    {
-            //    }
-            //}
+//            XAxis.Bind(Axis.MaximumProperty, new Binding("VisibleDateRange.Maximum")
+//            {
+//                Converter = new DateTimeToDoubleConverter()
+//            });
+//        }
 
-            RefreshLines();
-        }
+//        //if (Plot != null)
+//        //{
+//        //    try
+//        //    {
+//        //        Plot.ApplyTemplate();
+//        //        //FixBugWithNotRegisteringMouseClickedOnPlotArea();
+//        //    }
+//        //    catch
+//        //    {
+//        //    }
+//        //}
 
-        protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
-        {
-            base.OnPropertyChanged(e);
+//        RefreshLines();
+//    }
 
-            if (e.Property == MinimumVisibleTimeProperty ||
-                e.Property == MaximumVisibleTimeProperty ||
-                e.Property == BoundsProperty)
-            {
-                int verticalLinesCount;
-                if (!Double.IsNaN(Bounds.Width))
-                    verticalLinesCount = (int)(Bounds.Width / 80);
-                else
-                    verticalLinesCount = 5;
-                var visibleTime = MaximumVisibleTime - MinimumVisibleTime;
-                var minimumStep = TimeSpan.FromSeconds(15);
-                while (visibleTime.Ticks/minimumStep.Ticks > verticalLinesCount)
-                    minimumStep = TimeSpan.FromSeconds(minimumStep.TotalSeconds*2);
+//    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+//    {
+//        base.OnPropertyChanged(e);
 
-                if (XAxis != null)
-                {
-                    XAxis.MajorStep = minimumStep.TotalDays;
-                }
-            }
+//        if (e.Property == MinimumVisibleTimeProperty ||
+//            e.Property == MaximumVisibleTimeProperty ||
+//            e.Property == BoundsProperty)
+//        {
+//            int verticalLinesCount;
+//            if (!Double.IsNaN(Bounds.Width))
+//                verticalLinesCount = (int)(Bounds.Width / 80);
+//            else
+//                verticalLinesCount = 5;
+//            var visibleTime = MaximumVisibleTime - MinimumVisibleTime;
+//            var minimumStep = TimeSpan.FromSeconds(15);
+//            while (visibleTime.Ticks/minimumStep.Ticks > verticalLinesCount)
+//                minimumStep = TimeSpan.FromSeconds(minimumStep.TotalSeconds*2);
 
-            if (e.Property == ItemsProperty)
-            {
-                RefreshLines();
-            }
+//            if (XAxis != null)
+//            {
+//                XAxis.MajorStep = minimumStep.TotalDays;
+//            }
+//        }
 
-            if (e.Property == SelectedItemProperty)
-            {
-                RefreshLines();
-            }
-        }
+//        if (e.Property == ItemsProperty)
+//        {
+//            RefreshLines();
+//        }
 
-        protected virtual void RefreshLines()
-        {
-            var trendViewModels = Items;
-            if (trendViewModels == null)
-                return;
+//        if (e.Property == SelectedItemProperty)
+//        {
+//            RefreshLines();
+//        }
+//    }
 
-            ClearLines();
+//    protected virtual void RefreshLines()
+//    {
+//        var trendViewModels = Items;
+//        if (trendViewModels == null)
+//            return;
 
-            var trendViewModelsInDisplayOrder = ItemsInDisplayOrder(trendViewModels);
+//        ClearLines();
 
-            trendViewModelsInDisplayOrder
-                .ToList()
-                .ForEach(item => AddLine(item));
-        }
+//        var trendViewModelsInDisplayOrder = ItemsInDisplayOrder(trendViewModels);
 
-        protected virtual IEnumerable<TrendViewModel> ItemsInDisplayOrder(IEnumerable<TrendViewModel> trendViewModels)
-        {
-            var trendViewModelsList = trendViewModels.ToList();
-            IEnumerable<TrendViewModel> trendItemsInDisplayOrder;
-            if (SelectedItem is not null)
-                trendItemsInDisplayOrder = trendViewModelsList.Contains(SelectedItem)
-                    ? trendViewModelsList.Except(new[] { SelectedItem }).Concat(new[] { SelectedItem })
-                    : trendViewModelsList;
-            else
-                trendItemsInDisplayOrder = trendViewModelsList;
-            return trendItemsInDisplayOrder;
-        }
+//        trendViewModelsInDisplayOrder
+//            .ToList()
+//            .ForEach(item => AddLine(item));
+//    }
 
-        protected virtual void ClearLines()
-        {
-            if (Plot != null)
-            {
-                Plot.Series.Clear();
-            }
-        }
+//    protected virtual IEnumerable<TrendViewModel> ItemsInDisplayOrder(IEnumerable<TrendViewModel> trendViewModels)
+//    {
+//        var trendViewModelsList = trendViewModels.ToList();
+//        IEnumerable<TrendViewModel> trendItemsInDisplayOrder;
+//        if (SelectedItem is not null)
+//            trendItemsInDisplayOrder = trendViewModelsList.Contains(SelectedItem)
+//                ? trendViewModelsList.Except(new[] { SelectedItem }).Concat(new[] { SelectedItem })
+//                : trendViewModelsList;
+//        else
+//            trendItemsInDisplayOrder = trendViewModelsList;
+//        return trendItemsInDisplayOrder;
+//    }
 
-        protected virtual LineSeries AddLine(TrendViewModel trendViewModel)
-        {
-            var lineSeries = new LineSeries
-            {
-                DataContext = trendViewModel,
-                StrokeThickness = trendViewModel == SelectedItem ? 3 : 1,
-                Mapping = obj =>
-                {
-                    var point = (TrendPoint)obj;
-                    return new DataPoint(
-                        new DateTimeOffset(point.Timestamp).ToUnixTimeMilliseconds(),
-                        point.Value
-                    );
-                }
-            };
-            
-            lineSeries.Bind(
-                LineSeries.ItemsSourceProperty,
-                new Binding("Points"));
+//    protected virtual void ClearLines()
+//    {
+//        if (Plot != null)
+//        {
+//            Plot.Series.Clear();
+//        }
+//    }
 
-            lineSeries.Bind(
-                LineSeries.IsVisibleProperty,
-                new Binding("IsDisplayedOnPlot"));
+//    protected virtual LineSeries AddLine(TrendViewModel trendViewModel)
+//    {
+//        var lineSeries = new LineSeries
+//        {
+//            DataContext = trendViewModel,
+//            StrokeThickness = trendViewModel == SelectedItem ? 3 : 1,
+//            Mapping = obj =>
+//            {
+//                var point = (TrendPoint)obj;
+//                return new DataPoint(
+//                    new DateTimeOffset(point.Timestamp).ToUnixTimeMilliseconds(),
+//                    point.Value
+//                );
+//            }
+//        };
+        
+//        lineSeries.Bind(
+//            LineSeries.ItemsSourceProperty,
+//            new Binding("Points"));
 
-            lineSeries.Bind(
-                LineSeries.ColorProperty,
-                new Binding("Color"));
+//        lineSeries.Bind(
+//            LineSeries.IsVisibleProperty,
+//            new Binding("IsDisplayedOnPlot"));
 
-            if (Plot != null)
-            {
-                Plot.Series.Add(lineSeries);
-            }
+//        lineSeries.Bind(
+//            LineSeries.ColorProperty,
+//            new Binding("Color"));
 
-            return lineSeries;
-        }        
+//        if (Plot != null)
+//        {
+//            Plot.Series.Add(lineSeries);
+//        }
 
-        #endregion
+//        return lineSeries;
+//    }        
 
-        #region private functions        
+//    #endregion
 
-        private void OnGlobalUITimerEvent(int phase)
-        {
-            if (phase != 0) return;
+//    #region private functions        
 
-            var viewModel = DataContext as TrendsViewModel;
-            if (RefreshOnTimerTick && viewModel != null)
-                viewModel.OnTimerTick();
-        }        
+//    private void OnGlobalUITimerEvent(int phase)
+//    {
+//        if (phase != 0) return;
 
-        //// http://stackoverflow.com/questions/29565113/oxyplots-mouse-events-are-not-caught-while-model-invalidated
-        //// Of couse, this is oxyplot version specific and might break in the future. Updating oxyplot might be an option (if it doesnt break other stuff).
-        //// The goal of this is to prevent missed mouse clickes sometimes, when they are received by detached elements inside plot for whatever reason.
-        //private void FixBugWithNotRegisteringMouseClickedOnPlotArea()
-        //{
-        //    var mouseGrid = new Grid
-        //    {
-        //        Background = Brushes.Transparent // background must be set for hit test to work
-        //    };
+//        var viewModel = DataContext as TrendsViewModel;
+//        if (RefreshOnTimerTick && viewModel != null)
+//            viewModel.OnTimerTick();
+//    }        
 
-        //    var grid = (Grid)((FieldInfo)
-        //        typeof(PlotView).GetMember("grid", BindingFlags.NonPublic | BindingFlags.Instance)[0])
-        //        .GetValue(Plot)!;
-        //    grid.Children.Add(mouseGrid);
-        //}
+//    //// http://stackoverflow.com/questions/29565113/oxyplots-mouse-events-are-not-caught-while-model-invalidated
+//    //// Of couse, this is oxyplot version specific and might break in the future. Updating oxyplot might be an option (if it doesnt break other stuff).
+//    //// The goal of this is to prevent missed mouse clickes sometimes, when they are received by detached elements inside plot for whatever reason.
+//    //private void FixBugWithNotRegisteringMouseClickedOnPlotArea()
+//    //{
+//    //    var mouseGrid = new Grid
+//    //    {
+//    //        Background = Brushes.Transparent // background must be set for hit test to work
+//    //    };
 
-        #endregion
-    }
-}
+//    //    var grid = (Grid)((FieldInfo)
+//    //        typeof(PlotView).GetMember("grid", BindingFlags.NonPublic | BindingFlags.Instance)[0])
+//    //        .GetValue(Plot)!;
+//    //    grid.Children.Add(mouseGrid);
+//    //}
+
+//    #endregion
+//}

@@ -266,8 +266,6 @@ internal class OpenGlContent
             Console.WriteLine(err);
     }
 
-    static Stopwatch St = Stopwatch.StartNew();
-
     #region private fields
 
     private Shader? _shader;
