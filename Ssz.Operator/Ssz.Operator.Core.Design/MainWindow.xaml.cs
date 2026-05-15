@@ -145,6 +145,8 @@ namespace Ssz.Operator.Core.Design
                 (sender, e) => DoToolkitOperationAsync(UpdateDsPagesToolkitOperation, true), DsProjectLoaded));
             CommandBindings.Add(new CommandBinding(Run, RunExecuted, DsProjectLoaded));
             CommandBindings.Add(new CommandBinding(RunCurrent, RunCurrentExecuted, RunCurrentEnabled));
+            CommandBindings.Add(new CommandBinding(RunMultiPlatform, RunMultiPlatformExecuted, DsProjectLoaded));
+            CommandBindings.Add(new CommandBinding(RunCurrentMultiPlatform, RunCurrentMultiPlatformExecuted, RunCurrentEnabled));
             CommandBindings.Add(new CommandBinding(SaveAll, SaveAllExecuted, SaveAllEnabled));
             CommandBindings.Add(new CommandBinding(NewDsPageDrawing, NewDsPageDrawingExecuted, DsProjectLoaded));
             CommandBindings.Add(new CommandBinding(NewDsShapeDrawing, NewDsShapeDrawingExecuted, DsProjectLoaded));
@@ -221,6 +223,8 @@ namespace Ssz.Operator.Core.Design
         public static readonly RoutedCommand UpdateDsPages = new RoutedCommand();
         public static readonly RoutedCommand Run = new RoutedCommand();
         public static readonly RoutedCommand RunCurrent = new RoutedCommand();
+        public static readonly RoutedCommand RunMultiPlatform = new RoutedCommand();
+        public static readonly RoutedCommand RunCurrentMultiPlatform = new RoutedCommand();
         public static readonly RoutedCommand SaveAll = new RoutedCommand();
         public static readonly RoutedCommand NewDsPageDrawing = new RoutedCommand();
         public static readonly RoutedCommand NewDsShapeDrawing = new RoutedCommand();
@@ -1421,6 +1425,11 @@ namespace Ssz.Operator.Core.Design
             RunDsProjectAsync();
         }
 
+        private void RunMultiPlatformExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            RunDsProjectMultiPlatformAsync();
+        }
+
         private void RunCurrentEnabled(object sender, CanExecuteRoutedEventArgs e)
         {
             if (FocusedDesignDrawingViewModel is not null)
@@ -1453,6 +1462,22 @@ namespace Ssz.Operator.Core.Design
                 if (dsPageDrawingInfoViewModel is not null)
                 {
                     RunDsProjectAsync(new FileInfo(dsPageDrawingInfoViewModel.DrawingInfo.FileInfo.FullName));
+                }
+            }
+        }
+
+        private void RunCurrentMultiPlatformExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (FocusedDesignDrawingViewModel is not null)
+            {
+                RunDsProjectMultiPlatformAsync(new FileInfo(FocusedDesignDrawingViewModel.Drawing.FileFullName));
+            }
+            else
+            {
+                var dsPageDrawingInfoViewModel = DsPageDrawingInfosSelectionService.FirstSelectedItem as DsPageDrawingInfoViewModel;
+                if (dsPageDrawingInfoViewModel is not null)
+                {
+                    RunDsProjectMultiPlatformAsync(new FileInfo(dsPageDrawingInfoViewModel.DrawingInfo.FileInfo.FullName));
                 }
             }
         }
@@ -1495,6 +1520,48 @@ namespace Ssz.Operator.Core.Design
                 catch
                 {
                 }                
+            }
+            _previewSszOperatorProcess = Process.Start(new ProcessStartInfo(
+                    playExeFileInfo.FullName,
+                    arguments));
+        }
+
+        private async void RunDsProjectMultiPlatformAsync(FileInfo? startDsPageFileInfo = null)
+        {            
+            var playExeFileInfo = new FileInfo(Path.Combine(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule?.FileName!)!, @"MultiPlatform", @"Cdt.Operator.Play.Desktop.exe"));
+
+            if (!playExeFileInfo.Exists)
+            {
+                DsProject.LoggersSet.Logger.LogCritical($"Cannot find '{playExeFileInfo.FullName}'");
+                MessageBoxHelper.ShowError(Ssz.Operator.Core.Properties.Resources.SeeErrorLogForDetails);
+                return;
+            }
+
+            DesignDsProjectViewModel.SaveDrawings(DesignDsProjectViewModel.Instance.OpenedDesignDrawingViewModels);
+
+            await DsProject.Instance.AllDsPagesCacheSaveAsync();
+
+            string arguments = @"-p """ + DsProject.Instance.DsProjectFileFullName + @"""";
+
+            if (startDsPageFileInfo is not null)
+            {
+                arguments += @" -start """ +
+                             DsProject.Instance.GetFileRelativePath(startDsPageFileInfo.FullName) +
+                             @"""";
+            }
+
+            // Indicate we are launching from the Design
+            arguments += @" -r 1";
+
+            if (_previewSszOperatorProcess is not null && !_previewSszOperatorProcess.HasExited)
+            {
+                try
+                {
+                    ProcessHelper.CloseAllWindows(_previewSszOperatorProcess);
+                }
+                catch
+                {
+                }
             }
             _previewSszOperatorProcess = Process.Start(new ProcessStartInfo(
                     playExeFileInfo.FullName,

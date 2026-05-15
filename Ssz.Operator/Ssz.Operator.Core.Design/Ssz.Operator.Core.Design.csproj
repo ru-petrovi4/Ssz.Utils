@@ -62,7 +62,8 @@
     <Resource Include="Resources\Images\New.png" />  
     <Resource Include="Resources\Images\undo.png" />  
     <Resource Include="Resources\Images\redo.png" />   
-    <Resource Include="Resources\Images\Run.png" />  
+    <Resource Include="Resources\Images\Run.png" />
+    <Resource Include="Resources\Images\RunMultiPlatform.png" />
     <Resource Include="Resources\Images\RotateClockwise.png" />
     <Resource Include="Resources\Images\RotateCounterClockwise.png" />  
     <Resource Include="Resources\Images\FlipHorizontal.png" />  
@@ -76,7 +77,8 @@
     <Resource Include="Resources\Images\LockOpen.png" />  
     <Resource Include="Resources\Images\EqualizeWidth.png" />  
     <Resource Include="Resources\Images\EqualizeHeight.png" />  
-    <Resource Include="Resources\Images\RunCurrent.png" />	
+    <Resource Include="Resources\Images\RunCurrent.png" />
+    <Resource Include="Resources\Images\RunCurrentMultiPlatform.png" />
 	<!--
     <Content Include="Field view user guide.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

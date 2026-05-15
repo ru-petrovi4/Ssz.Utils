@@ -19,13 +19,12 @@ using Ssz.Utils;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Avalonia.Media.Imaging;
-using Avalonia.Svg.Skia;
-//using AnimatedImage.Avalonia; // ImageBehavior.SetAnimatedSource(image, new AnimatedImageSourceStream(stream));
 using System.Xml.Linq;
 using Avalonia.Labs.Gif;
 using System.Numerics;
 using System.Linq;
 using System.Threading.Tasks;
+using Avalonia.Svg.Skia;
 
 namespace Ssz.Operator.Core
 {

@@ -102,7 +102,9 @@
                     <fluent:QuickAccessMenuItem IsChecked="True" Target="{Binding ElementName=ApplicationCommandsRunButton}" />
                     <fluent:QuickAccessMenuItem IsChecked="True" Target="{Binding ElementName=ApplicationCommandsRunCurrentButton}" />
                     <fluent:QuickAccessMenuItem IsChecked="True" Target="{Binding ElementName=ApplicationCommandsUndoButton}" />
-                    <fluent:QuickAccessMenuItem IsChecked="True" Target="{Binding ElementName=ApplicationCommandsRedoButton}" />                                       
+                    <fluent:QuickAccessMenuItem IsChecked="True" Target="{Binding ElementName=ApplicationCommandsRedoButton}" />
+                    <fluent:QuickAccessMenuItem IsChecked="True" Target="{Binding ElementName=ApplicationCommandsRunMultiPlatformButton}" />
+                    <fluent:QuickAccessMenuItem IsChecked="True" Target="{Binding ElementName=ApplicationCommandsRunCurrentMultiPlatformButton}" />
                 </fluent:Ribbon.QuickAccessItems>
                 <fluent:Ribbon.Menu>
                     <fluent:ApplicationMenu RightPaneWidth="800" Header="{x:Static p:Resources.ApplicationMenuHeader}">
@@ -207,6 +209,14 @@
                                        Command="ApplicationCommands.Redo"
                                           Icon="pack://application:,,,/Ssz.Operator.Core.Design;component/Resources/Images/Redo.png"                                          
                                           ToolTip="{x:Static p:Resources.RedoToolTip}" />
+                        <fluent:Button x:Name="ApplicationCommandsRunMultiPlatformButton" 
+                                       Command="{x:Static local:MainWindow.RunMultiPlatform}"
+                                          Icon="pack://application:,,,/Ssz.Operator.Core.Design;component/Resources/Images/RunMultiPlatform.png"                                          
+                                          ToolTip="{x:Static p:Resources.RunToolTip}" />
+                        <fluent:Button x:Name="ApplicationCommandsRunCurrentMultiPlatformButton" 
+                                       Command="{x:Static local:MainWindow.RunCurrentMultiPlatform}"
+                                          Icon="pack://application:,,,/Ssz.Operator.Core.Design;component/Resources/Images/RunCurrentMultiPlatform.png"                                          
+                                          ToolTip="{x:Static p:Resources.RunCurrentToolTip}" /> 
                     </fluent:RibbonGroupBox>
                 </fluent:RibbonTabItem>
                 <fluent:RibbonTabItem Header="{x:Static p:Resources.MainRibbonTabHeader}">
