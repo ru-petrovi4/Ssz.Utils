@@ -22,6 +22,7 @@ using Ssz.Operator.Core.DsShapes;
 using Microsoft.Extensions.Logging;
 using Avalonia.Threading;
 using System.Threading.Tasks;
+using Ssz.Operator.Core.ControlsPlay.ZoomboxPlay;
 
 namespace Ssz.Operator.Core.ControlsPlay
 {
@@ -550,7 +551,8 @@ namespace Ssz.Operator.Core.ControlsPlay
             if (typeGuid == GenericFaceplateDsPageType.TypeGuid)
                 return new GenericFaceplatePlayControl(window);
             //if (typeGuid == PanoramaDsPageType.TypeGuid) return new PanoramaPlayControl(window);
-            //if (typeGuid == ZoomboxDsPageType.TypeGuid) return new ZoomboxPlayControl(window);
+            if (typeGuid == ZoomboxDsPageType.TypeGuid) 
+                return new ZoomboxPlayControl(window);
             if (typeGuid == ToolTipDsPageType.TypeGuid) 
                 return new GenericFaceplatePlayControl(window);
 
