@@ -14,7 +14,7 @@ namespace Ssz.Dcs.CentralServer.Common
 
         public const string ControlEngineStateFileExtension = @".dsState";
 
-        public const string OperatorDsProjectFileExtension = @".dsProject";
+        public const string OperatorDsProjectFileExtension = @".dsproject";
 
         public const string InstructorBinDirectoryNameUpper = @"INSTRUCTOR.BIN";
 

@@ -570,11 +570,12 @@ namespace Ssz.Operator.Core.ControlsPlay
 
             var handled = false;
 
-            var currentFileExtensionUpper = Path.GetExtension(_currentJumpInfo.FileRelativePath).ToUpperInvariant();
-            if (currentFileExtensionUpper == DsProject.DsPageFileExtensionUpper)
+            var currentFileExtensionLower = Path.GetExtension(_currentJumpInfo.FileRelativePath).ToLowerInvariant();
+            if (currentFileExtensionLower == DsProject.DsPageFileExtension)
             {
                 string fileFullName = Path.Combine(DsProject.Instance.DsPagesDirectoryFullName, _currentJumpInfo.FileRelativePath);
-                
+                fileFullName = Path.Combine(Path.GetFullPath(fileFullName), Path.GetFileNameWithoutExtension(fileFullName) + DsProject.DsPageFileExtension);
+
                 var dsPageDrawingInfo = await DsProject.ReadDrawingInfoAsync(fileFullName, false) as DsPageDrawingInfo;                
 
                 if (dsPageDrawingInfo is null)
@@ -657,10 +658,10 @@ namespace Ssz.Operator.Core.ControlsPlay
                 handled = PlayControl.Jump(_currentJumpInfo);
                 if (!handled)
                 {
-                    switch (currentFileExtensionUpper)
+                    switch (currentFileExtensionLower)
                     {
-                        case ".HTM":
-                        case ".HTML":
+                        case ".htm":
+                        case ".html":
                             // Select preferred browser control 2 use/create  (internal WebBrowser or IE ActiveX control - for HmiWeb)
                             // We need to check additional options in future if both browser controls can be used in one dsProject !!!
                             //if (DsProject.Instance.ShDocVw)
@@ -679,7 +680,7 @@ namespace Ssz.Operator.Core.ControlsPlay
                         }
                             handled = PlayControl.Jump(_currentJumpInfo);
                             break;
-                        case ".OBJ":
+                        case ".obj":
                             PlayControl.Dispose();
                             //PlayControl = new WpfModel3DPlayControl(PlayWindow);
                             CurrentDsPageTypeGuid = Guid.Empty;

@@ -131,7 +131,7 @@ public partial class App : Application
             // TEMPCODE
             options.CentralServerAddress = @"https://www.v3code.ru";
             options.ProjectDirectoryInvariantPathRelativeToRootDirectory = "CDT.2024.SaratovPCNiDCS/Operator.Data/SARATOV_POLE_Interface";
-            options.ProjectFile = @"Saratov.dsProject";
+            options.ProjectFile = @"Saratov.dsproject";
 
             DsProject.LoggersSet = new LoggersSet(
                     NullLogger.Instance,

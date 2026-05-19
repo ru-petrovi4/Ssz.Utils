@@ -229,23 +229,23 @@ namespace Ssz.Operator.Play
             string? existingDsPageFileFullName = DsProject.Instance.GetExistingDsPageFileFullNameOrNull(showWindowDsCommandOptions.FileRelativePath);
             if (!String.IsNullOrEmpty(existingDsPageFileFullName))
             {
-                switch (Path.GetExtension(existingDsPageFileFullName).ToUpperInvariant())
+                switch (Path.GetExtension(existingDsPageFileFullName).ToLowerInvariant())
                 {
-                    case DsProject.DsPageFileExtensionUpper:
-                    case ".HTM":
-                    case ".HTML":
-                    case ".OBJ":
+                    case DsProject.DsPageFileExtension:
+                    case ".htm":
+                    case ".html":
+                    case ".obj":
                         break;
-                    case ".BMP":
-                    case ".DIB":
-                    case ".JFIF":
-                    case ".JPE":
-                    case ".JPEG":
-                    case ".JPG":
-                    case ".PNG":
-                    case ".TIF":
-                    case ".TIFF":
-                    case ".WDP":
+                    case ".bmp":
+                    case ".dib":
+                    case ".jfif":
+                    case ".jpe":
+                    case ".jpeg":
+                    case ".jpg":
+                    case ".png":
+                    case ".tif":
+                    case ".tiff":
+                    case ".wdp":
                         try
                         {
                             //var startInfo =
@@ -494,23 +494,23 @@ namespace Ssz.Operator.Play
             string? existingDsPageFileFullName = DsProject.Instance.GetExistingDsPageFileFullNameOrNull(showWindowDsCommandOptions.FileRelativePath);
             if (!String.IsNullOrEmpty(existingDsPageFileFullName))
             {
-                switch (Path.GetExtension(existingDsPageFileFullName).ToUpperInvariant())
+                switch (Path.GetExtension(existingDsPageFileFullName).ToLowerInvariant())
                 {
-                    case DsProject.DsPageFileExtensionUpper:
-                    case ".HTM":
-                    case ".HTML":
-                    case ".OBJ":
+                    case DsProject.DsPageFileExtension:
+                    case ".htm":
+                    case ".html":
+                    case ".obj":
                         break;
-                    case ".BMP":
-                    case ".DIB":
-                    case ".JFIF":
-                    case ".JPE":
-                    case ".JPEG":
-                    case ".JPG":
-                    case ".PNG":
-                    case ".TIF":
-                    case ".TIFF":
-                    case ".WDP":
+                    case ".bmp":
+                    case ".dib":
+                    case ".jfif":
+                    case ".jpe":
+                    case ".jpeg":
+                    case ".jpg":
+                    case ".png":
+                    case ".tif":
+                    case ".tiff":
+                    case ".wdp":
                         try
                         {
                             //var startInfo =
