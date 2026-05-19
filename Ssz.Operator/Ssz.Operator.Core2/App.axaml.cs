@@ -46,6 +46,8 @@ public partial class App : Application
 {
     public static IHost Host { get; private set; } = null!;
 
+    public static string EnvironmentName { get; private set; } = null!;
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -84,16 +86,15 @@ public partial class App : Application
         {
             Host = CreateHostBuilder(desktop.Args ?? []).Build();
 
-            DsDataAccessProvider.ServiceProvider = Host.Services;
-
-            _ = Host.RunAsync();
+            DsDataAccessProvider.ServiceProvider = Host.Services;            
 
             var logger = Host.Services.GetRequiredService<ILogger<App>>();
-
-            logger.LogDebug("App starting with args: " + String.Join(" ", desktop.Args ?? []));                   
-
             IConfiguration configuration = Host.Services.GetRequiredService<IConfiguration>();
             CultureHelper.InitializeUICulture(configuration, logger);
+
+            logger.LogInformation($"App starting with args: \"{String.Join(" ", desktop.Args ?? [])}\"; Environment: {EnvironmentName}; Working Directory: \"{Directory.GetCurrentDirectory()}\"; Workstation Name: {ConfigurationHelper.GetWorkstationName(configuration)}");
+
+            _ = Host.RunAsync();
 
             options = new Options(configuration);
 
@@ -523,6 +524,8 @@ public partial class App : Application
         return Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
             .ConfigureAppConfiguration((hostingContext, config) =>
             {
+                EnvironmentName = ConfigurationHelper.GetEnvironmentName(hostingContext.HostingEnvironment);
+
                 config.Sources.Clear();
 
                 config.AddEncryptedAppSettings(hostingContext.HostingEnvironment, crypter =>

@@ -1162,15 +1162,16 @@ namespace Ssz.Operator.Core
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
                 try
                 {
-                    var assemblyFileFullName = AddonsManager.GetAssemblyFileInfo(assembly)?.FullName;
-                    if (assemblyFileFullName is not null)
-                    {
-                        var assemblyDirectory = Path.GetDirectoryName(assemblyFileFullName);
-                        if (!StringHelper.CompareIgnoreCase(assemblyDirectory, exeDirectory))
-                            continue;
-                        var creationTime = File.GetLastWriteTime(assemblyFileFullName);
-                        if (creationTime > result) result = creationTime;
-                    }
+                    // TODO
+                    //var assemblyFileFullName = AddonsManager.GetAssemblyFileInfo(assembly)?.FullName;
+                    //if (assemblyFileFullName is not null)
+                    //{
+                    //    var assemblyDirectory = Path.GetDirectoryName(assemblyFileFullName);
+                    //    if (!StringHelper.CompareIgnoreCase(assemblyDirectory, exeDirectory))
+                    //        continue;
+                    //    var creationTime = File.GetLastWriteTime(assemblyFileFullName);
+                    //    if (creationTime > result) result = creationTime;
+                    //}
                 }
                 catch (Exception)
                 {

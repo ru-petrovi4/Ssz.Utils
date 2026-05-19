@@ -60,18 +60,19 @@ namespace Ssz.Operator.Core
         {
             if (!OperatingSystem.IsBrowser())
             {
-                var fi = AddonsManager.GetAssemblyFileInfo(Buzzer.GetType().Assembly);
-                if (fi != null && fi.DirectoryName != null)
-                {
-                    string soundFile = Path.Combine(fi.DirectoryName, "Resources", "Buzzer.wav");
-                    fi = new FileInfo(soundFile);
-                    if (fi.Exists)
-                    {
-                        Buzzer.ClearCustomSoundConfiguration();
-                        Buzzer.SetCustomSoundConfiguration(BuzzerStateEnum.ProcessAlarmMediumPriority, soundFile);
-                        Buzzer.SetCustomSoundConfiguration(BuzzerStateEnum.ProcessAlarmHighPriority, soundFile);
-                    }
-                }
+                // TODO
+                //var fi = AddonsManager.GetAssemblyFileInfo(Buzzer.GetType().Assembly);
+                //if (fi != null && fi.DirectoryName != null)
+                //{
+                //    string soundFile = Path.Combine(fi.DirectoryName, "Resources", "Buzzer.wav");
+                //    fi = new FileInfo(soundFile);
+                //    if (fi.Exists)
+                //    {
+                //        Buzzer.ClearCustomSoundConfiguration();
+                //        Buzzer.SetCustomSoundConfiguration(BuzzerStateEnum.ProcessAlarmMediumPriority, soundFile);
+                //        Buzzer.SetCustomSoundConfiguration(BuzzerStateEnum.ProcessAlarmHighPriority, soundFile);
+                //    }
+                //}
             }
         }
 

@@ -211,23 +211,23 @@ namespace Ssz.Operator.Core.Play
             FileInfo? fileInfo = DsProject.Instance.GetExistingDsPageFileInfoOrNull(showWindowDsCommandOptions.FileRelativePath);
             if (fileInfo != null)
             {
-                switch (fileInfo.Extension.ToUpperInvariant())
+                switch (fileInfo.Extension.ToLowerInvariant())
                 {
-                    case DsProject.DsPageFileExtensionUpper:
-                    case ".HTM":
-                    case ".HTML":
-                    case ".OBJ":
+                    case DsProject.DsPageFileExtension:
+                    case ".htm":
+                    case ".html":
+                    case ".obj":
                         break;
-                    case ".BMP":
-                    case ".DIB":
-                    case ".JFIF":
-                    case ".JPE":
-                    case ".JPEG":
-                    case ".JPG":
-                    case ".PNG":
-                    case ".TIF":
-                    case ".TIFF":
-                    case ".WDP":
+                    case ".bmp":
+                    case ".dib":
+                    case ".jfif":
+                    case ".jpe":
+                    case ".jpeg":
+                    case ".jpg":
+                    case ".png":
+                    case ".tif":
+                    case ".tiff":
+                    case ".wdp":
                         try
                         {
                             var startInfo =

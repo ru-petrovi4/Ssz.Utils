@@ -31,15 +31,11 @@ namespace Ssz.Operator.Core
     {
         #region public functions
 
-        public const string DsShapeFileExtension = @".dsShape";
+        public const string DsShapeFileExtension = @".dsshape";
 
-        public const string DsShapeFileExtensionUpper = @".DSSHAPE";
+        public const string DsPageFileExtension = @".dspage";
 
-        public const string DsPageFileExtension = @".dsPage";
-
-        public const string DsPageFileExtensionUpper = @".DSPAGE";
-
-        public const string DsProjectFileExtension = @".dsProject";
+        public const string DsProjectFileExtension = @".dsproject";
 
         public static Stream? GetStream(string? fileFullName)
         {

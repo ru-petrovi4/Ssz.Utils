@@ -61,12 +61,10 @@ namespace Ssz.Operator.Core.Addons
                         {
                             newAddonsCollection.Add(desiredAvailableAdditionalAddon);
 
-                            var additionalAddonFileInfo =
-                                GetAssemblyFileInfo(desiredAvailableAdditionalAddon.GetType().Assembly);
-
-                            if (additionalAddonFileInfo is not null)
-                                catalog.Catalogs.Add(new DirectoryCatalog(additionalAddonFileInfo.DirectoryName ?? "",
-                                    additionalAddonFileInfo.Name));
+                            if (!String.IsNullOrEmpty(desiredAvailableAdditionalAddon.DllFileFullName))
+                                catalog.Catalogs.Add(new DirectoryCatalog(
+                                    Path.GetDirectoryName(desiredAvailableAdditionalAddon.DllFileFullName)!,
+                                    Path.GetFileName(desiredAvailableAdditionalAddon.DllFileFullName)));
                         }
                     }
 
@@ -392,18 +390,7 @@ namespace Ssz.Operator.Core.Addons
             if (dsPageType is null) return false;
             return dsPageType.IsFaceplate;
         }
-
-        public static FileInfo? GetAssemblyFileInfo(Assembly assembly)
-        {
-            // System.Environment.ProcessPath // As of .NET 6, the recommended approach
-            if (assembly.IsDynamic) return null;
-            string codeBase = assembly.Location;
-            var uri = new UriBuilder(codeBase);
-            string path = Uri.UnescapeDataString(uri.Path);
-            if (path.StartsWith(@"/")) path = @"//" + uri.Host + path;
-            return new FileInfo(path);
-        }
-
+        
         #endregion
 
         #region private functions
