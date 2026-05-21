@@ -969,7 +969,8 @@ namespace Ssz.Operator.Core
                 CsvDb.SaveData();
             }
 
-            if (Mode == DsProjectModeEnum.VisualDesignMode) this.TryToUnlockDsProjectDirectory();
+            if (Mode == DsProjectModeEnum.VisualDesignMode) 
+                this.PrepareCloseDsProjectDirectory();
 
             Mode = DsProjectModeEnum.Uninitialized;
 
@@ -977,7 +978,8 @@ namespace Ssz.Operator.Core
             _name = null;
             _desc = null;
 
-            if (DsProjectFileInfoChanged is not null) DsProjectFileInfoChanged();
+            if (DsProjectFileInfoChanged is not null) 
+                DsProjectFileInfoChanged();
 
             _desiredAdditionalAddonsInfo = null;
             _actuallyUsedAddonsInfo = null;
@@ -1223,7 +1225,7 @@ namespace Ssz.Operator.Core
             }
             else
             {                
-                foreach (FileInfo fi in DsPagesDirectoryInfo!.GetFiles(@"*" + DsProject.DsPageFileExtension, SearchOption.TopDirectoryOnly))
+                foreach (FileInfo fi in DsPagesDirectoryInfo!.GetFiles(@"*" + DsPageFileExtension, SearchOption.TopDirectoryOnly))
                 {
                     var drawingInfo = ReadDrawingInfo(fi, false, errorMessages) as DsPageDrawingInfo;
                     if (drawingInfo is not null) drawingInfos.Add(drawingInfo.Name, drawingInfo);

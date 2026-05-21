@@ -1,5 +1,7 @@
 using System;
 using System.Diagnostics;
+using System.IO;
+using Ssz.Operator.Core.Drawings;
 using Ssz.Operator.Core.Utils;
 
 namespace Ssz.Operator.Core
@@ -29,10 +31,43 @@ namespace Ssz.Operator.Core
             }
         }
 
-        public static void TryToUnlockDsProjectDirectory(this DsProject dsProject)
+        public static void PrepareCloseDsProjectDirectory(this DsProject dsProject)
         {
             try
             {
+                var projectFileInfo = new FileInfo(dsProject.DsProjectFileFullName!);                
+                if (String.Equals(projectFileInfo.Extension, DsProject.DsProjectFileExtension, StringComparison.InvariantCultureIgnoreCase) &&
+                        projectFileInfo.Extension != DsProject.DsProjectFileExtension)
+                {
+                    string fixedProjectFileFullName =
+                            Path.Combine(
+                                dsProject.DsProjectPath,
+                                Path.GetFileNameWithoutExtension(dsProject.DsProjectFileFullName!) + DsProject.DsProjectFileExtension);
+                    File.Move(projectFileInfo.FullName, fixedProjectFileFullName + "_");
+                    File.Move(fixedProjectFileFullName + "_", fixedProjectFileFullName);
+                }
+
+                foreach (FileInfo fi in dsProject.DsPagesDirectoryInfo!.GetFiles(@"*", SearchOption.TopDirectoryOnly))
+                {
+                    if (String.Equals(fi.Extension, DsProject.DsPageFileExtension, StringComparison.InvariantCultureIgnoreCase) &&
+                            fi.Extension != DsProject.DsPageFileExtension)
+                    {
+                        string directoryFullName = DrawingBase.GetDrawingFilesDirectoryFullName(fi.FullName);
+                        string fixedFileFullName =
+                            Path.Combine(
+                                Path.GetDirectoryName(fi.FullName)!,
+                                Path.GetFileNameWithoutExtension(fi.FullName) + DsProject.DsPageFileExtension);
+                        string fixedDirectoryFullName = DrawingBase.GetDrawingFilesDirectoryFullName(fixedFileFullName);
+                        File.Move(fi.FullName, fixedFileFullName + "_");                        
+                        File.Move(fixedFileFullName + "_", fixedFileFullName);
+                        if (Directory.Exists(directoryFullName))
+                        {
+                            Directory.Move(directoryFullName, fixedDirectoryFullName + "_");
+                            Directory.Move(fixedDirectoryFullName + "_", fixedDirectoryFullName);
+                        }
+                    }
+                }
+
                 /*
                 var currentUserIdentity = WindowsIdentity.GetCurrent();
 

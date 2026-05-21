@@ -13,7 +13,7 @@
               xmlns:controlsDesign="clr-namespace:Ssz.Operator.Core.ControlsDesign;assembly=Ssz.Operator.Core"
               xmlns:avalondock="http://schemas.xceed.com/wpf/xaml/avalondock"              
               Title="{Binding Title}"                
-              WindowState="Maximized">
+              >
     <!--
     <fluent:RibbonWindow.Resources>
         <Style TargetType="{x:Type fluent:RibbonTitleBar}">            

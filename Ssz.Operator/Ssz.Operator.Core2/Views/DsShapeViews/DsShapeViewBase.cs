@@ -24,6 +24,8 @@ namespace Ssz.Operator.Core.DsShapeViews
 
             if (VisualDesignMode) 
                 DsShapeViewModel.DsShapeChanged += OnDsShapeChanged;
+
+            ClipToBounds = false;
         }
 
         public void Dispose()

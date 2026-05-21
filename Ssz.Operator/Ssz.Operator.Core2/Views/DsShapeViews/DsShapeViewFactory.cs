@@ -106,10 +106,10 @@ namespace Ssz.Operator.Core.DsShapeViews
                     ChartDsShape.DsShapeTypeGuid,
                     (dsShape, frame) => new ChartDsShapeView((ChartDsShape) dsShape, frame)
                 },
-                //{
-                //    MultiChartDsShape.DsShapeTypeGuid,
-                //    (dsShape, frame) => new MultiChartDsShapeView((MultiChartDsShape) dsShape, frame)
-                //},
+                {
+                    MultiChartDsShape.DsShapeTypeGuid,
+                    (dsShape, frame) => new MultiChartDsShapeView((MultiChartDsShape) dsShape, frame)
+                },
                 {
                     FrameDsShape.DsShapeTypeGuid,
                     (dsShape, frame) => new FrameDsShapeView((FrameDsShape) dsShape, frame)

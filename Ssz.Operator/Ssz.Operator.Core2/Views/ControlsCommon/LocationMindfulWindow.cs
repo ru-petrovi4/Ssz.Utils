@@ -3,6 +3,7 @@ using System;
 using System.Runtime.Versioning;
 using Avalonia;
 using Avalonia.Controls;
+using Ssz.Utils.Avalonia;
 
 namespace Ssz.Operator.Core.ControlsCommon
 {    
@@ -20,7 +21,7 @@ namespace Ssz.Operator.Core.ControlsCommon
         public LocationMindfulWindow(string category, double initialWidth = Double.NaN,
             double initialHeight = Double.NaN)
         {
-            //WindowLocationHelper.InitializeWindow(this, category, true, initialWidth, initialHeight);
+            WindowLocationHelper.InitializeWindow(this, category, true, initialWidth, initialHeight);
         }
 
         #endregion

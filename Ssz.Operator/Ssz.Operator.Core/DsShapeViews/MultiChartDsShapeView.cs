@@ -16,9 +16,72 @@ namespace Ssz.Operator.Core.DsShapeViews
 {
     public class MultiChartDsShapeView : DsShapeViewBase
     {
-        #region private fields
+        #region construction and destruction
 
-        private bool _refreshing;
+        public MultiChartDsShapeView(MultiChartDsShape dsShape, ControlsPlay.Frame? frame)
+            : base(dsShape, frame)
+        {
+            MainGrid = new Grid();
+            MainGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1.0, GridUnitType.Auto) });
+            MainGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1.0, GridUnitType.Star) });
+            MainGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1.0, GridUnitType.Auto) });
+            MainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1.0, GridUnitType.Auto) });
+            MainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1.0, GridUnitType.Star) });
+            MainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1.0, GridUnitType.Auto) });
+            ChartBorder = new Border();
+            ChartBorderChildGrid = new Grid();
+            HorizontalChartTickBar = new ChartTickBar { Placement = TickBarPlacement.Left };
+            VerticalChartTickBar = new ChartTickBar { Placement = TickBarPlacement.Top };
+            AxisXTopControl = new TextTickBar { Placement = TickBarPlacement.Top };
+            AxisXBottomControl = new TextTickBar { Placement = TickBarPlacement.Bottom };
+            AxisYLeftControl = new TextTickBar { Placement = TickBarPlacement.Left };
+            AxisYRightControl = new TextTickBar { Placement = TickBarPlacement.Right };
+
+            if (VisualDesignMode) IsHitTestVisible = false;
+
+            SnapsToDevicePixels = false;
+        }
+
+        private void HorizontalChartTickBar_SizeChanged(object? sender, SizeChangedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (Disposed) return;
+
+            if (disposing)
+            {
+                foreach (IDisposable disposable in ChartBorderChildGrid.Children.OfType<IDisposable>())
+                    disposable.Dispose();
+                ChartBorderChildGrid.Children.Clear();
+            }
+
+            base.Dispose(disposing);
+        }
+
+        #endregion
+
+        #region public functions
+
+        public Grid MainGrid { get; }
+
+        public Border ChartBorder { get; }
+
+        public Grid ChartBorderChildGrid { get; }
+
+        public ChartTickBar HorizontalChartTickBar { get; }
+
+        public ChartTickBar VerticalChartTickBar { get; }
+
+        public TextTickBar AxisXTopControl { get; }
+
+        public TextTickBar AxisXBottomControl { get; }
+
+        public TextTickBar AxisYLeftControl { get; }
+
+        public TextTickBar AxisYRightControl { get; }
 
         #endregion
 
@@ -30,21 +93,21 @@ namespace Ssz.Operator.Core.DsShapeViews
 
             var dsShape = (MultiChartDsShape) DsShapeViewModel.DsShape;
             if (propertyName is null || propertyName == nameof(dsShape.AxisXTopIsVisible) ||
-                propertyName == nameof(dsShape.AxisXBottomIsVisible) ||
-                propertyName == nameof(dsShape.AxisYLeftIsVisible) ||
-                propertyName == nameof(dsShape.AxisYRightIsVisible))
+                    propertyName == nameof(dsShape.AxisXBottomIsVisible) ||
+                    propertyName == nameof(dsShape.AxisYLeftIsVisible) ||
+                    propertyName == nameof(dsShape.AxisYRightIsVisible))
                 RefreshMainGrid();
             if (propertyName is null || propertyName == nameof(dsShape.Type) ||
-                propertyName == nameof(dsShape.ChartGridIsVisible) ||
-                propertyName == nameof(dsShape.MultiDsChartItemsCollection))
+                    propertyName == nameof(dsShape.ChartGridIsVisible) ||
+                    propertyName == nameof(dsShape.MultiDsChartItemsCollection))
                 RefreshChartBorderChildGridAsync();
             if (propertyName is null ||
-                propertyName == nameof(dsShape.FormatXInfo) ||
-                propertyName == nameof(dsShape.EngUnitXInfo) ||
-                propertyName == nameof(dsShape.TickFrequencyXInfo) ||
-                propertyName == nameof(dsShape.TextTickFrequencyXInfo) ||
-                propertyName == nameof(dsShape.TickStrokeThickness) ||
-                propertyName == nameof(dsShape.TickLength))
+                    propertyName == nameof(dsShape.FormatXInfo) ||
+                    propertyName == nameof(dsShape.EngUnitXInfo) ||
+                    propertyName == nameof(dsShape.TickFrequencyXInfo) ||
+                    propertyName == nameof(dsShape.TextTickFrequencyXInfo) ||
+                    propertyName == nameof(dsShape.TickStrokeThickness) ||
+                    propertyName == nameof(dsShape.TickLength))
             {
                 AxisXTopControl.SetBindingOrConst(dsShape.Container, TextTickBar.FormatProperty,
                     dsShape.FormatXInfo, BindingMode.OneWay,
@@ -298,77 +361,7 @@ namespace Ssz.Operator.Core.DsShapeViews
                     VerticalChartTickBar.Fill = dsShape.ChartGridBrush.GetBrush(dsShape.Container);
         }
 
-        #endregion
-
-        #region construction and destruction
-
-        public MultiChartDsShapeView(MultiChartDsShape dsShape, ControlsPlay.Frame? frame)
-            : base(dsShape, frame)
-        {
-            MainGrid = new Grid();
-            MainGrid.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(1.0, GridUnitType.Auto)});
-            MainGrid.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(1.0, GridUnitType.Star)});
-            MainGrid.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(1.0, GridUnitType.Auto)});
-            MainGrid.RowDefinitions.Add(new RowDefinition {Height = new GridLength(1.0, GridUnitType.Auto)});
-            MainGrid.RowDefinitions.Add(new RowDefinition {Height = new GridLength(1.0, GridUnitType.Star)});
-            MainGrid.RowDefinitions.Add(new RowDefinition {Height = new GridLength(1.0, GridUnitType.Auto)});
-            ChartBorder = new Border();
-            ChartBorderChildGrid = new Grid();
-            HorizontalChartTickBar = new ChartTickBar {Placement = TickBarPlacement.Left};
-            VerticalChartTickBar = new ChartTickBar {Placement = TickBarPlacement.Top};
-            AxisXTopControl = new TextTickBar {Placement = TickBarPlacement.Top};
-            AxisXBottomControl = new TextTickBar {Placement = TickBarPlacement.Bottom};
-            AxisYLeftControl = new TextTickBar {Placement = TickBarPlacement.Left};
-            AxisYRightControl = new TextTickBar {Placement = TickBarPlacement.Right};
-
-            if (VisualDesignMode) IsHitTestVisible = false;
-
-            SnapsToDevicePixels = false;
-        }
-
-        private void HorizontalChartTickBar_SizeChanged(object? sender, SizeChangedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        protected override void Dispose(bool disposing)
-        {
-            if (Disposed) return;
-
-            if (disposing)
-            {
-                foreach (IDisposable disposable in ChartBorderChildGrid.Children.OfType<IDisposable>())
-                    disposable.Dispose();
-                ChartBorderChildGrid.Children.Clear();
-            }
-
-            base.Dispose(disposing);
-        }
-
-        #endregion
-
-        #region public functions
-
-        public Grid MainGrid { get; }
-
-        public Border ChartBorder { get; }
-
-        public Grid ChartBorderChildGrid { get; }
-
-        public ChartTickBar HorizontalChartTickBar { get; }
-
-        public ChartTickBar VerticalChartTickBar { get; }
-
-        public TextTickBar AxisXTopControl { get; }
-
-        public TextTickBar AxisXBottomControl { get; }
-
-        public TextTickBar AxisYLeftControl { get; }
-
-        public TextTickBar AxisYRightControl { get; }
-
-        #endregion
+        #endregion        
 
         #region private functions
 
@@ -450,6 +443,12 @@ namespace Ssz.Operator.Core.DsShapeViews
 
             ChartBorder.Child = ChartBorderChildGrid;
         }
+
+        #endregion
+
+        #region private fields
+
+        private bool _refreshing;
 
         #endregion
     }

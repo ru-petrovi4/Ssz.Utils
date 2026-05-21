@@ -90,13 +90,13 @@
     <ProjectReference Include="..\..\Ssz.Utils\Ssz.Utils.csproj" />
     <ProjectReference Include="..\..\Ssz.Xceed.Wpf.Toolkit\Ssz.Xceed.Wpf.AvalonDock.Themes.Aero\Ssz.Xceed.Wpf.AvalonDock.Themes.Aero.csproj" />
     <ProjectReference Include="..\..\Ssz.Xceed.Wpf.Toolkit\Ssz.Xceed.Wpf.AvalonDock\Ssz.Xceed.Wpf.AvalonDock.csproj" />
-    <ProjectReference Include="..\..\ThirdParties\Fluent.Ribbon\Fluent.Ribbon.csproj" />
     <ProjectReference Include="..\Ssz.Operator.Core\Ssz.Operator.Core.csproj" />
     <ProjectReference Include="..\..\Ssz.Xceed.Wpf.Toolkit\Ssz.Xceed.Wpf.Toolkit\Ssz.Xceed.Wpf.Toolkit.csproj" />
     <ProjectReference Include="..\..\ThirdParties\Ssz.WindowsAPICodePack\Ssz.WindowsAPICodePack.csproj" />
   </ItemGroup>  
   <ItemGroup>
-    <PackageReference Include="Google.Protobuf" Version="3.34.1" />
+    <PackageReference Include="Fluent.Ribbon" Version="11.0.2" />
+    <PackageReference Include="Google.Protobuf" Version="3.35.0" />
     <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
   </ItemGroup>
   <ItemGroup>

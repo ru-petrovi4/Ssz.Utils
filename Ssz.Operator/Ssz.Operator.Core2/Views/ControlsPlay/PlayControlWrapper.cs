@@ -574,7 +574,7 @@ namespace Ssz.Operator.Core.ControlsPlay
             if (currentFileExtensionLower == DsProject.DsPageFileExtension)
             {
                 string fileFullName = Path.Combine(DsProject.Instance.DsPagesDirectoryFullName, _currentJumpInfo.FileRelativePath);
-                fileFullName = Path.Combine(Path.GetFullPath(fileFullName), Path.GetFileNameWithoutExtension(fileFullName) + DsProject.DsPageFileExtension);
+                fileFullName = Path.Combine(Path.GetDirectoryName(fileFullName)!, Path.GetFileNameWithoutExtension(fileFullName) + DsProject.DsPageFileExtension);
 
                 var dsPageDrawingInfo = await DsProject.ReadDrawingInfoAsync(fileFullName, false) as DsPageDrawingInfo;                
 
