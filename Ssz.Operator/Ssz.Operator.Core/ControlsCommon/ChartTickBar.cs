@@ -10,6 +10,34 @@ namespace Ssz.Operator.Core.ControlsCommon
     {
         #region construction and destruction
 
+        static ChartTickBar()
+        {
+            MinimumProperty.OverrideMetadata(
+                typeof(ChartTickBar),
+                new FrameworkPropertyMetadata(
+                    0.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender));
+
+            MaximumProperty.OverrideMetadata(
+                typeof(ChartTickBar),
+                new FrameworkPropertyMetadata(
+                    1.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender));
+
+            TickFrequencyProperty.OverrideMetadata(
+                typeof(ChartTickBar),
+                new FrameworkPropertyMetadata(
+                    0.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender));
+
+            FillProperty.OverrideMetadata(
+                typeof(ChartTickBar),
+                new FrameworkPropertyMetadata(
+                    null,
+                    FrameworkPropertyMetadataOptions.AffectsRender));
+        }
+
+
         public ChartTickBar()
         {
             IsHitTestVisible = false;

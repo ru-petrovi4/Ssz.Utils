@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
@@ -8,6 +8,34 @@ namespace Ssz.Operator.Core.ControlsCommon
 {
     public class TextTickBar : TickBar
     {
+        static TextTickBar()
+        {
+            MinimumProperty.OverrideMetadata(
+                typeof(TextTickBar),
+                new FrameworkPropertyMetadata(
+                    0.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender));
+
+            MaximumProperty.OverrideMetadata(
+                typeof(TextTickBar),
+                new FrameworkPropertyMetadata(
+                    1.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender));
+
+            TickFrequencyProperty.OverrideMetadata(
+                typeof(TextTickBar),
+                new FrameworkPropertyMetadata(
+                    0.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender));
+
+            FillProperty.OverrideMetadata(
+                typeof(TextTickBar),
+                new FrameworkPropertyMetadata(
+                    null,
+                    FrameworkPropertyMetadataOptions.AffectsRender));
+        }
+
+
         #region public functions
 
         public static readonly DependencyProperty FontFamilyProperty =
