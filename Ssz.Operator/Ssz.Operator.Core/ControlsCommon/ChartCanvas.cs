@@ -9,9 +9,6 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using Ssz.Operator.Core.Constants;
 using Ssz.Operator.Core.ControlsCommon.Converters;
-
-
-
 using Ssz.Operator.Core.DsShapes;
 using Ssz.Operator.Core.DsShapeViews;
 using Ssz.Operator.Core.MultiValueConverters;
@@ -218,13 +215,13 @@ namespace Ssz.Operator.Core.ControlsCommon
 
             // pointPath LeftProperty binding
 
-            BindingBase leftBinding;
+            BindingBase pointPath_LeftBinding;
             if (_multiDsChartItem.PointValueXInfo.IsConst)
             {
                 double xMultiplier;
                 if (pointsCount > 1) xMultiplier = index / (double) (pointsCount - 1);
                 else xMultiplier = 0.5;
-                leftBinding = new Binding
+                pointPath_LeftBinding = new Binding
                 {
                     Source = this,
                     Path = new PropertyPath(nameof(ActualWidth)),
@@ -256,7 +253,7 @@ namespace Ssz.Operator.Core.ControlsCommon
                     Path = new PropertyPath(nameof(ActualWidth)),
                     Mode = BindingMode.OneWay
                 });
-                var multiValueConverter = new LinearMultiValueConverter
+                var multiValueConverter = new PointPath_ValueConverter
                 {
                     Bias = 0,
                     Gain = 1
@@ -267,49 +264,49 @@ namespace Ssz.Operator.Core.ControlsCommon
                     multiValueConverter.ValueConverter =
                         _multiDsChartItem.PointValueXInfo.GetConverterOrDefaultConverter(genericContainer);
                 leftMultiBinding.Converter = multiValueConverter;
-                leftBinding = leftMultiBinding;
+                pointPath_LeftBinding = leftMultiBinding;
             }
 
-            BindingOperations.SetBinding(pointPath, LeftProperty, leftBinding);
-            DependencyObjectExtention.RegisterMultiBinding(pointPath, leftBinding as MultiBinding);
+            BindingOperations.SetBinding(pointPath, LeftProperty, pointPath_LeftBinding);
+            DependencyObjectExtention.RegisterMultiBinding(pointPath, pointPath_LeftBinding as MultiBinding);
 
             // pointPath TopProperty binding
 
-            MultiBinding topMultiBinding = DependencyObjectExtention.CreateBindingWithoutConverter(
+            MultiBinding pointPath_TopBinding = DependencyObjectExtention.CreateBindingWithoutConverter(
                 genericContainer,
                 _multiDsChartItem.PointValueYInfo, BindingMode.OneWay,
                 UpdateSourceTrigger.Default);
-            topMultiBinding.Bindings.Add(new Binding
+            pointPath_TopBinding.Bindings.Add(new Binding
             {
                 Source = _multiChartDsShapeView.AxisYLeftControl,
                 Path = new PropertyPath(nameof(TextTickBar.Maximum)),
                 Mode = BindingMode.OneWay
             });
-            topMultiBinding.Bindings.Add(new Binding
+            pointPath_TopBinding.Bindings.Add(new Binding
             {
                 Source = _multiChartDsShapeView.AxisYLeftControl,
                 Path = new PropertyPath(nameof(TextTickBar.Minimum)),
                 Mode = BindingMode.OneWay
             });
-            topMultiBinding.Bindings.Add(new Binding
+            pointPath_TopBinding.Bindings.Add(new Binding
             {
                 Source = this,
                 Path = new PropertyPath(nameof(ActualHeight)),
                 Mode = BindingMode.OneWay
             });
-            var yMultiValueConverter = new LinearMultiValueConverter
+            var pointPath_TopBinding_Converter = new PointPath_ValueConverter
             {
                 Bias = 1,
                 Gain = -1
             };
             if (_multiDsChartItem.PointValueYInfo.IsConst || _visualDesignMode)
-                yMultiValueConverter.ConstValue = _multiDsChartItem.PointValueYInfo.ConstValue;
+                pointPath_TopBinding_Converter.ConstValue = _multiDsChartItem.PointValueYInfo.ConstValue;
             else
-                yMultiValueConverter.ValueConverter =
+                pointPath_TopBinding_Converter.ValueConverter =
                     _multiDsChartItem.PointValueYInfo.GetConverterOrDefaultConverter(genericContainer);
-            topMultiBinding.Converter = yMultiValueConverter;
-            BindingOperations.SetBinding(pointPath, TopProperty, topMultiBinding);
-            DependencyObjectExtention.RegisterMultiBinding(pointPath, topMultiBinding);
+            pointPath_TopBinding.Converter = pointPath_TopBinding_Converter;
+            BindingOperations.SetBinding(pointPath, TopProperty, pointPath_TopBinding);
+            DependencyObjectExtention.RegisterMultiBinding(pointPath, pointPath_TopBinding);
 
             return pointPath;
         }
@@ -468,7 +465,7 @@ namespace Ssz.Operator.Core.ControlsCommon
 
         #endregion
 
-        private class LinearMultiValueConverter : IMultiValueConverter, IDisposable
+        private class PointPath_ValueConverter : IMultiValueConverter, IDisposable
         {
             #region construction and destruction
 
@@ -491,7 +488,7 @@ namespace Ssz.Operator.Core.ControlsCommon
             }
 
 
-            ~LinearMultiValueConverter()
+            ~PointPath_ValueConverter()
             {
                 Dispose(false);
             }
@@ -501,7 +498,6 @@ namespace Ssz.Operator.Core.ControlsCommon
             #region public functions
 
             public bool Disposed { get; private set; }
-
 
             public ValueConverterBase? ValueConverter { get; set; }
 
@@ -529,13 +525,17 @@ namespace Ssz.Operator.Core.ControlsCommon
                     value = (double)oValue;
                 }
 
-                var maximum = values[length - 3];
-                var minimum = values[length - 2];
-                var k = values[length - 1];
-                if (!(maximum is double) || !(minimum is double) || !(k is double)) return Binding.DoNothing;
-                var result = (Bias + Gain * (value - (double)minimum) / ((double)maximum - (double)minimum)) *
-                             (double)k;
-                if (double.IsNaN(result) || double.IsInfinity(result)) return Binding.DoNothing;
+                var maximumObject = values[length - 3];
+                var minimumObject = values[length - 2];
+                var actualLengthObject = values[length - 1];
+                if (maximumObject is not double maximum ||
+                        minimumObject is not double minimum ||
+                        actualLengthObject is not double actualLength)
+                    return Binding.DoNothing;
+                var result = (value - minimum) / (maximum - minimum);
+                result = (Bias + Gain * result) * actualLength;
+                if (double.IsNaN(result) || double.IsInfinity(result)) 
+                    return Binding.DoNothing;
                 return result;
             }
 
