@@ -37,7 +37,7 @@ namespace Ssz.Operator.Core.DsShapeViews
                 geometryPathString = geometryPathString!.Trim();
                 try
                 {
-                    if (StringHelper.StartsWithIgnoreCase(geometryPathString, @"<"))
+                    if (geometryPathString.StartsWith(@"<"))
                     {
                         geometry = XamlHelper.Load(geometryPathString) as Geometry;
                     }

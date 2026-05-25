@@ -759,17 +759,16 @@ namespace Ssz.Operator.Core
             {
                 var i = xaml.IndexOf(XamlDescEnd);
                 if (i != -1)
-                    return xaml.Substring(i + XamlDescEnd.Length);                
+                    return xaml.Substring(i + XamlDescEnd.Length).Trim();
             }            
-            return xaml;
+            return xaml.Trim(); ;
         }
 
         public static string AddXamlDesc(string? xamlWithNoDesc, IReadOnlyDictionary<string, string?> nameValueCollection)
         {
-            if (String.IsNullOrEmpty(xamlWithNoDesc) && 
-                (nameValueCollection.Count == 0 || 
-                    (nameValueCollection.Count == 1 && nameValueCollection.ContainsKey("") && String.IsNullOrEmpty(nameValueCollection[@""]))))
-                return @"";
+            if (nameValueCollection.Count == 0 || 
+                    (nameValueCollection.Count == 1 && nameValueCollection.ContainsKey("") && String.IsNullOrEmpty(nameValueCollection[@""])))
+                return xamlWithNoDesc ?? @"";
             return XamlDescV2Begin + NameValueCollectionHelper.GetNameValueCollectionString(nameValueCollection) + XamlDescEnd + xamlWithNoDesc;
         }
 
@@ -1048,9 +1047,9 @@ namespace Ssz.Operator.Core
                 var xamlDesc = GetXamlDesc(xaml);
                 var xamlWithoutDesc = GetXamlWithoutDesc(xaml) ?? @"";                
 
-                if (string.IsNullOrWhiteSpace(xamlWithoutDesc))
+                if (string.IsNullOrWhiteSpace(xamlWithoutDesc) || !xamlWithoutDesc.StartsWith(@"<"))
                 {
-                    return AddXamlDesc(null, xamlDesc);
+                    return AddXamlDesc(xamlWithoutDesc, xamlDesc);
                 }
                 else
                 {
