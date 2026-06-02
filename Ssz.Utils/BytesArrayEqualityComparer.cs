@@ -16,7 +16,7 @@ namespace Ssz.Utils
         /// <summary>
         /// 
         /// </summary>
-        public static BytesArrayEqualityComparer Instance = new BytesArrayEqualityComparer();
+        public static readonly BytesArrayEqualityComparer Instance = new BytesArrayEqualityComparer();
 
         /// <summary>        
         /// </summary>

@@ -39,8 +39,6 @@ namespace Ssz.Operator.Core
             if (string.IsNullOrWhiteSpace(xamlWithRelativePaths) || string.IsNullOrEmpty(filesDirectoryName))
                 return xamlWithRelativePaths ?? "";
 
-            xamlWithRelativePaths = UpdateXamlWithAbsolutePathsVersion(xamlWithRelativePaths!);
-
             var xamlWithRelativePaths_Desc = GetXamlDesc(xamlWithRelativePaths);
             var xamlWithRelativePaths_WithoutDesc = GetXamlWithoutDesc(xamlWithRelativePaths);
             
