@@ -59,32 +59,74 @@ namespace Ssz.Operator.Core.DsShapeViews
         #region public functions
 
         public static readonly DependencyProperty CenterDeltaPositionXProperty =
-            DependencyProperty.Register("CenterDeltaPositionX", typeof(double), typeof(DsShapeViewBase),
+            DependencyProperty.Register(nameof(CenterDeltaPositionX), typeof(double), typeof(DsShapeViewBase),
                 new PropertyMetadata(0.0));
 
         public static readonly DependencyProperty CenterDeltaPositionYProperty =
-            DependencyProperty.Register("CenterDeltaPositionY", typeof(double), typeof(DsShapeViewBase),
+            DependencyProperty.Register(nameof(CenterDeltaPositionY), typeof(double), typeof(DsShapeViewBase),
                 new PropertyMetadata(0.0));
 
         public static readonly DependencyProperty WidthDeltaProperty =
-            DependencyProperty.Register("WidthDelta", typeof(double), typeof(DsShapeViewBase),
+            DependencyProperty.Register(nameof(WidthDelta), typeof(double), typeof(DsShapeViewBase),
                 new PropertyMetadata(0.0));
 
         public static readonly DependencyProperty HeightDeltaProperty =
-            DependencyProperty.Register("HeightDelta", typeof(double), typeof(DsShapeViewBase),
+            DependencyProperty.Register(nameof(HeightDelta), typeof(double), typeof(DsShapeViewBase),
                 new PropertyMetadata(0.0));
 
         public static readonly DependencyProperty AngleDeltaProperty =
-            DependencyProperty.Register("AngleDelta", typeof(double), typeof(DsShapeViewBase),
+            DependencyProperty.Register(nameof(AngleDelta), typeof(double), typeof(DsShapeViewBase),
                 new PropertyMetadata(0.0));
 
         public static readonly DependencyProperty ScaleXProperty =
-            DependencyProperty.Register("ScaleX", typeof(double), typeof(DsShapeViewBase),
+            DependencyProperty.Register(nameof(ScaleX), typeof(double), typeof(DsShapeViewBase),
                 new PropertyMetadata(1.0));
 
         public static readonly DependencyProperty ScaleYProperty =
-            DependencyProperty.Register("ScaleY", typeof(double), typeof(DsShapeViewBase),
+            DependencyProperty.Register(nameof(ScaleY), typeof(double), typeof(DsShapeViewBase),
                 new PropertyMetadata(1.0));
+
+        public double CenterDeltaPositionX
+        {
+            get => (double)GetValue(CenterDeltaPositionXProperty);
+            set => SetValue(CenterDeltaPositionXProperty, value);
+        }
+
+        public double CenterDeltaPositionY
+        {
+            get => (double)GetValue(CenterDeltaPositionYProperty);
+            set => SetValue(CenterDeltaPositionYProperty, value);
+        }
+
+        public double WidthDelta
+        {
+            get => (double)GetValue(WidthDeltaProperty);
+            set => SetValue(WidthDeltaProperty, value);
+        }
+
+        public double HeightDelta
+        {
+            get => (double)GetValue(HeightDeltaProperty);
+            set => SetValue(HeightDeltaProperty, value);
+        }
+
+        public double AngleDelta
+        {
+            get => (double)GetValue(AngleDeltaProperty);
+            set => SetValue(AngleDeltaProperty, value);
+        }
+
+        public double ScaleX
+        {
+            get => (double)GetValue(ScaleXProperty);
+            set => SetValue(ScaleXProperty, value);
+        }
+
+        public double ScaleY
+        {
+            get => (double)GetValue(ScaleYProperty);
+            set => SetValue(ScaleYProperty, value);
+        }
 
         public static PropertyPath GetPropertyPath<T>(Expression<Func<T>> propertyNameExpression)
         {
@@ -282,7 +324,7 @@ namespace Ssz.Operator.Core.DsShapeViews
                 }
                 else
                 {
-                    if (VisualDesignMode)
+                    if (VisualDesignMode) // For dynamic change in designer
                         SetBinding(WidthDeltaProperty, new Binding
                         {
                             Path = GetPropertyPath(() => dsShapeViewModel.WidthDelta),
@@ -306,7 +348,7 @@ namespace Ssz.Operator.Core.DsShapeViews
                     multiBinding.Bindings.Add(new Binding
                     {
                         Source = this,
-                        Path = new PropertyPath("WidthDelta"),
+                        Path = new PropertyPath(nameof(WidthDelta)),
                         Mode = BindingMode.OneWay
                     });
                     multiBinding.Bindings.Add(new Binding
@@ -327,7 +369,7 @@ namespace Ssz.Operator.Core.DsShapeViews
                 }
                 else
                 {
-                    if (VisualDesignMode)
+                    if (VisualDesignMode) // For dynamic change in designer
                         SetBinding(HeightDeltaProperty, new Binding
                         {
                             Path = GetPropertyPath(() => dsShapeViewModel.HeightDelta),
@@ -351,7 +393,7 @@ namespace Ssz.Operator.Core.DsShapeViews
                     multiBinding.Bindings.Add(new Binding
                     {
                         Source = this,
-                        Path = new PropertyPath("HeightDelta"),
+                        Path = new PropertyPath(nameof(HeightDelta)),
                         Mode = BindingMode.OneWay
                     });
                     multiBinding.Bindings.Add(new Binding
@@ -362,7 +404,8 @@ namespace Ssz.Operator.Core.DsShapeViews
                     SetBinding(HeightProperty, multiBinding);
                 }
 
-                if (dsShape.CenterDeltaPositionXInfo.IsConst && dsShape.WidthDeltaInfo.IsConst)
+                if (dsShape.CenterDeltaPositionXInfo.IsConst && 
+                        dsShape.WidthDeltaInfo.IsConst)
                 {
                     BindingOperations.SetBinding(this, Canvas.LeftProperty, new Binding
                     {
@@ -373,7 +416,7 @@ namespace Ssz.Operator.Core.DsShapeViews
                 }
                 else
                 {
-                    if (VisualDesignMode)
+                    if (VisualDesignMode) // For dynamic change in designer
                         SetBinding(CenterDeltaPositionXProperty, new Binding
                         {
                             Path = GetPropertyPath(() => dsShapeViewModel.CenterDeltaPositionX),
@@ -398,7 +441,7 @@ namespace Ssz.Operator.Core.DsShapeViews
                     multiBinding.Bindings.Add(new Binding
                     {
                         Source = this,
-                        Path = new PropertyPath("CenterDeltaPositionX"),
+                        Path = new PropertyPath(nameof(CenterDeltaPositionX)),
                         Mode = BindingMode.OneWay
                     });
                     multiBinding.Bindings.Add(new Binding
@@ -419,7 +462,7 @@ namespace Ssz.Operator.Core.DsShapeViews
                     multiBinding.Bindings.Add(new Binding
                     {
                         Source = this,
-                        Path = new PropertyPath("WidthDelta"),
+                        Path = new PropertyPath(nameof(WidthDelta)),
                         Mode = BindingMode.OneWay
                     });
                     multiBinding.Bindings.Add(new Binding
@@ -431,7 +474,7 @@ namespace Ssz.Operator.Core.DsShapeViews
                 }
 
                 if (dsShape.CenterDeltaPositionYInfo.IsConst &&
-                    dsShape.HeightDeltaInfo.IsConst)
+                        dsShape.HeightDeltaInfo.IsConst)
                 {
                     BindingOperations.SetBinding(this, Canvas.TopProperty, new Binding
                     {
@@ -442,7 +485,7 @@ namespace Ssz.Operator.Core.DsShapeViews
                 }
                 else
                 {
-                    if (VisualDesignMode)
+                    if (VisualDesignMode) // For dynamic change in designer
                         SetBinding(CenterDeltaPositionYProperty, new Binding
                         {
                             Path = GetPropertyPath(() => dsShapeViewModel.CenterDeltaPositionY),
@@ -467,7 +510,7 @@ namespace Ssz.Operator.Core.DsShapeViews
                     multiBinding.Bindings.Add(new Binding
                     {
                         Source = this,
-                        Path = new PropertyPath("CenterDeltaPositionY"),
+                        Path = new PropertyPath(nameof(CenterDeltaPositionY)),
                         Mode = BindingMode.OneWay
                     });
                     multiBinding.Bindings.Add(new Binding
@@ -488,7 +531,7 @@ namespace Ssz.Operator.Core.DsShapeViews
                     multiBinding.Bindings.Add(new Binding
                     {
                         Source = this,
-                        Path = new PropertyPath("HeightDelta"),
+                        Path = new PropertyPath(nameof(HeightDelta)),
                         Mode = BindingMode.OneWay
                     });
                     multiBinding.Bindings.Add(new Binding
@@ -522,7 +565,7 @@ namespace Ssz.Operator.Core.DsShapeViews
                 }
                 else
                 {
-                    if (VisualDesignMode)
+                    if (VisualDesignMode) // For dynamic change in designer
                         SetBinding(AngleDeltaProperty, new Binding
                         {
                             Path = GetPropertyPath(() => dsShapeViewModel.AngleDelta),
@@ -546,7 +589,7 @@ namespace Ssz.Operator.Core.DsShapeViews
                     multiBinding.Bindings.Add(new Binding
                     {
                         Source = this,
-                        Path = new PropertyPath("AngleDelta"),
+                        Path = new PropertyPath(nameof(AngleDelta)),
                         Mode = BindingMode.OneWay
                     });
                     multiBinding.Bindings.Add(new Binding

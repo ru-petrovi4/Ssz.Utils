@@ -31,13 +31,11 @@ namespace Ssz.Operator.Core.ControlsDesign
             DataContext = dsShapeView.DsShapeViewModel;
         }
 
-
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-
 
         protected virtual void Dispose(bool disposing)
         {
@@ -51,7 +49,6 @@ namespace Ssz.Operator.Core.ControlsDesign
             Disposed = true;
         }
 
-
         ~DesignDsShapeView()
         {
             Dispose(false);
@@ -63,9 +60,7 @@ namespace Ssz.Operator.Core.ControlsDesign
 
         public DesignDrawingCanvas DesignDrawingCanvas { get; }
 
-
         public DsShapeViewBase DsShapeView { get; }
-
 
         public DsShapeViewModel DsShapeViewModel => (DsShapeViewModel) DataContext;
 

@@ -9,12 +9,9 @@ namespace Ssz.Operator.Core.ControlsPlay.VirtualKeyboards
             Description = description;
         }
 
-
         public string Type { get; set; }
 
-
         public string NameToDisplay { get; set; }
-
 
         public string Description { get; set; }
     }

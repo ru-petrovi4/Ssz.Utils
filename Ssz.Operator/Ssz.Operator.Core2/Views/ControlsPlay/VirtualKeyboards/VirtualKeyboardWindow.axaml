@@ -1,0 +1,15 @@
+<Window x:Class="Ssz.Operator.Core.ControlsPlay.VirtualKeyboards.VirtualKeyboardWindow"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Background="LightGray"
+        Title="Virtual Keyboard"
+        SizeToContent="WidthAndHeight">
+    <!--
+        WPF: inherited TouchScreenWindowBase + Viewbox with x:Name="Main"
+        Avalonia: Window (or derive from your Avalonia TouchScreenWindowBase if it exists).
+        The Viewbox child is set programmatically in code-behind via Main.Child.
+    -->
+    <Viewbox x:Name="Main"
+             Stretch="Uniform"
+             StretchDirection="Both" />
+</Window>
