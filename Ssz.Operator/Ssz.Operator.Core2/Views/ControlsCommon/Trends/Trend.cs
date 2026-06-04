@@ -305,7 +305,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
 
         public double VisibleYMin { get; set; }
 
-        public double Thicknes { get; set; } = 3;
+        public double Thickness { get; set; } = 3;
 
         public Func<KeyValuePair<DateTime, double>, double> YMapping
         {

@@ -1,6 +1,6 @@
+using Avalonia.Input;
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms; // Keys enum only — no WinForms UI used
 
 namespace Ssz.Operator.Core.ControlsPlay.VirtualKeyboards
 {
@@ -62,9 +62,9 @@ namespace Ssz.Operator.Core.ControlsPlay.VirtualKeyboards
         public bool RightAltIsPressed   { get; set; }
 
         // Convenience wrappers — match the old KeyboardKey.Press/Release API.
-        public void PressKey(Keys key)   => Sender.Press(key);
-        public void ReleaseKey(Keys key) => Sender.Release(key);
-        public short GetKeyState(Keys key) => Sender.GetState(key);
+        public void PressKey(Key key)   => Sender.Press(key);
+        public void ReleaseKey(Key key) => Sender.Release(key);
+        public short GetKeyState(Key key) => Sender.GetState(key);
 
         #endregion
 

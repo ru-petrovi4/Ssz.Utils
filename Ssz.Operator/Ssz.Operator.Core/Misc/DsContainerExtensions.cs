@@ -12,12 +12,12 @@ namespace Ssz.Operator.Core
     {
         #region public functions
 
-        public static void TransformDsShapes(this IDsContainer container, double scaleX, double scaleY)
+        public static void TransformDsShapesRecursively(this IDsContainer container, double scaleX, double scaleY)
         {
             if (!double.IsNaN(scaleX) && !double.IsInfinity(scaleX) &&
-                !double.IsNaN(scaleY) && !double.IsInfinity(scaleY) &&
-                (scaleX != 1.0 || scaleY != 1.0))
-                TransformDsShapesInternal(container.DsShapes, scaleX, scaleY);
+                    !double.IsNaN(scaleY) && !double.IsInfinity(scaleY) &&
+                    (scaleX != 1.0 || scaleY != 1.0))
+                TransformDsShapesRecursivelyInternal(container.DsShapes, scaleX, scaleY);
         }
 
         public static DsConstant GetOrCreateDsConstant(this IDsContainer container, string constantName)
@@ -152,7 +152,7 @@ namespace Ssz.Operator.Core
 
         #region private functions
 
-        private static void TransformDsShapesInternal(IEnumerable<DsShapeBase> dsShapes, double scaleX,
+        private static void TransformDsShapesRecursivelyInternal(IEnumerable<DsShapeBase> dsShapes, double scaleX,
             double scaleY)
         {
             foreach (DsShapeBase dsShape in dsShapes)
@@ -161,7 +161,7 @@ namespace Ssz.Operator.Core
 
                 var complexDsShape = dsShape as ComplexDsShape;
                 if (complexDsShape is not null)
-                    TransformDsShapesInternal(complexDsShape.DsShapes, scaleX, scaleY);
+                    TransformDsShapesRecursivelyInternal(complexDsShape.DsShapes, scaleX, scaleY);
             }
         }
 

@@ -226,91 +226,109 @@ namespace Ssz.Operator.Core.DsShapeViews
         private void SetBaseBindings()
         {
             DsShapeViewModel dsShapeViewModel = DsShapeViewModel;
-            DsShapeBase dsShape = dsShapeViewModel.DsShape;
+            DsShapeBase dsShape = dsShapeViewModel.DsShape;            
 
-            if (VisualDesignMode && dsShape.GetParentComplexDsShape() is null)
+            if (VisualDesignMode)
             {
                 SetBinding(WidthProperty, new Binding
                 {
-                    Path = GetPropertyPath(() => dsShapeViewModel.WidthInitial),
+                    Path = GetPropertyPath(() => dsShapeViewModel.DesignWidth),
                     Mode = BindingMode.OneWay
                 });
 
                 SetBinding(HeightProperty, new Binding
                 {
-                    Path = GetPropertyPath(() => dsShapeViewModel.HeightInitial),
+                    Path = GetPropertyPath(() => dsShapeViewModel.DesignHeight),
                     Mode = BindingMode.OneWay
                 });
 
-                BindingOperations.SetBinding(this, Canvas.LeftProperty, new Binding
+                SetBinding(Canvas.LeftProperty, new Binding
                 {
-                    Path =
-                        GetPropertyPath(() => dsShapeViewModel.LeftNotTransformed),
+                    Path = GetPropertyPath(() => dsShapeViewModel.DesignLeft),
                     Mode = BindingMode.OneWay
                 });
 
-                BindingOperations.SetBinding(this, Canvas.TopProperty, new Binding
+                SetBinding(Canvas.TopProperty, new Binding
                 {
-                    Path =
-                        GetPropertyPath(() => dsShapeViewModel.TopNotTransformed),
+                    Path = GetPropertyPath(() => dsShapeViewModel.DesignTop),
                     Mode = BindingMode.OneWay
-                });
-
-                BindingOperations.SetBinding(this, RenderTransformOriginProperty, new Binding
-                {
-                    Path =
-                        GetPropertyPath(() => dsShapeViewModel.CenterRelativePosition),
-                    Mode =
-                        BindingMode
-                            .OneWay
                 });
 
                 RotateTransform = new RotateTransform();
                 BindingOperations.SetBinding(RotateTransform, RotateTransform.AngleProperty,
                     new Binding
                     {
-                        Path = GetPropertyPath(() => dsShapeViewModel.AngleInitial),
+                        Path = GetPropertyPath(() => dsShapeViewModel.DesignAngle),
                         Mode = BindingMode.OneWay
                     });
 
-                ScaleTranform = new ScaleTransform();
-                BindingOperations.SetBinding(ScaleTranform, ScaleTransform.ScaleXProperty,
-                    new Binding
+                if (dsShape.GetParentComplexDsShape() is null)
+                {
+                    BindingOperations.SetBinding(this, RenderTransformOriginProperty, new Binding
                     {
-                        Path = GetPropertyPath(() => dsShapeViewModel.IsFlipped),
-                        Converter = FlipBoolConverter.Instance,
+                        Path =
+                            GetPropertyPath(() => dsShapeViewModel.CenterRelativePosition),
+                        Mode =
+                            BindingMode
+                                .OneWay
+                    });                    
+
+                    ScaleTranform = new ScaleTransform();
+                    BindingOperations.SetBinding(ScaleTranform, ScaleTransform.ScaleXProperty,
+                        new Binding
+                        {
+                            Path = GetPropertyPath(() => dsShapeViewModel.IsFlipped),
+                            Converter = FlipBoolConverter.Instance,
+                            Mode = BindingMode.OneWay
+                        });
+
+                    BindingOperations.SetBinding(this, Panel.ZIndexProperty, new Binding
+                    {
+                        Path = GetPropertyPath(() => dsShapeViewModel.ZIndex),
                         Mode = BindingMode.OneWay
                     });
 
-                BindingOperations.SetBinding(this, Panel.ZIndexProperty, new Binding
-                {
-                    Path = GetPropertyPath(() => dsShapeViewModel.ZIndex),
-                    Mode = BindingMode.OneWay
-                });
+                    SetBinding(RotationXProperty, new Binding
+                    {
+                        Path = GetPropertyPath(() => dsShapeViewModel.RotationX),
+                        Mode = BindingMode.OneWay
+                    });
 
-                SetBinding(RotationXProperty, new Binding
-                {
-                    Path = GetPropertyPath(() => dsShapeViewModel.RotationX),
-                    Mode = BindingMode.OneWay
-                });
+                    SetBinding(RotationYProperty, new Binding
+                    {
+                        Path = GetPropertyPath(() => dsShapeViewModel.RotationY),
+                        Mode = BindingMode.OneWay
+                    });
 
-                SetBinding(RotationYProperty, new Binding
-                {
-                    Path = GetPropertyPath(() => dsShapeViewModel.RotationY),
-                    Mode = BindingMode.OneWay
-                });
+                    SetBinding(RotationZProperty, new Binding
+                    {
+                        Path = GetPropertyPath(() => dsShapeViewModel.RotationZ),
+                        Mode = BindingMode.OneWay
+                    });
 
-                SetBinding(RotationZProperty, new Binding
+                    SetBinding(FieldOfViewProperty, new Binding
+                    {
+                        Path = GetPropertyPath(() => dsShapeViewModel.FieldOfView),
+                        Mode = BindingMode.OneWay
+                    });
+                }
+                else
                 {
-                    Path = GetPropertyPath(() => dsShapeViewModel.RotationZ),
-                    Mode = BindingMode.OneWay
-                });
+                    RenderTransformOrigin = dsShape.CenterRelativePosition;
 
-                SetBinding(FieldOfViewProperty, new Binding
-                {
-                    Path = GetPropertyPath(() => dsShapeViewModel.FieldOfView),
-                    Mode = BindingMode.OneWay
-                });
+                    if (dsShape.IsFlipped)
+                    {
+                        ScaleTranform = new ScaleTransform();
+                        ScaleTranform.ScaleX = -1;
+                    }
+
+                    Panel.SetZIndex(this, dsShapeViewModel.ZIndex);
+
+                    RotationX = dsShapeViewModel.RotationX;
+                    RotationY = dsShapeViewModel.RotationY;
+                    RotationZ = dsShapeViewModel.RotationZ;
+                    FieldOfView = dsShapeViewModel.FieldOfView;
+                }
             }
             else
             {
@@ -324,14 +342,7 @@ namespace Ssz.Operator.Core.DsShapeViews
                 }
                 else
                 {
-                    if (VisualDesignMode) // For dynamic change in designer
-                        SetBinding(WidthDeltaProperty, new Binding
-                        {
-                            Path = GetPropertyPath(() => dsShapeViewModel.WidthDelta),
-                            Mode = BindingMode.OneWay
-                        });
-                    else
-                        this.SetBindingOrConst(dsShape.Container, WidthDeltaProperty, dsShape.WidthDeltaInfo,
+                    this.SetBindingOrConst(dsShape.Container, WidthDeltaProperty, dsShape.WidthDeltaInfo,
                             BindingMode.OneWay,
                             UpdateSourceTrigger.Default);
 
@@ -369,14 +380,7 @@ namespace Ssz.Operator.Core.DsShapeViews
                 }
                 else
                 {
-                    if (VisualDesignMode) // For dynamic change in designer
-                        SetBinding(HeightDeltaProperty, new Binding
-                        {
-                            Path = GetPropertyPath(() => dsShapeViewModel.HeightDelta),
-                            Mode = BindingMode.OneWay
-                        });
-                    else
-                        this.SetBindingOrConst(dsShape.Container, HeightDeltaProperty, dsShape.HeightDeltaInfo,
+                    this.SetBindingOrConst(dsShape.Container, HeightDeltaProperty, dsShape.HeightDeltaInfo,
                             BindingMode.OneWay,
                             UpdateSourceTrigger.Default);
 
@@ -404,7 +408,7 @@ namespace Ssz.Operator.Core.DsShapeViews
                     SetBinding(HeightProperty, multiBinding);
                 }
 
-                if (dsShape.CenterDeltaPositionXInfo.IsConst && 
+                if (dsShape.CenterDeltaPositionXInfo.IsConst &&
                         dsShape.WidthDeltaInfo.IsConst)
                 {
                     BindingOperations.SetBinding(this, Canvas.LeftProperty, new Binding
@@ -416,14 +420,7 @@ namespace Ssz.Operator.Core.DsShapeViews
                 }
                 else
                 {
-                    if (VisualDesignMode) // For dynamic change in designer
-                        SetBinding(CenterDeltaPositionXProperty, new Binding
-                        {
-                            Path = GetPropertyPath(() => dsShapeViewModel.CenterDeltaPositionX),
-                            Mode = BindingMode.OneWay
-                        });
-                    else
-                        this.SetBindingOrConst(dsShape.Container, CenterDeltaPositionXProperty,
+                    this.SetBindingOrConst(dsShape.Container, CenterDeltaPositionXProperty,
                             dsShape.CenterDeltaPositionXInfo,
                             BindingMode.OneWay,
                             UpdateSourceTrigger.Default);
@@ -485,14 +482,7 @@ namespace Ssz.Operator.Core.DsShapeViews
                 }
                 else
                 {
-                    if (VisualDesignMode) // For dynamic change in designer
-                        SetBinding(CenterDeltaPositionYProperty, new Binding
-                        {
-                            Path = GetPropertyPath(() => dsShapeViewModel.CenterDeltaPositionY),
-                            Mode = BindingMode.OneWay
-                        });
-                    else
-                        this.SetBindingOrConst(dsShape.Container, CenterDeltaPositionYProperty,
+                    this.SetBindingOrConst(dsShape.Container, CenterDeltaPositionYProperty,
                             dsShape.CenterDeltaPositionYInfo,
                             BindingMode.OneWay,
                             UpdateSourceTrigger.Default);
@@ -544,35 +534,15 @@ namespace Ssz.Operator.Core.DsShapeViews
 
                 if (dsShape.AngleDeltaInfo.IsConst)
                 {
-                    if (VisualDesignMode)
+                    if (dsShape.AngleInitial != 0)
                     {
                         RotateTransform = new RotateTransform();
-                        BindingOperations.SetBinding(RotateTransform, RotateTransform.AngleProperty,
-                            new Binding
-                            {
-                                Path = GetPropertyPath(() => dsShapeViewModel.AngleInitial),
-                                Mode = BindingMode.OneWay
-                            });
-                    }
-                    else
-                    {
-                        if (dsShape.AngleInitial != 0)
-                        {
-                            RotateTransform = new RotateTransform();
-                            RotateTransform.Angle = dsShape.AngleInitialNotRounded;
-                        }
+                        RotateTransform.Angle = dsShape.AngleInitialNotRounded;
                     }
                 }
                 else
                 {
-                    if (VisualDesignMode) // For dynamic change in designer
-                        SetBinding(AngleDeltaProperty, new Binding
-                        {
-                            Path = GetPropertyPath(() => dsShapeViewModel.AngleDelta),
-                            Mode = BindingMode.OneWay
-                        });
-                    else
-                        this.SetBindingOrConst(dsShape.Container, AngleDeltaProperty, dsShape.AngleDeltaInfo,
+                    this.SetBindingOrConst(dsShape.Container, AngleDeltaProperty, dsShape.AngleDeltaInfo,
                             BindingMode.OneWay,
                             UpdateSourceTrigger.Default);
 

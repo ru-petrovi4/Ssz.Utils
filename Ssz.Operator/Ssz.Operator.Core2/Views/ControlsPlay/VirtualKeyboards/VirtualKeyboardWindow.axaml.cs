@@ -32,8 +32,7 @@ namespace Ssz.Operator.Core.ControlsPlay.VirtualKeyboards
                 // Get the OWNER window (the one the user is typing into),
                 // not this keyboard window itself.
                 // PlayDsProjectView.MainWindow is the target — adjust to your API.
-                var targetWindow = PlayDsProjectView.MainWindow as TopLevel
-                                   ?? TopLevel.GetTopLevel(keyboardView);
+                var targetWindow = TopLevel.GetTopLevel(keyboardView);
                 sender.SetTargetTopLevel(targetWindow);
             }
         }

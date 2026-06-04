@@ -15,7 +15,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.Converters
             var brush = value as Brush;
             if (brush is null || parameter is null)
                 return null;
-            return new Pen(brush, ((Trend) parameter).Thicknes);
+            return new Pen(brush, ((Trend) parameter).Thickness);
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

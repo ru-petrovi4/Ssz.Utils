@@ -294,7 +294,7 @@ namespace Ssz.Operator.Core.Drawings
             string xaml = XamlHelper.Save(DsShapesArray ?? new ArrayList());
             complexDsShape.DsShapesArray = XamlHelper.Load(xaml);
 
-            complexDsShape.TransformDsShapes(complexDsShape.WidthInitialNotRounded / Width,
+            complexDsShape.TransformDsShapesRecursively(complexDsShape.WidthInitialNotRounded / Width,
                 complexDsShape.HeightInitialNotRounded / Height);
 
             DsConstant[] oldDsConstantsCollection =

@@ -47,25 +47,25 @@ namespace Ssz.Operator.Core.DsShapes
             LoadXamlContent = loadXamlContent;
 
             CenterInitialPosition = new Point(0, 0);
-            CenterDeltaPositionXInfo = new DoubleDataBinding(visualDesignMode, loadXamlContent) {ConstValue = 0.0};
-            CenterDeltaPositionYInfo = new DoubleDataBinding(visualDesignMode, loadXamlContent) {ConstValue = 0.0};
+            CenterDeltaPositionXInfo = new DoubleDataBinding(visualDesignMode, loadXamlContent) { ConstValue = 0.0 };
+            CenterDeltaPositionYInfo = new DoubleDataBinding(visualDesignMode, loadXamlContent) { ConstValue = 0.0 };
             CenterFinalPosition = new Point(0, 0);
             CenterRelativePosition = new Point(0.5, 0.5);
             ResizeMode = DsShapeResizeMode.WidthAndHeight;
             WidthInitial = 20;
-            WidthDeltaInfo = new DoubleDataBinding(visualDesignMode, loadXamlContent) {ConstValue = 0.0};
+            WidthDeltaInfo = new DoubleDataBinding(visualDesignMode, loadXamlContent) { ConstValue = 0.0 };
             WidthFinal = 0;
             HeightInitial = 20;
-            HeightDeltaInfo = new DoubleDataBinding(visualDesignMode, loadXamlContent) {ConstValue = 0.0};
+            HeightDeltaInfo = new DoubleDataBinding(visualDesignMode, loadXamlContent) { ConstValue = 0.0 };
             HeightFinal = 0;
             AngleInitial = 0.0;
-            AngleDeltaInfo = new DoubleDataBinding(visualDesignMode, loadXamlContent) {ConstValue = 0.0};
+            AngleDeltaInfo = new DoubleDataBinding(visualDesignMode, loadXamlContent) { ConstValue = 0.0 };
             AngleFinal = 0.0;
             IsFlipped = false;
-            IsVisibleInfo = new BooleanDataBinding(visualDesignMode, loadXamlContent) {ConstValue = true};
-            IsEnabledInfo = new BooleanDataBinding(visualDesignMode, loadXamlContent) {ConstValue = true};
+            IsVisibleInfo = new BooleanDataBinding(visualDesignMode, loadXamlContent) { ConstValue = true };
+            IsEnabledInfo = new BooleanDataBinding(visualDesignMode, loadXamlContent) { ConstValue = true };
             IsLocked = false;
-            OpacityInfo = new DoubleDataBinding(visualDesignMode, loadXamlContent) {ConstValue = 1.0};
+            OpacityInfo = new DoubleDataBinding(visualDesignMode, loadXamlContent) { ConstValue = 1.0 };
             RotationX = 0.0;
             RotationY = 0.0;
             RotationZ = 0.0;
@@ -136,49 +136,49 @@ namespace Ssz.Operator.Core.DsShapes
             {
                 var t = 5.0;
                 var notTransformedRect = GetNotTransformedRect();
-                writer.Write((int) (Math.Round(notTransformedRect.Right / t, 0) * t));
-                writer.Write((int) (Math.Round(notTransformedRect.Bottom / t, 0) * t));
-                writer.Write((int) (Math.Round(notTransformedRect.Width / t, 0) * t));
-                writer.Write((int) (Math.Round(notTransformedRect.Height / t, 0) * t));
+                writer.Write((int)(Math.Round(notTransformedRect.Right / t, 0) * t));
+                writer.Write((int)(Math.Round(notTransformedRect.Bottom / t, 0) * t));
+                writer.Write((int)(Math.Round(notTransformedRect.Width / t, 0) * t));
+                writer.Write((int)(Math.Round(notTransformedRect.Height / t, 0) * t));
                 if (!CenterDeltaPositionXInfo.IsConst)
                 {
                     writer.Write(CenterDeltaPositionXInfo, context);
-                    writer.Write((int) (Math.Round(CenterFinalPositionNotRounded.X / t, 0) * t));
+                    writer.Write((int)(Math.Round(CenterFinalPositionNotRounded.X / t, 0) * t));
                 }
 
                 if (!CenterDeltaPositionYInfo.IsConst)
                 {
                     writer.Write(CenterDeltaPositionYInfo, context);
-                    writer.Write((int) (Math.Round(CenterFinalPositionNotRounded.Y / t, 0) * t));
+                    writer.Write((int)(Math.Round(CenterFinalPositionNotRounded.Y / t, 0) * t));
                 }
 
-                writer.Write((int) (Math.Round(CenterRelativePosition.X, 2) * 100));
-                writer.Write((int) (Math.Round(CenterRelativePosition.Y, 2) * 100));
-                writer.Write((int) ResizeMode);
+                writer.Write((int)(Math.Round(CenterRelativePosition.X, 2) * 100));
+                writer.Write((int)(Math.Round(CenterRelativePosition.Y, 2) * 100));
+                writer.Write((int)ResizeMode);
                 if (!WidthDeltaInfo.IsConst)
                 {
                     writer.Write(WidthDeltaInfo, context);
-                    writer.Write((int) (Math.Round(WidthFinalNotRounded / t, 0) * t));
+                    writer.Write((int)(Math.Round(WidthFinalNotRounded / t, 0) * t));
                 }
 
                 if (!HeightDeltaInfo.IsConst)
                 {
                     writer.Write(HeightDeltaInfo, context);
-                    writer.Write((int) (Math.Round(HeightFinalNotRounded / t, 0) * t));
+                    writer.Write((int)(Math.Round(HeightFinalNotRounded / t, 0) * t));
                 }
 
-                writer.Write((int) (Math.Round(AngleInitialNotRounded / t, 0) * t));
+                writer.Write((int)(Math.Round(AngleInitialNotRounded / t, 0) * t));
                 if (!AngleDeltaInfo.IsConst)
                 {
                     writer.Write(AngleDeltaInfo, context);
-                    writer.Write((int) (Math.Round(AngleFinalNotRounded / t, 0) * t));
+                    writer.Write((int)(Math.Round(AngleFinalNotRounded / t, 0) * t));
                 }
 
                 writer.Write(IsFlipped);
-                writer.Write((int) (Math.Round(RotationX / t, 0) * t));
-                writer.Write((int) (Math.Round(RotationY / t, 0) * t));
-                writer.Write((int) (Math.Round(RotationZ / t, 0) * t));
-                writer.Write((int) (Math.Round(FieldOfView / t, 0) * t));
+                writer.Write((int)(Math.Round(RotationX / t, 0) * t));
+                writer.Write((int)(Math.Round(RotationY / t, 0) * t));
+                writer.Write((int)(Math.Round(RotationZ / t, 0) * t));
+                writer.Write((int)(Math.Round(FieldOfView / t, 0) * t));
                 writer.Write(IsVisibleInfo, context);
                 writer.Write(IsEnabledInfo, context);
                 writer.Write(IsLocked);
@@ -196,7 +196,7 @@ namespace Ssz.Operator.Core.DsShapes
                 writer.Write(CenterDeltaPositionYInfo, context);
                 writer.Write(CenterFinalPositionNotRounded);
                 writer.Write(CenterRelativePosition);
-                writer.Write((int) ResizeMode);
+                writer.Write((int)ResizeMode);
                 writer.Write(WidthInitialNotRounded);
                 writer.Write(WidthDeltaInfo, context);
                 writer.Write(WidthFinalNotRounded);
@@ -235,7 +235,7 @@ namespace Ssz.Operator.Core.DsShapes
                         reader.ReadOwnedData(CenterDeltaPositionYInfo, context);
                         CenterFinalPosition = reader.ReadPoint();
                         CenterRelativePosition = reader.ReadPoint();
-                        ResizeMode = (DsShapeResizeMode) reader.ReadInt32();
+                        ResizeMode = (DsShapeResizeMode)reader.ReadInt32();
                         WidthInitial = reader.ReadDouble();
                         reader.ReadOwnedData(WidthDeltaInfo, context);
                         WidthFinal = reader.ReadDouble();
@@ -327,7 +327,7 @@ namespace Ssz.Operator.Core.DsShapes
             {
                 ResetGeometryCache();
 
-                if (SetValue(ref _centerInitialPosition, value)) 
+                if (SetValue(ref _centerInitialPosition, value))
                     OnPropertyChanged(nameof(CenterInitialPositionAdvanced));
             }
         }
@@ -426,7 +426,7 @@ namespace Ssz.Operator.Core.DsShapes
 
                 ResetGeometryCache();
 
-                if (SetValue(ref _widthInitial, value)) 
+                if (SetValue(ref _widthInitial, value))
                     OnPropertyChanged(nameof(WidthInitialAdvanced));
             }
         }
@@ -476,7 +476,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] // For XAML serialization
-        public double WidthFinalNotRounded => _widthFinal;
+        public double WidthFinalNotRounded => _widthFinal;        
 
         [DsCategory(ResourceStrings.GeometryCategory)]
         [DsDisplayName(ResourceStrings.DsShapeHeightInitial)]
@@ -540,7 +540,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] // For XAML serialization
-        public double HeightFinalNotRounded => _heightFinal;
+        public double HeightFinalNotRounded => _heightFinal;        
 
         public double GetMinDeltaWidth()
         {
@@ -1034,7 +1034,6 @@ namespace Ssz.Operator.Core.DsShapes
             CenterInitialPosition = new Point(scaleX * _centerInitialPosition.X, scaleY * _centerInitialPosition.Y);
             CenterFinalPosition = new Point(scaleX * _centerFinalPosition.X, scaleY * _centerFinalPosition.Y);
         }
-
 
         public virtual void GetDsConstants(
             CaseInsensitiveOrderedDictionary<List<ExtendedDsConstant>> dsConstantsDictionary)

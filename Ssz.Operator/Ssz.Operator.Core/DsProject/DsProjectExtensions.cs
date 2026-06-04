@@ -124,7 +124,7 @@ namespace Ssz.Operator.Core
                 string xaml = XamlHelper.Save(complexDsShape.DsShapesArray ?? new ArrayList());
                 drawing.DsShapesArray = XamlHelper.Load(xaml);
 
-                drawing.TransformDsShapes(drawing.Width / complexDsShape.WidthInitialNotRounded,
+                drawing.TransformDsShapesRecursively(drawing.Width / complexDsShape.WidthInitialNotRounded,
                     drawing.Height / complexDsShape.HeightInitialNotRounded);
 
                 drawing.CenterRelativePosition =
@@ -683,7 +683,7 @@ namespace Ssz.Operator.Core
                                 DsShapeDrawing;
                         if (dsShapeDrawingWithSameShortBytesLength is null) continue;
                         dsShapeDrawingWithSameShortBytesLength.CropUnusedSpace();
-                        dsShapeDrawingWithSameShortBytesLength.TransformDsShapes(
+                        dsShapeDrawingWithSameShortBytesLength.TransformDsShapesRecursively(
                             dsShapeDrawingFromDsShape.Width /
                             dsShapeDrawingWithSameShortBytesLength.Width,
                             dsShapeDrawingFromDsShape.Height /
