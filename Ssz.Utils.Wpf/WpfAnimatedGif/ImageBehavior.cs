@@ -614,8 +614,18 @@ namespace Ssz.Utils.Wpf.WpfAnimatedGif
             {
                 if (stream != null)
                 {
-                    stream.Position = 0;
-                    decoder = BitmapDecoder.Create(stream, createOptions, BitmapCacheOption.OnLoad);
+                    try
+                    {
+                        stream.Position = 0;
+                        decoder = BitmapDecoder.Create(stream, createOptions, BitmapCacheOption.OnLoad);
+                    }
+                    catch
+                    {
+                        if (uri != null && uri.IsAbsoluteUri)
+                        {
+                            decoder = BitmapDecoder.Create(uri, createOptions, BitmapCacheOption.OnLoad);
+                        }
+                    }
                 }
                 else if (uri != null && uri.IsAbsoluteUri)
                 {

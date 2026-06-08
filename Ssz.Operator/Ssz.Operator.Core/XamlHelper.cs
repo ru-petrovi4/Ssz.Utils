@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,6 +40,8 @@ namespace Ssz.Operator.Core
             if (string.IsNullOrWhiteSpace(xamlWithRelativePaths) || string.IsNullOrEmpty(filesDirectoryName))
                 return xamlWithRelativePaths ?? "";
 
+            xamlWithRelativePaths = UpdateXamlWithRelativePathsVersion(xamlWithRelativePaths!);
+
             var xamlWithRelativePaths_Desc = GetXamlDesc(xamlWithRelativePaths);
             var xamlWithRelativePaths_WithoutDesc = GetXamlWithoutDesc(xamlWithRelativePaths);
             
@@ -63,17 +66,17 @@ namespace Ssz.Operator.Core
                 var lastIndex = 0;
                 for (; ; )
                 {
-                    if (lastIndex >= xamlWithRelativePaths!.Length) break;
-                    var i = xamlWithRelativePaths.IndexOf(@"=""file:./", lastIndex,
+                    if (lastIndex >= xamlWithRelativePaths_WithoutDesc!.Length) break;
+                    var i = xamlWithRelativePaths_WithoutDesc.IndexOf(@"=""file:./", lastIndex,
                         StringComparison.InvariantCultureIgnoreCase);
 
                     if (i >= 0)
                     {
                         i = i + 9;
-                        result.Append(xamlWithRelativePaths, lastIndex, i - 9 - lastIndex);
-                        var quoteIndex = xamlWithRelativePaths.IndexOf('"', i);
+                        result.Append(xamlWithRelativePaths_WithoutDesc, lastIndex, i - 9 - lastIndex);
+                        var quoteIndex = xamlWithRelativePaths_WithoutDesc.IndexOf('"', i);
                         if (quoteIndex == -1) break;
-                        string relativePath = Uri.UnescapeDataString(xamlWithRelativePaths.Substring(i, quoteIndex - i));
+                        string relativePath = Uri.UnescapeDataString(xamlWithRelativePaths_WithoutDesc.Substring(i, quoteIndex - i));
                         lastIndex = quoteIndex + 1;
                         result.Append(@"=""");
                         string fileFullName = filesDirectoryName + @"/" + relativePath;
@@ -82,7 +85,7 @@ namespace Ssz.Operator.Core
                     }
                     else
                     {
-                        result.Append(xamlWithRelativePaths, lastIndex, xamlWithRelativePaths.Length - lastIndex);
+                        result.Append(xamlWithRelativePaths_WithoutDesc, lastIndex, xamlWithRelativePaths_WithoutDesc.Length - lastIndex);
                         break;
                     }
                 }
@@ -326,11 +329,11 @@ namespace Ssz.Operator.Core
                                 gifBitmap.CacheOption = BitmapCacheOption.OnLoad;
                                 gifBitmap.StreamSource = stream;
                                 gifBitmap.EndInit();
-                                stream.Dispose();
+                                gifBitmap.Freeze();
 
                                 var gifImage = new Image();
-                                ImageBehavior.SetAnimatedSource(gifImage, gifBitmap);
                                 ImageBehavior.SetRepeatBehavior(gifImage, System.Windows.Media.Animation.RepeatBehavior.Forever);
+                                ImageBehavior.SetAnimatedSource(gifImage, gifBitmap);                                
                                 return gifImage;
                             case ".SVG":
                                 var svgViewbox = new SvgViewbox
@@ -371,7 +374,7 @@ namespace Ssz.Operator.Core
                 DsProject.LoggersSet.Logger.LogError(ex, @"");
                 return null;
             }
-        }
+        }        
 
         private static bool IsPathFullyQualified(string? defaultValue)
         {
@@ -757,9 +760,9 @@ namespace Ssz.Operator.Core
             {
                 var i = xaml.IndexOf(XamlDescEnd);
                 if (i != -1)
-                    return xaml.Substring(i + XamlDescEnd.Length).Trim();
+                    return GetXamlWithoutDesc(xaml.Substring(i + XamlDescEnd.Length).Trim());
             }            
-            return xaml.Trim(); ;
+            return xaml.Trim();
         }
 
         public static string AddXamlDesc(string? xamlWithNoDesc, IReadOnlyDictionary<string, string?> nameValueCollection)
@@ -1070,10 +1073,10 @@ namespace Ssz.Operator.Core
                             return AddXamlDesc(null, xamlDesc);
                         }
 
-                        bitmapImage = ImageBehavior.GetAnimatedSource(image) as BitmapImage;
-                        if (bitmapImage is not null)
+                        var animatedSource = ImageBehavior.GetAnimatedSource(image) as BitmapFrame;                        
+                        if (animatedSource is not null)
                         {
-                            string? imagePath = bitmapImage!.UriSource?.LocalPath;
+                            string? imagePath = (animatedSource.Decoder.GetType().GetField("_uri", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(animatedSource.Decoder) as Uri)?.LocalPath;                            
                             if (imagePath is not null)
                             {
                                 xamlDesc[@""] = Path.GetFileName(imagePath);
@@ -1122,7 +1125,43 @@ namespace Ssz.Operator.Core
             return xaml;
         }
 
-#endregion
+        /// <summary>
+        ///     Preconditions: xaml must have an relative paths.
+        /// </summary>
+        /// <param name="xaml"></param>
+        /// <returns></returns>
+        public static string UpdateXamlWithRelativePathsVersion(string xaml)
+        {
+            try
+            {
+                var xamlDesc = GetXamlDesc(xaml);
+                var xamlWithoutDesc = GetXamlWithoutDesc(xaml) ?? @"";
+
+                if (string.IsNullOrWhiteSpace(xamlWithoutDesc) || !xamlWithoutDesc.StartsWith(@"<"))
+                {
+                    return AddXamlDesc(xamlWithoutDesc, xamlDesc);
+                }
+                else
+                {
+                    var defaultValue = xamlDesc.TryGetValue(@"");
+                    if (!String.IsNullOrEmpty(defaultValue))
+                    {
+                        var extensionLower = Path.GetExtension(defaultValue).ToLower();
+                        if (!String.IsNullOrEmpty(extensionLower) && extensionLower != @".xaml")
+                            return AddXamlDesc(null, xamlDesc);
+                    }
+                    
+                    return AddXamlDesc(xamlWithoutDesc, xamlDesc);
+                }
+            }
+            catch (Exception)
+            {
+            }
+
+            return xaml;
+        }
+
+        #endregion
 
         #region internal functions
 
@@ -1174,7 +1213,7 @@ namespace Ssz.Operator.Core
             if (filesStoreDirectoryInfo is null ||
                 FileSystemHelper.Compare(sourceFileInfo.Directory?.FullName, filesStoreDirectoryInfo?.FullName)) return sourceFileInfo;
 
-            var destinationFileInfo = new FileInfo(filesStoreDirectoryInfo!.FullName + @"\" + sourceFileInfo.Name);
+            var destinationFileInfo = new FileInfo(Path.Combine(filesStoreDirectoryInfo!.FullName, sourceFileInfo.Name));
             try
             {
                 if (!filesStoreDirectoryInfo.Exists)

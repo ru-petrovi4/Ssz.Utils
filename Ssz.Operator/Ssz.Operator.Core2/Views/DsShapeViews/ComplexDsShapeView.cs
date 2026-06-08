@@ -28,16 +28,9 @@ namespace Ssz.Operator.Core.DsShapeViews
             }
 
             if (VisualDesignMode)
-            {
-                if (_complexDsShape.GetParentComplexDsShape() is null)
-                    _canvas.SizeChanged += DesignCanvasOnSizeChanged;
-
                 ConnectionPointDsShapeViews = GetConnectionPointDsShapeViews().ToArray();
-            }
-            else
-            {
-                _canvas.SizeChanged += PlayCanvasOnSizeChanged;
-            }
+
+            _canvas.SizeChanged += CanvasOnSizeChanged;
 
             Content = _canvas;
         }
@@ -57,15 +50,7 @@ namespace Ssz.Operator.Core.DsShapeViews
                 {
                 }
 
-                if (VisualDesignMode)
-                {
-                    if (_complexDsShape.GetParentComplexDsShape() is null)
-                        _canvas.SizeChanged -= DesignCanvasOnSizeChanged;
-                }
-                else
-                {
-                    _canvas.SizeChanged -= PlayCanvasOnSizeChanged;
-                }
+                _canvas.SizeChanged -= CanvasOnSizeChanged;
 
                 foreach (DsShapeViewBase dsShapeView in _dsShapeViewsList) dsShapeView.Dispose();
                 _dsShapeViewsList.Clear();
@@ -133,21 +118,23 @@ namespace Ssz.Operator.Core.DsShapeViews
             return result;
         }
 
-        private void DesignCanvasOnSizeChanged(object? sender, SizeChangedEventArgs args)
+        private void CanvasOnSizeChanged(object? sender, SizeChangedEventArgs args)
         {
-            _complexDsShape.TransformDsShapes(args.NewSize.Width / args.PreviousSize.Width,
-                args.NewSize.Height / args.PreviousSize.Height);
-        }
-
-        private void PlayCanvasOnSizeChanged(object? sender, SizeChangedEventArgs args)
-        {
-            var scaleX = args.NewSize.Width / args.PreviousSize.Width;
-            var scaleY = args.NewSize.Height / args.PreviousSize.Height;
+            double previousSizeWidth = args.PreviousSize.Width;
+            if (previousSizeWidth < 0.000001)
+                previousSizeWidth = DsShapeViewModel.WidthInitial; // First initialization
+            double previousSizeHeight = args.PreviousSize.Height;
+            if (previousSizeHeight < 0.000001)
+                previousSizeHeight = DsShapeViewModel.HeightInitial; // First initialization
+            var scaleX = args.NewSize.Width / previousSizeWidth;
+            var scaleY = args.NewSize.Height / previousSizeHeight;
             if (!double.IsNaN(scaleX) && !double.IsInfinity(scaleX) &&
-                !double.IsNaN(scaleY) && !double.IsInfinity(scaleY) &&
-                (scaleX != 1.0 || scaleY != 1.0))
+                    !double.IsNaN(scaleY) && !double.IsInfinity(scaleY) &&
+                    (scaleX != 1.0 || scaleY != 1.0))
                 foreach (DsShapeBase dsShape in _complexDsShape.DsShapes)
+                {
                     dsShape.Transform(scaleX, scaleY);
+                }
         }
 
         #endregion

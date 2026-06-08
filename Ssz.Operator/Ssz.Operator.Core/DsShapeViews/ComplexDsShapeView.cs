@@ -121,10 +121,10 @@ namespace Ssz.Operator.Core.DsShapeViews
         {
             double previousSizeWidth = args.PreviousSize.Width;
             if (previousSizeWidth < 0.000001)
-                previousSizeWidth = DsShapeViewModel.DesignWidth; // First initialization
+                previousSizeWidth = DsShapeViewModel.WidthInitial; // First initialization
             double previousSizeHeight = args.PreviousSize.Height;
             if (previousSizeHeight < 0.000001)
-                previousSizeHeight = DsShapeViewModel.DesignHeight; // First initialization
+                previousSizeHeight = DsShapeViewModel.HeightInitial; // First initialization
             var scaleX = args.NewSize.Width / previousSizeWidth;
             var scaleY = args.NewSize.Height / previousSizeHeight;
             if (!double.IsNaN(scaleX) && !double.IsInfinity(scaleX) &&
