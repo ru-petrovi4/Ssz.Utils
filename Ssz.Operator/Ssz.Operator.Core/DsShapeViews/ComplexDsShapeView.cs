@@ -118,15 +118,15 @@ namespace Ssz.Operator.Core.DsShapeViews
         }        
 
         private void CanvasOnSizeChanged(object? sender, SizeChangedEventArgs args)
-        {
+        {           
             double previousSizeWidth = args.PreviousSize.Width;
             if (previousSizeWidth < 0.000001)
-                previousSizeWidth = DsShapeViewModel.WidthInitial; // First initialization
+                previousSizeWidth = DsShapeViewModel.DesignWidth; // First initialization
             double previousSizeHeight = args.PreviousSize.Height;
             if (previousSizeHeight < 0.000001)
-                previousSizeHeight = DsShapeViewModel.HeightInitial; // First initialization
-            var scaleX = args.NewSize.Width / previousSizeWidth;
-            var scaleY = args.NewSize.Height / previousSizeHeight;
+                previousSizeHeight = DsShapeViewModel.DesignHeight; // First initialization
+            double scaleX = args.NewSize.Width / previousSizeWidth;
+            double scaleY = args.NewSize.Height / previousSizeHeight;
             if (!double.IsNaN(scaleX) && !double.IsInfinity(scaleX) &&
                     !double.IsNaN(scaleY) && !double.IsInfinity(scaleY) &&
                     (scaleX != 1.0 || scaleY != 1.0))

@@ -74,28 +74,30 @@ namespace Ssz.Operator.Core.DsShapeViews
         {
             get
             {
-                if (DsShape.GetParentComplexDsShape() is null || (DsShape.CenterDeltaPositionXInfo.IsConst && DsShape.WidthDeltaInfo.IsConst))
-                    return DsShape.LeftNotTransformed;
+                return DsShape.LeftNotTransformed;
 
-                var initial = DsShape.CenterInitialPositionNotRounded.X;
-                var delta = DsShape.CenterDeltaPositionXInfo.ConstValue;
-                var final = DsShape.CenterFinalPositionNotRounded.X;
-                var relative = DsShape.CenterRelativePosition.X;
-                var lengthInitial = DsShape.WidthInitialNotRounded;
-                var lengthDelta = DsShape.WidthDeltaInfo.ConstValue;
-                var lengthFinal = DsShape.WidthFinalNotRounded;
+                //if (DsShape.GetParentComplexDsShape() is null || (DsShape.CenterDeltaPositionXInfo.IsConst && DsShape.WidthDeltaInfo.IsConst))
+                //    return DsShape.LeftNotTransformed;
 
-                if (lengthDelta < 0) lengthDelta = 0;
-                else if (lengthDelta > 1) lengthDelta = 1;
+                //var initial = DsShape.CenterInitialPositionNotRounded.X;
+                //var delta = DsShape.CenterDeltaPositionXInfo.ConstValue;
+                //var final = DsShape.CenterFinalPositionNotRounded.X;
+                //var relative = DsShape.CenterRelativePosition.X;
+                //var lengthInitial = DsShape.WidthInitialNotRounded;
+                //var lengthDelta = DsShape.WidthDeltaInfo.ConstValue;
+                //var lengthFinal = DsShape.WidthFinalNotRounded;
 
-                var length = lengthInitial + (lengthFinal - lengthInitial) * lengthDelta;
+                //if (lengthDelta < 0) lengthDelta = 0;
+                //else if (lengthDelta > 1) lengthDelta = 1;
 
-                if (delta < 0) delta = 0;
-                else if (delta > 1) delta = 1;
+                //var length = lengthInitial + (lengthFinal - lengthInitial) * lengthDelta;
 
-                var pos = initial + (final - initial) * delta;
+                //if (delta < 0) delta = 0;
+                //else if (delta > 1) delta = 1;
 
-                return pos - length * relative;
+                //var pos = initial + (final - initial) * delta;
+
+                //return pos - length * relative;
             }
         }
 
@@ -109,28 +111,30 @@ namespace Ssz.Operator.Core.DsShapeViews
         {
             get
             {
-                if (DsShape.GetParentComplexDsShape() is null || (DsShape.CenterDeltaPositionYInfo.IsConst && DsShape.HeightDeltaInfo.IsConst))
-                    return DsShape.TopNotTransformed;
+                return DsShape.TopNotTransformed;
 
-                var initial = DsShape.CenterInitialPositionNotRounded.Y;
-                var delta = DsShape.CenterDeltaPositionYInfo.ConstValue;
-                var final = DsShape.CenterFinalPositionNotRounded.Y;
-                var relative = DsShape.CenterRelativePosition.Y;
-                var lengthInitial = DsShape.HeightInitialNotRounded;
-                var lengthDelta = DsShape.HeightDeltaInfo.ConstValue;
-                var lengthFinal = DsShape.HeightFinalNotRounded;
+                //if (DsShape.GetParentComplexDsShape() is null || (DsShape.CenterDeltaPositionYInfo.IsConst && DsShape.HeightDeltaInfo.IsConst))
+                //    return DsShape.TopNotTransformed;
 
-                if (lengthDelta < 0) lengthDelta = 0;
-                else if (lengthDelta > 1) lengthDelta = 1;
+                //var initial = DsShape.CenterInitialPositionNotRounded.Y;
+                //var delta = DsShape.CenterDeltaPositionYInfo.ConstValue;
+                //var final = DsShape.CenterFinalPositionNotRounded.Y;
+                //var relative = DsShape.CenterRelativePosition.Y;
+                //var lengthInitial = DsShape.HeightInitialNotRounded;
+                //var lengthDelta = DsShape.HeightDeltaInfo.ConstValue;
+                //var lengthFinal = DsShape.HeightFinalNotRounded;
 
-                var length = lengthInitial + (lengthFinal - lengthInitial) * lengthDelta;
+                //if (lengthDelta < 0) lengthDelta = 0;
+                //else if (lengthDelta > 1) lengthDelta = 1;
 
-                if (delta < 0) delta = 0;
-                else if (delta > 1) delta = 1;
+                //var length = lengthInitial + (lengthFinal - lengthInitial) * lengthDelta;
 
-                var pos = initial + (final - initial) * delta;
+                //if (delta < 0) delta = 0;
+                //else if (delta > 1) delta = 1;
 
-                return pos - length * relative;
+                //var pos = initial + (final - initial) * delta;
+
+                //return pos - length * relative;
             }
         }
 
@@ -146,19 +150,21 @@ namespace Ssz.Operator.Core.DsShapeViews
         {
             get
             {
-                if (DsShape.GetParentComplexDsShape() is null || DsShape.WidthDeltaInfo.IsConst)
-                    return DsShape.WidthInitialNotRounded;
+                return DsShape.WidthInitialNotRounded;
 
-                var initial = DsShape.WidthInitialNotRounded;
-                var delta = DsShape.WidthDeltaInfo.ConstValue;
-                var final = DsShape.WidthFinalNotRounded;
+                //if (DsShape.GetParentComplexDsShape() is null || DsShape.WidthDeltaInfo.IsConst)
+                //    return DsShape.WidthInitialNotRounded;
 
-                if (delta < 0)
-                    delta = 0;
-                else if (delta > 1)
-                    delta = 1;
+                //var initial = DsShape.WidthInitialNotRounded;
+                //var delta = DsShape.WidthDeltaInfo.ConstValue;
+                //var final = DsShape.WidthFinalNotRounded;
 
-                return initial + (final - initial) * delta;
+                //if (delta < 0)
+                //    delta = 0;
+                //else if (delta > 1)
+                //    delta = 1;
+
+                //return initial + (final - initial) * delta;
             }
         }
 
@@ -174,19 +180,21 @@ namespace Ssz.Operator.Core.DsShapeViews
         {
             get
             {
-                if (DsShape.GetParentComplexDsShape() is null || DsShape.HeightDeltaInfo.IsConst)
-                    return DsShape.HeightInitialNotRounded;
+                return DsShape.HeightInitialNotRounded;
 
-                var initial = DsShape.HeightInitialNotRounded;
-                var delta = DsShape.HeightDeltaInfo.ConstValue;
-                var final = DsShape.HeightFinalNotRounded;
+                //if (DsShape.GetParentComplexDsShape() is null || DsShape.HeightDeltaInfo.IsConst)
+                //    return DsShape.HeightInitialNotRounded;
 
-                if (delta < 0)
-                    delta = 0;
-                else if (delta > 1)
-                    delta = 1;
+                //var initial = DsShape.HeightInitialNotRounded;
+                //var delta = DsShape.HeightDeltaInfo.ConstValue;
+                //var final = DsShape.HeightFinalNotRounded;
 
-                return initial + (final - initial) * delta;
+                //if (delta < 0)
+                //    delta = 0;
+                //else if (delta > 1)
+                //    delta = 1;
+
+                //return initial + (final - initial) * delta;
             }
         }
 
