@@ -24,33 +24,23 @@ namespace Ssz.Operator.Core.Panorama
         public double Y = double.NaN;
         public double Z = double.NaN;
 
-
         public double CameraH;
-
 
         public List<PanoPointRef> PanoPointRefs;
 
-
         public DiffuseMaterial Material = new();
-
 
         public int Index;
 
-
         public int DsPageMark;
-
 
         public double? UserX;
 
-
         public double? UserY;
-
 
         public double? UserZ;
 
-
         public bool Processed;
-
 
         public bool Error;
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using Ssz.Operator.Core.ControlsPlay.PanoramaPlay;
 using Ssz.Operator.Core.Utils.Serialization;
 using Ssz.Utils;
 
@@ -87,6 +88,7 @@ namespace Ssz.Operator.Core.Panorama
             foreach (PanoPoint panoPoint in PanoPoints)
             {
                 panoPoint.Material = new DiffuseMaterial();
+                panoPoint.Material.Brush = new SolidColorBrush(Colors.White);
                 panoPoint.Index = index;
 
                 foreach (PanoPointRef panoPointRef in panoPoint.PanoPointRefs.ToArray())
@@ -95,7 +97,7 @@ namespace Ssz.Operator.Core.Panorama
                     panoPointRef.ToPanoPoint = PanoPointsDictionary.TryGetValue(panoPointRef.ToDsPageName) ??
                                                throw new InvalidOperationException();
                     panoPointRef.Material = new DiffuseMaterial();
-                    panoPointRef.Material.Brush = new SolidColorBrush(Colors.Cyan);
+                    panoPointRef.Material.Brush = new SolidColorBrush(PanoPointsCollectionExtensions.GetDiverseColor(panoPoint.Z, PanoPointsCollectionExtensions.HMin, PanoPointsCollectionExtensions.HMax));
                 }
 
                 index += 1;

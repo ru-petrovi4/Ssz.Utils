@@ -51,12 +51,12 @@ namespace Ssz.Operator.Core
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                var rootWindow = GetRootWindow();
-                if (rootWindow is not null)
-                    WpfMessageBox.Show(rootWindow, messageBoxText, Resources.ErrorMessageBoxCaption,
-                        WpfMessageBoxButton.OK,
-                        MessageBoxImage.Error, WpfMessageBoxResult.OK);
-                else
+                //var rootWindow = GetRootWindow();
+                //if (rootWindow is not null)
+                //    WpfMessageBox.Show(rootWindow, messageBoxText, Resources.ErrorMessageBoxCaption,
+                //        WpfMessageBoxButton.OK,
+                //        MessageBoxImage.Error, WpfMessageBoxResult.OK);
+                //else
                     WpfMessageBox.Show(messageBoxText, Resources.ErrorMessageBoxCaption,
                         WpfMessageBoxButton.OK,
                         MessageBoxImage.Error, WpfMessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);

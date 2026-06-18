@@ -12,33 +12,23 @@ namespace Ssz.Operator.Core.Panorama
         public double HorizontalLength = double.NaN;
         public double VerticalDelta = double.NaN;
 
-
         public PanoPoint ParentPanoPoint = PanoPoint.Default;
-
 
         public PanoPoint ToPanoPoint = PanoPoint.Default;
 
-
         public PanoPointRef? MutualPanoPointRef;
-
 
         public DiffuseMaterial Material = new();
 
-
         public double UserHorizontalAngle;
-
 
         public double UserHorizontalLength;
 
-
         public double UserVerticalDelta;
-
 
         public int IndexInPath;
 
-
         public bool Processed;
-
 
         public bool Error;
 
