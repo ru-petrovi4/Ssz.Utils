@@ -331,15 +331,16 @@ namespace Ssz.Operator.Core
                                 gifBitmap.EndInit();
                                 gifBitmap.Freeze();
 
-                                var gifImage = new Image();
+                                var gifImage = new Image()
+                                {
+                                    Stretch = stretch
+                                };
                                 ImageBehavior.SetRepeatBehavior(gifImage, System.Windows.Media.Animation.RepeatBehavior.Forever);
                                 ImageBehavior.SetAnimatedSource(gifImage, gifBitmap);                                
                                 return gifImage;
                             case ".SVG":
                                 var svgViewbox = new SvgViewbox
-                                {
-                                    //Width = 200,
-                                    //Height = 200,
+                                {                                    
                                     Stretch = stretch
                                 };
                                 svgViewbox.Load(stream, true, true);                                
@@ -633,16 +634,16 @@ namespace Ssz.Operator.Core
                     return null;
                 }
 
-                if (contentPreview is Image)
+                if (contentPreview is Image image)
                 {
                     contentDesc = "Image File" + (!string.IsNullOrWhiteSpace(desc) ? @": " + desc : "");
-                    contentStretch = ((Image) contentPreview).Stretch;
+                    contentStretch = image.Stretch;
                     return contentPreview;
                 }
-                if (contentPreview is SvgViewbox)
+                if (contentPreview is SvgViewbox svgViewbox)
                 {
                     contentDesc = "SVG File" + (!string.IsNullOrWhiteSpace(desc) ? @": " + desc : "");
-                    contentStretch = ((SvgViewbox)contentPreview).Stretch;
+                    contentStretch = svgViewbox.Stretch;
                     return contentPreview;
                 }
                 
