@@ -28,7 +28,7 @@ namespace Ssz.Dcs.CentralServer.Common.Helpers
         {
             string dbType = ConfigurationHelper.GetValue(configuration, DbConstants.ConfigurationKey_DbType, @"");
             if (String.Equals(dbType, DbConstants.ConfigurationValue_DbType_Postgres, StringComparison.InvariantCultureIgnoreCase))
-            {   
+            {
                 using var dbContext = serviceProvider.GetRequiredService<IDbContextFactory<NpgsqlDcsCentralServerDbContext>>()
                     .CreateDbContext();
 

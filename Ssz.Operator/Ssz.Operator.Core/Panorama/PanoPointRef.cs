@@ -1,4 +1,5 @@
 using System.Windows.Media.Media3D;
+using Ssz.Operator.Core.DsShapes;
 using Ssz.Operator.Core.Utils.Serialization;
 
 namespace Ssz.Operator.Core.Panorama
@@ -31,6 +32,8 @@ namespace Ssz.Operator.Core.Panorama
         public bool Processed;
 
         public bool Error;
+
+        public ComplexDsShape? Temp_RootComplexDsShape;
 
         public bool HasValidVector()
         {
