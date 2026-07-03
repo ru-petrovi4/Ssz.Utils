@@ -145,8 +145,8 @@ namespace Ssz.Operator.Core.Design
                 (sender, e) => DoToolkitOperationAsync(UpdateDsPagesToolkitOperation, true), DsProjectLoaded));
             CommandBindings.Add(new CommandBinding(Run, RunExecuted, DsProjectLoaded));
             CommandBindings.Add(new CommandBinding(RunCurrent, RunCurrentExecuted, RunCurrentEnabled));
-            CommandBindings.Add(new CommandBinding(RunMultiPlatform, RunMultiPlatformExecuted, DsProjectLoaded));
-            CommandBindings.Add(new CommandBinding(RunCurrentMultiPlatform, RunCurrentMultiPlatformExecuted, RunCurrentEnabled));
+            CommandBindings.Add(new CommandBinding(RunMultiPlatform, RunMultiPlatformExecuted, RunMultiPlatformEnabled));
+            CommandBindings.Add(new CommandBinding(RunCurrentMultiPlatform, RunCurrentMultiPlatformExecuted, RunCurrentMultiPlatformEnabled));
             CommandBindings.Add(new CommandBinding(SaveAll, SaveAllExecuted, SaveAllEnabled));
             CommandBindings.Add(new CommandBinding(NewDsPageDrawing, NewDsPageDrawingExecuted, DsProjectLoaded));
             CommandBindings.Add(new CommandBinding(NewDsShapeDrawing, NewDsShapeDrawingExecuted, DsProjectLoaded));
@@ -1450,6 +1450,38 @@ namespace Ssz.Operator.Core.Design
             e.CanExecute = false;
         }
 
+        private void RunMultiPlatformEnabled(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (!GetMultiPlatformPlayExe().Exists)
+                e.CanExecute = false;
+        }
+
+        private void RunCurrentMultiPlatformEnabled(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (!GetMultiPlatformPlayExe().Exists)
+            {
+                e.CanExecute = false;
+                return;
+            }
+
+            if (FocusedDesignDrawingViewModel is not null)
+            {
+                e.CanExecute = true;
+                return;
+            }
+            else
+            {
+                var dsPageDrawingInfoViewModel = DsPageDrawingInfosSelectionService.FirstSelectedItem as DsPageDrawingInfoViewModel;
+                if (dsPageDrawingInfoViewModel is not null)
+                {
+                    e.CanExecute = true;
+                    return;
+                }
+            }
+
+            e.CanExecute = false;
+        }        
+
         private void RunCurrentExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             if (FocusedDesignDrawingViewModel is not null)
@@ -1526,9 +1558,14 @@ namespace Ssz.Operator.Core.Design
                     arguments));
         }
 
+        private FileInfo GetMultiPlatformPlayExe()
+        {
+            return new FileInfo(Path.Combine(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule?.FileName!)!, @"MultiPlatform", @"Cdt.Operator.Play.Desktop.exe"));
+        }
+
         private async void RunDsProjectMultiPlatformAsync(FileInfo? startDsPageFileInfo = null)
         {            
-            var playExeFileInfo = new FileInfo(Path.Combine(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule?.FileName!)!, @"MultiPlatform", @"Cdt.Operator.Play.Desktop.exe"));
+            var playExeFileInfo = GetMultiPlatformPlayExe();
 
             if (!playExeFileInfo.Exists)
             {

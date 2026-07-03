@@ -1181,15 +1181,35 @@ namespace Ssz.Operator.Core
         private static T? WpfDispatcherInvoke<T>(Func<T> func)
         {
             Application applicationCurrent = Application.Current;
-            if (applicationCurrent is null || applicationCurrent.Dispatcher is null) return default;
-            return applicationCurrent.Dispatcher.Invoke(func);
+            if (applicationCurrent is null || applicationCurrent.Dispatcher is null)
+                return default;
+
+            if (applicationCurrent.Dispatcher.CheckAccess())
+            {
+                // Вы находитесь в потоке WPF
+                return func();
+            }
+            else
+            {
+                return applicationCurrent.Dispatcher.Invoke(func);
+            }
         }
 
         private static void WpfDispatcherInvoke(Action action)
         {
             Application applicationCurrent = Application.Current;
-            if (applicationCurrent is null || applicationCurrent.Dispatcher is null) return;
-            applicationCurrent.Dispatcher.Invoke(action);
+            if (applicationCurrent is null || applicationCurrent.Dispatcher is null)
+                return;
+
+            if (applicationCurrent.Dispatcher.CheckAccess())
+            {
+                // Вы находитесь в потоке WPF
+                action();
+            }
+            else
+            {
+                applicationCurrent.Dispatcher.Invoke(action);
+            }
         }
 
         private static string GetUriString(string path)

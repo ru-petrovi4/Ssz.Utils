@@ -1646,14 +1646,12 @@ namespace Ssz.Operator.Core
             }
         }
 
-
         public bool CloseDrawing(DesignDrawingViewModel? designerDrawingViewModel)
         {
             if (designerDrawingViewModel is null) return false;
 
             return CloseDrawings(new[] {designerDrawingViewModel});
         }
-
 
         public void CloseDrawingUnconditionally(DesignDrawingViewModel? designerDrawingViewModel)
         {
