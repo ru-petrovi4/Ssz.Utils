@@ -12,7 +12,7 @@
             <RowDefinition Height="24" />
             <RowDefinition Height="399*" />
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal">            
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
             <Button Name="RefreshDsPagesButton"
                                         ClipToBounds="False"
                                         Click="RefreshDsPagesButtonClickAsync" Focusable="False">
@@ -63,10 +63,14 @@
                                             Width="16" />
                 </Button.Content>
             </Button>
-        </StackPanel>        
+        </StackPanel>
         <TreeView Grid.Row="1" Name="DsPagesTreeView" Grid.Column="0"
                                       Margin="0,5,0,0"
-                  ItemsSource="{Binding DsPagesTreeViewItemsSource}">
+                  ItemsSource="{Binding DsPagesTreeViewItemsSource}"
+                  VirtualizingStackPanel.IsVirtualizing="True"
+                  VirtualizingStackPanel.VirtualizationMode="Recycling"
+                  VirtualizingStackPanel.ScrollUnit="Pixel"
+                  ScrollViewer.CanContentScroll="True">
             <TreeView.Resources>
                 <!--
                                     <DataTemplate DataType="{x:Type local:DsProjectInfoViewModel}">
