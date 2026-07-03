@@ -33,7 +33,9 @@ namespace Ssz.Operator.Core.Panorama
 
         public bool Error;
 
-        public int? Temp_RootComplexDsShapeIndex;
+        public string? Temp_DsPage_FileFullName;
+
+        public int Temp_RootComplexDsShapeIndex;
 
         public bool HasValidVector()
         {
