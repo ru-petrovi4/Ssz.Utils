@@ -7,7 +7,7 @@
 	<Platforms>AnyCPU;x86</Platforms>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Company>SSZ</Company>
-    <Version>1.0.86</Version>
+    <Version>1.0.87</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,11 +15,11 @@
     <PackageReference Include="Google.Protobuf" Version="3.35.1" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.80.0" />
     <PackageReference Include="Grpc.Net.ClientFactory" Version="2.80.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.81.1">
+    <PackageReference Include="Grpc.Tools" Version="2.83.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.ResourceMonitoring" Version="10.7.0" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.ResourceMonitoring" Version="10.8.0" />
   </ItemGroup> 
 
   <ItemGroup>    

@@ -52,7 +52,7 @@ namespace Ssz.DataAccessGrpc.Client
 
         public async Task<ClientKeepAliveReply> ClientKeepAliveAsync(ClientKeepAliveRequest request, CancellationToken cancellationToken)
         {
-            return await _resourceManagementClient.ClientKeepAliveAsync(request, cancellationToken: cancellationToken);
+            return await _resourceManagementClient.ClientKeepAliveAsync(request, cancellationToken: cancellationToken, deadline: DateTime.UtcNow + TimeSpan.FromSeconds(10));
         }
 
         public async Task<DefineListReply> DefineListAsync(DefineListRequest request)

@@ -144,6 +144,7 @@ namespace Ssz.DataAccessGrpc.Client
             });
 
             _contextIsOperational = true;
+            LastServerContextCallbackMessage = DateTime.UtcNow;
 
             var cancellationToken = _cancellationTokenSource.Token;
 
@@ -154,102 +155,111 @@ namespace Ssz.DataAccessGrpc.Client
 #endif
             if (isBrowser)
             {
-                _workingTask = Task.Run(async () =>
+                _readCallbackMessages_Task = Task.Run(async () =>
                     await ReadCallbackMessagesAsync(_callbackStreamReader, cancellationToken)
+                );
+                _keepAlive_Task = Task.Run(async () =>
+                    await KeepAliveAsync(cancellationToken)
                 );
             }
             else
             {
-                var taskCompletionSource = new TaskCompletionSource<int>();
-                var workingThread = new Thread(async () =>
+                var readCallbackMessages_TaskCompletionSource = new TaskCompletionSource<int>();
+                var readCallbackMessagesThread = new Thread(async () =>
                 {
                     await ReadCallbackMessagesAsync(_callbackStreamReader, cancellationToken);
-                    taskCompletionSource.SetResult(0);
+                    readCallbackMessages_TaskCompletionSource.SetResult(0);
                 });
-                _workingTask = taskCompletionSource.Task;
-                workingThread.Start();
+                _readCallbackMessages_Task = readCallbackMessages_TaskCompletionSource.Task;
+                readCallbackMessagesThread.Start();
+
+                var keepAlive_TaskCompletionSource = new TaskCompletionSource<int>();
+                var keepAliveThread = new Thread(async () =>
+                {
+                    await KeepAliveAsync(cancellationToken);
+                    keepAlive_TaskCompletionSource.SetResult(0);
+                });
+                _keepAlive_Task = keepAlive_TaskCompletionSource.Task;
+                keepAliveThread.Start();
             }            
-        }
-
-        public async Task KeepContextAliveIfNeededAsync(CancellationToken ct, DateTime nowUtc)
-        {
-            if (!_contextIsOperational) 
-                return;
-
-            uint timeDiffInMs;
-            lock (_resourceManagementLastCallUtcSyncRoot)
-            {
-                timeDiffInMs = (uint)(nowUtc - _resourceManagementLastCallUtc).TotalMilliseconds + 500;
-            }
-
-            if (timeDiffInMs >= KeepAliveIntervalMs)
-            {
-                try
-                {
-                    lock (_resourceManagementLastCallUtcSyncRoot)
-                    {
-                        _resourceManagementLastCallUtc = nowUtc;
-                    }                    
-
-                    await _dataAccessService.ClientKeepAliveAsync(new ClientKeepAliveRequest
-                    {
-                        ContextId = _serverContextId
-                    }, cancellationToken: ct);                    
-                }
-                catch (Exception ex)
-                {
-                    ProcessRemoteMethodCallException(ex);          
-                }
-            }
         }
 
         #endregion
 
         #region private functions
 
-        private void SetResourceManagementLastCallUtc()
+        private DateTime LastServerContextCallbackMessage
         {
-            lock (_resourceManagementLastCallUtcSyncRoot)
-            {
-                _resourceManagementLastCallUtc = DateTime.UtcNow;
-            }           
+            get => new DateTime(Interlocked.Read(ref _lastServerContextCallbackMessage_Ticks), DateTimeKind.Utc);
+            set => Interlocked.Exchange(ref _lastServerContextCallbackMessage_Ticks, value.Ticks);
         }
 
-        /// <summary>
-        ///     <para> Re throws. </para>
-        ///     <para>
-        ///         This method processes an exception thrown when the client application calls one of the methods on the
-        ///         IResourceManagment interface.
-        ///     </para>
-        ///     <para>
-        ///         If the exception is a FaultException, the exception is from the server and is rethrown unless the exception
-        ///         indicates that the server has shutdown. In this case the Abort callback is called to notify the client of the
-        ///         shutdown.
-        ///     </para>
-        ///     <para>
-        ///         If the exception is a CommunicationException, then the ThrowOnDisconnectedEndpoint() method is called on the
-        ///         ResourceManagment endpoint to throw the exception back to the calling client application to notify it of the
-        ///         failed endpoint.
-        ///     </para>
-        ///     <para> For all other exceptions, the exception is rethrown. </para>
-        /// </summary>
-        /// <param name="ex"> The exception that was thrown. </param>
+        public async Task KeepAliveAsync(CancellationToken cancellationToken)
+        {
+#if !DEBUG
+            try
+            {
+                while (true)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    await Task.Delay(5000, cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    if (!_contextIsOperational)
+                        throw new OperationCanceledException();
+
+                    try
+                    {
+                        await _dataAccessService.ClientKeepAliveAsync(new ClientKeepAliveRequest
+                        {
+                            ContextId = _serverContextId
+                        }, cancellationToken: cancellationToken);
+                    }
+                    catch (Exception ex)
+                    {
+                        ProcessRemoteMethodCallException(ex);
+                    }
+
+                    uint timeDiffInMs = (uint)(DateTime.UtcNow - LastServerContextCallbackMessage).TotalMilliseconds;
+                    if (timeDiffInMs >= _serverContextTimeoutMs)
+                    {
+                        ProcessRemoteMethodCallException(new RpcException(new Status(StatusCode.DeadlineExceeded, @"STATE_OPERATIONAL ContextMessage DeadlineExceeded")));
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // ignore
+            }
+            catch (Exception)
+            {                
+            }
+#endif
+        }
+
+        private void SetResourceManagementLastCallUtc()
+        {
+            // For future use, if we want to track the last time we called a resource management method on the server.
+        }
+
         private void ProcessRemoteMethodCallException(Exception ex)
-        {   
+        {
+            if (!_contextIsOperational)
+                return;
+
             if (ex is RpcException rpcException)
             {
-                if (!_contextIsOperational) 
-                    return;
-
                 if (rpcException.StatusCode != StatusCode.Cancelled)
                 {
                     _contextIsOperational = false;
 
-                    _logger.LogDebug(ex, "RpcException when server method call. Client reconnecting..");
+                    _logger.LogDebug(ex, "RpcException when server method call. ContextIsOperational = false");
                 }
             }
-
-            _logger.LogDebug(ex, "Exception when server method call.");
+            else
+            {
+                _logger.LogDebug(ex, "Exception when server method call.");
+            }
         }   
 
         #endregion
@@ -258,7 +268,8 @@ namespace Ssz.DataAccessGrpc.Client
 
         private bool _disposed;
 
-        private Task? _workingTask;
+        private Task? _readCallbackMessages_Task;
+        private Task? _keepAlive_Task;
 
         private ILogger<GrpcDataAccessProvider> _logger;
 
@@ -276,10 +287,9 @@ namespace Ssz.DataAccessGrpc.Client
         
         private uint _serverContextTimeoutMs;
         
-        private string _serverCultureName = null!;
+        private string _serverCultureName = null!;        
 
-        private readonly object _resourceManagementLastCallUtcSyncRoot = new();
-        private DateTime _resourceManagementLastCallUtc;
+        private long _lastServerContextCallbackMessage_Ticks;
 
         private IAsyncStreamReader<CallbackMessage>? _callbackStreamReader;
         
@@ -297,5 +307,5 @@ namespace Ssz.DataAccessGrpc.Client
         #endregion
     }
 
-    #endregion // Context Management
+#endregion // Context Management
 }

@@ -6,7 +6,7 @@
 	  <Nullable>Enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Company>SSZ</Company>
-    <Version>1.0.86</Version>
+    <Version>1.0.87</Version>
     <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>  
 
@@ -15,11 +15,11 @@
     <PackageReference Include="Google.Protobuf" Version="3.35.1" />
     <PackageReference Include="Grpc.Net.Client.Web" Version="2.80.0" />
     <PackageReference Include="Grpc.Net.ClientFactory" Version="2.80.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.81.1">
+    <PackageReference Include="Grpc.Tools" Version="2.83.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="System.Threading.Channels" Version="10.0.9" />    
+    <PackageReference Include="System.Threading.Channels" Version="10.0.10" />    
   </ItemGroup>
 
   <ItemGroup>

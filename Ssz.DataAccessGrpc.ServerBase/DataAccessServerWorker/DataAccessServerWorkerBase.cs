@@ -80,7 +80,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 if (cancellationToken.IsCancellationRequested) 
                     return result; 
                 
-                if (nowUtc - serverContext.LastAccessDateTimeUtc > TimeSpan.FromMilliseconds(serverContext.ContextTimeoutMs))
+                if (nowUtc - serverContext.LastClientKeepAlive > TimeSpan.FromMilliseconds(serverContext.ContextTimeoutMs))
                 {
                     // Expired
                     serverContext.IsConcludeCalledByClient = true; // Context is not operational

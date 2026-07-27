@@ -50,7 +50,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
             ContextParams = contextParams;
 
             ContextId = Guid.NewGuid().ToString();
-            
+
+            LastClientKeepAlive = DateTime.UtcNow;
+
             _callbackWorkingTask = CallbackWorkingTaskMainAsync(CallbackWorkingTask_CancellationTokenSource.Token);
         }
 
@@ -179,11 +181,6 @@ namespace Ssz.DataAccessGrpc.ServerBase
         public uint ContextTimeoutMs { get; }
 
         /// <summary>
-        ///   The negotiated timeout in milliseconds.
-        /// </summary>
-        public uint ContextStatusCallbackPeriodMs { get; } = 5000;
-
-        /// <summary>
         ///   User's culture, negotiated when context was created.
         /// </summary>
         public CultureInfo CultureInfo { get; }
@@ -208,14 +205,15 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
                 return _listsManager.ToArray();
             }
+        }        
+
+        public DateTime LastClientKeepAlive
+        {
+            get => new DateTime(Interlocked.Read(ref _lastClientKeepAlive_Ticks), DateTimeKind.Utc);
+            set => Interlocked.Exchange(ref _lastClientKeepAlive_Ticks, value.Ticks);
         }
 
-        /// <summary>
-        ///   The last time the context was accessed.
-        /// </summary>
-        public DateTime LastAccessDateTimeUtc { get; set; }
-
-        public DateTime? LastContextStatusCallbackDateTimeUtc { get; set; }
+        public DateTime LastContextStatusMessage_STATE_OPERATIONAL { get; set; } = DateTime.MinValue;
 
         /// <summary>
         ///     Did the client call Conclude(...)
@@ -245,8 +243,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 }
             }
 
-            if (LastContextStatusCallbackDateTimeUtc is null ||
-                nowUtc - LastContextStatusCallbackDateTimeUtc.Value >= TimeSpan.FromMilliseconds(ContextStatusCallbackPeriodMs))
+            if (nowUtc - LastContextStatusMessage_STATE_OPERATIONAL >= TimeSpan.FromMilliseconds(5000))
             {
                 if (!IsConcludeCalledByClient)
                 {
@@ -255,7 +252,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                             {
                                 StateCode = ContextStateCodes.STATE_OPERATIONAL
                             });
-                    LastContextStatusCallbackDateTimeUtc = nowUtc;
+                    LastContextStatusMessage_STATE_OPERATIONAL = nowUtc;
                 }
             }
         }               
@@ -355,7 +352,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <summary>
         ///   The collection of lists for this context.
         /// </summary>
-        private ObjectManager<ServerListRoot> _listsManager = new ObjectManager<ServerListRoot>(20);                
+        private ObjectManager<ServerListRoot> _listsManager = new ObjectManager<ServerListRoot>(20);
+
+        private long _lastClientKeepAlive_Ticks;
 
         #endregion
     }

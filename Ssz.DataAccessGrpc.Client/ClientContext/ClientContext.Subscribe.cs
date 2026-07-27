@@ -104,6 +104,8 @@ namespace Ssz.DataAccessGrpc.Client
                     }
                     cancellationToken.ThrowIfCancellationRequested();
 
+                    LastServerContextCallbackMessage = DateTime.UtcNow;
+
                     CallbackMessage current = callbackStreamReader.Current;
                     _workingDispatcher.BeginInvoke(ct =>
                     {    
@@ -156,12 +158,13 @@ namespace Ssz.DataAccessGrpc.Client
         private void ServerContextStatusCallback(ContextStatus contextStatus)
         {
             ServerContextStatus = contextStatus;
-            if (ServerContextStatus is not null && ServerContextStatus.StateCode == ContextStateCodes.STATE_ABORTING)
+            if (ServerContextStatus is null)
+                return;
+            if (ServerContextStatus.StateCode == ContextStateCodes.STATE_ABORTING)
             {
                 _contextIsOperational = false;                
             }
-            if (ServerContextStatus is not null)
-                ServerContextNotification(this, new ContextStatusChangedEventArgs
+            ServerContextNotification(this, new ContextStatusChangedEventArgs
                 {
                     ContextStateCode = ServerContextStatus.StateCode,
                     Info = ServerContextStatus.Info ?? @"",

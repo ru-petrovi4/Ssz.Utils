@@ -329,12 +329,10 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             if (_clientContext is null) 
                 throw new ConnectionDoesNotExistException();
 
-            LastSuccessfulConnectionDateTimeUtc = nowUtc;
-
-            await _clientContext.KeepContextAliveIfNeededAsync(ct, nowUtc);                      
+            LastSuccessfulConnectionDateTimeUtc = nowUtc;              
         }
 
-#endregion
+        #endregion
 
         #region private fields
 

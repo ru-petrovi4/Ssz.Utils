@@ -29,11 +29,6 @@ public interface IDataAccessServerContext : IDisposable, IAsyncDisposable
     uint ContextTimeoutMs { get; }
 
     /// <summary>
-    ///   The negotiated timeout in milliseconds.
-    /// </summary>
-    uint ContextStatusCallbackPeriodMs { get; }
-
-    /// <summary>
     ///   User's culture, negotiated when context was created.
     /// </summary>
     CultureInfo CultureInfo { get; }
@@ -52,9 +47,9 @@ public interface IDataAccessServerContext : IDisposable, IAsyncDisposable
     /// <summary>
     ///   The last time the context was accessed.
     /// </summary>
-    DateTime LastAccessDateTimeUtc { get; set; }
+    DateTime LastClientKeepAlive { get; set; }
 
-    DateTime? LastContextStatusCallbackDateTimeUtc { get; set; }
+    DateTime LastContextStatusMessage_STATE_OPERATIONAL { get; set; }
 
     /// <summary>
     ///     Did the client call Conclude(...)
