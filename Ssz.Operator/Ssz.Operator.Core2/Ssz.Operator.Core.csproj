@@ -12,47 +12,21 @@
     <AvaloniaResource Include="Assets\**" />
     <AvaloniaResource Include="Resources\Images\**" />
   </ItemGroup>
- 
-  <ItemGroup>
-    <AvaloniaXaml Remove="Views\ControlsCommon\Trends\GenericTrends\AxisConfiguration\AxisConfigurationWindow.axaml" />
-    <AvaloniaXaml Remove="Views\ControlsCommon\Trends\GenericTrends\GenericTrendsPlotView.axaml" />
-    <AvaloniaXaml Remove="Views\ControlsCommon\Trends\GenericTrends\PlotConfiguration\AssignTrendToVariableWindow.axaml" />
-    <AvaloniaXaml Remove="Views\ControlsCommon\Trends\GenericTrends\PlotConfiguration\PlotConfigurationWindow.axaml" />
-    <AvaloniaXaml Remove="Views\ControlsCommon\Trends\GenericTrends\PlotConfiguration\TrendConfigurationWindow.axaml" />
-    <AvaloniaXaml Remove="Views\ControlsCommon\Trends\GenericTrends\Settings\SettingsWindow.axaml" />
-    <AvaloniaXaml Remove="Views\ControlsCommon\Trends\GenericTrends\TrendGroupControl.axaml" />
-  </ItemGroup>
- 
-  <ItemGroup>
-    <Compile Remove="Views\ControlsCommon\Trends\GenericTrends\GenericTrendsPlotView.axaml.cs" />
-    <Compile Remove="Views\ControlsCommon\Trends\GenericTrends\TrendGroupControl.axaml.cs" />
-  </ItemGroup>
- 
-  <ItemGroup>
-    <None Include="Views\ControlsCommon\Trends\GenericTrends\GenericTrendsPlotView.axaml.cs">
-      <DependentUpon>GenericTrendsPlotView.axaml</DependentUpon>
-    </None>
-    <None Include="Views\ControlsCommon\Trends\GenericTrends\TrendGroupControl.axaml.cs" />
-  </ItemGroup>
 	
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="12.0.4" />
-    <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="12.0.4" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.0.4" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="12.0.4" />
+    <PackageReference Include="Avalonia" Version="12.1.1" />
+    <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="12.1.1" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.1" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.1" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-    <PackageReference Include="Avalonia.Diagnostics" Version="11.3.17">
-      <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
-      <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <PackageReference Include="Egorozh.ColorPicker.Avalonia.Dialog" Version="11.0.3" />
-	  <PackageReference Include="MessageBox.Avalonia" Version="12.0.0" />	  
+	  <PackageReference Include="MessageBox.Avalonia" Version="12.0.0" />
+	  <PackageReference Include="Oxyplot.Avalonia12" Version="2.1.2" />	  
 	  <PackageReference Include="PanAndZoom" Version="12.0.0.1" />
-	  <PackageReference Include="Svg.Controls.Avalonia" Version="12.0.0.11" />
-	  <PackageReference Include="Svg.Controls.Skia.Avalonia" Version="12.0.0.11" />
+	  <PackageReference Include="Svg.Controls.Avalonia" Version="12.0.0.13" />
+	  <PackageReference Include="Svg.Controls.Skia.Avalonia" Version="12.0.0.13" />
     <PackageReference Include="OxyPlot.Core" Version="2.2.0" />
-    <PackageReference Include="OxyPlot.Avalonia" Version="2.1.0" />
   </ItemGroup>
 
   <ItemGroup>
