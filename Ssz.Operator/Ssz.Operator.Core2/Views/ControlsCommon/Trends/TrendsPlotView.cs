@@ -217,10 +217,9 @@ public abstract class TrendsPlotView : TemplatedControl
             LineSeries.IsVisibleProperty,
             new Binding("IsDisplayedOnPlot"));
 
-        // TODO
-        //lineSeries.Bind(
-        //    LineSeries.ColorProperty,
-        //    new Binding("Color"));
+        lineSeries.Bind(
+            LineSeries.ColorProperty,
+            new Binding("Color"));
 
         if (Plot != null)
         {

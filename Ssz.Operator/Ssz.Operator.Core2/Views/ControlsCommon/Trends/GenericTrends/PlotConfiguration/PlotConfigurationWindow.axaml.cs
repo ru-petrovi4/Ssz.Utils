@@ -1,90 +1,101 @@
-﻿
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Interactivity;
+using Avalonia.Media;
+
 namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends.PlotConfiguration
 {
-    //public partial class PlotConfigurationWindow
-    //{
-    //    #region construction and destruction
+    public partial class PlotConfigurationWindow : Window
+    {
+        #region construction and destruction
 
-    //    public PlotConfigurationWindow(PlotConfigurationViewModel viewModel)
-    //    {
-    //        InitializeComponent();
+        public PlotConfigurationWindow()
+        {
+            InitializeComponent();
+        }
 
-    //        DataContext = _viewModel = viewModel;
-    //    }
+        public PlotConfigurationWindow(PlotConfigurationViewModel viewModel) :
+            this()
+        {
+            DataContext = _viewModel = viewModel;
+        }
 
-    //    #endregion
+        #endregion
 
-    //    #region private functions
+        #region private functions
 
-    //    private void onColorButtonClicked(object sender, RoutedEventArgs e)
-    //    {
-    //        var fe = sender as FrameworkElement;
-    //        if (fe == null)
-    //            return;
+        private async void OnColorButtonClicked(object? sender, RoutedEventArgs e)
+        {
+            var fe = sender as StyledElement;
+            if (fe is null)
+                return;
 
-    //        var trendConfigurationViewModel = fe.DataContext as TrendConfigurationViewModel;
-    //        if (trendConfigurationViewModel == null)
-    //            return;
+            var trendConfigurationViewModel = fe.DataContext as TrendConfigurationViewModel;
+            if (trendConfigurationViewModel is null)
+                return;
 
-    //        Color? newColor = WpfColorDialog.Show(trendConfigurationViewModel.Color);
-    //        if (newColor != null)
-    //            trendConfigurationViewModel.Color = newColor.Value;
-    //    }
+            Color? newColor = await ColorDialogHelper.ShowAsync(this, trendConfigurationViewModel.Color);
+            if (newColor is not null)
+                trendConfigurationViewModel.Color = newColor.Value;
+        }
 
-    //    private void onAssignTrendButtonClicked(object sender, RoutedEventArgs e)
-    //    {
-    //        TrendConfigurationViewModel firstUnassignedTrend = _viewModel.FirstUnassignedTrend();
+        private async void OnAssignTrendButtonClicked(object? sender, RoutedEventArgs e)
+        {
+            if (_viewModel is null)
+                return;
 
-    //        // All trends are assigned to variables. Can't add new trend?
-    //        if (firstUnassignedTrend == null)
-    //            return;
+            TrendConfigurationViewModel? firstUnassignedTrend = _viewModel.FirstUnassignedTrend();
 
-    //        var unassignedTrendCopy = new TrendConfigurationViewModel(firstUnassignedTrend);
-    //        bool? result = new AssignTrendToVariableWindow(unassignedTrendCopy) {Owner = this}.ShowDialog();
+            // All trends are assigned to variables. Can't add new trend?
+            if (firstUnassignedTrend is null)
+                return;
 
-    //        if (result == true)
-    //            firstUnassignedTrend.CopyFrom(unassignedTrendCopy);
-    //    }
+            var unassignedTrendCopy = new TrendConfigurationViewModel(firstUnassignedTrend);
+            bool result = await new AssignTrendToVariableWindow(unassignedTrendCopy).ShowDialog<bool>(this);
 
-    //    private void onTrendDetailsButtonClicked(object sender, RoutedEventArgs e)
-    //    {
-    //        var trendConfiguration = TrendsListBox.SelectedItem as TrendConfigurationViewModel;
-    //        if (trendConfiguration == null)
-    //            return;
+            if (result)
+                firstUnassignedTrend.CopyFrom(unassignedTrendCopy);
+        }
 
-    //        var trendConfigurationCopy = new TrendConfigurationViewModel(trendConfiguration);
+        private async void OnTrendDetailsButtonClicked(object? sender, RoutedEventArgs e)
+        {
+            var trendConfiguration = TrendsListBox.SelectedItem as TrendConfigurationViewModel;
+            if (trendConfiguration is null)
+                return;
 
-    //        bool? result = new TrendConfigurationWindow(trendConfigurationCopy) {Owner = this}.ShowDialog();
+            var trendConfigurationCopy = new TrendConfigurationViewModel(trendConfiguration);
 
-    //        if (result == true)
-    //            trendConfiguration.CopyFrom(trendConfigurationCopy);
-    //    }
+            bool result = await new TrendConfigurationWindow(trendConfigurationCopy).ShowDialog<bool>(this);
 
-    //    private void onClearTrendButtonClicked(object sender, RoutedEventArgs e)
-    //    {
-    //        var trendConfigurationViewModel = TrendsListBox.SelectedItem as TrendConfigurationViewModel;
-    //        if (trendConfigurationViewModel == null)
-    //            return;
+            if (result)
+                trendConfiguration.CopyFrom(trendConfigurationCopy);
+        }
 
-    //        trendConfigurationViewModel.Unassign();
-    //    }
+        private void OnClearTrendButtonClicked(object? sender, RoutedEventArgs e)
+        {
+            var trendConfigurationViewModel = TrendsListBox.SelectedItem as TrendConfigurationViewModel;
+            if (trendConfigurationViewModel is null)
+                return;
 
-    //    private void onOkButtonClicked(object sender, RoutedEventArgs e)
-    //    {
-    //        DialogResult = true;
-    //    }
+            trendConfigurationViewModel.Unassign();
+        }
 
-    //    private void onCancelButtonClicked(object sender, RoutedEventArgs e)
-    //    {
-    //        DialogResult = false;
-    //    }
+        private void OnOkButtonClicked(object? sender, RoutedEventArgs e)
+        {
+            Close(true);
+        }
 
-    //    #endregion
+        private void OnCancelButtonClicked(object? sender, RoutedEventArgs e)
+        {
+            Close(false);
+        }
 
-    //    #region private fields
+        #endregion
 
-    //    private readonly PlotConfigurationViewModel _viewModel;
+        #region private fields
 
-    //    #endregion
-    //}
+        private readonly PlotConfigurationViewModel? _viewModel;
+
+        #endregion
+    }
 }

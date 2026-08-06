@@ -1,21 +1,26 @@
-﻿<Window x:Class="Cdt.Operator.Addons.Generic.Controls.Trends.PlotConfiguration.TrendConfigurationWindow"
+<Window x:Class="Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends.PlotConfiguration.TrendConfigurationWindow"
         xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Classic"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        Title="Конфигурирование Тренда" Height="412" Width="600" ResizeMode="NoResize" Topmost="True"
+        xmlns:plotConfiguration="using:Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends.PlotConfiguration"
+        Title="Конфигурирование Тренда" Height="412" Width="600" CanResize="False" Topmost="True"
         WindowStartupLocation="CenterOwner"
         mc:Ignorable="d"
+        x:DataType="plotConfiguration:TrendConfigurationViewModel"
         >
+    <Design.DataContext>
+        <plotConfiguration:TrendConfigurationDesignData />
+    </Design.DataContext>
     <Grid>
         <TextBlock HorizontalAlignment="Left" Margin="8,15,0,0" Text="Ссылка на Параметр:" VerticalAlignment="Top" />
-        <TextBox HorizontalAlignment="Left" Height="29" Margin="8,36,0,0" TextWrapping="Wrap" Text="{Binding HdaId}"
+        <TextBox HorizontalAlignment="Left" Height="29" Margin="8,36,0,0" TextWrapping="Wrap"
+                 Text="{Binding HdaId, Mode=TwoWay}"
                  VerticalAlignment="Top" Width="472" />
         <Button Content="OK" HorizontalAlignment="Left" Margin="507,17,0,0" VerticalAlignment="Top" Width="75"
-                Click="onOkButtonClicked" />
+                Click="OnOkButtonClicked" />
         <Button Content="Отмена" HorizontalAlignment="Left" Margin="507,43,0,0" VerticalAlignment="Top" Width="75"
-                Click="onCancelButtonClicked" />
+                Click="OnCancelButtonClicked" />
         <CheckBox Content="Показать Шкалу Y?" HorizontalAlignment="Left" Margin="20,74,0,0" VerticalAlignment="Top"
                   IsChecked="True" IsEnabled="False" />
         <CheckBox Content="Показать События?" HorizontalAlignment="Left" Margin="20,94,0,0" VerticalAlignment="Top"
@@ -25,38 +30,34 @@
                   IsEnabled="False" />
         <Button Content="Отбор" HorizontalAlignment="Left" Margin="405,70,0,0" VerticalAlignment="Top" Width="75"
                 IsEnabled="False" />
-        <Button Content="{Binding}" HorizontalAlignment="Left" Margin="20,120,0,0" VerticalAlignment="Top" Width="28"
-                Height="24"
-                Click="onChangeTrendColorClicked">
-            <Button.ContentTemplate>
-                <DataTemplate>
-                    <Rectangle Width="20" Height="20">
-                        <Rectangle.Fill>
-                            <SolidColorBrush Color="{Binding Color}" />
-                        </Rectangle.Fill>
-                    </Rectangle>
-                </DataTemplate>
-            </Button.ContentTemplate>
+        <Button HorizontalAlignment="Left" Margin="20,120,0,0" VerticalAlignment="Top" Width="28"
+                Height="24" Padding="0"
+                Click="OnChangeTrendColorClicked">
+            <Rectangle Width="20" Height="20">
+                <Rectangle.Fill>
+                    <SolidColorBrush Color="{Binding Color}" />
+                </Rectangle.Fill>
+            </Rectangle>
         </Button>
-        <themes:ClassicBorderDecorator BorderStyle="Sunken" BorderThickness="1"
-                                       VerticalAlignment="Top" Height="29" Margin="53,117,428,0"
-                                       Background="DarkGray">
+        <Border BorderBrush="Gray" BorderThickness="1"
+                VerticalAlignment="Top" Height="29" Margin="53,117,428,0"
+                Background="DarkGray">
             <TextBlock Text="Пример Метки" VerticalAlignment="Center">
                 <TextBlock.Foreground>
                     <SolidColorBrush Color="{Binding Color}" />
                 </TextBlock.Foreground>
             </TextBlock>
-        </themes:ClassicBorderDecorator>
+        </Border>
 
-        <themes:ClassicBorderDecorator BorderStyle="Sunken" BorderThickness="1"
-                                       VerticalAlignment="Top" Height="29" Margin="175,117,306,0"
-                                       Background="DimGray">
+        <Border BorderBrush="Gray" BorderThickness="1"
+                VerticalAlignment="Top" Height="29" Margin="175,117,306,0"
+                Background="DimGray">
             <Rectangle VerticalAlignment="Center" Height="1" StrokeThickness="1">
                 <Rectangle.Stroke>
                     <SolidColorBrush Color="{Binding Color}" />
                 </Rectangle.Stroke>
             </Rectangle>
-        </themes:ClassicBorderDecorator>
+        </Border>
         <CheckBox Content="Автонастройка цветов ASCII?" HorizontalAlignment="Left" Margin="20,151,0,0"
                   VerticalAlignment="Top"
                   IsEnabled="False" IsChecked="True" />
@@ -66,9 +67,15 @@
         <TextBox HorizontalAlignment="Left" Height="23" Margin="294,117,0,0" TextWrapping="Wrap" Text=""
                  VerticalAlignment="Top" Width="264"
                  IsEnabled="False" />
-        <GroupBox Header="Определение Пределов Шкалы Y" HorizontalAlignment="Left" Margin="20,185,0,0"
-                  VerticalAlignment="Top" Height="98" Width="552">
+        <Border BorderBrush="Gray" BorderThickness="1" HorizontalAlignment="Left" Margin="20,185,0,0"
+                VerticalAlignment="Top" Height="98" Width="552">
             <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Text="Определение Пределов Шкалы Y" Margin="5,2,5,2" FontWeight="Bold" />
+                <Grid Grid.Row="1">
                 <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Верхний Предел Y:"
                            VerticalAlignment="Top" Margin="10,10,0,0" />
                 <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Нижний Предел Y:"
@@ -85,8 +92,9 @@
                              VerticalAlignment="Top" IsEnabled="False" />
                 <Button Content="Текущие ИЕ" HorizontalAlignment="Left" Margin="360,49,0,0" Width="75" Height="24"
                         VerticalAlignment="Top" IsEnabled="False" />
+                </Grid>
             </Grid>
-        </GroupBox>
+        </Border>
         <TextBlock HorizontalAlignment="Left" Margin="81,309,0,0" TextWrapping="Wrap"
                    Text="Время Начала (если отлично от шкалы времени):" VerticalAlignment="Top" />
         <TextBox HorizontalAlignment="Left" Height="23" Margin="358,306,0,0" TextWrapping="Wrap" Text=""

@@ -1,14 +1,11 @@
-﻿using System;
-using System.Windows;
-using Ssz.Operator.Core.ControlsCommon.Trends;
-using Ssz.Operator.Core;
+using System;
 using System.Collections.Generic;
-using Ssz.Operator.Core.DsShapes.Trends;
-using Avalonia.Controls;
-using Avalonia.Media;
-using Egorozh.ColorPicker.Dialog;
-using Avalonia.Interactivity;
 using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Interactivity;
+using Avalonia.Media;
+using Ssz.Operator.Core.ControlsCommon.Trends;
+using Ssz.Operator.Core.DsShapes.Trends;
 
 namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 {
@@ -78,24 +75,19 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
                     return;
             }
 
-            ColorPickerDialog dialog = new()
+            Color? newColor = await ColorDialogHelper.ShowAsync(
+                TopLevel.GetTopLevel(this) as Window,
+                trendViewModel.Color);
+            if (newColor is not null)
             {
-                //Color = Color,
-                //Colors = Colors,
-                //Title = "Custom Title"
-            };
-            var result = await dialog.ShowDialog<bool>((Window)TopLevel.GetTopLevel(this)!);
-            if (result)
-            {
-                var newColor = dialog.Color;
                 trendViewModel.Source.DsTrendItem.DsBrush = new BrushDataBinding(false, true)
                 {
                     ConstValue = new SolidDsBrush
                     {
-                        Color = newColor
+                        Color = newColor.Value
                     }
                 };
-                trendViewModel.Source.Brush = new SolidColorBrush(newColor);
+                trendViewModel.Source.Brush = new SolidColorBrush(newColor.Value);
             }
         }
 

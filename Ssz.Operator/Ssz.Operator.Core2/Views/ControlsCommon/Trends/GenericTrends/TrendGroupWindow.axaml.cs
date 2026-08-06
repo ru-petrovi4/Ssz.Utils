@@ -1,15 +1,14 @@
-﻿using System;
+using System;
 using Avalonia.Controls;
 using Ssz.Operator.Core.ControlsCommon;
 
 namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
-{    
+{
     public partial class TrendGroupWindow : Window
     {
         #region construction and destruction
 
-        protected TrendGroupWindow()
-            //base("Generic.TrendGroupWindow", 1300, 800)
+        public TrendGroupWindow()
         {
             InitializeComponent();
         }
@@ -20,9 +19,16 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 
         public static void ShowOrActivate(WindowType windowType, string groupId)
         {
-            if (_instance == null)
+            if (_instance is null)
             {
-                _instance = new TrendGroupWindow();                
+                _instance = new TrendGroupWindow();
+                try
+                {
+                    _instance.Owner = MessageBoxHelper.GetRootWindow();
+                }
+                catch
+                {
+                }
                 _instance.Show();
             }
             else
@@ -31,7 +37,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
             }
 
             _instance.Jump(windowType, groupId);
-        }        
+        }
 
         #endregion
 
@@ -54,30 +60,20 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
         {
             (Content as IDisposable)?.Dispose();
 
-            //switch (windowType)
-            //{
-            //    case WindowType.TrendGroup:
-            //        {
-            //            var userTrendGroupControl = new TrendGroupControl();
-            //            userTrendGroupControl.Jump(param_, @"");
-            //            Content = userTrendGroupControl;
-            //        }
-            //        break;
-            //    case WindowType.UserTrendGroup:
-            //        {
-            //            var userTrendGroupControl = new TrendGroupControl();
-            //            userTrendGroupControl.Jump(param_, @"");
-            //            Content = userTrendGroupControl;
-            //        }
-            //        break;
-            //    case WindowType.TrendForTag:
-            //        {
-            //            var userTrendGroupControl = new TrendGroupControl();
-            //            userTrendGroupControl.Jump(@"", param_);
-            //            Content = userTrendGroupControl;
-            //        }
-            //        break;
-            //}            
+            Title = param_;
+
+            var trendGroupControl = new TrendGroupControl();
+            switch (windowType)
+            {
+                case WindowType.TrendGroup:
+                case WindowType.UserTrendGroup:
+                    trendGroupControl.Jump(param_, @"");
+                    break;
+                case WindowType.TrendForTag:
+                    trendGroupControl.Jump(@"", param_);
+                    break;
+            }
+            Content = trendGroupControl;
         }
 
         #endregion
@@ -89,7 +85,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
         #endregion
 
         public enum WindowType
-        {            
+        {
             UserTrendGroup,
             TrendGroup,
             TrendForTag,

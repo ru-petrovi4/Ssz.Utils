@@ -1,12 +1,16 @@
-﻿<Window x:Class="Cdt.Operator.Addons.Generic.Controls.Trends.PlotConfiguration.PlotConfigurationWindow"
+<Window x:Class="Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends.PlotConfiguration.PlotConfigurationWindow"
         xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:plotConfiguration="using:Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends.PlotConfiguration"
         Title="Конфигурирование Графика" Height="494" Width="700"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance plotConfiguration:PlotConfigurationDesignData, IsDesignTimeCreatable=True}"
+        x:DataType="plotConfiguration:PlotConfigurationViewModel"
         Topmost="True" WindowStartupLocation="CenterOwner">
+    <Design.DataContext>
+        <plotConfiguration:PlotConfigurationDesignData />
+    </Design.DataContext>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -17,9 +21,7 @@
             <TabItem Header="Конфигурирование Графика">
                 <Grid>
                     <TextBlock HorizontalAlignment="Left" Margin="135,10,0,0" TextWrapping="Wrap"
-                               VerticalAlignment="Top">
-                        <Run Text="Заголовок:" />
-                    </TextBlock>
+                               VerticalAlignment="Top" Text="Заголовок:" />
                     <TextBox HorizontalAlignment="Left" Height="23" Margin="205,7,0,0" VerticalAlignment="Top"
                              Width="329" IsEnabled="False" />
                     <TextBlock HorizontalAlignment="Left" Margin="116,42,0,0" TextWrapping="Wrap"
@@ -32,26 +34,22 @@
                              ItemsSource="{Binding TrendConfigurationViewModels}"
                              x:Name="TrendsListBox">
                         <ListBox.ItemTemplate>
-                            <DataTemplate>
+                            <DataTemplate x:DataType="plotConfiguration:TrendConfigurationViewModel">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="35" />
                                         <ColumnDefinition />
                                     </Grid.ColumnDefinitions>
 
-                                    <Button Content="{Binding}" Click="onColorButtonClicked">
-                                        <Button.ContentTemplate>
-                                            <DataTemplate>
-                                                <Rectangle Width="30" Height="10">
-                                                    <Rectangle.Fill>
-                                                        <SolidColorBrush Color="{Binding Color}" />
-                                                    </Rectangle.Fill>
-                                                </Rectangle>
-                                            </DataTemplate>
-                                        </Button.ContentTemplate>
+                                    <Button Padding="0" Click="OnColorButtonClicked">
+                                        <Rectangle Width="30" Height="10">
+                                            <Rectangle.Fill>
+                                                <SolidColorBrush Color="{Binding Color}" />
+                                            </Rectangle.Fill>
+                                        </Rectangle>
                                     </Button>
 
-                                    <TextBlock Text="{Binding HdaId}" Grid.Column="1" />
+                                    <TextBlock Text="{Binding HdaId}" Grid.Column="1" VerticalAlignment="Center" />
                                 </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
@@ -61,12 +59,12 @@
                                Text="Ссылка на Параметр" VerticalAlignment="Top" />
                     <Button Content="Добавить" HorizontalAlignment="Left" Margin="10,116,0,0" VerticalAlignment="Top"
                             Width="75"
-                            Click="onAssignTrendButtonClicked" />
+                            Click="OnAssignTrendButtonClicked" />
                     <Button Content="Детали" HorizontalAlignment="Left" Margin="10,143,0,0" VerticalAlignment="Top"
                             Width="75"
-                            Click="onTrendDetailsButtonClicked" />
+                            Click="OnTrendDetailsButtonClicked" />
                     <Button Content="Убрать" HorizontalAlignment="Left" Margin="10,256,0,0" VerticalAlignment="Top"
-                            Width="75" Click="onClearTrendButtonClicked" />
+                            Width="75" Click="OnClearTrendButtonClicked" />
                     <CheckBox Content="Автонастройка цветов ASCII?" HorizontalAlignment="Left" Margin="119,255,0,0"
                               VerticalAlignment="Top"
                               IsEnabled="False" IsChecked="True" />
@@ -86,18 +84,16 @@
                             IsEnabled="False" />
                     <Button Content="H" HorizontalAlignment="Left" Margin="595,139,0,0" VerticalAlignment="Top"
                             Width="24"
-                            IsEnabled="false" />
+                            IsEnabled="False" />
                     <TextBlock HorizontalAlignment="Left" Margin="71,290,0,0" TextWrapping="Wrap"
                                Text="Сервер Динамических Данных:" VerticalAlignment="Top" />
                     <TextBox HorizontalAlignment="Left" Height="23" Margin="249,287,0,0" TextWrapping="Wrap"
                              VerticalAlignment="Top" Width="209"
                              IsEnabled="False" />
                     <TextBlock HorizontalAlignment="Left" Margin="75,321,0,0" TextWrapping="Wrap"
-                               VerticalAlignment="Top">
-                        <Run Text="Сервер " /><Run Text="Исторических " /><Run Text="Данных:" />
-                    </TextBlock>
+                               VerticalAlignment="Top" Text="Сервер Исторических Данных:" />
                     <ComboBox HorizontalAlignment="Left" Margin="249,318,0,0" VerticalAlignment="Top" Width="229"
-                              IsEditable="True" IsEnabled="False" SelectedIndex="0">
+                              IsEnabled="False" SelectedIndex="0">
                         <ComboBoxItem Content="defaulthost" />
                     </ComboBox>
                     <TextBlock HorizontalAlignment="Left" Margin="193,349,0,0" TextWrapping="Wrap" Text="Попыток:"
@@ -121,8 +117,8 @@
         <StackPanel Grid.Row="1" Margin="5" Orientation="Horizontal"
                     HorizontalAlignment="Right">
 
-            <Button Content="OK" Width="73" Margin="2" Click="onOkButtonClicked" />
-            <Button Content="Отмена" Width="73" Margin="2" Click="onCancelButtonClicked" />
+            <Button Content="OK" Width="73" Margin="2" Click="OnOkButtonClicked" />
+            <Button Content="Отмена" Width="73" Margin="2" Click="OnCancelButtonClicked" />
             <Button Content="Справка" Width="73" Margin="2,2,0,2" IsEnabled="False" />
 
         </StackPanel>

@@ -1,98 +1,107 @@
-﻿using Ssz.Operator.Core.ControlsCommon.Trends;
+using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Interactivity;
+using Avalonia.Media;
+using Ssz.Operator.Core.ControlsCommon.Trends;
 
 namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends.Settings
 {
-    //public partial class SettingsWindow : Window
-    //{
-    //    #region construction and destruction
+    public partial class SettingsWindow : Window
+    {
+        #region construction and destruction
 
-    //    public SettingsWindow(TrendsPlotView plot)
-    //    {
-    //        InitializeComponent();
+        public SettingsWindow()
+        {
+            InitializeComponent();
+        }
 
-    //        DataContext = _viewModel = new SettingsViewModel(plot);
-    //    }
+        public SettingsWindow(TrendsPlotView plot) :
+            this()
+        {
+            DataContext = _viewModel = new SettingsViewModel(plot);
+        }
 
-    //    #endregion
+        #endregion
 
-    //    #region private functions
+        #region private functions
 
-    //    private void onPlotBackgroundRectangleClicked(object sender, MouseButtonEventArgs e)
-    //    {
-    //        var solidColorBrush = _viewModel.CustomPreset.PlotBackground as SolidColorBrush;
-    //        Color? initialColor = null;
+        private async void OnPlotBackgroundRectanglePointerReleased(object? sender, PointerReleasedEventArgs e)
+        {
+            if (_viewModel is null || e.InitialPressMouseButton != MouseButton.Left)
+                return;
 
-    //        if (solidColorBrush != null)
-    //            initialColor = solidColorBrush.Color;
+            Color initialColor = (_viewModel.CustomPreset.PlotBackground as SolidColorBrush)?.Color ?? Colors.White;
 
-    //        Color? newColor = WpfColorDialog.Show(initialColor);
-    //        if (newColor != null)
-    //        {
-    //            _viewModel.ChangeCustomPresetPlotBackgroundColor(newColor.Value);
-    //            btnApply.IsEnabled = true;
-    //        }
-    //    }
+            Color? newColor = await ColorDialogHelper.ShowAsync(this, initialColor);
+            if (newColor is not null)
+            {
+                _viewModel.ChangeCustomPresetPlotBackgroundColor(newColor.Value);
+                btnApply.IsEnabled = true;
+            }
+        }
 
-    //    private void onPlotAreaBackgroundRectangleClicked(object sender, MouseButtonEventArgs e)
-    //    {
-    //        var solidColorBrush = _viewModel.CustomPreset.PlotAreaBackground as SolidColorBrush;
-    //        Color? initialColor = null;
+        private async void OnPlotAreaBackgroundRectanglePointerReleased(object? sender, PointerReleasedEventArgs e)
+        {
+            if (_viewModel is null || e.InitialPressMouseButton != MouseButton.Left)
+                return;
 
-    //        if (solidColorBrush != null)
-    //            initialColor = solidColorBrush.Color;
+            Color initialColor = (_viewModel.CustomPreset.PlotAreaBackground as SolidColorBrush)?.Color ?? Colors.White;
 
-    //        Color? newColor = WpfColorDialog.Show(initialColor);
-    //        if (newColor != null)
-    //        {
-    //            _viewModel.ChangeCustomPresetPlotAreaBackgroundColor(newColor.Value);
-    //            btnApply.IsEnabled = true;
-    //        }
-    //    }
+            Color? newColor = await ColorDialogHelper.ShowAsync(this, initialColor);
+            if (newColor is not null)
+            {
+                _viewModel.ChangeCustomPresetPlotAreaBackgroundColor(newColor.Value);
+                btnApply.IsEnabled = true;
+            }
+        }
 
-    //    private void onUsePredefinedPresetsChecked(object sender, RoutedEventArgs e)
-    //    {
-    //        _viewModel.ApplySelectedPredefinedPreset();
-    //        btnApply.IsEnabled = true;
-    //    }
+        private void OnUsePredefinedPresetsCheckedChanged(object? sender, RoutedEventArgs e)
+        {
+            // _viewModel is null when window is being initialized,
+            // and it raises IsCheckedChanged, and here we are.
+            if (_viewModel is null || btnUsePredefinedPresets.IsChecked != true)
+                return;
 
-    //    private void onUseCustomPresetChecked(object sender, RoutedEventArgs e)
-    //    {
-    //        // _viewModel is null when window is being initialized,
-    //        // and it throws a Checked event, and here we are.
-    //        if (_viewModel != null)
-    //        {
-    //            _viewModel.ApplyCustomPreset();
-    //            btnApply.IsEnabled = true;
-    //        }
-    //    }
+            _viewModel.ApplySelectedPredefinedPreset();
+            btnApply.IsEnabled = true;
+        }
 
-    //    private void onTestClicked(object sender, RoutedEventArgs e)
-    //    {
-    //        _viewModel.ApplyCustomPreset();
-    //    }
+        private void OnUseCustomPresetCheckedChanged(object? sender, RoutedEventArgs e)
+        {
+            if (_viewModel is null || btnUseCustomPreset.IsChecked != true)
+                return;
 
-    //    private void onOkClicked(object sender, RoutedEventArgs e)
-    //    {
-    //        DialogResult = true;
-    //    }
+            _viewModel.ApplyCustomPreset();
+            btnApply.IsEnabled = true;
+        }
 
-    //    private void onCancelClicked(object sender, RoutedEventArgs e)
-    //    {
-    //        _viewModel.RestoreInitialPlotSettings();
-    //        DialogResult = false;
-    //    }
+        private void OnTestClicked(object? sender, RoutedEventArgs e)
+        {
+            _viewModel?.ApplyCustomPreset();
+        }
 
-    //    private void onApplyClicked(object sender, RoutedEventArgs e)
-    //    {
-    //        btnApply.IsEnabled = false;
-    //    }
+        private void OnOkClicked(object? sender, RoutedEventArgs e)
+        {
+            Close(true);
+        }
 
-    //    #endregion
+        private void OnCancelClicked(object? sender, RoutedEventArgs e)
+        {
+            _viewModel?.RestoreInitialPlotSettings();
+            Close(false);
+        }
 
-    //    #region private fields
+        private void OnApplyClicked(object? sender, RoutedEventArgs e)
+        {
+            btnApply.IsEnabled = false;
+        }
 
-    //    private readonly SettingsViewModel _viewModel;
+        #endregion
 
-    //    #endregion
-    //}
+        #region private fields
+
+        private readonly SettingsViewModel? _viewModel;
+
+        #endregion
+    }
 }

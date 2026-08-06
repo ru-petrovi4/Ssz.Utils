@@ -274,29 +274,8 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
         {
             base.OnPropertyChanged(e);
 
-            if (e.Property == SelectedItemProperty)
-            {
-                if (Plot is null)
-                    return;                          
-
-                Plot.Series.Clear();
-                foreach (LineSeries seria in Plot.Series.ToArray())
-                {
-                    if (seria.DataContext == SelectedItem)
-                    {
-                        Plot.Series.Remove(seria);
-                        seria.StrokeThickness = 3;
-                        Plot.Series.Add(seria);
-                    }
-                    else
-                    {
-                        seria.StrokeThickness = 1;
-                        
-                    }
-                }
-                // TODO Reorder.
-                //Plot.Series.Add(seria);
-            }
+            // Series are rebuilt in RefreshLines() by the base class when SelectedItem changes,
+            // in display order and with the proper stroke thickness, so nothing to do here.
 
             if (e.Property == MinimumVisibleTimeProperty ||
                 e.Property == MaximumVisibleTimeProperty)

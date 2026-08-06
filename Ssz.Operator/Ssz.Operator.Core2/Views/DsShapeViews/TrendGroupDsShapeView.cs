@@ -1,113 +1,83 @@
-//using System.Collections.ObjectModel;
-//using Avalonia;
-//using Ssz.Operator.Core.ControlsCommon.Trends;
-//using Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends;
+using Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends;
+using Ssz.Operator.Core.ControlsPlay;
+using Ssz.Operator.Core.DsShapes;
 
+namespace Ssz.Operator.Core.DsShapeViews;
 
-////using Ssz.Operator.Core.ControlsCommon.Trends;
-//using Ssz.Operator.Core.ControlsPlay;
-//using Ssz.Operator.Core.DsShapes;
-//using Ssz.Operator.Core.DsShapes.Trends;
+public class TrendGroupDsShapeView : DsShapeViewBase
+{
+    #region construction and destruction
 
-//namespace Ssz.Operator.Core.DsShapeViews;
+    public TrendGroupDsShapeView(TrendGroupDsShape dsShape, ControlsPlay.Frame? frame)
+        : base(dsShape, frame)
+    {
+        Control = new TrendGroupControl();
+        Content = Control;
+    }
 
-//public class TrendGroupDsShapeView : DsShapeViewBase
-//{
-//    #region construction and destruction
+    protected override void Dispose(bool disposing)
+    {
+        if (Disposed) return;
 
-//    public TrendGroupDsShapeView(TrendGroupDsShape dsShape, Frame? frame)
-//        : base(dsShape, frame)
-//    {
-//        Control = new TrendGroupControl();
-//        Content = Control;
-//    }
+        if (disposing)
+            Control.Dispose();
 
-//    protected override void Dispose(bool disposing)
-//    {
-//        if (Disposed) return;
+        base.Dispose(disposing);
+    }
 
-//        //if (disposing)
-//        //    if (Control.TrendItemViewsCollection is not null)
-//        //        foreach (Trend trendItemView in Control.TrendItemViewsCollection)
-//        //        {
-//        //            trendItemView.Dispose();
-//        //        }
+    #endregion
 
-//        base.Dispose(disposing);
-//    }
+    #region protected functions
 
-//    #endregion
+    protected TrendGroupControl Control { get; }
 
-//    #region protected functions
+    protected override void OnDsShapeChanged(string? propertyName)
+    {
+        base.OnDsShapeChanged(propertyName);
 
-//    protected TrendGroupControl Control { get; }
+        var dsShape = (TrendGroupDsShape) DsShapeViewModel.DsShape;
 
-//    protected override void OnDsShapeChanged(string? propertyName)
-//    {
-//        base.OnDsShapeChanged(propertyName);
+        if (propertyName is null || propertyName == nameof(dsShape.DsTrendItemsCollection))
+        {
+            Control.Jump(dsShape.DsTrendItemsCollection);
+        }
 
-//        var dsShape = (TrendGroupDsShape)DsShapeViewModel.DsShape;
-//        if (propertyName is null || propertyName == nameof(dsShape.DsTrendItemsCollection))
-//        {
-//            Control.Jump(dsShape.DsTrendItemsCollection);
-//        }
+        if (propertyName is null || propertyName == nameof(dsShape.Background))
+        {
+            Control.Background = dsShape.Background.GetBrush(dsShape.Container);
+        }
 
-//        if (propertyName is null || propertyName == nameof(dsShape.ChartBackground))
-//        {
-//            if (Control.MainGenericTrendsPlotView.Plot is not null)
-//                Control.MainGenericTrendsPlotView.Plot.PlotAreaBackground =
-//                    dsShape.ChartBackground.GetBrush(dsShape.Container);
-//        }
-//        //if (propertyName is null || propertyName == nameof(dsShape.ChartGridBrush))
-//        //    Control.MainGenericTrendsPlotView.Plot.PlotGridBrush =
-//        //        dsShape.ChartGridBrush.GetBrush(dsShape.Container);
-//        //if (propertyName is null || propertyName == nameof(dsShape.ChartAxisBrush))
-//        //    Control.MainGenericTrendsPlotView.AxisBrush = dsShape.ChartAxisBrush.GetBrush(dsShape.Container);
-//        //if (propertyName is null || propertyName == nameof(dsShape.Background))
-//        //    Control.TrendsInfoTableControl.Background =
-//        //        Control.Background = dsShape.Background.GetBrush(dsShape.Container);
-//        //if (propertyName is null || propertyName == nameof(dsShape.TrendsInfoTableVisibility))
-//        //{
-//        //    if (dsShape.TrendsInfoTableVisibility)
-//        //        Control.TrendsInfoTableControl.Visibility = true;
-//        //    else
-//        //        Control.TrendsInfoTableControl.Visibility = false;
-//        //}
-//        //if (propertyName is null || propertyName == nameof(dsShape.TrendsTuningVisibility))
-//        //{
-//        //    if (dsShape.TrendsTuningVisibility)
-//        //        Control.TrendsTuningControl.Visibility = true;
-//        //    else
-//        //        Control.TrendsTuningControl.Visibility = false;
-//        //}
-//        //if (propertyName is null || propertyName == nameof(dsShape.TrendsAxisXVisibility))
-//        //{
-//        //    if (dsShape.TrendsAxisXVisibility)
-//        //        Control.MainGenericTrendsPlotView.XAxis.IsVisible = true;
-//        //    else
-//        //        Control.MainGenericTrendsPlotView.Plot.HorizontalAxis.Visibility = false;
-//        //}
-//        //if (propertyName is null || propertyName == nameof(dsShape.TrendsAxisYVisibility))
-//        //{
-//        //    if (dsShape.TrendsAxisYVisibility)
-//        //        Control.MainGenericTrendsPlotView.Plot.VerticalAxis.Visibility = true;
-//        //    else
-//        //        Control.MainGenericTrendsPlotView.Plot.VerticalAxis.Visibility = false;
-//        //}
-//        //if (propertyName is null || propertyName == nameof(dsShape.TrendsScrollbarsVisibility))
-//        //{
-//        //    if (dsShape.TrendsScrollbarsVisibility)
-//        //    {
-//        //        Control.MainGenericTrendsPlotView.HorizontalScrollBar.Visibility = true;
-//        //        Control.MainGenericTrendsPlotView.VerticalScrollBar.Visibility = true;
-//        //    }
-//        //    else
-//        //    {
-//        //        Control.MainGenericTrendsPlotView.HorizontalScrollBar.Visibility = false;
-//        //        Control.MainGenericTrendsPlotView.VerticalScrollBar.Visibility = false;
-//        //    }
-//        //}
-//    }
+        if (propertyName is null || propertyName == nameof(dsShape.ChartBackground))
+        {
+            if (Control.MainGenericTrendsPlotView.Plot is not null)
+                Control.MainGenericTrendsPlotView.Plot.PlotAreaBackground =
+                    dsShape.ChartBackground.GetBrush(dsShape.Container);
+        }
 
-//    #endregion
-//}
+        if (propertyName is null || propertyName == nameof(dsShape.TrendsInfoTableVisibility))
+        {
+            Control.TrendsInfoDataGrid.IsVisible = dsShape.TrendsInfoTableVisibility;
+        }
+
+        if (propertyName is null || propertyName == nameof(dsShape.TrendsAxisXVisibility))
+        {
+            if (Control.MainGenericTrendsPlotView.XAxis is not null)
+                Control.MainGenericTrendsPlotView.XAxis.IsAxisVisible = dsShape.TrendsAxisXVisibility;
+        }
+
+        if (propertyName is null || propertyName == nameof(dsShape.TrendsAxisYVisibility))
+        {
+            if (Control.MainGenericTrendsPlotView.YAxis is not null)
+                Control.MainGenericTrendsPlotView.YAxis.IsAxisVisible = dsShape.TrendsAxisYVisibility;
+        }
+
+        if (propertyName is null || propertyName == nameof(dsShape.TrendsScrollbarsVisibility))
+        {
+            if (Control.MainGenericTrendsPlotView.HorizontalScrollBar is not null)
+                Control.MainGenericTrendsPlotView.HorizontalScrollBar.IsVisible =
+                    dsShape.TrendsScrollbarsVisibility;
+        }
+    }
+
+    #endregion
+}

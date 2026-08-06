@@ -1,33 +1,37 @@
-﻿using Avalonia.Interactivity;
-using System.Windows;
+using Avalonia.Controls;
+using Avalonia.Interactivity;
 
 namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends.AxisConfiguration
 {
-    //public partial class AxisConfigurationWindow
-    //{
-    //    #region construction and destruction
+    public partial class AxisConfigurationWindow : Window
+    {
+        #region construction and destruction
 
-    //    public AxisConfigurationWindow(AxisConfigurationViewModel viewModel)
-    //    {
-    //        InitializeComponent();
+        public AxisConfigurationWindow()
+        {
+            InitializeComponent();
+        }
 
-    //        DataContext = viewModel;
-    //    }
+        public AxisConfigurationWindow(AxisConfigurationViewModel viewModel) :
+            this()
+        {
+            DataContext = viewModel;
+        }
 
-    //    #endregion
+        #endregion
 
-    //    #region private functions
+        #region private functions
 
-    //    private void onOkButtonClicked(object sender, RoutedEventArgs e)
-    //    {
-    //        DialogResult = true;
-    //    }
+        private void OnOkButtonClicked(object? sender, RoutedEventArgs e)
+        {
+            Close(true);
+        }
 
-    //    private void onCancelButtonClicked(object sender, RoutedEventArgs e)
-    //    {
-    //        DialogResult = false;
-    //    }
+        private void OnCancelButtonClicked(object? sender, RoutedEventArgs e)
+        {
+            Close(false);
+        }
 
-    //    #endregion
-    //}
+        #endregion
+    }
 }

@@ -1,46 +1,55 @@
-﻿
+using Avalonia.Controls;
+using Avalonia.Interactivity;
+using Avalonia.Media;
 
 namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends.PlotConfiguration
 {
-    //public partial class TrendConfigurationWindow
-    //{
-    //    #region construction and destruction
+    public partial class TrendConfigurationWindow : Window
+    {
+        #region construction and destruction
 
-    //    public TrendConfigurationWindow(TrendConfigurationViewModel viewModel)
-    //    {
-    //        InitializeComponent();
+        public TrendConfigurationWindow()
+        {
+            InitializeComponent();
+        }
 
-    //        DataContext = _viewModel = viewModel;
-    //    }
+        public TrendConfigurationWindow(TrendConfigurationViewModel viewModel) :
+            this()
+        {
+            DataContext = _viewModel = viewModel;
+        }
 
-    //    #endregion
+        #endregion
 
-    //    #region private functions
+        #region private functions
 
-    //    private void onChangeTrendColorClicked(object sender, RoutedEventArgs e)
-    //    {
-    //        Color? newColor = WpfColorDialog.Show(_viewModel.Color);
+        private async void OnChangeTrendColorClicked(object? sender, RoutedEventArgs e)
+        {
+            if (_viewModel is null)
+                return;
 
-    //        if (newColor != null)
-    //            _viewModel.Color = newColor.Value;
-    //    }
+            Color? newColor = await ColorDialogHelper.ShowAsync(this, _viewModel.Color);
 
-    //    private void onOkButtonClicked(object sender, RoutedEventArgs e)
-    //    {
-    //        DialogResult = true;
-    //    }
+            if (newColor is not null)
+                _viewModel.Color = newColor.Value;
+        }
 
-    //    private void onCancelButtonClicked(object sender, RoutedEventArgs e)
-    //    {
-    //        DialogResult = false;
-    //    }
+        private void OnOkButtonClicked(object? sender, RoutedEventArgs e)
+        {
+            Close(true);
+        }
 
-    //    #endregion
+        private void OnCancelButtonClicked(object? sender, RoutedEventArgs e)
+        {
+            Close(false);
+        }
 
-    //    #region private fields
+        #endregion
 
-    //    private readonly TrendConfigurationViewModel _viewModel;
+        #region private fields
 
-    //    #endregion
-    //}
+        private readonly TrendConfigurationViewModel? _viewModel;
+
+        #endregion
+    }
 }
