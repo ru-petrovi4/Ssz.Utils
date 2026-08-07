@@ -1,6 +1,8 @@
-using System;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Avalonia;
 using Avalonia.Media;
 using Ssz.Operator.Core.DataAccess;
@@ -272,8 +274,23 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
                     ValueFormat = Source.ValueFormat;
             }
 
-            if (args != null)
+            // Trend notifies for every Avalonia property it owns - the alarm limits, Visible, and
+            // everything inherited from StyledElement. Only the ones this view model actually mirrors
+            // may be forwarded: ViewModelBase.VerifyPropertyName throws on the rest in DEBUG builds.
+            if (args != null && HasPublicProperty(args.Property.Name))
                 OnPropertyChanged(args.Property.Name);
+        }
+
+        private bool HasPublicProperty(string propertyName)
+        {
+            var propertyNames = PublicPropertyNamesByType.GetOrAdd(
+                GetType(),
+                type => type
+                    .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                    .Select(p => p.Name)
+                    .ToHashSet(StringComparer.Ordinal));
+
+            return propertyNames.Contains(propertyName);
         }
 
         private void UpdateCurrentValueAndTimestamp()
@@ -301,6 +318,8 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
         private string _valueFormat = @"";
         private DateTime? _valueTimestamp;
         private bool _isValueFreezed;
+
+        private static readonly ConcurrentDictionary<Type, HashSet<string>> PublicPropertyNamesByType = new();
 
         private TrendPoint[] _rawTrendPoints = { };
         private TrendPoint[] _points = { };

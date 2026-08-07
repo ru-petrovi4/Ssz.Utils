@@ -169,4 +169,7 @@
     <value>Show legend</value>
     <comment>Show/Hide the trends legend table</comment>
   </data>
+  <data name="TrendColorDialogTitle" xml:space="preserve">
+    <value>Trend color</value>
+  </data>
 </root>

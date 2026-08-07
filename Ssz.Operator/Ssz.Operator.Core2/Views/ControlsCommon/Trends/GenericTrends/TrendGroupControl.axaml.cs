@@ -1,9 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Threading;
 using Ssz.Operator.Core.ControlsCommon.Trends;
 using Ssz.Operator.Core.ControlsCommon.Trends.ZoomLevels;
 using Ssz.Operator.Core.DsShapes.Trends;
@@ -56,11 +57,15 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
         public void Jump(string groupId, string tag)
         {
             ((GenericTrendsViewModel)DataContext!).LoadTrendGroup(groupId, tag);
+
+            SyncLegendSelection();
         }
 
         public void Jump(IEnumerable<DsTrendItem> trendItemInfos)
         {
             ((GenericTrendsViewModel)DataContext!).Display(trendItemInfos);
+
+            SyncLegendSelection();
         }
 
         public async void ChangeTrendColor(TrendViewModel? trendViewModel = null)
@@ -134,6 +139,24 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
         #endregion
 
         #region private functions
+
+        /// <summary>
+        ///     The view model selects the first trend as soon as the trends are loaded, but the legend
+        ///     DataGrid silently drops a selection pushed before its rows exist - which is the case when
+        ///     Jump(...) runs before the control is attached to the visual tree. So the selection is
+        ///     re-applied once the rows have been built.
+        /// </summary>
+        private void SyncLegendSelection()
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                var viewModel = DataContext as TrendsViewModel;
+                if (viewModel?.SelectedItem is null)
+                    return;
+
+                TrendsInfoDataGrid.SelectedItem = viewModel.SelectedItem;
+            }, DispatcherPriority.Loaded);
+        }
 
         private void OnShowLegendButtonIsCheckedChanged(object? sender, RoutedEventArgs e)
         {

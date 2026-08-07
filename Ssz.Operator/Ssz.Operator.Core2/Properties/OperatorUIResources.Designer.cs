@@ -169,6 +169,15 @@ namespace Ssz.Operator.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Trend color.
+        /// </summary>
+        public static string TrendColorDialogTitle {
+            get {
+                return ResourceManager.GetString("TrendColorDialogTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Show legend.
         /// </summary>
         public static string TrendShowLegend {

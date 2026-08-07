@@ -98,7 +98,8 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
                 .Where(trendItemInfo => !String.IsNullOrEmpty(trendItemInfo.TagName))
                 .Select(trendItemInfo =>
             {        
-                return new Trend(trendItemInfo, false, PlayDsProjectView.LastActiveRootPlayWindow);
+                // showAlarmLevels: the plot draws the Lo/Hi and LoLo/HiHi limits of the selected trend.
+                return new Trend(trendItemInfo, true, PlayDsProjectView.LastActiveRootPlayWindow);
             }).ToArray();
 
             if (_trends != null)

@@ -1,4 +1,4 @@
-<UserControl x:Class="Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends.TrendGroupControl"
+﻿<UserControl x:Class="Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends.TrendGroupControl"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -18,7 +18,7 @@
     <StreamGeometry x:Key="TrendLegendGeometry">M 0,0 L 15,0 M 0,5 L 15,5 M 0,10 L 15,10</StreamGeometry>
   </UserControl.Resources>
 
-  <Grid Background="White">
+  <Grid Background="Black">
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="*" />
       <ColumnDefinition Width="Auto" />
@@ -43,7 +43,7 @@
                     HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                     ToolTip.Tip="{x:Static res:OperatorUIResources.TrendShowLegend}"
                     IsCheckedChanged="OnShowLegendButtonIsCheckedChanged">
-        <Path Data="{StaticResource TrendLegendGeometry}" Stroke="Black" StrokeThickness="2"
+        <Path Data="{StaticResource TrendLegendGeometry}" Stroke="White" StrokeThickness="2"
               StrokeLineCap="Round" Width="17.876" Height="13" Stretch="Fill" Margin="5" />
       </ToggleButton>
 
@@ -52,7 +52,7 @@
               HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
               ToolTip.Tip="{x:Static res:OperatorUIResources.TrendGroupControlDecreaseTime}"
               Click="OnDecreaseTimeZoomButtonClicked">
-        <Path Data="{StaticResource TrendZoomOutGeometry}" Stroke="Black" StrokeThickness="2"
+        <Path Data="{StaticResource TrendZoomOutGeometry}" Stroke="White" StrokeThickness="2"
               StrokeLineCap="Round" Width="17.876" Height="13" Stretch="Fill" Margin="5" />
       </Button>
       <Button x:Name="IncreaseTimeZoomButton"
@@ -60,7 +60,7 @@
               HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
               ToolTip.Tip="{x:Static res:OperatorUIResources.TrendGroupControlIncreaseTime}"
               Click="OnIncreaseTimeZoomButtonClicked">
-        <Path Data="{StaticResource TrendZoomInGeometry}" Stroke="Black" StrokeThickness="2"
+        <Path Data="{StaticResource TrendZoomInGeometry}" Stroke="White" StrokeThickness="2"
               StrokeLineCap="Round" Width="17.876" Height="13" Stretch="Fill" Margin="5" />
       </Button>
 
@@ -69,7 +69,7 @@
               HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
               ToolTip.Tip="{x:Static res:OperatorUIResources.TrendGroupControlDecreaseValue}"
               Click="OnDecreaseValueZoomButtonClicked">
-        <Path Data="{StaticResource TrendZoomOutGeometry}" Stroke="Black" StrokeThickness="2"
+        <Path Data="{StaticResource TrendZoomOutGeometry}" Stroke="White" StrokeThickness="2"
               StrokeLineCap="Round" Width="17.876" Height="13" Stretch="Fill" Margin="5"
               RenderTransform="rotate(90deg)" />
       </Button>
@@ -78,7 +78,7 @@
               HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
               ToolTip.Tip="{x:Static res:OperatorUIResources.TrendGroupControlIncreaseValue}"
               Click="OnIncreaseValueZoomButtonClicked">
-        <Path Data="{StaticResource TrendZoomInGeometry}" Stroke="Black" StrokeThickness="2"
+        <Path Data="{StaticResource TrendZoomInGeometry}" Stroke="White" StrokeThickness="2"
               StrokeLineCap="Round" Width="17.876" Height="13" Stretch="Fill" Margin="5"
               RenderTransform="rotate(90deg)" />
       </Button>
@@ -111,16 +111,15 @@
         <DataGridTemplateColumn Header="{x:Static res:OperatorUIResources.GenericTrendsInfoTableControl_ColorColumn}" Width="auto">
           <DataGridTemplateColumn.CellTemplate>
             <DataTemplate>
-              <Rectangle StrokeThickness="0" MinWidth="20">
-                <Rectangle.ContextMenu>
-                  <ContextMenu>
-                    <MenuItem Header="Color..." Click="OnChangeTrendColorClicked" />
-                  </ContextMenu>
-                </Rectangle.ContextMenu>
-                <Rectangle.Fill>
-                  <SolidColorBrush Color="{Binding Color}" />
-                </Rectangle.Fill>
-              </Rectangle>
+              <!-- Background binds to the Brush of the view model: a Binding inside an inline
+                   SolidColorBrush gets no DataContext in Avalonia, brushes are not StyledElements. -->
+              <Button Background="{Binding Brush}"
+                      MinWidth="24" Height="18" Margin="2"
+                      Padding="0" BorderThickness="1" BorderBrush="Gray"
+                      Focusable="False"
+                      HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                      ToolTip.Tip="{x:Static res:OperatorUIResources.TrendColorDialogTitle}"
+                      Click="OnChangeTrendColorClicked" />
             </DataTemplate>
           </DataGridTemplateColumn.CellTemplate>
         </DataGridTemplateColumn>

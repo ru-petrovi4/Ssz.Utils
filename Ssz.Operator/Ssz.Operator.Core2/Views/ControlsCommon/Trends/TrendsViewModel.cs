@@ -92,18 +92,30 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
             }
         }
 
+        /// <summary>
+        ///     Never null while there are trends: the plot always needs a selected trend for the
+        ///     visible Y axis and for the draw order.
+        ///     The coercion also protects the selection from the legend DataGrid, which drops it
+        ///     whenever its ItemsSource is replaced and pushes that null back through its TwoWay binding.
+        /// </summary>
         public TrendViewModel? SelectedItem
         {
             get { return _selectedItem; }
             set
             {
-                //if (value is null)
-                //    value = new GenericTrendViewModel(); // Stubb
+                var coerced = value ?? _items.FirstOrDefault();
 
-                if (SetValue(ref _selectedItem, value))
+                if (SetValue(ref _selectedItem, coerced))
                 {
                     foreach (var viewModel in Items)
                         viewModel.OnSelectedTrendChanged();
+                }
+                else if (!ReferenceEquals(value, coerced))
+                {
+                    // The setter was fed null while a trend is still selected. Nothing changed here,
+                    // but the legend DataGrid that pushed the null now shows no selected row, so it
+                    // has to be notified to pull the selection back.
+                    OnPropertyChanged(nameof(SelectedItem));
                 }
             }
         }

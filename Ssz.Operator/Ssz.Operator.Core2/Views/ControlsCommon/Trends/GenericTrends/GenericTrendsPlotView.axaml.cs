@@ -233,7 +233,6 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
                 {
                     PositionTier = Plot.Axes.Count - 2,
                     AxislineStyle = LineStyle.Solid,
-                    MinimumPadding = 10,
                     IsZoomEnabled = false,
                     DataContext = trendItem,
                     Key = nItem.ToString(CultureInfo.InvariantCulture)
@@ -248,7 +247,10 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
             {
                 LineSeries series = AddLine(trendItem);
                 series.YAxisKey = trendItems.IndexOf(trendItem).ToString(CultureInfo.InvariantCulture);
-            }            
+            }
+
+            // The per-trend axes have just been recreated, so re-point everything that follows them.
+            UpdateSelectedItemBindings();
         }
 
         protected override void ClearLines()
@@ -279,9 +281,14 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 
             if (e.Property == SelectedItemColorProperty && YAxis is not null)
             {
+                // These have to go through the OxyPlot.Avalonia wrapper properties: values written
+                // straight to InternalAxis are overwritten on the next SynchronizeProperties().
                 YAxis.TitleColor = SelectedItemColor;
-                YAxis.InternalAxis.TextColor = SelectedItemColor.ToOxyColor();
+                YAxis.TextColor = SelectedItemColor;
                 YAxis.TicklineColor = SelectedItemColor;
+                YAxis.AxislineColor = SelectedItemColor;
+
+                Plot?.InvalidatePlot(false);
             }
         }
 
@@ -305,6 +312,23 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
             _selectedItemBindings.Clear();
 
             var selectedItem = SelectedItem as GenericTrendViewModel;
+
+            // The alarm limits of the selected trend arrive asynchronously, so they are followed.
+            if (_selectedTrend is not null)
+                _selectedTrend.PropertyChanged -= OnSelectedTrendPropertyChanged;
+            _selectedTrend = selectedItem?.Source;
+            if (_selectedTrend is not null)
+                _selectedTrend.PropertyChanged += OnSelectedTrendPropertyChanged;
+
+            // The selected trend is drawn on its own hidden axis; the visible axis mirrors that one.
+            if (_selectedYAxis is not null)
+                _selectedYAxis.PropertyChanged -= OnSelectedYAxisPropertyChanged;
+            _selectedYAxis = Plot?.Axes.OfType<GenericYAxis>()
+                .FirstOrDefault(a => ReferenceEquals(a.DataContext, selectedItem));
+            if (_selectedYAxis is not null)
+                _selectedYAxis.PropertyChanged += OnSelectedYAxisPropertyChanged;
+
+            RefreshAlarmLimitAnnotations();
 
             if (selectedItem is null)
             {
@@ -332,20 +356,120 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
             if (YAxis is null)
                 return;
 
-            _selectedItemBindings.Add(YAxis.Bind(Axis.AbsoluteMinimumProperty,
-                new Binding(nameof(GenericTrendViewModel.YMinWithPadding)) { Source = selectedItem }));
-            _selectedItemBindings.Add(YAxis.Bind(Axis.AbsoluteMaximumProperty,
-                new Binding(nameof(GenericTrendViewModel.YMaxWithPadding)) { Source = selectedItem }));
-            _selectedItemBindings.Add(YAxis.Bind(Axis.MinimumProperty,
-                new Binding(nameof(GenericTrendViewModel.AxisMinimumWithPadding)) { Source = selectedItem }));
-            _selectedItemBindings.Add(YAxis.Bind(Axis.MaximumProperty,
-                new Binding(nameof(GenericTrendViewModel.AxisMaximumWithPadding)) { Source = selectedItem }));
-            _selectedItemBindings.Add(YAxis.Bind(Axis.MajorStepProperty,
-                new Binding(nameof(GenericTrendViewModel.MajorStep)) { Source = selectedItem }));
-            _selectedItemBindings.Add(YAxis.Bind(Axis.MinorStepProperty,
-                new Binding(nameof(GenericTrendViewModel.MinorStep)) { Source = selectedItem }));
             _selectedItemBindings.Add(YAxis.Bind(Axis.StringFormatProperty,
                 new Binding(nameof(GenericTrendViewModel.ValueFormat)) { Source = selectedItem }));
+
+            SyncVisibleYAxisWithSelectedTrend();
+        }
+
+        /// <summary>
+        ///     Copies the range of the selected trend's hidden axis onto the visible one.
+        ///     Taking it from the hidden axis rather than from the view model is what keeps the labels in
+        ///     step with the value zoom buttons, which zoom that hidden axis.
+        /// </summary>
+        private void SyncVisibleYAxisWithSelectedTrend()
+        {
+            if (YAxis is null || _selectedYAxis is null)
+                return;
+
+            double minimum = _selectedYAxis.Minimum;
+            double maximum = _selectedYAxis.Maximum;
+            if (Double.IsNaN(minimum) || Double.IsNaN(maximum) || minimum >= maximum)
+                return;
+
+            // The hidden axis is not restricted, so the visible one must not be either - otherwise
+            // OxyPlot clamps it back and zooming out does nothing.
+            YAxis.AbsoluteMinimum = Double.MinValue;
+            YAxis.AbsoluteMaximum = Double.MaxValue;
+            YAxis.Minimum = minimum;
+            YAxis.Maximum = maximum;
+            YAxis.MajorStep = (maximum - minimum) / 10;
+            YAxis.MinorStep = (maximum - minimum) / 50;
+
+            Plot?.InvalidatePlot(false);
+        }
+
+        private void OnSelectedYAxisPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+        {
+            if (e.Property == Axis.MinimumProperty || e.Property == Axis.MaximumProperty)
+                SyncVisibleYAxisWithSelectedTrend();
+        }
+
+        /// <summary>
+        ///     Draws the alarm limits of the selected trend, the way the WPF original did: three dashed
+        ///     pairs over the selected trend - the scale itself (white), the Lo/Hi alarm range (yellow)
+        ///     and the LoLo/HiHi block range (red). A limit that is not set, or lies outside the scale,
+        ///     collapses onto the corresponding scale bound.
+        /// </summary>
+        private void RefreshAlarmLimitAnnotations()
+        {
+            if (Plot is null)
+                return;
+
+            foreach (var annotation in _alarmLimitAnnotations)
+                Plot.Annotations.Remove(annotation);
+            _alarmLimitAnnotations.Clear();
+
+            var selectedItem = SelectedItem;
+            if (selectedItem is null)
+                return;
+
+            Trend trend = selectedItem.Source;
+            if (Double.IsNaN(trend.YMin) || Double.IsNaN(trend.YMax) || trend.YMin >= trend.YMax)
+                return;
+
+            // The limits are drawn on the scale of the selected trend, i.e. on its own hidden axis.
+            string? yAxisKey = Plot.Axes
+                .FirstOrDefault(a => ReferenceEquals(a.DataContext, selectedItem))?.Key;
+            if (yAxisKey is null)
+                return;
+
+            AddAlarmLimitAnnotation(yAxisKey, trend.YMin, Colors.White);
+            AddAlarmLimitAnnotation(yAxisKey, trend.YMax, Colors.White);
+            AddAlarmLimitAnnotation(yAxisKey, LimitOrBound(trend.LoAlarmLimit, trend, trend.YMin), Colors.Yellow);
+            AddAlarmLimitAnnotation(yAxisKey, LimitOrBound(trend.HiAlarmLimit, trend, trend.YMax), Colors.Yellow);
+            AddAlarmLimitAnnotation(yAxisKey, LimitOrBound(trend.LoLoAlarmLimit, trend, trend.YMin), Colors.Red);
+            AddAlarmLimitAnnotation(yAxisKey, LimitOrBound(trend.HiHiAlarmLimit, trend, trend.YMax), Colors.Red);
+
+            Plot.InvalidatePlot(false);
+        }
+
+        private static double LimitOrBound(double limit, Trend trend, double bound)
+        {
+            return !Double.IsNaN(limit) && limit > trend.YMin && limit < trend.YMax
+                ? limit
+                : bound;
+        }
+
+        private void AddAlarmLimitAnnotation(string yAxisKey, double y, Color color)
+        {
+            var annotation = new LineAnnotation
+            {
+                Type = OxyPlot.Annotations.LineAnnotationType.Horizontal,
+                Y = y,
+                YAxisKey = yAxisKey,
+                Color = color,
+                LineStyle = LineStyle.Dash,
+                StrokeThickness = 2,
+                ClipByYAxis = false
+            };
+
+            Plot!.Annotations.Add(annotation);
+            _alarmLimitAnnotations.Add(annotation);
+        }
+
+        private void OnSelectedTrendPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+        {
+            // The scale and the limits come from the data engine asynchronously.
+            if (e.Property == Trend.YMinProperty ||
+                e.Property == Trend.YMaxProperty ||
+                e.Property == Trend.LoAlarmLimitProperty ||
+                e.Property == Trend.HiAlarmLimitProperty ||
+                e.Property == Trend.LoLoAlarmLimitProperty ||
+                e.Property == Trend.HiHiAlarmLimitProperty)
+            {
+                RefreshAlarmLimitAnnotations();
+            }
         }
 
         private void ResetYAxesOffsets()
@@ -478,6 +602,12 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 
         private readonly List<IDisposable> _selectedItemBindings = new();
 
+        private readonly List<LineAnnotation> _alarmLimitAnnotations = new();
+
+        private Trend? _selectedTrend;
+
+        private GenericYAxis? _selectedYAxis;
+
         #endregion
 
         private class GenericYAxis : LinearAxis
@@ -486,9 +616,16 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 
             public GenericYAxis()
             {
+                // The trend scale (Trend.YMin/YMax) arrives from the data engine asynchronously and is
+                // NaN to begin with. An axis left at NaN gets auto-scaled by OxyPlot to whatever the
+                // empty series suggests, and the trend is then drawn far outside the plot area, i.e.
+                // invisible. So the axis always starts from a usable range.
+                Minimum = DefaultMinimum;
+                Maximum = DefaultMaximum;
+
                 Bind(YMinProperty, new Binding("Source.YMin"));
                 Bind(YMaxProperty, new Binding("Source.YMax"));
-                IsAxisVisible = false;               
+                IsAxisVisible = false;
             }
 
             #endregion
@@ -542,14 +679,22 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
             {
                 base.OnPropertyChanged(e);
 
-                if ((e.Property == YMinProperty || e.Property == YMaxProperty) &&
-                    YMin < YMax)
+                if (e.Property != YMinProperty && e.Property != YMaxProperty)
+                    return;
+
+                if (_minMaxOverriden)
+                    return;
+
+                if (YMin < YMax)
                 {
-                    if (!_minMaxOverriden)
-                    {
-                        Minimum = YMin - (YMax - YMin) * YAxisCoefficient;
-                        Maximum = YMax + (YMax - YMin) * YAxisCoefficient;
-                    }
+                    Minimum = YMin - (YMax - YMin) * YAxisCoefficient;
+                    Maximum = YMax + (YMax - YMin) * YAxisCoefficient;
+                }
+                else
+                {
+                    // Scale not known (yet): keep a usable range instead of letting OxyPlot auto-scale.
+                    Minimum = DefaultMinimum;
+                    Maximum = DefaultMaximum;
                 }
             }
 
@@ -590,7 +735,14 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 
             private bool _minMaxOverriden;
             private const double ValueZoomCoefficient = 1.1; // 10%
-            private const double YAxisCoefficient = 0.1; // 10%            
+            private const double DefaultMinimum = 0.0;
+            private const double DefaultMaximum = 100.0;
+            /// <summary>
+            ///     Must match the padding of GenericTrendViewModel.AxisMinimumWithPadding /
+            ///     AxisMaximumWithPadding, which is what the visible Y axis is bound to. Otherwise the
+            ///     trend is drawn on a different scale than the one its labels show.
+            /// </summary>
+            private const double YAxisCoefficient = 0.01; // 1%
 
             #endregion
         }

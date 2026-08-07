@@ -14,7 +14,11 @@
 		<ClassicTheme />		
         <FluentTheme />
 
-		<StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>		
+		<StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+
+		<!-- Needed by ColorView in the trend color dialog (ColorDialogHelper). -->
+		<StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml"/>
+
 
 		<!-- Add the line below to get OxyPlot UI theme applied in Avalonia 12. -->
 		<StyleInclude Source="avares://OxyPlot.Avalonia12/Themes/Default.axaml"/>

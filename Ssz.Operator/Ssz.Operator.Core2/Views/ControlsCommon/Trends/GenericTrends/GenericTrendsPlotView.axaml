@@ -81,36 +81,48 @@
                       <MenuItem Header="Убрать все" Click="OnRemoveAllRulers" />
                     </ContextMenu>
                   </oxy:Plot.ContextMenu>
+                  <!-- Black plot, as in the WPF original: trend colors (white among them) are picked
+                       to be read against a dark background. -->
                   <oxy:Plot.Background>
-                    <SolidColorBrush Color="White" />
+                    <SolidColorBrush Color="Black" />
                   </oxy:Plot.Background>
+                  <oxy:Plot.PlotAreaBackground>
+                    <SolidColorBrush Color="Black" />
+                  </oxy:Plot.PlotAreaBackground>
+                  <oxy:Plot.PlotAreaBorderColor>#FF808080</oxy:Plot.PlotAreaBorderColor>
                   <oxy:Plot.DefaultTrackerTemplate>
                     <ControlTemplate />
-                  </oxy:Plot.DefaultTrackerTemplate>                    
+                  </oxy:Plot.DefaultTrackerTemplate>
                     <oxy:Plot.Axes>
                         <oxy:DateTimeAxis Position="Bottom" x:Name="XAxis"
                                           AxislineThickness="3"
                                           TickStyle="Inside"
-                                          TicklineColor="#FF3E3E3E"
-                                          MajorGridlineColor="#FF3E3E3E"
+                                          AxislineColor="White"
+                                          TextColor="White"
+                                          TicklineColor="White"
+                                          MajorGridlineColor="#FF808080"
                                           MajorTickSize="9"
                                           MinorTickSize="5"
-                                          MajorGridlineStyle="Dash"                                          
+                                          MajorGridlineStyle="Dash"
                                           IsPanEnabled="False"
                                           IsZoomEnabled="False"
                                           StringFormat="HH:mm:ss" />
+                        <!-- AxislineColor/TextColor/TicklineColor of the Y axis follow the selected
+                             trend at runtime, see GenericTrendsPlotView.OnPropertyChanged. -->
                         <oxy:LinearAxis Position="Left" x:Name="YAxis"
                                           AxislineThickness="3"
                                           TickStyle="Inside"
-                                          TicklineColor="#FF3E3E3E"
-                                          MajorGridlineColor="#FF3E3E3E"
+                                          AxislineColor="White"
+                                          TextColor="White"
+                                          TicklineColor="White"
+                                          MajorGridlineColor="#FF808080"
                                           Minimum="0"
                                           Maximum="100"
                                           MajorTickSize="9"
                                           MinorTickSize="3"
                                           MajorStep="10"
                                           MinorStep="2.5"
-                                          MajorGridlineStyle="Dash"                                          
+                                          MajorGridlineStyle="Dash"
                                           IsPanEnabled="False"
                                           IsZoomEnabled="False"
                                           StringFormat="F02" />
