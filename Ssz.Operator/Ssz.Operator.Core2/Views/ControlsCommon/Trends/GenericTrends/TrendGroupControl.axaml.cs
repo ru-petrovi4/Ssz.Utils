@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Ssz.Operator.Core.ControlsCommon.Trends;
+using Ssz.Operator.Core.ControlsCommon.Trends.ZoomLevels;
 using Ssz.Operator.Core.DsShapes.Trends;
 
 namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
@@ -114,12 +115,75 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
             //    case 3:
             //        ((GenericTrendsViewModel)DataContext).Zoom(TimeSpan.FromMinutes(240));
             //        break;
-            //}            
+            //}
+        }
+
+        /// <summary>
+        ///     Visibility of the trends legend table, toggled by ShowLegendButton.
+        /// </summary>
+        public bool IsTrendsInfoTableVisible
+        {
+            get => TrendsInfoDataGrid.IsVisible;
+            set
+            {
+                TrendsInfoDataGrid.IsVisible = value;
+                ShowLegendButton.IsChecked = value;
+            }
         }
 
         #endregion
 
         #region private functions
+
+        private void OnShowLegendButtonIsCheckedChanged(object? sender, RoutedEventArgs e)
+        {
+            TrendsInfoDataGrid.IsVisible = ShowLegendButton.IsChecked ?? false;
+        }
+
+        /// <summary>
+        ///     Widens the visible time range, i.e. zooms the time axis out.
+        /// </summary>
+        private void OnDecreaseTimeZoomButtonClicked(object? sender, RoutedEventArgs e)
+        {
+            if (_currentTimeZoom.Next is not null)
+                _currentTimeZoom = _currentTimeZoom.Next;
+
+            UpdateTimeZoom();
+        }
+
+        /// <summary>
+        ///     Narrows the visible time range, i.e. zooms the time axis in.
+        /// </summary>
+        private void OnIncreaseTimeZoomButtonClicked(object? sender, RoutedEventArgs e)
+        {
+            if (_currentTimeZoom.Previous is not null)
+                _currentTimeZoom = _currentTimeZoom.Previous;
+
+            UpdateTimeZoom();
+        }
+
+        private void UpdateTimeZoom()
+        {
+            IncreaseTimeZoomButton.IsEnabled = !_currentTimeZoom.IsMinimum;
+            DecreaseTimeZoomButton.IsEnabled = !_currentTimeZoom.IsMaximum;
+
+            (DataContext as GenericTrendsViewModel)?.Zoom(_currentTimeZoom.VisibleRange);
+        }
+
+        /// <summary>
+        ///     Widens the visible value range of the selected trend's Y axis.
+        ///     Unlike WPF, where ValueZoomLevel drove a shared ZoomRestriction, every trend here owns
+        ///     its own OxyPlot Y axis, so the step is applied to the axis of the selected trend.
+        /// </summary>
+        private void OnDecreaseValueZoomButtonClicked(object? sender, RoutedEventArgs e)
+        {
+            MainGenericTrendsPlotView.ZoomSelectedValueAxisOut();
+        }
+
+        private void OnIncreaseValueZoomButtonClicked(object? sender, RoutedEventArgs e)
+        {
+            MainGenericTrendsPlotView.ZoomSelectedValueAxisIn();
+        }
 
         private void OnChangeTrendColorClicked(object? sender, RoutedEventArgs e)
         {
@@ -150,6 +214,12 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
         //            ParamsString = trendViewModel.Source.Tag
         //        });
         //}
+
+        #endregion
+
+        #region private fields
+
+        private TimeZoomLevel _currentTimeZoom = TimeZoomLevel.Three;
 
         #endregion
     }

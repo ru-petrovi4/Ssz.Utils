@@ -9,7 +9,20 @@
              x:CompileBindings="False"
              d:DesignHeight="400" d:DesignWidth="600"
              >
+  <UserControl.Resources>
+    <!-- "> <" - collapse, i.e. zoom out -->
+    <StreamGeometry x:Key="TrendZoomOutGeometry">M 0,0 L 5,5 L 0,10 M 15,0 L 10,5 L 15,10</StreamGeometry>
+    <!-- "< >" - expand, i.e. zoom in -->
+    <StreamGeometry x:Key="TrendZoomInGeometry">M 5,0 L 0,5 L 5,10 M 10,0 L 15,5 L 10,10</StreamGeometry>
+    <!-- Table rows, for the legend toggle -->
+    <StreamGeometry x:Key="TrendLegendGeometry">M 0,0 L 15,0 M 0,5 L 15,5 M 0,10 L 15,10</StreamGeometry>
+  </UserControl.Resources>
+
   <Grid Background="White">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="Auto" />
+    </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
       <RowDefinition Height="Auto" />
@@ -19,7 +32,62 @@
     </Grid.RowDefinitions>
     <TextBlock Grid.Row="1" FontSize="18" Foreground="White" Text="{Binding Caption}" HorizontalAlignment="Center"></TextBlock>
     <genericTrends:GenericTrendsPlotView Grid.Row="2" x:Name="MainGenericTrendsPlotView" />
-    <DataGrid Grid.Row="4" x:Name="TrendsInfoDataGrid" AutoGenerateColumns="False" HeadersVisibility="Column"
+
+    <!-- Zoom toolbar, restored from the WPF TrendGroupControl -->
+    <StackPanel Grid.Row="2" Grid.Column="1" x:Name="TrendsTuningControl"
+                Orientation="Vertical" VerticalAlignment="Top">
+      <ToggleButton x:Name="ShowLegendButton"
+                    Margin="5,5,5,0" Padding="0"
+                    IsChecked="True"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    ToolTip.Tip="{x:Static res:OperatorUIResources.TrendShowLegend}"
+                    IsCheckedChanged="OnShowLegendButtonIsCheckedChanged">
+        <Path Data="{StaticResource TrendLegendGeometry}" Stroke="Black" StrokeThickness="2"
+              StrokeLineCap="Round" Width="17.876" Height="13" Stretch="Fill" Margin="5" />
+      </ToggleButton>
+
+      <Button x:Name="DecreaseTimeZoomButton"
+              Margin="5,15,5,0" Padding="0"
+              HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+              ToolTip.Tip="{x:Static res:OperatorUIResources.TrendGroupControlDecreaseTime}"
+              Click="OnDecreaseTimeZoomButtonClicked">
+        <Path Data="{StaticResource TrendZoomOutGeometry}" Stroke="Black" StrokeThickness="2"
+              StrokeLineCap="Round" Width="17.876" Height="13" Stretch="Fill" Margin="5" />
+      </Button>
+      <Button x:Name="IncreaseTimeZoomButton"
+              Margin="5,5,5,0" Padding="0"
+              HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+              ToolTip.Tip="{x:Static res:OperatorUIResources.TrendGroupControlIncreaseTime}"
+              Click="OnIncreaseTimeZoomButtonClicked">
+        <Path Data="{StaticResource TrendZoomInGeometry}" Stroke="Black" StrokeThickness="2"
+              StrokeLineCap="Round" Width="17.876" Height="13" Stretch="Fill" Margin="5" />
+      </Button>
+
+      <Button x:Name="DecreaseValueZoomButton"
+              Margin="5,25,5,0" Padding="0"
+              HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+              ToolTip.Tip="{x:Static res:OperatorUIResources.TrendGroupControlDecreaseValue}"
+              Click="OnDecreaseValueZoomButtonClicked">
+        <Path Data="{StaticResource TrendZoomOutGeometry}" Stroke="Black" StrokeThickness="2"
+              StrokeLineCap="Round" Width="17.876" Height="13" Stretch="Fill" Margin="5"
+              RenderTransform="rotate(90deg)" />
+      </Button>
+      <Button x:Name="IncreaseValueZoomButton"
+              Margin="5,5,5,0" Padding="0"
+              HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+              ToolTip.Tip="{x:Static res:OperatorUIResources.TrendGroupControlIncreaseValue}"
+              Click="OnIncreaseValueZoomButtonClicked">
+        <Path Data="{StaticResource TrendZoomInGeometry}" Stroke="Black" StrokeThickness="2"
+              StrokeLineCap="Round" Width="17.876" Height="13" Stretch="Fill" Margin="5"
+              RenderTransform="rotate(90deg)" />
+      </Button>
+    </StackPanel>
+
+    <GridSplitter Grid.Row="3" Grid.ColumnSpan="2" Height="5" Background="LightGray"
+                  ResizeDirection="Rows" HorizontalAlignment="Stretch" />
+
+    <DataGrid Grid.Row="4" Grid.ColumnSpan="2" x:Name="TrendsInfoDataGrid" AutoGenerateColumns="False" HeadersVisibility="Column"
               CanUserSortColumns="False"
               ItemsSource="{Binding TrendViewModelsCollection}"
               SelectedItem="{Binding SelectedItem}"

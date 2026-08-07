@@ -202,8 +202,11 @@ public abstract class TrendsPlotView : TemplatedControl
             Mapping = obj =>
             {
                 var point = (TrendPoint)obj;
+                // Must be OxyPlot's date scale, the same one XAxis.Minimum/Maximum are fed
+                // through DateTimeToDoubleConverter. Unix milliseconds would put every point
+                // several orders of magnitude outside the visible range.
                 return new DataPoint(
-                    new DateTimeOffset(point.Timestamp).ToUnixTimeMilliseconds(),
+                    OxyPlot.Axes.DateTimeAxis.ToDouble(point.Timestamp),
                     point.Value
                 );
             }

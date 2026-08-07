@@ -169,6 +169,15 @@ namespace Ssz.Operator.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show legend.
+        /// </summary>
+        public static string TrendShowLegend {
+            get {
+                return ResourceManager.GetString("TrendShowLegend", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Reduce Time Axis.
         /// </summary>
         public static string TrendGroupControlDecreaseTime {

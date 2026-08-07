@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -164,5 +164,9 @@
   </data>
   <data name="GenericTrendsInfoTableControl_VisibleColumn" xml:space="preserve">
     <value>Виден</value>
+  </data>
+  <data name="TrendShowLegend" xml:space="preserve">
+    <value>Показать легенду</value>
+    <comment>Show/Hide the trends legend table</comment>
   </data>
 </root>

@@ -56,7 +56,8 @@ public class TrendGroupDsShapeView : DsShapeViewBase
 
         if (propertyName is null || propertyName == nameof(dsShape.TrendsInfoTableVisibility))
         {
-            Control.TrendsInfoDataGrid.IsVisible = dsShape.TrendsInfoTableVisibility;
+            // Goes through the control so that the legend toggle button stays in sync.
+            Control.IsTrendsInfoTableVisible = dsShape.TrendsInfoTableVisibility;
         }
 
         if (propertyName is null || propertyName == nameof(dsShape.TrendsAxisXVisibility))
