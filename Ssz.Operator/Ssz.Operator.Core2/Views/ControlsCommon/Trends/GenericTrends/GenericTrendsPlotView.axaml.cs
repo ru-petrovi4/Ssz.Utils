@@ -210,19 +210,8 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
             ResetYAxesOffsets();
 
             YAxis = e.NameScope.Find(YAxis_PART) as Axis;
-            if (YAxis != null)
-            {
-                YAxis.Bind(Axis.AbsoluteMinimumProperty, new Binding("SelectedItem.YMinWithPadding") { TargetNullValue = 0.0 });
-                YAxis.Bind(Axis.AbsoluteMaximumProperty, new Binding("SelectedItem.YMaxWithPadding") { TargetNullValue = 100.0 });
-                YAxis.Bind(Axis.MinimumProperty, new Binding("SelectedItem.AxisMinimumWithPadding") { TargetNullValue = 0.0 });
-                YAxis.Bind(Axis.MaximumProperty, new Binding("SelectedItem.AxisMaximumWithPadding") { TargetNullValue = 100.0 });
-                YAxis.Bind(Axis.MajorStepProperty, new Binding("SelectedItem.MajorStep") { TargetNullValue = 5.0 });
-                YAxis.Bind(Axis.MinorStepProperty, new Binding("SelectedItem.MinorStep") { TargetNullValue = 10.0 });
 
-                YAxis.Bind(Axis.StringFormatProperty, new Binding("SelectedItem.ValueFormat") { TargetNullValue = "F02" });
-
-                Bind(SelectedItemColorProperty, new Binding("SelectedItem.Color") { TargetNullValue = Colors.Black });
-            }
+            UpdateSelectedItemBindings();
         }
 
         protected override void RefreshLines()
@@ -283,6 +272,11 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
                 UpdateValueLabels();
             }
 
+            if (e.Property == SelectedItemProperty)
+            {
+                UpdateSelectedItemBindings();
+            }
+
             if (e.Property == SelectedItemColorProperty && YAxis is not null)
             {
                 YAxis.TitleColor = SelectedItemColor;
@@ -294,6 +288,65 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
         #endregion
 
         #region private functions
+
+        /// <summary>
+        ///     Y axis properties follow the selected trend.
+        ///     Binding them through the "SelectedItem.*" path is not an option: while no trend is selected
+        ///     (an empty TrendGroupControl, or one before Jump(...) is called) the path breaks on the null
+        ///     SelectedItem, which Avalonia reports as a binding error. TargetNullValue does not help here,
+        ///     it only covers a null source value, not a broken path, so the axis ends up with UnsetValue.
+        ///     Instead the selected trend is used as the binding source, and the defaults are applied
+        ///     directly when there is nothing selected.
+        /// </summary>
+        private void UpdateSelectedItemBindings()
+        {
+            foreach (var binding in _selectedItemBindings)
+                binding.Dispose();
+            _selectedItemBindings.Clear();
+
+            var selectedItem = SelectedItem as GenericTrendViewModel;
+
+            if (selectedItem is null)
+            {
+                SetValue(SelectedItemColorProperty, Colors.Black);
+
+                if (YAxis is not null)
+                {
+                    // Same values the control template declares for YAxis: a binding set at local value
+                    // priority has overwritten them, so they have to be restored explicitly.
+                    YAxis.AbsoluteMinimum = 0.0;
+                    YAxis.AbsoluteMaximum = 100.0;
+                    YAxis.Minimum = 0.0;
+                    YAxis.Maximum = 100.0;
+                    YAxis.MajorStep = 10.0;
+                    YAxis.MinorStep = 2.5;
+                    YAxis.StringFormat = @"F02";
+                }
+
+                return;
+            }
+
+            _selectedItemBindings.Add(this.Bind(SelectedItemColorProperty,
+                new Binding(nameof(GenericTrendViewModel.Color)) { Source = selectedItem }));
+
+            if (YAxis is null)
+                return;
+
+            _selectedItemBindings.Add(YAxis.Bind(Axis.AbsoluteMinimumProperty,
+                new Binding(nameof(GenericTrendViewModel.YMinWithPadding)) { Source = selectedItem }));
+            _selectedItemBindings.Add(YAxis.Bind(Axis.AbsoluteMaximumProperty,
+                new Binding(nameof(GenericTrendViewModel.YMaxWithPadding)) { Source = selectedItem }));
+            _selectedItemBindings.Add(YAxis.Bind(Axis.MinimumProperty,
+                new Binding(nameof(GenericTrendViewModel.AxisMinimumWithPadding)) { Source = selectedItem }));
+            _selectedItemBindings.Add(YAxis.Bind(Axis.MaximumProperty,
+                new Binding(nameof(GenericTrendViewModel.AxisMaximumWithPadding)) { Source = selectedItem }));
+            _selectedItemBindings.Add(YAxis.Bind(Axis.MajorStepProperty,
+                new Binding(nameof(GenericTrendViewModel.MajorStep)) { Source = selectedItem }));
+            _selectedItemBindings.Add(YAxis.Bind(Axis.MinorStepProperty,
+                new Binding(nameof(GenericTrendViewModel.MinorStep)) { Source = selectedItem }));
+            _selectedItemBindings.Add(YAxis.Bind(Axis.StringFormatProperty,
+                new Binding(nameof(GenericTrendViewModel.ValueFormat)) { Source = selectedItem }));
+        }
 
         private void ResetYAxesOffsets()
         {
@@ -418,10 +471,12 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 
         #endregion
 
-        #region private fields        
+        #region private fields
 
         private DataPoint? _completedZoomRect_DataPoint0;
-        private DataPoint? _completedZoomRect_DataPoint1;        
+        private DataPoint? _completedZoomRect_DataPoint1;
+
+        private readonly List<IDisposable> _selectedItemBindings = new();
 
         #endregion
 

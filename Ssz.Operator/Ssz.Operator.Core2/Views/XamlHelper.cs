@@ -1009,34 +1009,26 @@ namespace Ssz.Operator.Core
                 foreach (var brush in doc.Descendants(ns + "RadialGradientBrush"))
                 {
                     ConvertToPercentage(brush, "Center");
-                    ConvertToPercentage(brush, "GradientOrigin");
-
-                    XAttribute? attr = brush.Attribute("RadiusX");
-                    if (attr != null)
-                    {
-                        brush.SetAttributeValue("Radius", attr.Value);
-                        brush.SetAttributeValue("RadiusX", null);
-                        brush.SetAttributeValue("RadiusY", null);
-                    }
+                    ConvertToPercentage(brush, "GradientOrigin");                    
 
                     brush.Descendants(ns + "RadialGradientBrush.RelativeTransform").Remove();
                 }
 
-                foreach (var brush in doc.Descendants(ns + "RadialGradientBrush"))
-                {
-                    ConvertToPercentage(brush, "Center");
-                    ConvertToPercentage(brush, "GradientOrigin");
+                //foreach (var brush in doc.Descendants(ns + "RadialGradientBrush"))
+                //{
+                //    ConvertToPercentage(brush, "Center");
+                //    ConvertToPercentage(brush, "GradientOrigin");
 
-                    XAttribute? attr = brush.Attribute("RadiusX");
-                    if (attr != null)
-                    {
-                        brush.SetAttributeValue("Radius", attr.Value);
-                        brush.SetAttributeValue("RadiusX", null);
-                        brush.SetAttributeValue("RadiusY", null);
-                    }
+                //    XAttribute? attr = brush.Attribute("RadiusX");
+                //    if (attr != null)
+                //    {
+                //        brush.SetAttributeValue("Radius", attr.Value);
+                //        brush.SetAttributeValue("RadiusX", null);
+                //        brush.SetAttributeValue("RadiusY", null);
+                //    }
 
-                    brush.Descendants(ns + "RadialGradientBrush.RelativeTransform").Remove();
-                }
+                //    brush.Descendants(ns + "RadialGradientBrush.RelativeTransform").Remove();
+                //}
 
                 foreach (var element in doc.Descendants())
                 {
