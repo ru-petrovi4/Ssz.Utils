@@ -6,6 +6,9 @@
     <Nullable>disable</Nullable>    
     <UseWindowsForms>true</UseWindowsForms>
     <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<Company>SSZ</Company>
+	<Version>$(NuGetPackagesVersion)</Version>
   </PropertyGroup>  
   
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
