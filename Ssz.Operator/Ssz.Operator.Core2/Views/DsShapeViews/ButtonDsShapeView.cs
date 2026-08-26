@@ -12,6 +12,7 @@ using Ssz.Operator.Core.Constants;
 using Ssz.Operator.Core.ControlsPlay;
 using Ssz.Operator.Core.DsShapes;
 
+using Ssz.Operator.Core.ControlsCommon;
 namespace Ssz.Operator.Core.DsShapeViews
 {
     public class ButtonDsShapeView : ButtonDsShapeViewBase
@@ -116,7 +117,9 @@ namespace Ssz.Operator.Core.DsShapeViews
                 {
                     var viewBox = _textContainerControl.Content as Viewbox;
                     if (viewBox is not null) viewBox.Child = null;
-                    _textContainerControl.Content = _textBlock;
+                    // Avalonia drops wrapped lines that do not fit the available
+                    // height; UnclippedTextHost lays them all out, as WPF did.
+                    _textContainerControl.Content = new UnclippedTextHost { Child = _textBlock };
                 }
                 else
                 {
@@ -151,8 +154,10 @@ namespace Ssz.Operator.Core.DsShapeViews
                 ConstantsHelper.ComputeFont(dsShape.Container, dsShape.DsFont,
                     out fontFamily, out fontSize, out fontStyle, out fontStretch, out fontWeight);
 
-                _textBlock.SetConst(dsShape.Container, TextBlock.FontFamilyProperty, fontFamily);
-                if (fontSize > 0.0) _textBlock.SetConst(dsShape.Container, TextBlock.FontSizeProperty, fontSize);
+                _textBlock.SetConst(dsShape.Container, TextBlock.FontFamilyProperty,
+                    fontFamily ?? WpfTextDefaults.FontFamily);
+                _textBlock.SetConst(dsShape.Container, TextBlock.FontSizeProperty,
+                    fontSize > 0.0 ? fontSize : WpfTextDefaults.FontSize);
                 _textBlock.SetConst(dsShape.Container, TextBlock.FontStyleProperty, fontStyle);
                 _textBlock.SetConst(dsShape.Container, TextBlock.FontStretchProperty, fontStretch);
                 _textBlock.SetConst(dsShape.Container, TextBlock.FontWeightProperty, fontWeight);
@@ -185,7 +190,8 @@ namespace Ssz.Operator.Core.DsShapeViews
                     dsShape.TextVerticalAlignment);
             if (propertyName is null || propertyName == nameof(dsShape.TextWrapping))
                 _textBlock.SetConst(dsShape.Container, TextBlock.TextWrappingProperty,
-                    dsShape.TextWrapping);            
+                    dsShape.TextWrapping);
+
         }
 
         #endregion

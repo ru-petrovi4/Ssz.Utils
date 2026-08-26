@@ -8,6 +8,7 @@ using Ssz.Operator.Core.DsShapes;
 using Avalonia.Layout;
 using Avalonia.Data;
 
+using Ssz.Operator.Core.ControlsCommon;
 namespace Ssz.Operator.Core.DsShapeViews
 {
     public class TextBlockDsShapeView : DsShapeViewBase
@@ -46,7 +47,9 @@ namespace Ssz.Operator.Core.DsShapeViews
                 {
                     var viewBox = Content as Viewbox;
                     if (viewBox is not null) viewBox.Child = null;
-                    Content = _textBlock;
+                    // Avalonia drops wrapped lines that do not fit the available
+                    // height; UnclippedTextHost lays them all out, as WPF did.
+                    Content = new UnclippedTextHost { Child = _textBlock };
                 }
                 else
                 {
@@ -74,8 +77,10 @@ namespace Ssz.Operator.Core.DsShapeViews
                 ConstantsHelper.ComputeFont(dsShape.Container, dsShape.DsFont,
                     out fontFamily, out fontSize, out fontStyle, out fontStretch, out fontWeight);
 
-                _textBlock.SetConst(dsShape.Container, TextBlock.FontFamilyProperty, fontFamily);
-                if (fontSize > 0.0) _textBlock.SetConst(dsShape.Container, TextBlock.FontSizeProperty, fontSize);
+                _textBlock.SetConst(dsShape.Container, TextBlock.FontFamilyProperty,
+                    fontFamily ?? WpfTextDefaults.FontFamily);
+                _textBlock.SetConst(dsShape.Container, TextBlock.FontSizeProperty,
+                    fontSize > 0.0 ? fontSize : WpfTextDefaults.FontSize);
                 _textBlock.SetConst(dsShape.Container, TextBlock.FontStyleProperty, fontStyle);
                 _textBlock.SetConst(dsShape.Container, TextBlock.FontStretchProperty, fontStretch);
                 _textBlock.SetConst(dsShape.Container, TextBlock.FontWeightProperty, fontWeight);
@@ -108,11 +113,13 @@ namespace Ssz.Operator.Core.DsShapeViews
                         !dsShape.IsFlipped)
                         Width = double.NaN;
             }
+
         }
 
         #endregion
 
         #region private functions
+
 
         private static void SetContentHorizontalAlignment(Viewbox viewBox, TextAlignment textAlignment)
         {

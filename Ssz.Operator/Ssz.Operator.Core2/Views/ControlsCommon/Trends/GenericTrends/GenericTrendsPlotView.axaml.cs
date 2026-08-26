@@ -132,7 +132,10 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
             if (Plot is null)
                 return;
 
-            configuration.PlotAreaBackgroundColor = ((SolidColorBrush) Plot.PlotAreaBackground).Color;
+            // Every WPF brush derived from SolidColorBrush; Avalonia parses a colour string into an
+            // ImmutableSolidColorBrush, which does not, so the interface is what can be matched.
+            if (Plot.PlotAreaBackground is ISolidColorBrush plotAreaBackgroundBrush)
+                configuration.PlotAreaBackgroundColor = plotAreaBackgroundBrush.Color;
             //configuration.PlotBackgroundColor = ((SolidColorBrush) Plot.Background).Color;
 
             configuration.DsTrendItemsCollection = Plot.Axes.Skip(2).Select(a => ((TrendViewModel)a.DataContext!).Source.DsTrendItem).ToArray();

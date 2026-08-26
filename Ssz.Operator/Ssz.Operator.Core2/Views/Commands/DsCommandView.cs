@@ -63,6 +63,11 @@ namespace Ssz.Operator.Core.Commands
             }
 
             dsCommand.IsEnabledInfo.FallbackValue = false;
+            // InputElement.IsEnabled defaults to true, and an Avalonia binding does not deliver its
+            // first value synchronously the way a WPF binding does. Callers read IsEnabled right
+            // after construction to decide whether to run the command, so it must start out matching
+            // the fallback value; otherwise every conditional command fires once on start-up.
+            IsEnabled = false;
             this.SetBindingOrConst(container,
                 IsEnabledProperty, dsCommand.IsEnabledInfo, BindingMode.OneWay, UpdateSourceTrigger.Default);
         }

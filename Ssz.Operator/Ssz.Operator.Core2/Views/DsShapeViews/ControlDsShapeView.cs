@@ -9,6 +9,7 @@ using Ssz.Operator.Core.Constants;
 using Ssz.Operator.Core.ControlsPlay;
 using Ssz.Operator.Core.DsShapes;
 
+using Ssz.Operator.Core.ControlsCommon;
 namespace Ssz.Operator.Core.DsShapeViews
 {
     public abstract class ControlDsShapeView<T> : DsShapeViewBase
@@ -92,9 +93,10 @@ namespace Ssz.Operator.Core.DsShapeViews
                 ConstantsHelper.ComputeFont(dsShape.Container, dsShape.DsFont,
                     out fontFamily, out fontSize, out fontStyle, out fontStretch, out fontWeight);
 
-                Control.SetConst(dsShape.Container, Avalonia.Controls.Primitives.TemplatedControl.FontFamilyProperty, fontFamily);
-                if (fontSize > 0.0)
-                    Control.SetConst(dsShape.Container, Avalonia.Controls.Primitives.TemplatedControl.FontSizeProperty, fontSize);
+                Control.SetConst(dsShape.Container, Avalonia.Controls.Primitives.TemplatedControl.FontFamilyProperty,
+                    fontFamily ?? WpfTextDefaults.FontFamily);
+                Control.SetConst(dsShape.Container, Avalonia.Controls.Primitives.TemplatedControl.FontSizeProperty,
+                    fontSize > 0.0 ? fontSize : WpfTextDefaults.FontSize);
                 Control.SetConst(dsShape.Container, Avalonia.Controls.Primitives.TemplatedControl.FontStyleProperty, fontStyle);
                 Control.SetConst(dsShape.Container, Avalonia.Controls.Primitives.TemplatedControl.FontStretchProperty, fontStretch);
                 Control.SetConst(dsShape.Container, Avalonia.Controls.Primitives.TemplatedControl.FontWeightProperty, fontWeight);

@@ -23,6 +23,8 @@ namespace Ssz.Dcs.CentralServer.Common
             NameValuesCollection = NameValueCollectionHelper.Parse(Path.GetFileNameWithoutExtension(DescriptorDsFileInfo.Name));
 
             RelativeToDescriptorFileOrDirectoryPath = NameValuesCollection.TryGetValue(@"Path") ?? @"";
+            if (String.IsNullOrEmpty(RelativeToDescriptorFileOrDirectoryPath))
+                RelativeToDescriptorFileOrDirectoryPath = NameValuesCollection.TryGetValue(@"") ?? @"";
             Title = NameValuesCollection.TryGetValue(@"Title") ?? @"";
             CommandLine = NameValuesCollection.TryGetValue(@"CommandLine") ?? @"";
         }
