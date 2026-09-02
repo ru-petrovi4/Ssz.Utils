@@ -74,11 +74,6 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
             if (_clientContext is not null) throw new Exception(@"DataAccessGrpc context already exists.");
 
-#if DEBUG            
-            uint requestedServerContextTimeoutMs = 7 * 24 * 60 * 60 * 1000;
-#else
-            uint requestedServerContextTimeoutMs = 30 * 1000;
-#endif
             GrpcChannel? grpcChannel = null;
 
             try
@@ -141,6 +136,12 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                             clientApplicationName,
                             clientWorkstationName
                             );
+
+#if DEBUG
+                uint requestedServerContextTimeoutMs = 7 * 24 * 60 * 60 * 1000;
+#else
+                uint requestedServerContextTimeoutMs = 30 * 1000;
+#endif
 
                 await clientContext.InitiateAsync(
                             requestedServerContextTimeoutMs,
@@ -273,7 +274,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         ///     This property specifies how long the context will stay alive in the server after a WCF
         ///     connection failure. The ClientBase will attempt reconnection during this period.
         /// </summary>
-        public TimeSpan ServerContextTimeout
+        public TimeSpan NegotiatedServerContextTimeout
         {
             get
             {
@@ -281,14 +282,14 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
                 if (_clientContext is null) throw new ConnectionDoesNotExistException();
 
-                return TimeSpan.FromMilliseconds(_clientContext.ServerContextTimeoutMs);
+                return TimeSpan.FromMilliseconds(_clientContext.NegotiatedServerContextTimeoutMs);
             }
         }
 
         /// <summary>        
         ///     Its default value is automatically set to the LocaleId of the calling client application.
         /// </summary>
-        public string ServerCultureName
+        public string NegotiatedServerCultureName
         {
             get 
             {
@@ -296,7 +297,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
                 if (_clientContext is null) throw new ConnectionDoesNotExistException();
 
-                return _clientContext.ServerCultureName; 
+                return _clientContext.NegotiatedServerCultureName; 
             }            
         }
 

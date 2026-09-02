@@ -207,6 +207,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
             }
         }        
 
+        /// <summary>
+        ///    UTC
+        /// </summary>
         public DateTime LastClientKeepAlive
         {
             get => new DateTime(Interlocked.Read(ref _lastClientKeepAlive_Ticks), DateTimeKind.Utc);

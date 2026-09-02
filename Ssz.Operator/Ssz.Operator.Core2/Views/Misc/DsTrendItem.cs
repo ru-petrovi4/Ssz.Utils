@@ -44,7 +44,7 @@ namespace Ssz.Operator.Core.DsShapes.Trends
         }
 
         /// <summary>
-        ///     Makes ParentItem = GenericContainer
+        ///     Sets ParentItem = new GenericContainer(). Set <see cref="Color"/> for trend color.
         /// </summary>
         /// <param name="hdaId"></param>
         public DsTrendItem(string hdaId) :
@@ -65,12 +65,6 @@ namespace Ssz.Operator.Core.DsShapes.Trends
             });
             
             ParentItem = parentContainer;
-        }
-
-        public DsTrendItem(string hdaId, Color plotLineColor) :
-            this(hdaId)
-        {
-            Color = plotLineColor;
         }
 
         #endregion

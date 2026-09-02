@@ -90,7 +90,7 @@ namespace Ssz.DataAccessGrpc.Client
 
         #region private functions
 
-        private async Task ReadCallbackMessagesAsync(IAsyncStreamReader<CallbackMessage> callbackStreamReader, CancellationToken cancellationToken)
+        private async Task ReadCallbackMessagesLoopAsync(IAsyncStreamReader<CallbackMessage> callbackStreamReader, CancellationToken cancellationToken)
         {
             while (_contextIsOperational)
             {

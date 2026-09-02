@@ -22,5 +22,20 @@
 
 		<!-- Add the line below to get OxyPlot UI theme applied in Avalonia 12. -->
 		<StyleInclude Source="avares://OxyPlot.Avalonia12/Themes/Default.axaml"/>
+
+		<!-- FluentTheme -->
+		<Style Selector="TextBox:focus /template/ Border#PART_BorderElement, TextBox:pointerover /template/ Border#PART_BorderElement">
+			<!-- Явно задаем такие же значения, как в обычном состоянии -->
+			<Setter Property="BorderBrush" Value="{DynamicResource SystemControlForegroundBaseLowBrush}" />
+			<Setter Property="BorderThickness" Value="1" />
+		</Style>
+		<!-- ClassicTheme -->
+		<Style Selector="TextBox:focus /template/ Border#border, TextBox:pointerover /template/ Border#border">
+			<!-- Явно задаем такие же значения, как в обычном состоянии -->
+			<Setter Property="BorderBrush" Value="#FFABADB3" />
+			<!-- Стандартный цвет рамки ClassicTheme -->
+			<Setter Property="BorderThickness" Value="1" />
+			<!-- Стандартная толщина -->
+		</Style>		
     </Application.Styles>
 </Application>

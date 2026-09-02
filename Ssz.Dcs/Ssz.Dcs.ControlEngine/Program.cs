@@ -97,7 +97,7 @@ namespace Ssz.Dcs.ControlEngine
             Options = new Options(configuration);
 
             var urlSection = configuration.GetSection(@"Kestrel:Endpoints:HttpsDefaultCert:Url");
-            if (urlSection.Value == @"*")
+            if (String.Equals(urlSection.Value, @"--ControlEngineServerAddress", StringComparison.InvariantCultureIgnoreCase))            
                 urlSection.Value = Options.ControlEngineServerAddress;
 
             Host.Run();

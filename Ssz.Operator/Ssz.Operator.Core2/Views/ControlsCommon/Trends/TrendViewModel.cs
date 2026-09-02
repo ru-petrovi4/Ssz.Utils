@@ -105,6 +105,31 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
             get { return Source.YMax; }
         }
 
+        public double HiHiAlarmLimit
+        {
+            get { return Source.HiHiAlarmLimit; }
+        }
+
+        public double HiAlarmLimit
+        {
+            get { return Source.HiAlarmLimit; }
+        }
+
+        public double LoAlarmLimit        
+        {
+            get { return Source.LoAlarmLimit; }
+        }
+
+        public double LoLoAlarmLimit
+        {
+            get { return Source.LoLoAlarmLimit; }
+        }
+
+        public bool Visible
+        {
+            get { return Source.Visible; }
+        }
+
         public async void LoadPoints(DateRange range)
         {
             if (_isPointsLoadingInProgress)
@@ -112,7 +137,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
 
             _isPointsLoadingInProgress = true;
 
-            var points = (await DsDataAccessProvider.Instance.ReadElementValuesJournal(
+            var trendPoints = (await DsDataAccessProvider.Instance.ReadElementValuesJournal(
                     Source.HdaId,
                     range.Minimum.ToUniversalTime(),
                     range.Maximum.ToUniversalTime()))
@@ -120,7 +145,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
                         xiValue.TimestampUtc.ToLocalTime(),
                         xiValue.Value.ValueAsDouble(false))).ToList();
 
-            _rawTrendPoints = points.ToArray();
+            _rawTrendPoints = trendPoints.ToArray();
 
             OnRawTrendPointsLoaded(_rawTrendPoints);
 
@@ -253,7 +278,10 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
 
         #region private functions   
 
-        private void Source_OnPropertyChanged(object? sender = null, AvaloniaPropertyChangedEventArgs? args = null)
+        /// <summary>
+        ///     Derived view models extend this, as they did in the WPF build.
+        /// </summary>
+        protected virtual void Source_OnPropertyChanged(object? sender = null, AvaloniaPropertyChangedEventArgs? args = null)
         {
             if (args == null || args.Property == Trend.BrushProperty)
                 UpdateColor();
@@ -277,21 +305,10 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
             // Trend notifies for every Avalonia property it owns - the alarm limits, Visible, and
             // everything inherited from StyledElement. Only the ones this view model actually mirrors
             // may be forwarded: ViewModelBase.VerifyPropertyName throws on the rest in DEBUG builds.
-            if (args != null && HasPublicProperty(args.Property.Name))
+            // Make sure the property is public, so that we don't throw on private properties that are not mirrored.
+            if (args != null)
                 OnPropertyChanged(args.Property.Name);
-        }
-
-        private bool HasPublicProperty(string propertyName)
-        {
-            var propertyNames = PublicPropertyNamesByType.GetOrAdd(
-                GetType(),
-                type => type
-                    .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                    .Select(p => p.Name)
-                    .ToHashSet(StringComparer.Ordinal));
-
-            return propertyNames.Contains(propertyName);
-        }
+        }        
 
         private void UpdateCurrentValueAndTimestamp()
         {

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Ssz.Operator.Core.Addons;
@@ -93,11 +93,11 @@ namespace Ssz.Operator.Core.DsShapeViews
                     VarComboBoxDsShape.DsShapeTypeGuid,
                     (dsShape, frame) => new VarComboBoxDsShapeView((VarComboBoxDsShape) dsShape, frame)
                 },
-                //{
-                //    EditableComboBoxDsShape.DsShapeTypeGuid,
-                //    (dsShape, frame) =>
-                //        new EditableComboBoxDsShapeView((EditableComboBoxDsShape) dsShape, frame)
-                //},
+                {
+                    EditableComboBoxDsShape.DsShapeTypeGuid,
+                    (dsShape, frame) =>
+                        new EditableComboBoxDsShapeView((EditableComboBoxDsShape) dsShape, frame)
+                },
                 {
                     TrendGroupDsShape.DsShapeTypeGuid,
                     (dsShape, frame) => new TrendGroupDsShapeView((TrendGroupDsShape) dsShape, frame)

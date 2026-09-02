@@ -26,8 +26,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
         ///     If playWindow is null, tyhe visual design mode.
         /// </summary>
         /// <param name="dsTrendItem"></param>
-        /// <param name="showAlarmLevels"></param>
-        /// <param name="autoUpdateObservableDataSource"></param>
+        /// <param name="showAlarmLevels"></param>        
         /// <param name="playWindow"></param>
         public Trend(
             DsTrendItem dsTrendItem, 

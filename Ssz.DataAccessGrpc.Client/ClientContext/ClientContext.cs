@@ -16,8 +16,6 @@ using Grpc.Net.Client;
 
 namespace Ssz.DataAccessGrpc.Client
 {
-    #region Context Management
-
     /// <summary>
     ///     This partial class defines the Context Management related aspects of the ClientContext class.  Two
     ///     static Initiate() methods are defined to create and establish a new context with the DataAccessGrpc server,
@@ -92,18 +90,18 @@ namespace Ssz.DataAccessGrpc.Client
             get { return _serverContextId; }
         }
         
-        public uint ServerContextTimeoutMs
+        public uint NegotiatedServerContextTimeoutMs
         {
-            get { return _serverContextTimeoutMs; }
+            get { return _negotiatedServerContextTimeoutMs; }
         }
 
         /// <summary>
         ///     This property is the Windows LocaleId (language/culture id) for the context.
         ///     Its default value is automatically set to the LocaleId of the calling client application.
         /// </summary>
-        public string ServerCultureName
+        public string NegotiatedServerCultureName
         {
-            get { return _serverCultureName; }
+            get { return _negotiatedServerCultureName; }
         }
         
         public bool ContextIsOperational
@@ -130,8 +128,8 @@ namespace Ssz.DataAccessGrpc.Client
 
             InitiateReply initiateReply = await _dataAccessService.InitiateAsync(initiateRequest);
             _serverContextId = initiateReply.ContextId;
-            _serverContextTimeoutMs = initiateReply.ServerContextTimeoutMs;
-            _serverCultureName = initiateReply.ServerCultureName;
+            _negotiatedServerContextTimeoutMs = initiateReply.ServerContextTimeoutMs;
+            _negotiatedServerCultureName = initiateReply.ServerCultureName;
 
             if (_serverContextId == @"") 
                 throw new Exception("Server returns empty contextId.");
@@ -155,32 +153,32 @@ namespace Ssz.DataAccessGrpc.Client
 #endif
             if (isBrowser)
             {
-                _readCallbackMessages_Task = Task.Run(async () =>
-                    await ReadCallbackMessagesAsync(_callbackStreamReader, cancellationToken)
+                _readCallbackMessagesLoop_Task = Task.Run(async () =>
+                    await ReadCallbackMessagesLoopAsync(_callbackStreamReader, cancellationToken)
                 );
-                _keepAlive_Task = Task.Run(async () =>
-                    await KeepAliveAsync(cancellationToken)
+                _keepAliveLoop_Task = Task.Run(async () =>
+                    await KeepAliveLoopAsync(cancellationToken)
                 );
             }
             else
             {
-                var readCallbackMessages_TaskCompletionSource = new TaskCompletionSource<int>();
-                var readCallbackMessagesThread = new Thread(async () =>
+                var readCallbackMessagesLoop_TaskCompletionSource = new TaskCompletionSource<int>();
+                var readCallbackMessagesLoopThread = new Thread(async () =>
                 {
-                    await ReadCallbackMessagesAsync(_callbackStreamReader, cancellationToken);
-                    readCallbackMessages_TaskCompletionSource.SetResult(0);
+                    await ReadCallbackMessagesLoopAsync(_callbackStreamReader, cancellationToken);
+                    readCallbackMessagesLoop_TaskCompletionSource.SetResult(0);
                 });
-                _readCallbackMessages_Task = readCallbackMessages_TaskCompletionSource.Task;
-                readCallbackMessagesThread.Start();
+                _readCallbackMessagesLoop_Task = readCallbackMessagesLoop_TaskCompletionSource.Task;
+                readCallbackMessagesLoopThread.Start();
 
-                var keepAlive_TaskCompletionSource = new TaskCompletionSource<int>();
-                var keepAliveThread = new Thread(async () =>
+                var keepAliveLoop_TaskCompletionSource = new TaskCompletionSource<int>();
+                var keepAliveLoopThread = new Thread(async () =>
                 {
-                    await KeepAliveAsync(cancellationToken);
-                    keepAlive_TaskCompletionSource.SetResult(0);
+                    await KeepAliveLoopAsync(cancellationToken);
+                    keepAliveLoop_TaskCompletionSource.SetResult(0);
                 });
-                _keepAlive_Task = keepAlive_TaskCompletionSource.Task;
-                keepAliveThread.Start();
+                _keepAliveLoop_Task = keepAliveLoop_TaskCompletionSource.Task;
+                keepAliveLoopThread.Start();
             }            
         }
 
@@ -194,9 +192,8 @@ namespace Ssz.DataAccessGrpc.Client
             set => Interlocked.Exchange(ref _lastServerContextCallbackMessage_Ticks, value.Ticks);
         }
 
-        public async Task KeepAliveAsync(CancellationToken cancellationToken)
+        public async Task KeepAliveLoopAsync(CancellationToken cancellationToken)
         {
-#if !DEBUG
             try
             {
                 while (true)
@@ -221,7 +218,7 @@ namespace Ssz.DataAccessGrpc.Client
                     }
 
                     uint timeDiffInMs = (uint)(DateTime.UtcNow - LastServerContextCallbackMessage).TotalMilliseconds;
-                    if (timeDiffInMs >= _serverContextTimeoutMs)
+                    if (timeDiffInMs >= _negotiatedServerContextTimeoutMs)
                     {
                         ProcessRemoteMethodCallException(new RpcException(new Status(StatusCode.DeadlineExceeded, @"STATE_OPERATIONAL ContextMessage DeadlineExceeded")));
                     }
@@ -234,7 +231,6 @@ namespace Ssz.DataAccessGrpc.Client
             catch (Exception)
             {                
             }
-#endif
         }
 
         private void SetResourceManagementLastCallUtc()
@@ -268,8 +264,8 @@ namespace Ssz.DataAccessGrpc.Client
 
         private bool _disposed;
 
-        private Task? _readCallbackMessages_Task;
-        private Task? _keepAlive_Task;
+        private Task? _readCallbackMessagesLoop_Task;
+        private Task? _keepAliveLoop_Task;
 
         private ILogger<GrpcDataAccessProvider> _logger;
 
@@ -285,9 +281,9 @@ namespace Ssz.DataAccessGrpc.Client
         
         private string _serverContextId = null!;
         
-        private uint _serverContextTimeoutMs;
+        private uint _negotiatedServerContextTimeoutMs;
         
-        private string _serverCultureName = null!;        
+        private string _negotiatedServerCultureName = null!;        
 
         private long _lastServerContextCallbackMessage_Ticks;
 
@@ -306,6 +302,4 @@ namespace Ssz.DataAccessGrpc.Client
 
         #endregion
     }
-
-#endregion // Context Management
 }
