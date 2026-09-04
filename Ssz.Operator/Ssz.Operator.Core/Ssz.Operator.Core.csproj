@@ -41,10 +41,10 @@
     </Compile>    
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Google.Protobuf" Version="3.35.1" />    
+    <PackageReference Include="Google.Protobuf" Version="3.36.1" />    
     <PackageReference Include="SharpVectors" Version="1.8.5" />
     <PackageReference Include="SharpVectors.Wpf" Version="1.8.5" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="10.0.10" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="10.0.11" />
   </ItemGroup>
   <ItemGroup>
 	<Reference Include="PresentationFramework.Classic" Condition="'$(TargetFramework)' != 'net10.0-windows'" />
@@ -119,7 +119,7 @@
   </ItemGroup>  
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-windows'">
     <PackageReference Include="PanAndZoom">
-      <Version>12.0.0.1</Version>
+      <Version>12.1.1</Version>
     </PackageReference>
   </ItemGroup>
 </Project>

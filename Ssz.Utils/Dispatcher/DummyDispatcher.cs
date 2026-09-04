@@ -4,47 +4,46 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Ssz.Utils
-{    
-    public class DummyDispatcher : IDispatcher
+namespace Ssz.Utils;
+
+public class DummyDispatcher : IDispatcher
+{
+    #region public functions
+
+    public void BeginInvoke(Action<CancellationToken> action)
     {
-        #region public functions
-
-        public void BeginInvoke(Action<CancellationToken> action)
+        try
         {
-            try
-            {
-                action(CancellationToken.None);
-            }
-            catch
-            {
-            }
+            action(CancellationToken.None);
         }
-
-        public void BeginInvoke(Func<CancellationToken, Task> action)
+        catch
         {
-            try
-            {
-                action(CancellationToken.None);
-            }
-            catch
-            {
-            }
         }
-
-        public async void BeginInvokeEx(Func<CancellationToken, Task> action)
-        {
-            try
-            {
-                await action(CancellationToken.None);
-            }
-            catch
-            {
-            }
-        }        
-
-        #endregion
     }
+
+    public void BeginInvoke(Func<CancellationToken, Task> action)
+    {
+        try
+        {
+            action(CancellationToken.None);
+        }
+        catch
+        {
+        }
+    }
+
+    public async void BeginInvokeEx(Func<CancellationToken, Task> action)
+    {
+        try
+        {
+            await action(CancellationToken.None);
+        }
+        catch
+        {
+        }
+    }        
+
+    #endregion
 }
 
 

@@ -5,51 +5,50 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Ssz.Utils
-{    
-    //public class SafeWrapperDispatcher : IDispatcher
-    //{
-    //    #region construction and destruction
+namespace Ssz.Utils;
 
-    //    public SafeWrapperDispatcher(IDispatcher innerDispatcher, ILogger logger)
-    //    {
-    //        _innerDispatcher = innerDispatcher;
-    //        _logger = logger;
-    //    }
+//public class SafeWrapperDispatcher : IDispatcher
+//{
+//    #region construction and destruction
 
-    //    #endregion
+//    public SafeWrapperDispatcher(IDispatcher innerDispatcher, ILogger logger)
+//    {
+//        _innerDispatcher = innerDispatcher;
+//        _logger = logger;
+//    }
 
-    //    #region public functions
+//    #endregion
 
-    //    public void BeginInvoke(Action<CancellationToken> action)
-    //    {
-    //        try
-    //        {
-    //            innerDispatcher. action(CancellationToken.None);
-    //        }
-    //        catch
-    //        {
-    //        }
-    //    }
+//    #region public functions
 
-    //    public async void BeginInvokeEx(Func<CancellationToken, Task> action)
-    //    {
-    //        try
-    //        {
-    //            await action(CancellationToken.None);
-    //        }
-    //        catch
-    //        {
-    //        }
-    //    }
+//    public void BeginInvoke(Action<CancellationToken> action)
+//    {
+//        try
+//        {
+//            innerDispatcher. action(CancellationToken.None);
+//        }
+//        catch
+//        {
+//        }
+//    }
 
-    //    #endregion
+//    public async void BeginInvokeEx(Func<CancellationToken, Task> action)
+//    {
+//        try
+//        {
+//            await action(CancellationToken.None);
+//        }
+//        catch
+//        {
+//        }
+//    }
 
-    //    #region private fields
+//    #endregion
 
-    //    private readonly IDispatcher _innerDispatcher;
-    //    private readonly ILogger _logger;
+//    #region private fields
 
-    //    #endregion
-    //}
-}
+//    private readonly IDispatcher _innerDispatcher;
+//    private readonly ILogger _logger;
+
+//    #endregion
+//}

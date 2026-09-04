@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Ssz.Utils;
-using Ssz.Utils.Dispatcher;
 using Ssz.Utils.Logging;
 using System;
 using System.Collections.Generic;

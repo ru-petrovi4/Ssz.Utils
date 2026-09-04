@@ -162,23 +162,23 @@ namespace Ssz.DataAccessGrpc.Client
             }
             else
             {
-                var readCallbackMessagesLoop_TaskCompletionSource = new TaskCompletionSource<int>();
-                var readCallbackMessagesLoopThread = new Thread(async () =>
+                _readCallbackMessagesLoop_Task = (new TaskFactory(
+                    CancellationToken.None,
+                    TaskCreationOptions.None,
+                    TaskContinuationOptions.None,
+                    new SingleThreadTaskScheduler("ReadCallbackMessagesLoop"))).StartNew(async () =>
                 {
                     await ReadCallbackMessagesLoopAsync(_callbackStreamReader, cancellationToken);
-                    readCallbackMessagesLoop_TaskCompletionSource.SetResult(0);
-                });
-                _readCallbackMessagesLoop_Task = readCallbackMessagesLoop_TaskCompletionSource.Task;
-                readCallbackMessagesLoopThread.Start();
-
-                var keepAliveLoop_TaskCompletionSource = new TaskCompletionSource<int>();
-                var keepAliveLoopThread = new Thread(async () =>
+                }).Unwrap();
+                
+                _keepAliveLoop_Task = (new TaskFactory(
+                    CancellationToken.None,
+                    TaskCreationOptions.None,
+                    TaskContinuationOptions.None,
+                    new SingleThreadTaskScheduler("KeepAliveLoop"))).StartNew(async () =>
                 {
                     await KeepAliveLoopAsync(cancellationToken);
-                    keepAliveLoop_TaskCompletionSource.SetResult(0);
-                });
-                _keepAliveLoop_Task = keepAliveLoop_TaskCompletionSource.Task;
-                keepAliveLoopThread.Start();
+                }).Unwrap();
             }            
         }
 

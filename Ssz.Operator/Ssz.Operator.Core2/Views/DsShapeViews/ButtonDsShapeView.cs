@@ -114,21 +114,27 @@ namespace Ssz.Operator.Core.DsShapeViews
             if (propertyName is null || propertyName == nameof(dsShape.TextStretch))
             {
                 if (dsShape.TextStretch == Stretch.None)
-                {
-                    var viewBox = _textContainerControl.Content as Viewbox;
-                    if (viewBox is not null) viewBox.Child = null;
-                    // Avalonia drops wrapped lines that do not fit the available
-                    // height; UnclippedTextHost lays them all out, as WPF did.
-                    _textContainerControl.Content = new UnclippedTextHost { Child = _textBlock };
+                {                    
+                    if (_textContainerControl.Content is Viewbox viewBox)
+                        viewBox.Child = null;
+                    var unclippedTextHost = _textContainerControl.Content as UnclippedTextHost;
+                    if (unclippedTextHost is null)
+                    {
+                        unclippedTextHost = new UnclippedTextHost { Child = _textBlock };
+                        // Avalonia drops wrapped lines that do not fit the available
+                        // height; UnclippedTextHost lays them all out, as WPF did.
+                        _textContainerControl.Content = unclippedTextHost;
+                    }
                 }
                 else
                 {
+                    if (_textContainerControl.Content is UnclippedTextHost unclippedTextHost)
+                        unclippedTextHost.Child = null;
                     var viewBox = _textContainerControl.Content as Viewbox;
                     if (viewBox is null)
                     {
-                        viewBox = new Viewbox();
-                        _textContainerControl.Content = viewBox;
-                        viewBox.Child = _textBlock;
+                        viewBox = new Viewbox() { Child = _textBlock };
+                        _textContainerControl.Content = viewBox;                        
                     }
 
                     viewBox.Stretch = dsShape.TextStretch;

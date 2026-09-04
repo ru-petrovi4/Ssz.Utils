@@ -925,7 +925,13 @@ namespace Ssz.DataAccessGrpc.Client
                 }                
             }
 
-            await UnsubscribeAsync(true);
+            try
+            {
+                await UnsubscribeAsync(true);
+            }            
+            catch (Exception ex)
+            {                
+            }
 
             if (eventListCallbackIsEnabled)
                 _clientEventListManager.EventMessagesCallback -= OnClientEventListManager_EventMessagesCallbackInternal;
