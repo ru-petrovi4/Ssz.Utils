@@ -25,9 +25,13 @@ namespace Ssz.Operator.Core.ControlsPlay
         public PlayDsPageDrawingCanvas(DsPageDrawing dsPageDrawing, Frame? frame)
             : base(dsPageDrawing, frame)
         {
-            ContextMenu = new ContextMenu();
+            // The handler must be subscribed BEFORE the ContextMenu is assigned. Assigning it adds
+            // Avalonia's own ContextRequested handler, which opens the menu and marks the event
+            // handled; a handler subscribed after that one would never run, and the menu would
+            // always come up empty.
+            this.ContextRequested += OnContextRequested;
 
-            this.ContextRequested += OnContextRequested;            
+            ContextMenu = new ContextMenu();
             
             Background = dsPageDrawing.ComputeDsPageBackgroundBrush();
 

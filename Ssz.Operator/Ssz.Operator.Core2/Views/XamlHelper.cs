@@ -1282,12 +1282,63 @@ namespace Ssz.Operator.Core
                     {
                         strokeEndLineCapAttr.Remove();
                     }
+
+                    // WPF's TileBrush (DrawingBrush, ImageBrush, VisualBrush) described the tile
+                    // with Viewport/Viewbox plus separate ViewportUnits/ViewboxUnits attributes.
+                    // Avalonia has DestinationRect/SourceRect instead, and carries the unit in the
+                    // value itself.
+                    ConvertTileBrushRect(element, "Viewport", "ViewportUnits", "DestinationRect");
+                    ConvertTileBrushRect(element, "Viewbox", "ViewboxUnits", "SourceRect");
                 }
 
                 xaml = doc.ToString(SaveOptions.DisableFormatting) ;
             }
 
             return xaml;
+        }
+
+        /// <summary>
+        ///     WPF: Viewport/Viewbox, sized by ViewportUnits/ViewboxUnits, which default to
+        ///     RelativeToBoundingBox.
+        ///     Avalonia: DestinationRect/SourceRect, whose unit is part of the value - a plain
+        ///     "x,y,w,h" is absolute, "x%,y%,w%,h%" is relative to the bounding box.
+        /// </summary>
+        static void ConvertTileBrushRect(XElement element, string rectAttributeName,
+            string unitsAttributeName, string newAttributeName)
+        {
+            XAttribute? rectAttr = element.Attribute(rectAttributeName);
+            XAttribute? unitsAttr = element.Attribute(unitsAttributeName);
+
+            if (rectAttr is null)
+            {
+                // Avalonia has no such property, so it cannot be left behind on its own.
+                unitsAttr?.Remove();
+                return;
+            }
+
+            string[] parts = rectAttr.Value.Split(',');
+            if (parts.Length == 4)
+            {
+                var values = new double[4];
+                bool parsed = true;
+                for (int i = 0; i < 4; i += 1)
+                    if (!double.TryParse(parts[i].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture,
+                            out values[i]))
+                        parsed = false;
+
+                if (parsed)
+                {
+                    bool isAbsolute = StringHelper.CompareIgnoreCase(unitsAttr?.Value, @"Absolute");
+
+                    element.SetAttributeValue(newAttributeName, String.Join(@",", values.Select(v =>
+                        isAbsolute
+                            ? v.ToString(CultureInfo.InvariantCulture)
+                            : (v * 100).ToString(CultureInfo.InvariantCulture) + @"%")));
+                }
+            }
+
+            rectAttr.Remove();
+            unitsAttr?.Remove();
         }
 
         static void ConvertToPercentage(XElement element, string attributeName)

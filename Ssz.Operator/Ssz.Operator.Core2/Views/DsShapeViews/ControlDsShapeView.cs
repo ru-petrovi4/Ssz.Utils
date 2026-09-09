@@ -24,7 +24,14 @@ namespace Ssz.Operator.Core.DsShapeViews
                 IsHitTestVisible = false;
 
             control.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
-            control.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch; 
+            control.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
+
+            // WPF controls carried no minimum size, so a shape control filled exactly the rectangle of
+            // its shape. Avalonia's themes do (a TextBox is at least 32 DIP high), and since a shape view
+            // does not clip, a shape smaller than that spills over and paints its background across the
+            // drawing beneath it.
+            control.MinWidth = 0;
+            control.MinHeight = 0;
 
             Content = control;
         }

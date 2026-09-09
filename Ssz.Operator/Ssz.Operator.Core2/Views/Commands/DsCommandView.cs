@@ -138,7 +138,7 @@ namespace Ssz.Operator.Core.Commands
                     {   
                         await dataValueViewModel.WaitAllDataValueItemsUpdated();
                         valueBindingExpression.Item1.UpdateTarget();
-                        (valueBindingExpression.Item2?.Converter as ValueConverterBase)?.ConvertBack(null, dataValueViewModel, null, CultureInfo.InvariantCulture);
+                        (valueBindingExpression.Item2?.Converter as ValueConverterBase)?.ConvertBack(GetValue(ValueProperty), dataValueViewModel, null, CultureInfo.InvariantCulture);
                     }
                     break;
                 case CommandsManager.CommandsListCommand:

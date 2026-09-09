@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
@@ -6,6 +7,7 @@ using Avalonia.Data.Converters;
 using Ssz.Operator.Core.ControlsPlay;
 
 using Ssz.Operator.Core.DsShapeViews;
+using Ssz.Operator.Core.MultiValueConverters;
 
 namespace Ssz.Operator.Core.DataAccess
 {
@@ -20,8 +22,8 @@ namespace Ssz.Operator.Core.DataAccess
             DataContext = _dataValueViewModel;            
 
             dataSourceInfo.FallbackValue = "";
-            this.SetBindingOrConst(container, ValueProperty, dataSourceInfo, BindingMode.TwoWay,
-                UpdateSourceTrigger.Default);
+            (_, _valueMultiBinding) = this.SetBindingOrConst(container, ValueProperty, dataSourceInfo,
+                BindingMode.TwoWay, UpdateSourceTrigger.Default);
         }
 
         public void Dispose()
@@ -62,6 +64,21 @@ namespace Ssz.Operator.Core.DataAccess
         }        
 
         /// <summary>
+        ///     Writes the value to the data source and to this element.
+        ///     Avalonia's MultiBinding is one way only: its IMultiValueConverter has no ConvertBack, so
+        ///     assigning Value alone would stay in the element and never reach the model. ValueConverterBase
+        ///     carries an Avalonia-shaped ConvertBack that writes straight into the DataValueViewModel, and
+        ///     it has to be called explicitly.
+        /// </summary>
+        public void WriteValueToSource(object? value)
+        {
+            Value = value;
+
+            if (_valueMultiBinding?.Converter is ValueConverterBase valueConverter)
+                valueConverter.ConvertBack(value, _dataValueViewModel, null, CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
         ///     Invokes immediately with current value.
         /// </summary>
         public event Action<object?> ValueChanged
@@ -94,6 +111,8 @@ namespace Ssz.Operator.Core.DataAccess
         #region private fields
 
         private readonly DataValueViewModel _dataValueViewModel;
+
+        private readonly MultiBinding? _valueMultiBinding;
 
         private Action<object?>? _valueChangedAction;
 
