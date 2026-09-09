@@ -34,8 +34,8 @@ namespace Ssz.Operator.Core.DsShapeViews
 
             _path = new Path();
             _path.Stretch = Stretch.Fill;
-            _path.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
-            _path.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+            _path.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            _path.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
             Content = _path;
         }
 
@@ -139,6 +139,7 @@ namespace Ssz.Operator.Core.DsShapeViews
             if (propertyName is null || propertyName == nameof(dsShape.StrokeThickness))
             {
                 _path.SetConst(dsShape.Container, Path.StrokeThicknessProperty, dsShape.StrokeThickness);
+                _path.Margin = new Thickness(dsShape.StrokeThickness / 2);
                 pathUpdate = true;
             }
 
