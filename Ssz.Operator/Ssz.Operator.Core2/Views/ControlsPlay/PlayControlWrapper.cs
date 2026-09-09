@@ -7,7 +7,7 @@ using Avalonia.Controls;
 using Ssz.Operator.Core.Commands.DsCommandOptions;
 //using Ssz.Operator.Core.ControlsPlay.BrowserPlay;
 using Ssz.Operator.Core.ControlsPlay.GenericPlay;
-//using Ssz.Operator.Core.ControlsPlay.PanoramaPlay;
+using Ssz.Operator.Core.ControlsPlay.PanoramaPlay;
 //using Ssz.Operator.Core.ControlsPlay.WpfModel3DPlay;
 //using Ssz.Operator.Core.ControlsPlay.ZoomboxPlay;
 using Ssz.Operator.Core.Drawings;
@@ -550,7 +550,8 @@ namespace Ssz.Operator.Core.ControlsPlay
                 return new GenericGraphicPlayControl(window);
             if (typeGuid == GenericFaceplateDsPageType.TypeGuid)
                 return new GenericFaceplatePlayControl(window);
-            //if (typeGuid == PanoramaDsPageType.TypeGuid) return new PanoramaPlayControl(window);
+            if (typeGuid == PanoramaDsPageType.TypeGuid) 
+                return new PanoramaPlayControl(window);
             if (typeGuid == ZoomboxDsPageType.TypeGuid) 
                 return new ZoomboxPlayControl(window);
             if (typeGuid == ToolTipDsPageType.TypeGuid) 

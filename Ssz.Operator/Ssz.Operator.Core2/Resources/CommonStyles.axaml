@@ -1,0 +1,83 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:common="using:Classic.CommonControls"
+                    xmlns:theme="using:Classic.Avalonia.Theme">
+    <!-- The Avalonia counterpart of Ssz.Operator.Core/Resources/CommonStyles.xaml (WPF).
+         Only the keys the addons actually reference are carried over; the WPF file also held
+         zoom-slider templates that Ssz.Operator.Core2 builds in code. -->
+
+    <DrawingBrush x:Key="CheckerBrush" TileMode="Tile"
+                  SourceRect="0,0,100,100" DestinationRect="0,0,15,15">
+        <DrawingBrush.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#FFF6F6F6" Geometry="M0,0 L100,0 100,100 0,100 Z" />
+                <GeometryDrawing Brush="#FFF0F0F0" Geometry="M0,0 L50,0 50,50 0,50 Z M50,50 L100,50 100,100 50,100 Z" />
+            </DrawingGroup>
+        </DrawingBrush.Drawing>
+    </DrawingBrush>
+
+    <ControlTheme x:Key="ClassicButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="{DynamicResource {x:Static common:SystemColors.ControlBrushKey}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static common:SystemColors.ControlTextBrushKey}}" />
+        <Setter Property="BorderThickness" Value="3" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="4,1,4,3" />
+        <Setter Property="Template">
+            <ControlTemplate TargetType="Button">
+                <theme:ClassicBorderDecorator x:Name="ContentContainer"
+                                              BorderStyle="Raised"
+                                              Background="{TemplateBinding Background}"
+                                              BorderThickness="{TemplateBinding BorderThickness}">
+                    <ContentPresenter Margin="{TemplateBinding Padding}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      RecognizesAccessKey="True"
+                                      Name="PART_ContentPresenter" />
+                </theme:ClassicBorderDecorator>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pressed /template/ theme|ClassicBorderDecorator#ContentContainer">
+            <Setter Property="BorderStyle" Value="RaisedPressed" />
+        </Style>
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static common:SystemColors.GrayTextBrushKey}}" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="ClassicToggleButtonStyle" TargetType="ToggleButton">
+        <Setter Property="Background" Value="{DynamicResource {x:Static common:SystemColors.ControlBrushKey}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static common:SystemColors.ControlTextBrushKey}}" />
+        <Setter Property="BorderThickness" Value="3" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="0,0,1,1" />
+        <Setter Property="Template">
+            <ControlTemplate TargetType="ToggleButton">
+                <theme:ClassicBorderDecorator x:Name="ContentContainer"
+                                              BorderStyle="Raised"
+                                              Background="{TemplateBinding Background}"
+                                              BorderThickness="{TemplateBinding BorderThickness}">
+                    <ContentPresenter Margin="{TemplateBinding Padding}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      RecognizesAccessKey="True"
+                                      Name="PART_ContentPresenter" />
+                </theme:ClassicBorderDecorator>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pressed /template/ theme|ClassicBorderDecorator#ContentContainer">
+            <Setter Property="BorderStyle" Value="RaisedPressed" />
+        </Style>
+        <Style Selector="^:checked /template/ theme|ClassicBorderDecorator#ContentContainer">
+            <Setter Property="BorderStyle" Value="RaisedPressed" />
+        </Style>
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static common:SystemColors.GrayTextBrushKey}}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>
