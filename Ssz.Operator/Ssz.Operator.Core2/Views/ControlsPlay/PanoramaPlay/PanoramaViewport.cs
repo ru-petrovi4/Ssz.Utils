@@ -86,6 +86,7 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
         public void ReleasePage()
         {
             UnwatchPage();
+            SetHoveredControl(null, null);
             DisposeTextureBuffers();
 
             _playDsPageDrawingCanvas?.Dispose();
@@ -114,6 +115,7 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
             _padding = GetDrawingCanvasPadding(_drawingWidth, _drawingHeight);
 
             UnwatchPage();
+            SetHoveredControl(null, null);
             _pageChanged = true;
 
             _playDsPageDrawingCanvas?.Dispose();
@@ -556,7 +558,7 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
 
             if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
             {
-                UpdateCursor(position);
+                UpdateHover(position, e);
                 return;
             }
 
@@ -589,6 +591,7 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
             base.OnPointerExited(e);
 
             Cursor = ArrowCursor;
+            SetHoveredControl(null, e);
         }
 
         protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
@@ -850,9 +853,12 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
         }
 
         /// <summary>
-        ///     A hand over a button of the page, as the hit test of the WPF viewport gave it.
+        ///     A hand over a button of the page and the button knowing that the pointer is on it, both
+        ///     of which the hit test of the WPF viewport gave for free: there the mouse really did reach
+        ///     the page. Here the page is only a texture, so the state is set by hand - and with it the
+        ///     frame its style draws around a hotspot.
         /// </summary>
-        private void UpdateCursor(Point screenPoint)
+        private void UpdateHover(Point screenPoint, PointerEventArgs? e)
         {
             var canvas = _playDsPageDrawingCanvas;
             if (canvas is null) return;
@@ -861,6 +867,54 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
             var button = pagePoint is null ? null : FindButtonAt(canvas, pagePoint.Value);
 
             Cursor = button is not null ? HandCursor : ArrowCursor;
+
+            SetHoveredControl(button, e);
+        }
+
+        private void SetHoveredControl(Control? control, PointerEventArgs? e)
+        {
+            if (ReferenceEquals(control, _hoveredControl)) return;
+
+            var previouslyHoveredControl = _hoveredControl;
+            _hoveredControl = control;
+
+            if (previouslyHoveredControl is not null)
+                SetPointerOver(previouslyHoveredControl, false, e);
+
+            if (control is not null)
+                SetPointerOver(control, true, e);
+        }
+
+        private void SetPointerOver(Control control, bool value, PointerEventArgs? e)
+        {
+            // In WPF the whole line of parents of the shape knew about the mouse as well, and a style
+            // may well be written against one of them.
+            for (Visual? visual = control;
+                 visual is not null && !ReferenceEquals(visual, _playDsPageDrawingCanvas);
+                 visual = visual.GetVisualParent())
+                if (visual is InputElement inputElement)
+                    try
+                    {
+                        inputElement.SetValue(InputElement.IsPointerOverProperty, value);
+                    }
+                    catch (Exception)
+                    {
+                        // The state is a nicety; a theme that will not have it set is no reason to stop.
+                    }
+
+            if (e is null) return;
+
+            // The commands a shape carries for the pointer entering and leaving it run off these.
+            try
+            {
+                control.RaiseEvent(new PointerEventArgs(
+                    value ? InputElement.PointerEnteredEvent : InputElement.PointerExitedEvent,
+                    control, e.Pointer, this, e.GetPosition(this), e.Timestamp,
+                    e.GetCurrentPoint(this).Properties, e.KeyModifiers));
+            }
+            catch (Exception)
+            {
+            }
         }
 
         /// <summary>
@@ -1127,6 +1181,7 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
         private double _downAngle;
         private double _verticalImageAngle;
 
+        private Control? _hoveredControl;
         private Point? _downPoint;
         private Point? _pressedPoint;
         private bool _dragged;

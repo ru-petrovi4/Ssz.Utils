@@ -5,7 +5,7 @@
 				<Border x:Name="ContentContainer"
 															BorderThickness="{TemplateBinding BorderThickness}"
 															BorderBrush="#FF00FFFF"
-															Background="{TemplateBinding Background}">
+															Background="Transparent">
 					<Grid>						
 						<ContentPresenter x:Name="PART_ContentPresenter"
 										Content="{TemplateBinding Content}"
