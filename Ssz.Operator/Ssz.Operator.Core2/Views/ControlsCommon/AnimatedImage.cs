@@ -91,7 +91,15 @@ namespace Ssz.Operator.Core.ControlsCommon
             var sourceRect = new Rect(sourceSize).CenterRect(
                 new Rect(new Size(destinationRect.Width / scale.X, destinationRect.Height / scale.Y)));
 
-            context.DrawImage(source, sourceRect, destinationRect);
+            // A frame of an animation is a small picture that is usually shown much larger, so it is
+            // worth resampling it well.
+            using (context.PushRenderOptions(new RenderOptions
+                   {
+                       BitmapInterpolationMode = BitmapInterpolationMode.HighQuality
+                   }))
+            {
+                context.DrawImage(source, sourceRect, destinationRect);
+            }
         }
 
         #endregion

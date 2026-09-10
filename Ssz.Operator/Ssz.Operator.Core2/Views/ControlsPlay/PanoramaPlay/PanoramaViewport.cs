@@ -1230,8 +1230,13 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
                 canvas.ClipRect(new SKRect(0, 0, (float) Bounds.Width, (float) Bounds.Height));
 
                 using var paint = new SKPaint();
+
+                // The mesh covers the whole viewport, so its triangles have no edges to smooth - but
+                // the picture on it is stretched, and reading it point by point is what leaves the
+                // steps on every line of the page.
                 paint.IsAntialias = false;
-                using var shader = image.ToShader(SKShaderTileMode.Clamp, SKShaderTileMode.Clamp);
+                using var shader = image.ToShader(SKShaderTileMode.Clamp, SKShaderTileMode.Clamp,
+                    new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.Linear));
                 paint.Shader = shader;
 
                 canvas.DrawVertices(SKVertexMode.Triangles, _vertices, _textures, null, paint);
