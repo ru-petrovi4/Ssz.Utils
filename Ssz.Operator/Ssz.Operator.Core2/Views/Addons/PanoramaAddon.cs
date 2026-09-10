@@ -5,7 +5,7 @@ using Avalonia;
 using Ssz.Operator.Core.Commands;
 using Ssz.Operator.Core.Commands.DsCommandOptions;
 using Ssz.Operator.Core.ControlsPlay;
-//using Ssz.Operator.Core.ControlsPlay.PanoramaPlay;
+using Ssz.Operator.Core.ControlsPlay.PanoramaPlay;
 //using Ssz.Operator.Core.ControlsPlay.PanoramaPlay.Map3D;
 using Ssz.Operator.Core.CustomAttributes;
 using Ssz.Operator.Core.DsShapes;
@@ -67,17 +67,19 @@ namespace Ssz.Operator.Core.Addons
                         var parentDrawing = senderDsShape.GetParentDrawing();
                         if (parentDrawing is not null)
                         {
-                            //var panoramaPlayControl =
-                            //    targetWindow.PlayControlWrapper.PlayControl as PanoramaPlayControl;
-                            //if (panoramaPlayControl is not null)
-                            //{
-                            //    var dsShapeCenterPositionOnDrawing =
-                            //        senderDsShape.GetCenterInitialPositionOnDrawing();
-                            //    commandOptionsClone.JumpHorizontalK = dsShapeCenterPositionOnDrawing.X /
-                            //                                                   parentDrawing.Width;
-                            //    commandOptionsClone.JumpVerticalK = dsShapeCenterPositionOnDrawing.Y /
-                            //                                                 parentDrawing.Height;
-                            //}
+                            // Where the hotspot sits on the page is the direction the operator walks
+                            // in, and the transition to the next point turns the view there.
+                            var panoramaPlayControl =
+                                targetWindow.PlayControlWrapper.PlayControl as PanoramaPlayControl;
+                            if (panoramaPlayControl is not null)
+                            {
+                                var dsShapeCenterPositionOnDrawing =
+                                    senderDsShape.GetCenterInitialPositionOnDrawing();
+                                commandOptionsClone.JumpHorizontalK = dsShapeCenterPositionOnDrawing.X /
+                                                                               parentDrawing.Width;
+                                commandOptionsClone.JumpVerticalK = dsShapeCenterPositionOnDrawing.Y /
+                                                                             parentDrawing.Height;
+                            }
                         }
                     }
                     

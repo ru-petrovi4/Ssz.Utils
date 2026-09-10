@@ -9,6 +9,16 @@
   </PropertyGroup>
  
   <ItemGroup>
+    <!-- The compass of a panorama is a model that is read at run time, as it was in WPF. -->
+    <None Update="Resources\compass.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\compass.mtl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
     <AvaloniaResource Include="Resources\Images\**" />
   </ItemGroup>

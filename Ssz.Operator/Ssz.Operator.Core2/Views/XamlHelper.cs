@@ -314,12 +314,21 @@ namespace Ssz.Operator.Core
                         switch (extension.ToUpperInvariant())
                         {
                             case ".GIF":
+                            {
                                 var image = new GifImage
                                 {
                                     Stretch = stretch,
                                     Source = stream
                                 };
+
+                                // An animated image is drawn by the compositor, and a rendering into a
+                                // bitmap never sees it - the panorama draws its whole page into one.
+                                // The first frame is kept with the image, so such a rendering has
+                                // something to show.
+                                SetStillImage(image, stream);
+
                                 return image;
+                            }
                             case ".SVG":
                                 var svgSource = SvgSource.LoadFromStream(stream);
                                 stream.Dispose();
@@ -351,6 +360,36 @@ namespace Ssz.Operator.Core
                 DsProject.LoggersSet.Logger.LogError(ex, @"");
                 return null;
             }            
+        }
+
+        /// <summary>
+        ///     The first frame of an animated image, for a rendering that cannot run the animation.
+        /// </summary>
+        public static readonly AttachedProperty<IImage?> StillImageProperty =
+            AvaloniaProperty.RegisterAttached<Control, IImage?>(@"StillImage", typeof(XamlHelper));
+
+        public static IImage? GetStillImage(Control control)
+        {
+            return control.GetValue(StillImageProperty);
+        }
+
+        private static void SetStillImage(Control control, Stream stream)
+        {
+            try
+            {
+                if (!stream.CanSeek) return;
+
+                long position = stream.Position;
+                stream.Position = 0;
+                var bitmap = new Bitmap(stream);
+                stream.Position = position;
+
+                control.SetValue(StillImageProperty, bitmap);
+            }
+            catch (Exception)
+            {
+                // A picture that cannot be decoded is simply not shown in such a rendering.
+            }
         }
 
         public static void GetUsedFileNames(string xamlWithRelativePaths, HashSet<string> usedFileNames)
@@ -1169,6 +1208,11 @@ namespace Ssz.Operator.Core
             }
         }
         
+        private static readonly string[] SizeAttributeNames =
+        {
+            @"Width", @"Height", @"MinWidth", @"MinHeight", @"MaxWidth", @"MaxHeight"
+        };
+
         private static string? PrepareObsoleteXaml(string? xaml)
         {
             if (string.IsNullOrEmpty(xaml))
@@ -1194,6 +1238,19 @@ namespace Ssz.Operator.Core
                     {
                         brush.SetAttributeValue("Color", brush.Value);
                         brush.Value = string.Empty; // Убираем текстовое содержимое
+                    }
+                }
+
+                // WPF wrote the matrix as the content of the element, because Matrix is the content
+                // property of its MatrixTransform. Avalonia has no content property there, so the text
+                // is moved into the attribute.
+                foreach (var matrixTransform in doc.Descendants(ns + "MatrixTransform"))
+                {
+                    if (!String.IsNullOrWhiteSpace(matrixTransform.Value) &&
+                        matrixTransform.Attribute("Matrix") is null)
+                    {
+                        matrixTransform.SetAttributeValue("Matrix", matrixTransform.Value.Trim());
+                        matrixTransform.Value = string.Empty;
                     }
                 }
 
@@ -1256,6 +1313,17 @@ namespace Ssz.Operator.Core
 
                 foreach (var element in doc.Descendants())
                 {
+                    // WPF read Auto as "no size given"; Avalonia parses these attributes as plain
+                    // numbers and fails on the word, so it is dropped - a missing attribute means the
+                    // same thing there.
+                    foreach (string sizeAttributeName in SizeAttributeNames)
+                    {
+                        XAttribute? sizeAttribute = element.Attribute(sizeAttributeName);
+                        if (sizeAttribute is not null &&
+                            String.Equals(sizeAttribute.Value.Trim(), @"Auto", StringComparison.OrdinalIgnoreCase))
+                            sizeAttribute.Remove();
+                    }
+
                     // Переименовываем атрибут StrokeStartLineCap в StrokeLineCap
                     var strokeStartLineCapAttr = element.Attribute("StrokeStartLineCap");
                     if (strokeStartLineCapAttr != null)

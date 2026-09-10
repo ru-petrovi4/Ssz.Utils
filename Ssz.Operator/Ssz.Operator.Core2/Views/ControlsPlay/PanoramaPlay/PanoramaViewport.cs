@@ -11,6 +11,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Avalonia.Labs.Gif;
 using Avalonia.Platform;
 using Avalonia.Rendering.SceneGraph;
 using Avalonia.VisualTree;
@@ -57,6 +58,40 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
         ///     Raised whenever the camera moved, so the layer with the shapes of the page can follow it.
         /// </summary>
         public event Action? CameraChanged;
+
+        /// <summary>
+        ///     The camera, as the transition between two points animates it. The values are taken as they
+        ///     are: they come from the ones the limits were already applied to.
+        /// </summary>
+        public double FieldOfView => _fieldOfView;
+
+        public double RotationY => _rotationY;
+
+        public double RotationZ => _rotationZ;
+
+        public void SetCamera(double fieldOfView, double rotationY, double rotationZ)
+        {
+            _fieldOfView = fieldOfView;
+            _rotationY = rotationY;
+            _rotationZ = rotationZ;
+
+            OnCameraChanged();
+        }
+
+        /// <summary>
+        ///     Lets go of the page, the way the WPF control cleared the Visual of its 3D surface when a
+        ///     transition had ended. The point itself is kept: the next transition starts from its view.
+        /// </summary>
+        public void ReleasePage()
+        {
+            UnwatchPage();
+            DisposeTextureBuffers();
+
+            _playDsPageDrawingCanvas?.Dispose();
+            _playDsPageDrawingCanvas = null;
+
+            InvalidateVisual();
+        }
 
         public double GetViewAzimuth()
         {
@@ -804,7 +839,7 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
 
                         using (drawingContext.PushTransform(transform))
                         {
-                            child.Render(drawingContext);
+                            RenderVisual(child, drawingContext);
                             RenderChildren(child, drawingContext, childClipRect);
                         }
                     }
@@ -817,11 +852,39 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
                             !new Rect(bounds.Size).Inflate(DirtyRectMargin).Intersects(childClipRect))
                             continue;
 
-                        child.Render(drawingContext);
+                        RenderVisual(child, drawingContext);
                         RenderChildren(child, drawingContext, childClipRect);
                     }
                 }
             }
+        }
+
+        /// <summary>
+        ///     An animated image is drawn by the compositor and stays away from a rendering into a
+        ///     bitmap, so the still frame that was kept with it when it was loaded is drawn instead.
+        /// </summary>
+        private static void RenderVisual(Visual visual, DrawingContext drawingContext)
+        {
+            if (visual is GifImage gifImage)
+            {
+                var stillImage = XamlHelper.GetStillImage(gifImage);
+                if (stillImage is null) return;
+
+                var size = gifImage.Bounds.Size;
+                var sourceSize = stillImage.Size;
+                if (size.Width <= 0 || size.Height <= 0 ||
+                    sourceSize.Width <= 0 || sourceSize.Height <= 0) return;
+
+                var scale = gifImage.Stretch.CalculateScaling(size, sourceSize, gifImage.StretchDirection);
+                var scaledSize = new Size(sourceSize.Width * scale.X, sourceSize.Height * scale.Y);
+                drawingContext.DrawImage(stillImage,
+                    new Rect((size.Width - scaledSize.Width) / 2, (size.Height - scaledSize.Height) / 2,
+                        scaledSize.Width, scaledSize.Height));
+
+                return;
+            }
+
+            visual.Render(drawingContext);
         }
 
         /// <summary>
