@@ -11,9 +11,9 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
-using Avalonia.Labs.Gif;
 using Avalonia.Platform;
 using Avalonia.Rendering.SceneGraph;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Avalonia.Skia;
 using SkiaSharp;
@@ -42,6 +42,7 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
             DsProject.Instance.GlobalUITimerEvent -= OnGlobalUITimerEvent;
             UnwatchPage();
             DisposeTextureBuffers();
+            _texture.Dispose();
             _playDsPageDrawingCanvas?.Dispose();
             _playDsPageDrawingCanvas = null;
         }
@@ -173,49 +174,118 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
             var canvas = _playDsPageDrawingCanvas;
             if (canvas is null) return;
 
-            // Not while the view is being dragged: repainting the whole page in the middle of it would
-            // make the drag stutter, and nothing of the page can be read at that moment anyway.
+            // Visuals that were added to the page since the last tick are taken under watch here, and
+            // whatever a change may have missed is caught up with.
+            WatchPage(canvas);
+
+            RefreshTextureIfChanged();
+        }
+
+        /// <summary>
+        ///     A change of the page reaches the texture shortly after it happened, not only at the next
+        ///     tick of the half second timer - an animated picture would crawl otherwise. Two renders are
+        ///     kept apart by at least the time the last one took, so a page that changes without pause
+        ///     cannot eat the thread it is drawn on.
+        /// </summary>
+        private void ScheduleTextureRefresh()
+        {
+            if (_disposed || !IsActive || _refreshScheduled) return;
+
+            var interval = Math.Max(MinTextureRefreshIntervalMs, _lastTextureRenderMs * 3);
+            var delay = Math.Max(1.0, interval - _sinceTextureRefresh.Elapsed.TotalMilliseconds);
+
+            _refreshScheduled = true;
+            DispatcherTimer.RunOnce(() =>
+                {
+                    _refreshScheduled = false;
+                    RefreshTextureIfChanged();
+                },
+                TimeSpan.FromMilliseconds(delay));
+        }
+
+        private void RefreshTextureIfChanged()
+        {
+            if (_disposed || !IsActive || !_pageChanged) return;
+
+            var canvas = _playDsPageDrawingCanvas;
+            if (canvas is null) return;
+
+            // Not while the view is being dragged: repainting the page in the middle of it would make
+            // the drag stutter, and nothing of the page can be read at that moment anyway.
             if (_downPoint.HasValue) return;
 
-            WatchPage(canvas);
-            if (!_pageChanged) return;
+            // What changed behind the back of the observer waits until he turns to it.
+            if (!IsDirtyRectVisible()) return;
 
             RefreshTexture(canvas);
+        }
+
+        /// <summary>
+        ///     Whether the part of the page that changed can be seen at all from where the camera looks.
+        ///     A panorama page carries its hotspots all around the observer, and painting the texture
+        ///     again for one of them behind him would be work that nobody sees.
+        /// </summary>
+        private bool IsDirtyRectVisible()
+        {
+            if (_fullRedraw || _dirtyPageRect is null) return true;
+
+            var dirtyRect = _dirtyPageRect.Value;
+
+            // A large area counts as visible: what its border does says nothing about its middle.
+            if (dirtyRect.Width * dirtyRect.Height > _drawingWidth * _drawingHeight / 8) return true;
+
+            var bounds = new Rect(Bounds.Size);
+            if (bounds.Width <= 0 || bounds.Height <= 0) return true;
+
+            // With room to spare around the viewport, so that a shape which only reaches into the view
+            // is not taken for one outside of it.
+            bounds = bounds.Inflate(bounds.Width / 4);
+
+            for (var x = 0; x <= 2; x += 1)
+            for (var y = 0; y <= 2; y += 1)
+            {
+                var point = ProjectPagePointToScreen(new Point(dirtyRect.X + dirtyRect.Width * x / 2,
+                    dirtyRect.Y + dirtyRect.Height * y / 2));
+                if (point is not null && bounds.Contains(point.Value)) return true;
+            }
+
+            return false;
         }
 
         private void RefreshTexture(PlayDsPageDrawingCanvas canvas)
         {
             _pageChanged = false;
 
-            var texture = RenderPageToTexture(canvas);
-            if (texture is null) return;
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            var rendered = RenderPageToTexture(canvas);
+            _lastTextureRenderMs = stopwatch.Elapsed.TotalMilliseconds;
+            _sinceTextureRefresh.Restart();
 
-            _texture = texture;
+            if (!rendered) return;
 
             OnCameraChanged();
         }
 
-        private SKImage? RenderPageToTexture(PlayDsPageDrawingCanvas canvas)
+        private bool RenderPageToTexture(PlayDsPageDrawingCanvas canvas)
         {
-            if (_drawingWidth <= 0 || _drawingHeight <= 0) return null;
+            if (_drawingWidth <= 0 || _drawingHeight <= 0) return false;
 
             // A whole panorama page is far larger than any texture a graphics card wants; the longest side
             // is capped, which is what the BitmapCache of the WPF control did as well.
             var scale = Math.Min(1.0, MaxTextureSize / Math.Max(_drawingWidth, _drawingHeight));
             var pixelWidth = (int) Math.Round(_drawingWidth * scale);
             var pixelHeight = (int) Math.Round(_drawingHeight * scale);
-            if (pixelWidth <= 0 || pixelHeight <= 0) return null;
+            if (pixelWidth <= 0 || pixelHeight <= 0) return false;
 
             try
             {
                 var pixelSize = new PixelSize(pixelWidth, pixelHeight);
                 if (_renderTargetBitmap is null || _renderTargetBitmap.PixelSize != pixelSize)
                 {
-                    DisposeTextureBuffers();
+                    _renderTargetBitmap?.Dispose();
                     _renderTargetBitmap = new RenderTargetBitmap(pixelSize, new Avalonia.Vector(96, 96));
-                    var imageInfo = new SKImageInfo(pixelWidth, pixelHeight, SKColorType.Bgra8888,
-                        SKAlphaType.Premul);
-                    _textureBitmaps = new[] { new SKBitmap(imageInfo), new SKBitmap(imageInfo) };
+                    _texture.SetInfo(new SKImageInfo(pixelWidth, pixelHeight, SKColorType.Bgra8888,
+                        SKAlphaType.Premul));
                     _fullRedraw = true;
                 }
 
@@ -235,7 +305,7 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
                     if (clipRect.Width <= 0 || clipRect.Height <= 0)
                     {
                         _dirtyPageRect = null;
-                        return null;
+                        return false;
                     }
                 }
 
@@ -253,25 +323,39 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
                 _fullRedraw = false;
                 _dirtyPageRect = null;
 
-                // The two buffers are written in turn: the render thread may still be reading the one
-                // the image of the previous refresh was made of.
-                _textureBitmapIndex = 1 - _textureBitmapIndex;
-                var skBitmap = _textureBitmaps![_textureBitmapIndex];
+                // Only the piece of the picture that was painted again is sent to the texture; sending
+                // the whole page would upload every pixel of it once more.
+                var patchRect = GetPatchRect(clipRect, scale, pixelSize);
+                if (patchRect.Width <= 0 || patchRect.Height <= 0) return false;
 
-                _textureImages[_textureBitmapIndex]?.Dispose();
-                _textureImages[_textureBitmapIndex] = null;
+                var patchBitmap = new SKBitmap(new SKImageInfo(patchRect.Width, patchRect.Height,
+                    SKColorType.Bgra8888, SKAlphaType.Premul));
+                renderTargetBitmap.CopyPixels(patchRect, patchBitmap.GetPixels(), patchBitmap.ByteCount,
+                    patchBitmap.RowBytes);
 
-                renderTargetBitmap.CopyPixels(new PixelRect(pixelSize), skBitmap.GetPixels(),
-                    skBitmap.ByteCount, skBitmap.RowBytes);
+                _texture.AddPatch(patchBitmap,
+                    new SKRect(patchRect.X, patchRect.Y, patchRect.Right, patchRect.Bottom));
 
-                var image = SKImage.FromPixels(skBitmap.Info, skBitmap.GetPixels(), skBitmap.RowBytes);
-                _textureImages[_textureBitmapIndex] = image;
-                return image;
+                return true;
             }
             catch (Exception)
             {
-                return null;
+                return false;
             }
+        }
+
+        /// <summary>
+        ///     The pixels of the texture the given part of the page covers, taken with a whole pixel to
+        ///     spare on every side.
+        /// </summary>
+        private static PixelRect GetPatchRect(Rect pageRect, double scale, PixelSize pixelSize)
+        {
+            var left = Math.Max(0, (int) Math.Floor(pageRect.X * scale));
+            var top = Math.Max(0, (int) Math.Floor(pageRect.Y * scale));
+            var right = Math.Min(pixelSize.Width, (int) Math.Ceiling(pageRect.Right * scale) + 1);
+            var bottom = Math.Min(pixelSize.Height, (int) Math.Ceiling(pageRect.Bottom * scale) + 1);
+
+            return new PixelRect(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top));
         }
 
         /// <summary>
@@ -434,7 +518,7 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
         {
             base.Render(context);
 
-            if (_texture is null || _panoramaDsPageType is null) return;
+            if (!_texture.HasContent || _panoramaDsPageType is null) return;
             if (Bounds.Width <= 0 || Bounds.Height <= 0) return;
 
             var mesh = PanoramaMesh.Get(_panoramaDsPageType.PanoramaType);
@@ -537,6 +621,9 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
         {
             InvalidateVisual();
             CameraChanged?.Invoke();
+
+            // Something that changed out of sight may have come into it now.
+            if (_pageChanged) ScheduleTextureRefresh();
         }
 
         /// <summary>
@@ -685,6 +772,8 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
                     _fullRedraw = true;
                     break;
             }
+
+            ScheduleTextureRefresh();
         }
 
         private void AddDirtyVisual(Visual visual)
@@ -839,7 +928,7 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
 
                         using (drawingContext.PushTransform(transform))
                         {
-                            RenderVisual(child, drawingContext);
+                            child.Render(drawingContext);
                             RenderChildren(child, drawingContext, childClipRect);
                         }
                     }
@@ -852,7 +941,7 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
                             !new Rect(bounds.Size).Inflate(DirtyRectMargin).Intersects(childClipRect))
                             continue;
 
-                        RenderVisual(child, drawingContext);
+                        child.Render(drawingContext);
                         RenderChildren(child, drawingContext, childClipRect);
                     }
                 }
@@ -860,50 +949,23 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
         }
 
         /// <summary>
-        ///     An animated image is drawn by the compositor and stays away from a rendering into a
-        ///     bitmap, so the still frame that was kept with it when it was loaded is drawn instead.
-        /// </summary>
-        private static void RenderVisual(Visual visual, DrawingContext drawingContext)
-        {
-            if (visual is GifImage gifImage)
-            {
-                var stillImage = XamlHelper.GetStillImage(gifImage);
-                if (stillImage is null) return;
-
-                var size = gifImage.Bounds.Size;
-                var sourceSize = stillImage.Size;
-                if (size.Width <= 0 || size.Height <= 0 ||
-                    sourceSize.Width <= 0 || sourceSize.Height <= 0) return;
-
-                var scale = gifImage.Stretch.CalculateScaling(size, sourceSize, gifImage.StretchDirection);
-                var scaledSize = new Size(sourceSize.Width * scale.X, sourceSize.Height * scale.Y);
-                drawingContext.DrawImage(stillImage,
-                    new Rect((size.Width - scaledSize.Width) / 2, (size.Height - scaledSize.Height) / 2,
-                        scaledSize.Width, scaledSize.Height));
-
-                return;
-            }
-
-            visual.Render(drawingContext);
-        }
-
-        /// <summary>
         ///     Where the page image sits inside the padded page, in pixels of the texture.
         /// </summary>
         private Rect GetTextureRect()
         {
-            if (_texture is null) return new Rect(0, 0, 1, 1);
+            var info = _texture.Info;
+            if (info.Width <= 0 || info.Height <= 0) return new Rect(0, 0, 1, 1);
 
             var paddedSize = PaddedPageSize;
             if (paddedSize.Width <= 0 || paddedSize.Height <= 0)
-                return new Rect(0, 0, _texture.Width, _texture.Height);
+                return new Rect(0, 0, info.Width, info.Height);
 
             // A normalized texture coordinate addresses the padded page; the image itself covers only the
             // part of it the margins leave over.
-            var width = _texture.Width * paddedSize.Width / _drawingWidth;
-            var height = _texture.Height * paddedSize.Height / _drawingHeight;
-            var x = -_padding.Left / _drawingWidth * _texture.Width;
-            var y = -_padding.Top / _drawingHeight * _texture.Height;
+            var width = info.Width * paddedSize.Width / _drawingWidth;
+            var height = info.Height * paddedSize.Height / _drawingHeight;
+            var x = -_padding.Left / _drawingWidth * info.Width;
+            var y = -_padding.Top / _drawingHeight * info.Height;
             return new Rect(x, y, width, height);
         }
 
@@ -1001,19 +1063,7 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
 
         private void DisposeTextureBuffers()
         {
-            _texture = null;
-
-            for (var i = 0; i < _textureImages.Length; i += 1)
-            {
-                _textureImages[i]?.Dispose();
-                _textureImages[i] = null;
-            }
-
-            if (_textureBitmaps is not null)
-                foreach (var skBitmap in _textureBitmaps)
-                    skBitmap.Dispose();
-            _textureBitmaps = null;
-            _textureBitmapIndex = 0;
+            _texture.Clear();
 
             _renderTargetBitmap?.Dispose();
             _renderTargetBitmap = null;
@@ -1030,6 +1080,7 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
         private const double MaxTextureSize = 4096;
         private const double ClickToleranceInPixels = 4;
         private const double DirtyRectMargin = 16;
+        private const double MinTextureRefreshIntervalMs = 100;
 
         /// <summary>
         ///     The properties a shape of a page paints itself with; the brushes behind them are watched
@@ -1051,16 +1102,16 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
 
         private PanoramaDsPageType? _panoramaDsPageType;
 
-        private SKImage? _texture;
+        private readonly PanoramaTexture _texture = new();
         private RenderTargetBitmap? _renderTargetBitmap;
-        private SKBitmap[]? _textureBitmaps;
-        private readonly SKImage?[] _textureImages = new SKImage?[2];
-        private int _textureBitmapIndex;
         private PlayDsPageDrawingCanvas? _playDsPageDrawingCanvas;
         private IBrush? _pageBackground;
         private readonly HashSet<AvaloniaObject> _watchedObjects = new();
         private readonly Dictionary<AvaloniaObject, List<Visual>> _brushUsers = new();
         private bool _pageChanged;
+        private bool _refreshScheduled;
+        private double _lastTextureRenderMs;
+        private readonly System.Diagnostics.Stopwatch _sinceTextureRefresh = System.Diagnostics.Stopwatch.StartNew();
         private bool _fullRedraw = true;
         private bool _pageBackgroundIsOpaque;
         private Rect? _dirtyPageRect;
@@ -1090,10 +1141,11 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
 
         private sealed class PanoramaDrawOperation : ICustomDrawOperation
         {
-            public PanoramaDrawOperation(Rect bounds, SKImage image, SKPoint[] vertices, SKPoint[] textures)
+            public PanoramaDrawOperation(Rect bounds, PanoramaTexture texture, SKPoint[] vertices,
+                SKPoint[] textures)
             {
                 Bounds = bounds;
-                _image = image;
+                _texture = texture;
                 _vertices = vertices;
                 _textures = textures;
             }
@@ -1116,12 +1168,15 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
                 using var lease = leaseFeature.Lease();
                 var canvas = lease.SkCanvas;
 
+                var image = _texture.GetImage(lease.GrContext);
+                if (image is null) return;
+
                 canvas.Save();
                 canvas.ClipRect(new SKRect(0, 0, (float) Bounds.Width, (float) Bounds.Height));
 
                 using var paint = new SKPaint();
                 paint.IsAntialias = false;
-                using var shader = _image.ToShader(SKShaderTileMode.Clamp, SKShaderTileMode.Clamp);
+                using var shader = image.ToShader(SKShaderTileMode.Clamp, SKShaderTileMode.Clamp);
                 paint.Shader = shader;
 
                 canvas.DrawVertices(SKVertexMode.Triangles, _vertices, _textures, null, paint);
@@ -1129,7 +1184,7 @@ namespace Ssz.Operator.Core.ControlsPlay.PanoramaPlay
                 canvas.Restore();
             }
 
-            private readonly SKImage _image;
+            private readonly PanoramaTexture _texture;
             private readonly SKPoint[] _vertices;
             private readonly SKPoint[] _textures;
         }

@@ -1,6 +1,5 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Labs.Gif;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -10,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;
 using Microsoft.Win32;
 using OxyPlot;
+using Ssz.Operator.Core.ControlsCommon;
 using Ssz.Operator.Core.Properties;
 using Ssz.Operator.Core.Utils;
 using Ssz.Utils;
@@ -315,18 +315,14 @@ namespace Ssz.Operator.Core
                         {
                             case ".GIF":
                             {
-                                var image = new GifImage
+                                // Not Avalonia.Labs.Gif: that one animates through the compositor, and a
+                                // rendering into a bitmap never sees it - the panorama draws its whole
+                                // page into one.
+                                var image = new AnimatedImage
                                 {
                                     Stretch = stretch,
                                     Source = stream
                                 };
-
-                                // An animated image is drawn by the compositor, and a rendering into a
-                                // bitmap never sees it - the panorama draws its whole page into one.
-                                // The first frame is kept with the image, so such a rendering has
-                                // something to show.
-                                SetStillImage(image, stream);
-
                                 return image;
                             }
                             case ".SVG":
@@ -360,36 +356,6 @@ namespace Ssz.Operator.Core
                 DsProject.LoggersSet.Logger.LogError(ex, @"");
                 return null;
             }            
-        }
-
-        /// <summary>
-        ///     The first frame of an animated image, for a rendering that cannot run the animation.
-        /// </summary>
-        public static readonly AttachedProperty<IImage?> StillImageProperty =
-            AvaloniaProperty.RegisterAttached<Control, IImage?>(@"StillImage", typeof(XamlHelper));
-
-        public static IImage? GetStillImage(Control control)
-        {
-            return control.GetValue(StillImageProperty);
-        }
-
-        private static void SetStillImage(Control control, Stream stream)
-        {
-            try
-            {
-                if (!stream.CanSeek) return;
-
-                long position = stream.Position;
-                stream.Position = 0;
-                var bitmap = new Bitmap(stream);
-                stream.Position = position;
-
-                control.SetValue(StillImageProperty, bitmap);
-            }
-            catch (Exception)
-            {
-                // A picture that cannot be decoded is simply not shown in such a rendering.
-            }
         }
 
         public static void GetUsedFileNames(string xamlWithRelativePaths, HashSet<string> usedFileNames)
