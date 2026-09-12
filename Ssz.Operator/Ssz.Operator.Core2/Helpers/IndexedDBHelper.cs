@@ -11,39 +11,53 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Ssz.Operator.Core
 {
     public static class IndexedDBHelper
     {
-        #region public functions
+        #region public functions        
 
-        #endregion
-
+        /// <summary>   
+        ///     <para>!!! Warning: always '/' as path separator !!!</para>
+        ///     <para>Path relative to the root of the Files Store.</para>
+        ///     <para>No '/' at the begin, no '/' at the end.</para>
+        ///     <para>String.Empty for the Files Store root directory.</para>
+        /// </summary>
         public static async Task<IndexedDBFileProvider> CreateFileProviderAsync(string projectDirectoryInvariantPathRelativeToRootDirectory)
         {
-            if (!OperatingSystem.IsBrowser())
-                throw new InvalidOperationException();
-
-            await IndexedDBInterop.InitializeInteropAsync();
-            await IndexedDBInterop.InitializeAsync(projectDirectoryInvariantPathRelativeToRootDirectory);
-
             TempIndexedDBDirectory rootTempIndexedDBDirectory = new()
             {
                 PhysicalPath = @""
             };
 
+#if !TEST_BROWSER_IN_DESKTOP
+            if (!OperatingSystem.IsBrowser())
+                throw new InvalidOperationException();
+
+            await IndexedDBInterop.InitializeInteropAsync();
+            await IndexedDBInterop.InitializeAsync(projectDirectoryInvariantPathRelativeToRootDirectory);            
+
             var r = (object[])(await IndexedDBInterop.GetFileInfosAsync(projectDirectoryInvariantPathRelativeToRootDirectory));
             foreach (System.Runtime.InteropServices.JavaScript.JSObject jSObject in r)
             {
-                string indexedDBFilePhysicalPath = jSObject.GetPropertyAsString(@"id") ?? @"";
+                string filePathRelativeToProjectDirectory = jSObject.GetPropertyAsString(@"id") ?? @"";
                 DateTimeOffset indexedDBFileLastModified = new Any(jSObject.GetPropertyAsString(@"fileInfo")).ValueAs<DateTimeOffset>(false);
+#else
+            var pathInTempDirectory = GetPathInTempDirectory(projectDirectoryInvariantPathRelativeToRootDirectory);
+            Directory.CreateDirectory(pathInTempDirectory);
+            foreach (FileInfo cacheFileInfo in (new DirectoryInfo(pathInTempDirectory)).GetFiles("*", SearchOption.AllDirectories))
+            {
+                string indexedDBFilePhysicalPath = Path.GetRelativePath(pathInTempDirectory, cacheFileInfo.FullName);
+                DateTimeOffset filePathRelativeToProjectDirectory = new DateTimeOffset(cacheFileInfo.LastWriteTimeUtc);
+#endif
 
                 var indexedDBFile = new IndexedDBFile
                 {
                     ProjectDirectoryInvariantPathRelativeToRootDirectory = projectDirectoryInvariantPathRelativeToRootDirectory,
                     PhysicalPath = indexedDBFilePhysicalPath,
-                    LastModified = indexedDBFileLastModified
+                    LastModified = filePathRelativeToProjectDirectory
                 };
                 var parts = indexedDBFilePhysicalPath.Split(Path.DirectorySeparatorChar);
 
@@ -70,25 +84,10 @@ namespace Ssz.Operator.Core
                     }
                 }
             }
-
             IndexedDBDirectory rootIndexedDBDirectory = GetIndexedDBDirectory(rootTempIndexedDBDirectory); 
 
             return new IndexedDBFileProvider(rootIndexedDBDirectory);
-        }
-
-        private static IndexedDBDirectory GetIndexedDBDirectory(TempIndexedDBDirectory tempIndexedDBDirectory)
-        {
-            return new IndexedDBDirectory()
-            {
-                PhysicalPath = tempIndexedDBDirectory.PhysicalPath,
-                LastModified = tempIndexedDBDirectory.LastModified,
-                Length = tempIndexedDBDirectory.Length,
-                ChildIndexedDBDirectoriesDictionary = tempIndexedDBDirectory.ChildIndexedDBDirectoriesDictionary
-                    .ToFrozenDictionary(kvp => kvp.Key, kvp => GetIndexedDBDirectory(kvp.Value), StringComparer.InvariantCultureIgnoreCase),
-                IndexedDBFilesDictionary = tempIndexedDBDirectory.IndexedDBFilesDictionary
-                    .ToFrozenDictionary(StringComparer.InvariantCultureIgnoreCase)
-            };
-        }
+        }        
 
         public static async Task DownloadFilesStoreDirectoryAsync(
             IndexedDBDirectory indexedDBDirectory,            
@@ -117,7 +116,12 @@ namespace Ssz.Operator.Core
                     {
                         try
                         {
-                            await IndexedDBInterop.DeleteFileAsync(projectDirectoryInvariantPathRelativeToRootDirectory, existingIndexedDBFile.PhysicalPath!);                            
+#if !TEST_BROWSER_IN_DESKTOP
+                            await IndexedDBInterop.DeleteFileAsync(projectDirectoryInvariantPathRelativeToRootDirectory, existingIndexedDBFile.PhysicalPath!);  
+#else
+                            File.Delete(Path.Combine(GetPathInTempDirectory(projectDirectoryInvariantPathRelativeToRootDirectory), existingIndexedDBFile.PhysicalPath!));
+#endif
+                                                      
                             dowload = true;
                         }
                         catch (Exception)
@@ -155,7 +159,12 @@ namespace Ssz.Operator.Core
             {
                 try
                 {
+#if !TEST_BROWSER_IN_DESKTOP
                     await IndexedDBInterop.DeleteFileAsync(projectDirectoryInvariantPathRelativeToRootDirectory, fileInfo.PhysicalPath!);
+#else
+                    File.Delete(Path.Combine(GetPathInTempDirectory(projectDirectoryInvariantPathRelativeToRootDirectory), fileInfo.PhysicalPath!));
+#endif
+                    
                 }
                 catch (Exception)
                 {
@@ -202,9 +211,41 @@ namespace Ssz.Operator.Core
                 }
             }
             indexedDBDirectory.ChildIndexedDBDirectoriesDictionary = newChildIndexedDBDirectoriesDictionary.ToFrozenDictionary(StringComparer.InvariantCultureIgnoreCase);
-        }        
+        }
+
+#if TEST_BROWSER_IN_DESKTOP
+        /// <summary>   
+        ///     <para>!!! Warning: always '/' as path separator !!!</para>
+        ///     <para>Path relative to the root of the Files Store.</para>
+        ///     <para>No '/' at the begin, no '/' at the end.</para>
+        ///     <para>String.Empty for the Files Store root directory.</para>
+        /// </summary>
+        public static string GetPathInTempDirectory(string invariantPathRelativeToRootDirectory)
+        {
+            invariantPathRelativeToRootDirectory = invariantPathRelativeToRootDirectory.Replace('/', Path.DirectorySeparatorChar);
+            var pathInTempDirectory = Path.Combine(Path.GetTempPath(), invariantPathRelativeToRootDirectory);            
+            return pathInTempDirectory;
+        }
+
+#endif
+
+        #endregion
 
         #region private functions
+
+        private static IndexedDBDirectory GetIndexedDBDirectory(TempIndexedDBDirectory tempIndexedDBDirectory)
+        {
+            return new IndexedDBDirectory()
+            {
+                PhysicalPath = tempIndexedDBDirectory.PhysicalPath,
+                LastModified = tempIndexedDBDirectory.LastModified,
+                Length = tempIndexedDBDirectory.Length,
+                ChildIndexedDBDirectoriesDictionary = tempIndexedDBDirectory.ChildIndexedDBDirectoriesDictionary
+                    .ToFrozenDictionary(kvp => kvp.Key, kvp => GetIndexedDBDirectory(kvp.Value), StringComparer.InvariantCultureIgnoreCase),
+                IndexedDBFilesDictionary = tempIndexedDBDirectory.IndexedDBFilesDictionary
+                    .ToFrozenDictionary(StringComparer.InvariantCultureIgnoreCase)
+            };
+        }
 
         //private static DsFilesStoreDirectory CreateProjectDsFilesStoreDirectoryObject(string projectName, string pathRelativeToRootDirectory)
         //{
@@ -264,6 +305,7 @@ namespace Ssz.Operator.Core
 
                         IndexedDBFile indexedDBFile = new()
                         {
+                            ProjectDirectoryInvariantPathRelativeToRootDirectory = projectDirectoryInvariantPathRelativeToRootDirectory,
                             PhysicalPath = filePathRelativeToProjectDirectory,
                             LastModified = dsFilesStoreFileData.LastModified,
                             Length = dsFilesStoreFileData.FileData.LongLength
@@ -272,11 +314,19 @@ namespace Ssz.Operator.Core
                         //     the file. If the target file already exists, it is overwritten.
                         try
                         {
+#if !TEST_BROWSER_IN_DESKTOP
                             await IndexedDBInterop.SaveFileAsync(
                                 projectDirectoryInvariantPathRelativeToRootDirectory, 
                                 indexedDBFile.PhysicalPath!, 
                                 new Any(indexedDBFile.LastModified).ValueAsString(false),
-                                dsFilesStoreFileData.FileData);                            
+                                dsFilesStoreFileData.FileData);      
+#else
+                            string cacheFileFullName = Path.Combine(GetPathInTempDirectory(projectDirectoryInvariantPathRelativeToRootDirectory), indexedDBFile.PhysicalPath!);
+                            Directory.CreateDirectory(Path.GetDirectoryName(cacheFileFullName)!);
+                            await File.WriteAllBytesAsync(cacheFileFullName, dsFilesStoreFileData.FileData);
+                            File.SetLastWriteTimeUtc(cacheFileFullName, indexedDBFile.LastModified.DateTime);
+#endif
+
                             result.Add(indexedDBFile);
                         }
                         catch (Exception)
@@ -294,7 +344,11 @@ namespace Ssz.Operator.Core
         {
             foreach (var kvp in indexedDBDirectory.IndexedDBFilesDictionary)
             {
+#if !TEST_BROWSER_IN_DESKTOP
                 await IndexedDBInterop.DeleteFileAsync(projectDirectoryInvariantPathRelativeToRootDirectory, kvp.Value.PhysicalPath!);
+#else
+                File.Delete(Path.Combine(GetPathInTempDirectory(projectDirectoryInvariantPathRelativeToRootDirectory), kvp.Value.PhysicalPath!));
+#endif
             }
 
             foreach (var kvp in indexedDBDirectory.ChildIndexedDBDirectoriesDictionary)

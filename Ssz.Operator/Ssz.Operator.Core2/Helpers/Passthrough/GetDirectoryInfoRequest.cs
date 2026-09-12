@@ -17,10 +17,10 @@ namespace Ssz.Dcs.CentralServer.Common.Passthrough
         #region public functions
 
         /// <summary>   
-        ///     !!! Warning: always '/' as path separator !!!
-        ///     Path relative to the root of the Files Store.
-        ///     No '/' at the begin, no '/' at the end.
-        ///     String.Empty for the Files Store root directory.
+        ///     <para>!!! Warning: always '/' as path separator !!!</para>
+        ///     <para>Path relative to the root of the Files Store.</para>
+        ///     <para>No '/' at the begin, no '/' at the end.</para>
+        ///     <para>String.Empty for the Files Store root directory.</para>
         /// </summary>
         public string InvariantPathRelativeToRootDirectory { get; set; } = @"";
 

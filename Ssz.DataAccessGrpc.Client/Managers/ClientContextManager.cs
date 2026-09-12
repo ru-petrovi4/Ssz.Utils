@@ -88,13 +88,13 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                 {
                     var httpClientHandler = new HttpClientHandler();
 #if NET5_0_OR_GREATER
-                if (dangerousAcceptAnyServerCertificate)
-                {
-                    if (OperatingSystem.IsBrowser())
-                        throw new InvalidOperationException("In WebAssembly dangerousAcceptAnyServerCertificate MUST be False");
-                    else
-                        httpClientHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-                }
+                    if (dangerousAcceptAnyServerCertificate)
+                    {
+                        if (OperatingSystem.IsBrowser())
+                            throw new InvalidOperationException("In WebAssembly dangerousAcceptAnyServerCertificate MUST be False");
+                        else
+                            httpClientHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                    }
 #else
                     if (dangerousAcceptAnyServerCertificate)
                         httpClientHandler.ServerCertificateCustomValidationCallback = (httpRequestMessage, x509Certificate2, x509Chain, sslPolicyErrors) => true;

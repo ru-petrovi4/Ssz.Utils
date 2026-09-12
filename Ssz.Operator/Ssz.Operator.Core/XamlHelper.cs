@@ -35,9 +35,9 @@ namespace Ssz.Operator.Core
         public const string XamlDescV2Begin = @"<!--DescV2:";
         public const string XamlDescEnd = @"-->";
 
-        public static string GetXamlWithAbsolutePaths(string? xamlWithRelativePaths, string? filesDirectoryName)
+        public static string GetXamlWithAbsolutePaths(string? xamlWithRelativePaths, string? filesDirectoryFullName)
         {
-            if (string.IsNullOrWhiteSpace(xamlWithRelativePaths) || string.IsNullOrEmpty(filesDirectoryName))
+            if (string.IsNullOrWhiteSpace(xamlWithRelativePaths) || string.IsNullOrEmpty(filesDirectoryFullName))
                 return xamlWithRelativePaths ?? "";
 
             xamlWithRelativePaths = UpdateXamlWithRelativePathsVersion(xamlWithRelativePaths!);
@@ -51,10 +51,10 @@ namespace Ssz.Operator.Core
                 if (String.IsNullOrEmpty(defaultValue))
                     return @"";
                 string relativePath = Uri.UnescapeDataString(defaultValue);
-                if (Path.HasExtension(relativePath) && !IsPathFullyQualified(relativePath))
+                if (Path.HasExtension(relativePath) && IsRelativePath(relativePath))
                 {
-                    string fileFullName = filesDirectoryName + @"/" + relativePath;                    
-                    xamlWithRelativePaths_Desc[@""] = GetUriString(fileFullName);
+                    string fileFullName = Path.Combine(filesDirectoryFullName, relativePath);
+                    xamlWithRelativePaths_Desc[@""] = Uri.EscapeDataString(fileFullName);
                 }
                 
                 return AddXamlDesc(null, xamlWithRelativePaths_Desc);                
@@ -79,7 +79,7 @@ namespace Ssz.Operator.Core
                         string relativePath = Uri.UnescapeDataString(xamlWithRelativePaths_WithoutDesc.Substring(i, quoteIndex - i));
                         lastIndex = quoteIndex + 1;
                         result.Append(@"=""");
-                        string fileFullName = filesDirectoryName + @"/" + relativePath;
+                        string fileFullName = Path.Combine(filesDirectoryFullName, relativePath);
                         result.Append(GetFileUriStringWithAbsolutePath(fileFullName));
                         result.Append('"');
                     }
@@ -113,7 +113,7 @@ namespace Ssz.Operator.Core
                 if (String.IsNullOrEmpty(defaultValue))
                     return @"";
                 string absolutePath = Uri.UnescapeDataString(defaultValue);
-                if (Path.HasExtension(absolutePath) && IsPathFullyQualified(absolutePath))
+                if (Path.HasExtension(absolutePath) && !IsRelativePath(absolutePath))
                 {
                     if (string.IsNullOrEmpty(filesStoreDirectoryName))
                         return null; // Failed to convert                    
@@ -123,7 +123,7 @@ namespace Ssz.Operator.Core
                     var destinationFileInfo =
                         GetDestinationFileInfoAndCopyFile(sourceFileInfo, filesStoreDirectoryInfo, ref filesStoreInfo);
 
-                    xamlWithAbsolutePaths_Desc[@""] = GetUriString(destinationFileInfo.Name);
+                    xamlWithAbsolutePaths_Desc[@""] = Uri.EscapeDataString(destinationFileInfo.Name);
                 }
 
                 return AddXamlDesc(null, xamlWithAbsolutePaths_Desc);
@@ -180,9 +180,9 @@ namespace Ssz.Operator.Core
         ///     filesDirectoryName - must not have slash at the end.
         /// </summary>
         /// <param name="xamlWithAbsolutePaths"></param>
-        /// <param name="filesDirectoryName"></param>
+        /// <param name="filesDirectoryFullName"></param>
         /// <returns></returns>
-        public static string GetXamlWithRelativePaths(string xamlWithAbsolutePaths, string filesDirectoryName)
+        public static string GetXamlWithRelativePaths(string xamlWithAbsolutePaths, string filesDirectoryFullName)
         {
             if (string.IsNullOrWhiteSpace(xamlWithAbsolutePaths)) return "";
 
@@ -197,29 +197,27 @@ namespace Ssz.Operator.Core
                 if (String.IsNullOrEmpty(defaultValue))
                     return @"";
                 string absolutePath = Uri.UnescapeDataString(defaultValue);
-                if (Path.HasExtension(absolutePath) && IsPathFullyQualified(absolutePath))
+                if (Path.HasExtension(absolutePath) && !IsRelativePath(absolutePath))
                 {
-                    if (string.IsNullOrEmpty(filesDirectoryName))
-                        return @""; // Failed to convert                    
-
-                    filesDirectoryName = filesDirectoryName.Replace(Path.DirectorySeparatorChar, '/');
+                    if (string.IsNullOrEmpty(filesDirectoryFullName))
+                        return @""; // Failed to convert
+                    
                     StringHelper.ReplaceIgnoreCase(ref absolutePath,
-                        Uri.EscapeDataString(filesDirectoryName) + @"/",
+                        filesDirectoryFullName + Path.DirectorySeparatorChar,
                         @"");
 
-                    xamlWithAbsolutePaths_Desc[@""] = GetUriString(absolutePath);
+                    xamlWithAbsolutePaths_Desc[@""] = Uri.EscapeDataString(absolutePath);
                 }
 
                 return AddXamlDesc(null, xamlWithAbsolutePaths_Desc);
             }
             else
             {
-                filesDirectoryName = filesDirectoryName.Replace(Path.DirectorySeparatorChar, '/');
                 StringHelper.ReplaceIgnoreCase(ref xamlWithAbsolutePaths_WithoutDesc,
-                    @"file:///" + Uri.EscapeDataString(filesDirectoryName) + @"/",
+                    @"file:///" + Uri.EscapeDataString(filesDirectoryFullName + Path.DirectorySeparatorChar),
                     @"file:./");
                 StringHelper.ReplaceIgnoreCase(ref xamlWithAbsolutePaths_WithoutDesc,
-                    @"file:///" + filesDirectoryName + @"/",
+                    @"file:///" + filesDirectoryFullName + Path.DirectorySeparatorChar,
                     @"file:./");
                 return AddXamlDesc(xamlWithAbsolutePaths_WithoutDesc, xamlWithAbsolutePaths_Desc);
             } 
@@ -306,10 +304,11 @@ namespace Ssz.Operator.Core
                 var defaultValue = xamlDesc.TryGetValue(@"");
                 if (string.IsNullOrWhiteSpace(defaultValue))
                     return null;
+                string path = Uri.UnescapeDataString(defaultValue);
 
-                if (!String.IsNullOrEmpty(filesDirectoryFullName) && !IsPathFullyQualified(defaultValue))
-                    defaultValue = Path.Combine(filesDirectoryFullName!, defaultValue);
-                var stream = DsProject.GetStream(defaultValue);
+                if (!String.IsNullOrEmpty(filesDirectoryFullName) && IsRelativePath(path))
+                    path = Path.Combine(filesDirectoryFullName!, path);
+                var stream = DsProject.GetStream(path);
                 if (stream is null)
                     return null;
 
@@ -375,19 +374,7 @@ namespace Ssz.Operator.Core
                 DsProject.LoggersSet.Logger.LogError(ex, @"");
                 return null;
             }
-        }        
-
-        private static bool IsPathFullyQualified(string? defaultValue)
-        {
-            if (String.IsNullOrEmpty(defaultValue))
-                return false;
-#if NET10_0_OR_GREATER
-            return Path.IsPathFullyQualified(defaultValue);
-#else
-            // TODO
-            return defaultValue!.Contains(@"\");
-#endif            
-        }
+        }                
 
         public static void GetUsedFileNames(string xamlWithRelativePaths, HashSet<string> usedFileNames)
         {
@@ -558,7 +545,7 @@ namespace Ssz.Operator.Core
                 case ".HTML":
                     result =
                         "<controlsCommon:BrowserControl xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" xmlns:controlsCommon=\"clr-namespace:Ssz.Operator.Core.ControlsCommon;assembly=Ssz.Operator.Core\" Url=\"" +
-                        GetUriString(DsProject.Instance.GetFileRelativePath(fileInfo.FullName)) + "\" Stretch=\"" +
+                        Uri.EscapeDataString(DsProject.Instance.GetFileRelativePath(fileInfo.FullName)) + "\" Stretch=\"" +
                         stretch + "\" />";
                     break;
                 case ".GIF":
@@ -1147,7 +1134,8 @@ namespace Ssz.Operator.Core
                     var defaultValue = xamlDesc.TryGetValue(@"");
                     if (!String.IsNullOrEmpty(defaultValue))
                     {
-                        var extensionLower = Path.GetExtension(defaultValue).ToLower();
+                        string path = Uri.UnescapeDataString(defaultValue);
+                        var extensionLower = Path.GetExtension(path).ToLower();
                         if (!String.IsNullOrEmpty(extensionLower) && extensionLower != @".xaml")
                             return AddXamlDesc(null, xamlDesc);
                     }
@@ -1212,20 +1200,23 @@ namespace Ssz.Operator.Core
             }
         }
 
-        private static string GetUriString(string path)
+        private static bool IsRelativePath(string? defaultValue)
         {
-            return path.Replace(Path.DirectorySeparatorChar, '/'); // no need to escape
-        }
+            if (String.IsNullOrEmpty(defaultValue))
+                return true;
+
+            return !defaultValue.Contains(Path.DirectorySeparatorChar);
+        }        
 
         private static string GetFileUriStringWithAbsolutePath(string fileFullName)
         {
             if (fileFullName.StartsWith("pack:")) return fileFullName;
-            return @"file:///" + GetUriString(fileFullName);
+            return @"file:///" + Uri.EscapeDataString(fileFullName);
         }
 
         private static string GetFileUriStringWithRelativePath(string fileRelativePath)
         {
-            return @"file:./" + GetUriString(fileRelativePath);
+            return @"file:./" + Uri.EscapeDataString(fileRelativePath);
         }
 
         private static FileInfo GetDestinationFileInfoAndCopyFile(FileInfo sourceFileInfo,
@@ -1347,7 +1338,7 @@ namespace Ssz.Operator.Core
                             var parserContext = new ParserContext
                             {
                                 BaseUri =
-                                    new Uri(GetUriString(parserContextDirectoryName) + @"/",
+                                    new Uri(Uri.EscapeDataString(parserContextDirectoryName) + @"/",
                                         UriKind.Absolute)
                             };
                             UIElement? content;

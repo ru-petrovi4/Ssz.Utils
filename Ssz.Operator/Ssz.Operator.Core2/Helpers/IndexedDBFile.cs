@@ -14,10 +14,20 @@ namespace Ssz.Operator.Core
     {
         #region public functions
 
+        /// <summary>   
+        ///     <para>!!! Warning: always '/' as path separator !!!</para>
+        ///     <para>Path relative to the root of the Files Store.</para>
+        ///     <para>No '/' at the begin, no '/' at the end.</para>
+        ///     <para>String.Empty for the Files Store root directory.</para>
+        /// </summary>
         public string ProjectDirectoryInvariantPathRelativeToRootDirectory { get; set; } = @"";
 
         public string Name => PhysicalPath!.Substring(PhysicalPath!.LastIndexOf(Path.DirectorySeparatorChar) + 1);
 
+        /// <summary>
+        ///     <para>For browser: fileId in Project</para>
+        ///     <para>File relative path in Project directory. Path.DirectorySeparatorChar for current system is used.</para>
+        /// </summary>
         public string? PhysicalPath { get; set; }
 
         public bool Exists { get; set; } = true;
@@ -38,6 +48,7 @@ namespace Ssz.Operator.Core
 
         public async Task<Stream> CreateReadStreamAsync()
         {
+#if !TEST_BROWSER_IN_DESKTOP
             if (!OperatingSystem.IsBrowser())
                 throw new InvalidOperationException();
 
@@ -45,6 +56,10 @@ namespace Ssz.Operator.Core
             System.Runtime.InteropServices.JavaScript.JSObject jSObject =
                 (System.Runtime.InteropServices.JavaScript.JSObject)obj;
             byte[] fileData = jSObject.GetPropertyAsByteArray(@"file")!;
+#else
+            byte[] fileData = File.ReadAllBytes(Path.Combine(IndexedDBHelper.GetPathInTempDirectory(ProjectDirectoryInvariantPathRelativeToRootDirectory), PhysicalPath!));
+#endif
+
             return new MemoryStream(fileData);
         }
 

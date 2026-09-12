@@ -56,10 +56,10 @@ namespace Ssz.Operator.Core
                 if (String.IsNullOrEmpty(defaultValue))
                     return @"";
                 string relativePath = Uri.UnescapeDataString(defaultValue);
-                if (Path.HasExtension(relativePath) && !IsPathFullyQualified(relativePath))
+                if (Path.HasExtension(relativePath) && IsRelativePath(relativePath))
                 {
-                    string fileFullName = filesDirectoryFullName + @"/" + relativePath;
-                    xamlWithRelativePaths_Desc[@""] = GetUriString(fileFullName);
+                    string fileFullName = Path.Combine(filesDirectoryFullName, relativePath);
+                    xamlWithRelativePaths_Desc[@""] = Uri.EscapeDataString(fileFullName);
                 }
 
                 return AddXamlDesc(null, xamlWithRelativePaths_Desc);
@@ -84,7 +84,7 @@ namespace Ssz.Operator.Core
                         string relativePath = Uri.UnescapeDataString(xamlWithRelativePaths_WithoutDesc.Substring(i, quoteIndex - i));
                         lastIndex = quoteIndex + 1;
                         result.Append(@"=""");
-                        string fileFullName = filesDirectoryFullName + @"/" + relativePath;
+                        string fileFullName = Path.Combine(filesDirectoryFullName, relativePath);
                         result.Append(GetFileUriStringWithAbsolutePath(fileFullName));
                         result.Append('"');
                     }
@@ -119,7 +119,7 @@ namespace Ssz.Operator.Core
                 if (String.IsNullOrEmpty(defaultValue))
                     return @"";
                 string absolutePath = Uri.UnescapeDataString(defaultValue);
-                if (Path.HasExtension(absolutePath) && IsPathFullyQualified(absolutePath))
+                if (Path.HasExtension(absolutePath) && !IsRelativePath(absolutePath))
                 {
                     if (string.IsNullOrEmpty(filesDirectoryFullName))
                         return null; // Failed to convert                    
@@ -129,7 +129,7 @@ namespace Ssz.Operator.Core
                     var destinationFileInfo =
                         GetDestinationFileInfoAndCopyFile(sourceFileInfo, filesStoreDirectoryInfo, ref filesStoreInfo);
 
-                    xamlWithAbsolutePaths_Desc[@""] = GetUriString(destinationFileInfo.Name);
+                    xamlWithAbsolutePaths_Desc[@""] = Uri.EscapeDataString(destinationFileInfo.Name);
                 }
 
                 return AddXamlDesc(null, xamlWithAbsolutePaths_Desc);
@@ -197,29 +197,27 @@ namespace Ssz.Operator.Core
                 if (String.IsNullOrEmpty(defaultValue))
                     return @"";
                 string absolutePath = Uri.UnescapeDataString(defaultValue);
-                if (Path.HasExtension(absolutePath) && IsPathFullyQualified(absolutePath))
+                if (Path.HasExtension(absolutePath) && !IsRelativePath(absolutePath))
                 {
                     if (string.IsNullOrEmpty(filesDirectoryFullName))
                         return @""; // Failed to convert                    
-
-                    filesDirectoryFullName = filesDirectoryFullName.Replace(Path.DirectorySeparatorChar, '/');
+                    
                     StringHelper.ReplaceIgnoreCase(ref absolutePath,
-                        Uri.EscapeDataString(filesDirectoryFullName) + @"/",
-                        @"");
+                        filesDirectoryFullName + Path.DirectorySeparatorChar,
+                        @"");                    
 
-                    xamlWithAbsolutePaths_Desc[@""] = GetUriString(absolutePath);
+                    xamlWithAbsolutePaths_Desc[@""] = Uri.EscapeDataString(absolutePath);
                 }
 
                 return AddXamlDesc(null, xamlWithAbsolutePaths_Desc);
             }
             else
-            {
-                filesDirectoryFullName = filesDirectoryFullName.Replace(Path.DirectorySeparatorChar, '/');
+            {                
                 StringHelper.ReplaceIgnoreCase(ref xamlWithAbsolutePaths_WithoutDesc,
-                    @"file:///" + Uri.EscapeDataString(filesDirectoryFullName) + @"/",
+                    @"file:///" + Uri.EscapeDataString(filesDirectoryFullName + Path.DirectorySeparatorChar),
                     @"file:./");
                 StringHelper.ReplaceIgnoreCase(ref xamlWithAbsolutePaths_WithoutDesc,
-                    @"file:///" + filesDirectoryFullName + @"/",
+                    @"file:///" + filesDirectoryFullName + Path.DirectorySeparatorChar,
                     @"file:./");
                 return AddXamlDesc(xamlWithAbsolutePaths_WithoutDesc, xamlWithAbsolutePaths_Desc);
             }
@@ -298,8 +296,11 @@ namespace Ssz.Operator.Core
                 var defaultValue = xamlDesc.TryGetValue(@"");
                 if (string.IsNullOrWhiteSpace(defaultValue))
                     return null;
+                string path = Uri.UnescapeDataString(defaultValue);
 
-                var stream = await DsProject.GetStreamAsync(Path.Combine(filesDirectoryFullName ?? @"", defaultValue));
+                if (!String.IsNullOrEmpty(filesDirectoryFullName) && IsRelativePath(path))
+                    path = Path.Combine(filesDirectoryFullName!, path);
+                var stream = await DsProject.GetStreamAsync(path);
                 if (stream is null)
                     return null;
 
@@ -507,7 +508,7 @@ namespace Ssz.Operator.Core
             //    case ".HTML":
             //        result =
             //            "<controlsCommon:BrowserControl xmlns=\"https://github.com/avaloniaui\" xmlns:controlsCommon=\"clr-namespace:Ssz.Operator.Core.ControlsCommon;assembly=Ssz.Operator.Core\" Url=\"" +
-            //            GetUriString(DsProject.Instance.GetFileRelativePath(fileInfo.FullName)) + "\" Stretch=\"" +
+            //            Uri.EscapeDataString(DsProject.Instance.GetFileRelativePath(fileInfo.FullName)) + "\" Stretch=\"" +
             //            stretch + "\" />";
             //        break;
             //    case ".GIF":
@@ -1054,7 +1055,8 @@ namespace Ssz.Operator.Core
                     var defaultValue = xamlDesc.TryGetValue(@"");
                     if (!String.IsNullOrEmpty(defaultValue))
                     {
-                        var extensionLower = Path.GetExtension(defaultValue).ToLower();
+                        string path = Uri.UnescapeDataString(defaultValue);
+                        var extensionLower = Path.GetExtension(path).ToLower();
                         if (!String.IsNullOrEmpty(extensionLower) && extensionLower != @".xaml")
                             return AddXamlDesc(null, xamlDesc);
                     }
@@ -1099,7 +1101,15 @@ namespace Ssz.Operator.Core
                 action();
             else
                 Dispatcher.UIThread.Invoke(action);
-        }            
+        }
+
+        private static bool IsRelativePath(string? defaultValue)
+        {
+            if (String.IsNullOrEmpty(defaultValue))
+                return true;
+
+            return !defaultValue.Contains(Path.DirectorySeparatorChar);
+        }
 
         private static string GetDestinationFileNameAndCopyFile(string sourceFileFullName,
             string? filesDirectoryFullName, ref Dictionary<byte[], string>? filesStoreInfo)
@@ -1337,7 +1347,7 @@ namespace Ssz.Operator.Core
         ///     Avalonia: DestinationRect/SourceRect, whose unit is part of the value - a plain
         ///     "x,y,w,h" is absolute, "x%,y%,w%,h%" is relative to the bounding box.
         /// </summary>
-        static void ConvertTileBrushRect(XElement element, string rectAttributeName,
+        private static void ConvertTileBrushRect(XElement element, string rectAttributeName,
             string unitsAttributeName, string newAttributeName)
         {
             XAttribute? rectAttr = element.Attribute(rectAttributeName);
@@ -1375,7 +1385,7 @@ namespace Ssz.Operator.Core
             unitsAttr?.Remove();
         }
 
-        static void ConvertToPercentage(XElement element, string attributeName)
+        private static void ConvertToPercentage(XElement element, string attributeName)
         {
             XAttribute? attr = element.Attribute(attributeName);
             if (attr != null)
@@ -1391,22 +1401,22 @@ namespace Ssz.Operator.Core
             }
         }
 
-        static Vector2 ParsePoint(string value)
+        private static Vector2 ParsePoint(string value)
         {
             var parts = value.Split(',').Select(p => float.Parse(p.TrimEnd('%'), CultureInfo.InvariantCulture) / 100f).ToArray();
             return new Vector2(parts[0], parts[1]);
         }
 
-        static string FormatPoint(Vector2 point) => $"{point.X * 100}%,{point.Y * 100}%";
+        private static string FormatPoint(Vector2 point) => $"{point.X * 100}%,{point.Y * 100}%";
 
-        static Vector2 ApplySkew(Vector2 point, float angleX, float centerX, float centerY)
+        private static Vector2 ApplySkew(Vector2 point, float angleX, float centerX, float centerY)
         {
             float skewRad = angleX * (float)(Math.PI / 180);
             float offsetX = (point.Y - centerY) * (float)Math.Tan(skewRad);
             return new Vector2(point.X + offsetX, point.Y);
         }
 
-        static Vector2 ApplyRotation(Vector2 point, float angle, float centerX, float centerY)
+        private static Vector2 ApplyRotation(Vector2 point, float angle, float centerX, float centerY)
         {
             float rad = angle * (float)(Math.PI / 180);
             float cos = (float)Math.Cos(rad);
@@ -1419,22 +1429,17 @@ namespace Ssz.Operator.Core
                 centerX + (x * cos - y * sin),
                 centerY + (x * sin + y * cos)
             );
-        }
-
-        private static string GetUriString(string path)
-        {
-            return path.Replace(Path.DirectorySeparatorChar, '/'); // no need to escape
-        }
+        }        
 
         private static string GetFileUriStringWithAbsolutePath(string fileFullName)
         {
             if (fileFullName.StartsWith("pack:")) return fileFullName;
-            return @"file:///" + GetUriString(fileFullName);
+            return @"file:///" + Uri.EscapeDataString(fileFullName);
         }
 
         private static string GetFileUriStringWithRelativePath(string fileRelativePath)
         {
-            return @"file:./" + GetUriString(fileRelativePath);
+            return @"file:./" + Uri.EscapeDataString(fileRelativePath);
         }
 
         private static FileInfo GetDestinationFileInfoAndCopyFile(FileInfo sourceFileInfo,
@@ -1499,18 +1504,6 @@ namespace Ssz.Operator.Core
             return destinationFileInfo;
         }
 
-        private static bool IsPathFullyQualified(string? defaultValue)
-        {
-            if (String.IsNullOrEmpty(defaultValue))
-                return false;
-#if NET10_0_OR_GREATER
-            return Path.IsPathFullyQualified(defaultValue);
-#else
-            // TODO
-            return defaultValue!.Contains(@"\");
-#endif            
-        }
-
         //private static string GetXamlWithAbsolutePathsFromXamlFile(List<FileInfo> fileInfos,
         //    string parserContextDirectoryName, Stretch stretch,
         //    out Size? contentOriginalSize)
@@ -1568,7 +1561,7 @@ namespace Ssz.Operator.Core
         //                    var parserContext = new ParserContext
         //                    {
         //                        BaseUri =
-        //                            new Uri(GetUriString(parserContextDirectoryName) + @"/",
+        //                            new Uri(Uri.EscapeDataString(parserContextDirectoryName) + @"/",
         //                                UriKind.Absolute)
         //                    };
         //                    UIElement? content;

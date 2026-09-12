@@ -1,44 +1,45 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Data;
 using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
-using System.Linq;
 using Avalonia.Markup.Xaml;
-using Ssz.Operator.Play.ViewModels;
-using Ssz.Operator.Play.Views;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
-using Ssz.Operator.Core;
-using Ssz.Utils.Logging;
-using System.Collections.Generic;
-using Microsoft.Extensions.Configuration;
-using Ssz.Utils.ConfigurationCrypter.Extensions;
-using Microsoft.Extensions.Logging.Abstractions;
-using Ssz.Utils;
-using Ssz.Operator.Core.Addons;
-using Ssz.Operator.Core.DataAccess;
-using Ssz.Operator.Core.Commands;
-using Avalonia.Platform.Storage;
-using System.IO;
-using Ssz.Operator.Core.Utils;
-using Avalonia.Threading;
-using System.Threading.Tasks;
-using Ssz.DataAccessGrpc.Client;
-using Ssz.Utils.DataAccess;
-using Ssz.Dcs.CentralServer.Common;
-using Ssz.Dcs.CentralServer.Common.Passthrough;
-using Ssz.Utils.Serialization;
-using Microsoft.Extensions.FileProviders;
-using System.ComponentModel;
-using Avalonia.Media;
 using Avalonia.Markup.Xaml.Converters;
-using Avalonia.Controls;
-using Avalonia.Data;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Markup.Xaml.MarkupExtensions.CompiledBindings;
+using Avalonia.Media;
 using Avalonia.Platform;
+using Avalonia.Platform.Storage;
+using Avalonia.Threading;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using Ssz.DataAccessGrpc.Client;
+using Ssz.Dcs.CentralServer.Common;
+using Ssz.Dcs.CentralServer.Common.Passthrough;
+using Ssz.Operator.Core;
+using Ssz.Operator.Core.Addons;
+using Ssz.Operator.Core.Commands;
+using Ssz.Operator.Core.Commands.DsCommandOptions;
+using Ssz.Operator.Core.DataAccess;
+using Ssz.Operator.Core.Utils;
+using Ssz.Operator.Play.ViewModels;
+using Ssz.Operator.Play.Views;
+using Ssz.Utils;
+using Ssz.Utils.ConfigurationCrypter.Extensions;
+using Ssz.Utils.DataAccess;
+using Ssz.Utils.Logging;
+using Ssz.Utils.Serialization;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Ssz.Operator.Play;
 
@@ -56,23 +57,15 @@ public partial class App : Application
         //TypeDescriptor.AddAttributes(typeof(SolidColorBrush.), new TypeConverterAttribute(typeof(SolidColorBrushTypeConverter)));
         TypeDescriptor.AddAttributes(typeof(Color), new TypeConverterAttribute(typeof(ColorTypeConverter)));
         //SolidColorBrush.ColorProperty
+
+#if DEBUG
+        this.AttachDeveloperTools();
+#endif
     }
-    
+
     public override void OnFrameworkInitializationCompleted()
     {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            _ = OnFrameworkInitializationCompleted2(NullJobProgress.Instance);
-        }
-        else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
-        {
-            var mainView = new MainView
-            {
-                DataContext = new MainViewModel()
-            };                   
-
-            singleViewPlatform.MainView = mainView;
-        }
+        _ = OnFrameworkInitializationCompleted2(NullJobProgress.Instance);
 
         base.OnFrameworkInitializationCompleted();
     }
@@ -96,6 +89,7 @@ public partial class App : Application
 
             _ = Host.RunAsync();
 
+#if !TEST_BROWSER_IN_DESKTOP
             options = new Options(configuration);
 
             if (options.Review)
@@ -123,13 +117,28 @@ public partial class App : Application
                     }));
 
             dsProjectModeEnum = DsProject.DsProjectModeEnum.DesktopPlayMode;
+
+#else
+            options = new Options(null);
+
+            // TEMPCODE
+            options.CentralServerAddress = @"https://localhost:60060"; // @"https://www.pazchek.ru";
+            options.ProjectDirectoryInvariantPathRelativeToRootDirectory = "CDT.2024.SaratovPCNiDCS/Operator.Data/SARATOV_POLE_Interface";
+            options.ProjectFile = @"Saratov.dsproject";
+
+            DsProject.LoggersSet = new LoggersSet(
+                    NullLogger.Instance,
+                    null);
+
+            dsProjectModeEnum = DsProject.DsProjectModeEnum.BrowserPlayMode;
+#endif
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
             options = new Options(null);
 
             // TEMPCODE
-            options.CentralServerAddress = @"https://www.v3code.ru";
+            options.CentralServerAddress = @"https://www.pazchek.ru";
             options.ProjectDirectoryInvariantPathRelativeToRootDirectory = "CDT.2024.SaratovPCNiDCS/Operator.Data/SARATOV_POLE_Interface";
             options.ProjectFile = @"Saratov.dsproject";
 
@@ -143,8 +152,6 @@ public partial class App : Application
         {
             throw new InvalidOperationException();
         }
-
-        #region LoadDsProject
 
         //No need to check for FV licensing if we are being launched from the Editor since checks were already made there
         if (!options.Review && !ConsumeSszOperatorLicense())
@@ -161,6 +168,7 @@ public partial class App : Application
         IFileProvider? fileProvider;
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop2)
         {
+#if !TEST_BROWSER_IN_DESKTOP
             //if (String.IsNullOrEmpty(dsProjectFileFullName))
             //{
             //    var files = await desktop2.MainWindow?.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
@@ -183,6 +191,10 @@ public partial class App : Application
             //}            
             fileProvider = null;
             isReadOnly = !FileSystemHelper.IsDirectoryWritable(Path.GetDirectoryName(dsProjectFileFullName));
+#else
+            fileProvider = await UpdateFilesCacheAsync(options, jobProgress);
+            isReadOnly = true;
+#endif
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform2)
         {
@@ -221,8 +233,6 @@ public partial class App : Application
             SafeShutdown();
             return;
         }
-
-        #endregion        
 
         if (!String.IsNullOrEmpty(options.UserTagsFile))
         {
@@ -304,7 +314,11 @@ public partial class App : Application
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopFinal)
         {
-            WindowsManager.Instance.Initialize(options.StartPageFile, desktopFinal);            
+#if !TEST_BROWSER_IN_DESKTOP
+            WindowsManager.Instance.Initialize(options.StartPageFile, desktopFinal); 
+#else
+            WindowsManager.Instance.Initialize(options.StartPageFile, (ISingleViewApplicationLifetime?)null);
+#endif
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatformFinal)
         {
@@ -392,11 +406,13 @@ public partial class App : Application
                 },
                 new DataAccessProviderOptions
                 {
-                    DangerousAcceptAnyServerCertificate = false,
+                    DangerousAcceptAnyServerCertificate = true, //TEMPCODE
                 },
                 DispatcherHelper.GetUiDispatcher());
 
         string projectDirectoryInvariantPathRelativeToRootDirectory = options.ProjectDirectoryInvariantPathRelativeToRootDirectory;
+        if (projectDirectoryInvariantPathRelativeToRootDirectory.EndsWith('/'))
+            projectDirectoryInvariantPathRelativeToRootDirectory = projectDirectoryInvariantPathRelativeToRootDirectory.Substring(0, projectDirectoryInvariantPathRelativeToRootDirectory.Length - 1);
 
         IndexedDBFileProvider fileProvider = await IndexedDBHelper.CreateFileProviderAsync(projectDirectoryInvariantPathRelativeToRootDirectory);
 
@@ -546,7 +562,7 @@ public partial class App : Application
 
     private List<DsCommandView>? _conditionalDsCommandViewsCollection;
 
-    #endregion    
+    #endregion
 
     public class Options
     {

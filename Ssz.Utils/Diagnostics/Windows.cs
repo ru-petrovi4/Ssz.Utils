@@ -13,22 +13,30 @@ namespace Ssz.Utils.Diagnostics
         public static UInt64 GetTotalVirtualMemory()      => MemoryStatus.TotalVirtualMemory;
         public static UInt64 GetAvailableVirtualMemory()  => MemoryStatus.AvailableVirtualMemory;
 
-        static Windows() {
-            using var process = new Process();
-            process.StartInfo.FileName = $"wmic";
-            process.StartInfo.Arguments = $"os get /format:list";
-            process.StartInfo.UseShellExecute = false;
-            process.StartInfo.RedirectStandardOutput = true;
-            process.Start();
-            var output = process.StandardOutput.ReadToEnd();
-            process.WaitForExit();
-            const string captionLabel = "Caption=";
-            var captionIndex = output.IndexOf(captionLabel) + captionLabel.Length;
-            var newLineIndex = output.IndexOf("\r\n", captionIndex);
-            OSFullName = output.Substring(captionIndex, newLineIndex - captionIndex - 1);
-        }
+        //static Windows() 
+        //{
+        //    try
+        //    {
+        //        using var process = new Process();
+        //        process.StartInfo.FileName = $"wmic";
+        //        process.StartInfo.Arguments = $"os get /format:list";
+        //        process.StartInfo.UseShellExecute = false;
+        //        process.StartInfo.RedirectStandardOutput = true;
+        //        process.Start();
+        //        var output = process.StandardOutput.ReadToEnd();
+        //        process.WaitForExit();
+        //        const string captionLabel = "Caption=";
+        //        var captionIndex = output.IndexOf(captionLabel) + captionLabel.Length;
+        //        var newLineIndex = output.IndexOf("\r\n", captionIndex);
+        //        OSFullName = output.Substring(captionIndex, newLineIndex - captionIndex - 1);
+        //    }
+        //    catch
+        //    {
+        //        OSFullName = @"";
+        //    }            
+        //}
 
-        public static readonly String OSFullName;
+        //public static readonly String OSFullName;
 
         private static InternalMemoryStatus? internalMemoryStatus;
         private static InternalMemoryStatus MemoryStatus => internalMemoryStatus ?? (internalMemoryStatus = new InternalMemoryStatus());
