@@ -45,11 +45,15 @@ namespace Ssz.Operator.Core.DsShapeViews
             {
                 if (dsShape.TextStretch == Stretch.None)
                 {
-                    var viewBox = Content as Viewbox;
-                    if (viewBox is not null) viewBox.Child = null;
-                    // Avalonia drops wrapped lines that do not fit the available
-                    // height; UnclippedTextHost lays them all out, as WPF did.
-                    Content = new UnclippedTextHost { Child = _textBlock };
+                    var unclippedTextHost = Content as UnclippedTextHost;
+                    if (unclippedTextHost is null)
+                    {
+                        // Avalonia drops wrapped lines that do not fit the available
+                        // height; UnclippedTextHost lays them all out, as WPF did.
+                        unclippedTextHost = new UnclippedTextHost();
+                        Content = unclippedTextHost;
+                        unclippedTextHost.Child = _textBlock;
+                    }
                 }
                 else
                 {

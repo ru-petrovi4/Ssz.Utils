@@ -43,23 +43,23 @@ namespace Ssz.Operator.Core
             foreach (System.Runtime.InteropServices.JavaScript.JSObject jSObject in r)
             {
                 string filePathRelativeToProjectDirectory = jSObject.GetPropertyAsString(@"id") ?? @"";
-                DateTimeOffset indexedDBFileLastModified = new Any(jSObject.GetPropertyAsString(@"fileInfo")).ValueAs<DateTimeOffset>(false);
+                DateTimeOffset indexedDBFileLastModified = new Ssz.Utils.Any(jSObject.GetPropertyAsString(@"fileInfo")).ValueAs<DateTimeOffset>(false);
 #else
             var pathInTempDirectory = GetPathInTempDirectory(projectDirectoryInvariantPathRelativeToRootDirectory);
             Directory.CreateDirectory(pathInTempDirectory);
             foreach (FileInfo cacheFileInfo in (new DirectoryInfo(pathInTempDirectory)).GetFiles("*", SearchOption.AllDirectories))
             {
-                string indexedDBFilePhysicalPath = Path.GetRelativePath(pathInTempDirectory, cacheFileInfo.FullName);
-                DateTimeOffset filePathRelativeToProjectDirectory = new DateTimeOffset(cacheFileInfo.LastWriteTimeUtc);
+                string filePathRelativeToProjectDirectory = Path.GetRelativePath(pathInTempDirectory, cacheFileInfo.FullName);
+                DateTimeOffset indexedDBFileLastModified = new DateTimeOffset(cacheFileInfo.LastWriteTimeUtc);
 #endif
 
                 var indexedDBFile = new IndexedDBFile
                 {
                     ProjectDirectoryInvariantPathRelativeToRootDirectory = projectDirectoryInvariantPathRelativeToRootDirectory,
-                    PhysicalPath = indexedDBFilePhysicalPath,
-                    LastModified = filePathRelativeToProjectDirectory
+                    PhysicalPath = filePathRelativeToProjectDirectory,
+                    LastModified = indexedDBFileLastModified
                 };
-                var parts = indexedDBFilePhysicalPath.Split(Path.DirectorySeparatorChar);
+                var parts = filePathRelativeToProjectDirectory.Split(Path.DirectorySeparatorChar);
 
                 TempIndexedDBDirectory current_TempIndexedDBDirectory = rootTempIndexedDBDirectory;
                 foreach (int i in Enumerable.Range(0, parts.Length))
@@ -318,7 +318,7 @@ namespace Ssz.Operator.Core
                             await IndexedDBInterop.SaveFileAsync(
                                 projectDirectoryInvariantPathRelativeToRootDirectory, 
                                 indexedDBFile.PhysicalPath!, 
-                                new Any(indexedDBFile.LastModified).ValueAsString(false),
+                                new Ssz.Utils.Any(indexedDBFile.LastModified).ValueAsString(false),
                                 dsFilesStoreFileData.FileData);      
 #else
                             string cacheFileFullName = Path.Combine(GetPathInTempDirectory(projectDirectoryInvariantPathRelativeToRootDirectory), indexedDBFile.PhysicalPath!);

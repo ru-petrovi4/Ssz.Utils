@@ -7,9 +7,7 @@
 	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	  <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>$(DefineConstants);TEST_BROWSER_IN_DESKTOP</DefineConstants>
-  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" />
  
   <ItemGroup>
     <!-- The compass of a panorama is a model that is read at run time, as it was in WPF. -->
