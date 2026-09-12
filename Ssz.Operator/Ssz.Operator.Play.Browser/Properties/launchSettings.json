@@ -1,6 +1,6 @@
 {
     "profiles": {
-    "MyBrowserApp.Browser": {
+    "Ssz.Operator.Play.Browser": {
         "commandName": "Project",
         "launchBrowser": true,
         "environmentVariables": {

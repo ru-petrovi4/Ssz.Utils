@@ -106,7 +106,7 @@ namespace Ssz.Operator.Core.DataAccess
             };
 
             if (dsProjectModeEnum == DsProject.DsProjectModeEnum.BrowserPlayMode)
-                dataAccessProviderOptions.DangerousAcceptAnyServerCertificate = false;
+                dataAccessProviderOptions.DangerousAcceptAnyServerCertificate = false;  // needed for Browser security
 
             Instance.Initialize(
                 elementIdsMap,

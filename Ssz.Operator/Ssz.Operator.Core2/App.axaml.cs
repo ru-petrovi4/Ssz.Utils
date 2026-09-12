@@ -406,7 +406,7 @@ public partial class App : Application
                 },
                 new DataAccessProviderOptions
                 {
-                    DangerousAcceptAnyServerCertificate = true, //TEMPCODE
+                    DangerousAcceptAnyServerCertificate = false, // needed for Browser security
                 },
                 DispatcherHelper.GetUiDispatcher());
 
@@ -416,7 +416,10 @@ public partial class App : Application
 
         IndexedDBFileProvider fileProvider = await IndexedDBHelper.CreateFileProviderAsync(projectDirectoryInvariantPathRelativeToRootDirectory);
 
-        await Task.Run(() => utilityDsDataAccessProvider.IsConnectedEventWaitHandle.WaitOne());
+        // Browser WASM is single threaded: Task.Run() stays on the UI thread, so a blocking
+        // WaitOne() freezes the JS event loop and the connection it waits for never happens.
+        while (!utilityDsDataAccessProvider.IsConnectedEventWaitHandle.WaitOne(0))
+            await Task.Delay(100);
 
         var request = new GetDirectoryInfoRequest
         {

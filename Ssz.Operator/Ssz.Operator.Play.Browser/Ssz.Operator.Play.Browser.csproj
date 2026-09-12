@@ -4,10 +4,22 @@
     <OutputType>Exe</OutputType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Nullable>enable</Nullable>
+    <!-- SkiaSharp / HarfBuzzSharp ship static libs as @(NativeFileReference); without native
+         relinking they are not linked in and Skia fails at startup with DllNotFoundException. -->
+    <WasmBuildNative>true</WasmBuildNative>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Browser" Version="12.1.2" />
+  </ItemGroup>
+
+  <!-- Avalonia.Skia asks for SkiaSharp 3.119.4 / HarfBuzzSharp 8.3.1.3, but Svg.Skia pulls the
+       managed SkiaSharp 4.148.0 / HarfBuzzSharp 14.2.0 in. Nothing bumps the WebAssembly native
+       assets along with them, so the old .a files lose the link against the new managed P/Invokes
+       (undefined symbol: sk_pathbuilder_*). Pin them to the managed versions. -->
+  <ItemGroup>
+    <PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" Version="4.148.0" />
+    <PackageReference Include="HarfBuzzSharp.NativeAssets.WebAssembly" Version="14.2.0" />
   </ItemGroup>
 
   <ItemGroup>
