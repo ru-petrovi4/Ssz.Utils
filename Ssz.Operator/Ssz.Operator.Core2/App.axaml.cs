@@ -24,6 +24,7 @@ using Ssz.Dcs.CentralServer.Common.Passthrough;
 using Ssz.Operator.Core;
 using Ssz.Operator.Core.Addons;
 using Ssz.Operator.Core.Commands;
+using Ssz.Operator.Core.Properties;
 using Ssz.Operator.Core.Commands.DsCommandOptions;
 using Ssz.Operator.Core.DataAccess;
 using Ssz.Operator.Core.Utils;
@@ -232,7 +233,7 @@ public partial class App : Application
             SafeShutdown();
         }
         
-        AppLoadingInterop.SetStatusSafe(AppLoadingInterop.Status_OpeningProject);
+        AppLoadingInterop.SetStatusSafe(OperatorUIResources.Loading_OpeningProject);
 
         bool failed = await DsProject.ReadDsProjectFromBinFileAsync(
             dsProjectFileFullName, 
@@ -442,14 +443,14 @@ public partial class App : Application
 
         IndexedDBFileProvider fileProvider = await IndexedDBHelper.CreateFileProviderAsync(projectDirectoryInvariantPathRelativeToRootDirectory);
 
-        AppLoadingInterop.SetStatusSafe(AppLoadingInterop.Status_ConnectingToServer);
+        AppLoadingInterop.SetStatusSafe(OperatorUIResources.Loading_ConnectingToServer);
 
         // Browser WASM is single threaded: Task.Run() stays on the UI thread, so a blocking
         // WaitOne() freezes the JS event loop and the connection it waits for never happens.
         while (!utilityDsDataAccessProvider.IsConnectedEventWaitHandle.WaitOne(0))
             await Task.Delay(100);
 
-        AppLoadingInterop.SetStatusSafe(AppLoadingInterop.Status_GettingProjectFilesList);
+        AppLoadingInterop.SetStatusSafe(OperatorUIResources.Loading_GettingProjectFilesList);
 
         var request = new GetDirectoryInfoRequest
         {
@@ -463,7 +464,7 @@ public partial class App : Application
 
         JobProgressInfo jobProgressInfo = new(jobProgress, serverProjectDsFilesStoreDirectory.GetFilesCount());        
 
-        AppLoadingInterop.SetStatusSafe(AppLoadingInterop.Status_DownloadingProjectFiles);
+        AppLoadingInterop.SetStatusSafe(OperatorUIResources.Loading_DownloadingProjectFiles);
 
         await IndexedDBHelper.DownloadFilesStoreDirectoryAsync(
             fileProvider.RootIndexedDBDirectory,            

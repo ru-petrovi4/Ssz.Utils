@@ -15,16 +15,6 @@ namespace Ssz.Operator.Core
     {
         #region public functions
 
-        // Statuses shown above the progress bar. They live here rather than at the call sites,
-        // because App.axaml.cs is stored in a legacy codepage and cannot hold new non-ASCII text.
-        public const string Status_ConnectingToServer = @"Подключение к серверу...";
-
-        public const string Status_GettingProjectFilesList = @"Получение списка файлов проекта...";
-
-        public const string Status_DownloadingProjectFiles = @"Загрузка файлов проекта...";
-
-        public const string Status_OpeningProject = @"Открытие проекта...";
-
         /// <summary>
         ///     Imports the JS module once. Safe to call repeatedly.
         /// </summary>

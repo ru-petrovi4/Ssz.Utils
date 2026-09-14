@@ -99,20 +99,9 @@ namespace Ssz.Operator.Core
         {            
             var indexedDBFilesDictionary = indexedDBDirectory.IndexedDBFilesDictionary.ToDictionary(StringComparer.InvariantCultureIgnoreCase);
             Dictionary<string, IndexedDBFile> newIndexedDBFilesDictionary = new(indexedDBFilesDictionary.Count);
+            List<string> fileInvariantPathsToDownload = new();
             foreach (var serverDsFilesStoreFile in serverDsFilesStoreDirectory.DsFilesStoreFilesCollection)
             {
-                jobProgressInfo.ProgressCurrentValue += 1;
-                if (jobProgressInfo.Stopwatch.ElapsedMilliseconds > 200)
-                {
-                    jobProgressInfo.Stopwatch.Restart();
-                    await jobProgressInfo.JobProgress.SetJobProgressAsync(
-                        jobProgressInfo.GetProgressPercent(),
-                        null,
-                        // Shown next to the percentage on the loading overlay.
-                        jobProgressInfo.ProgressCurrentValue + @" / " + jobProgressInfo.ProgressMaxValue,
-                        StatusCodes.Good);
-                }
-
                 bool dowload = false;
                 indexedDBFilesDictionary.Remove(serverDsFilesStoreFile.Name, out IndexedDBFile? existingIndexedDBFile);
                 if (existingIndexedDBFile is not null)
@@ -146,19 +135,34 @@ namespace Ssz.Operator.Core
 
                 if (dowload)
                 {
-                    foreach (var indexedDBFile in await DownloadFilesAsync(
-                        utilityDataAccessProvider,
-                        projectDirectoryInvariantPathRelativeToRootDirectory,
-                        new List<string> {
-                            currentDirectoryInvariantPathRelativeToProjectDirectory == @"" ?
-                                serverDsFilesStoreFile.Name :
-                                currentDirectoryInvariantPathRelativeToProjectDirectory + @"/" + serverDsFilesStoreFile.Name
-                        }
-                        ))
-                    {
-                        newIndexedDBFilesDictionary.Add(indexedDBFile.Name, indexedDBFile);
-                    }
+                    fileInvariantPathsToDownload.Add(
+                        currentDirectoryInvariantPathRelativeToProjectDirectory == @"" ?
+                            serverDsFilesStoreFile.Name :
+                            currentDirectoryInvariantPathRelativeToProjectDirectory + @"/" + serverDsFilesStoreFile.Name);
                 }
+                else
+                {
+                    // Already in the cache, nothing to fetch for it.
+                    await ReportProgressAsync(jobProgressInfo, 1);
+                }
+            }
+
+            // One request per batch instead of one per file: against a remote server the round
+            // trip dominates, and a project easily has hundreds of small files.
+            for (int batchStartIndex = 0; batchStartIndex < fileInvariantPathsToDownload.Count; batchStartIndex += DownloadFilesBatchSize)
+            {
+                List<string> batch = fileInvariantPathsToDownload
+                    .GetRange(batchStartIndex, Math.Min(DownloadFilesBatchSize, fileInvariantPathsToDownload.Count - batchStartIndex));
+
+                foreach (var indexedDBFile in await DownloadFilesAsync(
+                    utilityDataAccessProvider,
+                    projectDirectoryInvariantPathRelativeToRootDirectory,
+                    batch))
+                {
+                    newIndexedDBFilesDictionary.Add(indexedDBFile.Name, indexedDBFile);
+                }
+
+                await ReportProgressAsync(jobProgressInfo, batch.Count);
             }
             foreach (var fileInfo in indexedDBFilesDictionary.Values)
             {
@@ -237,6 +241,32 @@ namespace Ssz.Operator.Core
         #endregion
 
         #region private functions
+
+        /// <summary>
+        ///     How many files one LoadFiles request asks for. The transport splits big replies
+        ///     into several gRPC messages on its own, so the limit here is the memory taken by
+        ///     one reply: the file sizes are not known in advance, and a project may well hold
+        ///     multi-megabyte images.
+        /// </summary>
+        private const int DownloadFilesBatchSize = 25;
+
+        /// <summary>
+        ///     Counts processed files and pushes the progress out at most five times a second.
+        /// </summary>
+        private static async Task ReportProgressAsync(JobProgressInfo jobProgressInfo, int processedFilesCount)
+        {
+            jobProgressInfo.ProgressCurrentValue += processedFilesCount;
+            if (jobProgressInfo.Stopwatch.ElapsedMilliseconds > 200)
+            {
+                jobProgressInfo.Stopwatch.Restart();
+                await jobProgressInfo.JobProgress.SetJobProgressAsync(
+                    jobProgressInfo.GetProgressPercent(),
+                    null,
+                    // Shown next to the percentage on the loading overlay.
+                    jobProgressInfo.ProgressCurrentValue + @" / " + jobProgressInfo.ProgressMaxValue,
+                    StatusCodes.Good);
+            }
+        }
 
         private static IndexedDBDirectory GetIndexedDBDirectory(TempIndexedDBDirectory tempIndexedDBDirectory)
         {

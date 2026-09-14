@@ -172,4 +172,16 @@
   <data name="TrendColorDialogTitle" xml:space="preserve">
     <value>Цвет тренда</value>
   </data>
+  <data name="Loading_ConnectingToServer" xml:space="preserve">
+    <value>Подключение к серверу...</value>
+  </data>
+  <data name="Loading_GettingProjectFilesList" xml:space="preserve">
+    <value>Получение списка файлов проекта...</value>
+  </data>
+  <data name="Loading_DownloadingProjectFiles" xml:space="preserve">
+    <value>Загрузка файлов проекта...</value>
+  </data>
+  <data name="Loading_OpeningProject" xml:space="preserve">
+    <value>Открытие проекта...</value>
+  </data>
 </root>

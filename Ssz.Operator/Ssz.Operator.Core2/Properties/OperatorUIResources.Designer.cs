@@ -221,5 +221,41 @@ namespace Ssz.Operator.Core.Properties {
                 return ResourceManager.GetString("TrendGroupControlIncreaseValue", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connecting to the server....
+        /// </summary>
+        public static string Loading_ConnectingToServer {
+            get {
+                return ResourceManager.GetString("Loading_ConnectingToServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Getting the project files list....
+        /// </summary>
+        public static string Loading_GettingProjectFilesList {
+            get {
+                return ResourceManager.GetString("Loading_GettingProjectFilesList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloading project files....
+        /// </summary>
+        public static string Loading_DownloadingProjectFiles {
+            get {
+                return ResourceManager.GetString("Loading_DownloadingProjectFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Opening the project....
+        /// </summary>
+        public static string Loading_OpeningProject {
+            get {
+                return ResourceManager.GetString("Loading_OpeningProject", resourceCulture);
+            }
+        }
     }
 }

@@ -11,6 +11,12 @@ try {
     const dotnetRuntime = await dotnet
         .withDiagnosticTracing(false)
         .withApplicationArgumentsFromQuery()
+        // The runtime does not take the culture from the browser on its own, and it loads
+        // satellite assemblies only when asked to - without both of these the app always falls
+        // back to the neutral (English) resources. The project ships one extra culture, so
+        // loading them all costs a few KB.
+        .withApplicationCulture(navigator.language)
+        .withConfig({ loadAllSatelliteResources: true })
         .withModuleConfig({
             onDownloadResourceProgress: (loadedCount, totalCount) => loading.setAppProgress(loadedCount, totalCount)
         })
