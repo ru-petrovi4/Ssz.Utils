@@ -105,7 +105,12 @@ namespace Ssz.Operator.Core
                 if (jobProgressInfo.Stopwatch.ElapsedMilliseconds > 200)
                 {
                     jobProgressInfo.Stopwatch.Restart();
-                    await jobProgressInfo.JobProgress.SetJobProgressAsync(jobProgressInfo.GetProgressPercent(), null, null, StatusCodes.Good);
+                    await jobProgressInfo.JobProgress.SetJobProgressAsync(
+                        jobProgressInfo.GetProgressPercent(),
+                        null,
+                        // Shown next to the percentage on the loading overlay.
+                        jobProgressInfo.ProgressCurrentValue + @" / " + jobProgressInfo.ProgressMaxValue,
+                        StatusCodes.Good);
                 }
 
                 bool dowload = false;

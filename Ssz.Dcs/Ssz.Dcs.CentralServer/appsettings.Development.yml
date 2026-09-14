@@ -10,4 +10,9 @@ Kestrel:
     HttpsDefaultCert: 
       Url: "https://*:60060"
 DbType: "sqlite"
+# Разрешённые origin для CORS, через запятую. Нужно только при отладке, когда
+# WASM-клиент отдаётся своим dev-сервером и ходит сюда с другого origin.
+# В продакшене веб-интерфейс и gRPC Web DataAccess идут через один nginx,
+# поэтому в appsettings.yml этого ключа нет и CORS-middleware не подключается.
+CorsAllowedOrigins: "http://localhost:5235,https://localhost:7169"
 ---

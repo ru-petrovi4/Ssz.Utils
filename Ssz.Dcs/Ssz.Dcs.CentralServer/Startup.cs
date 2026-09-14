@@ -28,6 +28,8 @@ namespace Ssz.Dcs.CentralServer
         public Startup(IConfiguration configuration)
         {
             _configuration = configuration;
+            _corsAllowedOrigins = ConfigurationHelper.GetValue<string>(_configuration, @"CorsAllowedOrigins", @"")
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         }
 
         #region public functions
@@ -76,6 +78,19 @@ namespace Ssz.Dcs.CentralServer
                 options.OperationFilter<SwaggerOperationFilter>();
             });
 
+            // CORS is only needed while debugging, when the browser client is served by its
+            // own dev server and calls this one cross-origin. In production the UI and the
+            // gRPC Web endpoints are behind a single nginx, so CorsAllowedOrigins is absent
+            // there and nothing below is registered.
+            if (_corsAllowedOrigins.Length > 0)
+                services.AddCors(options => options.AddPolicy(DebugCorsPolicyName, policy => policy
+                    .WithOrigins(_corsAllowedOrigins)
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    // gRPC Web reports the call status in trailers turned into headers.
+                    // Without exposing them the client sees every call as an unknown failure.
+                    .WithExposedHeaders(@"grpc-status", @"grpc-message", @"grpc-encoding", @"grpc-accept-encoding")));
+
             services.AddSingleton<ServerWorker>();
             services.AddSingleton<DataAccessServerWorkerBase>(sp => sp.GetRequiredService<ServerWorker>());
             services.AddSingleton<AddonsManager>();
@@ -104,6 +119,11 @@ namespace Ssz.Dcs.CentralServer
             if (ConfigurationHelper.GetValue<bool>(_configuration, @"UseGrpcWeb", false))
                 app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true }); // For NETSTANDARD2.0 Clients
 
+            // Must sit between UseRouting() and UseEndpoints(), otherwise the preflight
+            // OPTIONS request falls through to the gRPC endpoint and comes back as 405.
+            if (_corsAllowedOrigins.Length > 0)
+                app.UseCors(DebugCorsPolicyName);
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers(); //.RequireAuthorization(@"MainPolicy");
@@ -122,7 +142,11 @@ namespace Ssz.Dcs.CentralServer
 
         private const string RouteNamespace = @"/api/v1";
 
+        private const string DebugCorsPolicyName = @"DebugCorsPolicy";
+
         private readonly IConfiguration _configuration;
+
+        private readonly string[] _corsAllowedOrigins;
     }
 }
 

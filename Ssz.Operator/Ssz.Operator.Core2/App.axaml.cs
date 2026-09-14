@@ -65,9 +65,30 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        _ = OnFrameworkInitializationCompleted2(NullJobProgress.Instance);
+        _ = StartAsync();
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    /// <summary>
+    ///     In the browser the job progress drives the HTML loading overlay, so its bar covers
+    ///     downloading the project files and not just the application itself.
+    /// </summary>
+    private async Task StartAsync()
+    {
+        await AppLoadingInterop.InitializeInteropAsync();
+
+        try
+        {
+            await OnFrameworkInitializationCompleted2(
+                OperatingSystem.IsBrowser() ? AppLoadingJobProgress.Instance : NullJobProgress.Instance);
+        }
+        catch (Exception ex)
+        {
+            // Nothing observes this task, so without this a startup failure would leave the
+            // loading overlay on screen with no explanation.
+            AppLoadingInterop.ShowErrorSafe(ex.ToString());
+        }
     }
 
     public async Task OnFrameworkInitializationCompleted2(IJobProgress jobProgress)
@@ -122,7 +143,7 @@ public partial class App : Application
             options = new Options(null);
 
             // TEMPCODE
-            options.CentralServerAddress = @"https://localhost:60060"; // @"https://www.pazchek.ru";
+            options.CentralServerAddress = @"https://www.pazchek.ru"; // @"https://localhost:60060";
             options.ProjectDirectoryInvariantPathRelativeToRootDirectory = "CDT.2024.SaratovPCNiDCS/Operator.Data/SARATOV_POLE_Interface";
             options.ProjectFile = @"Saratov.dsproject";
 
@@ -211,6 +232,8 @@ public partial class App : Application
             SafeShutdown();
         }
         
+        AppLoadingInterop.SetStatusSafe(AppLoadingInterop.Status_OpeningProject);
+
         bool failed = await DsProject.ReadDsProjectFromBinFileAsync(
             dsProjectFileFullName, 
             dsProjectModeEnum,                    
@@ -323,6 +346,9 @@ public partial class App : Application
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatformFinal)
         {
             WindowsManager.Instance.Initialize(options.StartPageFile, singleViewPlatformFinal);            
+
+            // The project is loaded and the start page is shown - drop the HTML overlay.
+            AppLoadingInterop.HideSafe();
         }
 
         // TEMPCODE
@@ -416,10 +442,14 @@ public partial class App : Application
 
         IndexedDBFileProvider fileProvider = await IndexedDBHelper.CreateFileProviderAsync(projectDirectoryInvariantPathRelativeToRootDirectory);
 
+        AppLoadingInterop.SetStatusSafe(AppLoadingInterop.Status_ConnectingToServer);
+
         // Browser WASM is single threaded: Task.Run() stays on the UI thread, so a blocking
         // WaitOne() freezes the JS event loop and the connection it waits for never happens.
         while (!utilityDsDataAccessProvider.IsConnectedEventWaitHandle.WaitOne(0))
             await Task.Delay(100);
+
+        AppLoadingInterop.SetStatusSafe(AppLoadingInterop.Status_GettingProjectFilesList);
 
         var request = new GetDirectoryInfoRequest
         {
@@ -432,6 +462,8 @@ public partial class App : Application
             () => new DsFilesStoreDirectory());
 
         JobProgressInfo jobProgressInfo = new(jobProgress, serverProjectDsFilesStoreDirectory.GetFilesCount());        
+
+        AppLoadingInterop.SetStatusSafe(AppLoadingInterop.Status_DownloadingProjectFiles);
 
         await IndexedDBHelper.DownloadFilesStoreDirectoryAsync(
             fileProvider.RootIndexedDBDirectory,            
