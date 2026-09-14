@@ -3,10 +3,29 @@ import { dotnet } from './_framework/dotnet.js'
 const is_browser = typeof window != "undefined";
 if (!is_browser) throw new Error(`Expected to be running in a browser`);
 
+// These stages run before .NET exists, so their texts cannot come from the application
+// resources. They follow navigator.language the same way the managed side does, otherwise the
+// overlay would switch language halfway through loading.
+const TEXTS = {
+    en: {
+        preparing: 'Preparing to load...',
+        downloadingApp: 'Downloading application files...',
+        startingApp: 'Starting the application...',
+        failed: 'Could not load the application'
+    },
+    ru: {
+        preparing: 'Подготовка к загрузке...',
+        downloadingApp: 'Загрузка файлов приложения...',
+        startingApp: 'Запуск приложения...',
+        failed: 'Не удалось загрузить приложение'
+    }
+};
+const texts = TEXTS[(navigator.language || 'en').split('-')[0].toLowerCase()] ?? TEXTS.en;
+
 const loading = createLoadingIndicator();
 
 try {
-    loading.setStatus('Загрузка файлов приложения...');
+    loading.setStatus(texts.downloadingApp);
 
     const dotnetRuntime = await dotnet
         .withDiagnosticTracing(false)
@@ -22,7 +41,7 @@ try {
         })
         .create();
 
-    loading.setStatus('Запуск приложения...');
+    loading.setStatus(texts.startingApp);
 
     const config = dotnetRuntime.getConfig();
     const mainTask = dotnetRuntime.runMain(config.mainAssemblyName, [globalThis.location.href]);
@@ -53,12 +72,10 @@ function createLoadingIndicator() {
     const fill = document.getElementById('app-loading-fill');
     const status = document.getElementById('app-loading-status');
     const percentText = document.getElementById('app-loading-percent');
-    const detailsText = document.getElementById('app-loading-files');
     const errorText = document.getElementById('app-loading-error');
 
     let appFraction = 0;
     let projectFraction = 0;
-    let details = '';
     let projectStageStarted = false;
     let hidden = false;
     let failed = false;
@@ -66,6 +83,7 @@ function createLoadingIndicator() {
     let fallbackTimer = 0;
 
     root.classList.add('app-loading--indeterminate');
+    status.textContent = texts.preparing;
 
     const render = () => {
         pendingFrame = 0;
@@ -74,7 +92,6 @@ function createLoadingIndicator() {
         root.classList.remove('app-loading--indeterminate');
         fill.style.width = percent + '%';
         percentText.textContent = percent + '%';
-        detailsText.textContent = details;
         track.setAttribute('aria-valuenow', String(percent));
     };
 
@@ -106,18 +123,16 @@ function createLoadingIndicator() {
             // Cap below 1: the last resources are still being requested.
             const fraction = Math.min(0.99, loadedCount / totalCount);
             if (fraction > appFraction) appFraction = fraction;
-            details = loadedCount + ' / ' + totalCount;
             scheduleRender();
         },
 
         // Stage 2: project pages and other files, reported by the managed startup code.
-        setProjectProgress(progressPercent, progressDetails) {
+        setProjectProgress(progressPercent) {
             if (hidden || failed) return;
 
             claim();
             const fraction = Math.min(1, Math.max(0, progressPercent / 100));
             if (fraction > projectFraction) projectFraction = fraction;
-            details = progressDetails || '';
             scheduleRender();
         },
 
@@ -150,7 +165,7 @@ function createLoadingIndicator() {
                 fallbackTimer = 0;
             }
             root.classList.remove('app-loading--indeterminate', 'app-loading--closing', 'app-loading--closed');
-            status.textContent = 'Не удалось загрузить приложение';
+            status.textContent = texts.failed;
             errorText.textContent = (error && (error.stack || error.message)) || String(error);
             errorText.hidden = false;
             console.error(error);

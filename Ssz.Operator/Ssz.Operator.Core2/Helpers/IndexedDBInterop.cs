@@ -38,8 +38,13 @@ namespace Ssz.Operator.Core
         //[return: JSMarshalAs<JSType.Promise<JSType.Object>>]
         //public static partial Task<object> GetData(string dbName, string storeName, string key);
 
+        /// <summary>
+        ///     Writes the file path entry and, when <paramref name="fileBlob"/> is not null, the
+        ///     content under <paramref name="contentId"/>. Pass null for a file whose content is
+        ///     already stored under that id by another path.
+        /// </summary>
         [JSImport("saveFile", "IndexedDBInterop")]
-        public static partial Task<bool> SaveFileAsync(string projectName, string fileId, string fileInfo, byte[] fileBlob);
+        public static partial Task<bool> SaveFileAsync(string projectName, string fileId, string fileInfo, string contentId, byte[]? fileBlob);
 
         [JSImport("getFileInfo", "IndexedDBInterop")]
         [return: JSMarshalAs<JSType.Promise<JSType.Any>>]
@@ -49,11 +54,24 @@ namespace Ssz.Operator.Core
         [return: JSMarshalAs<JSType.Promise<JSType.Any>>]
         public static partial Task<object> GetFileInfosAsync(string projectName);
 
+        /// <summary>
+        ///     Contents already in the store, so the caller knows what it need not download.
+        /// </summary>
+        [JSImport("getContentIds", "IndexedDBInterop")]
+        [return: JSMarshalAs<JSType.Promise<JSType.Any>>]
+        public static partial Task<object> GetContentIdsAsync(string projectName);
+
         [JSImport("getFile", "IndexedDBInterop")]
         [return: JSMarshalAs<JSType.Promise<JSType.Any>>]
-        public static partial Task<object> GetFileAsync(string projectName, string fileId);
+        public static partial Task<object> GetFileAsync(string projectName, string contentId);
 
+        /// <summary>
+        ///     Drops a file path only: other paths may still refer to the same content.
+        /// </summary>
         [JSImport("deleteFile", "IndexedDBInterop")]
         public static partial Task<bool> DeleteFileAsync(string projectName, string fileId);
+
+        [JSImport("deleteContent", "IndexedDBInterop")]
+        public static partial Task<bool> DeleteContentAsync(string projectName, string contentId);
     }    
 }

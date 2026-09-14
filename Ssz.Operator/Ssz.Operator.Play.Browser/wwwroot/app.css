@@ -85,9 +85,7 @@ html, body {
     100% { transform: translateX(286%); }
 }
 
-.app-loading__details {
-    display: flex;
-    justify-content: space-between;
+.app-loading__percent {
     font-size: 0.8rem;
     opacity: 0.6;
     margin-top: 0.4rem;

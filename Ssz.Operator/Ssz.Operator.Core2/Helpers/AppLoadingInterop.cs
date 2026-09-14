@@ -46,10 +46,10 @@ namespace Ssz.Operator.Core
         /// <summary>
         ///     Progress of the project files stage, 0 - 100.
         /// </summary>
-        public static void SetProjectProgressSafe(uint progressPercent, string details)
+        public static void SetProjectProgressSafe(uint progressPercent)
         {
             if (_isAvailable)
-                SetProjectProgress((int)progressPercent, details);
+                SetProjectProgress((int)progressPercent);
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace Ssz.Operator.Core
         private static partial void SetStatus(string status);
 
         [JSImport("setProjectProgress", "AppLoadingInterop")]
-        private static partial void SetProjectProgress(int progressPercent, string details);
+        private static partial void SetProjectProgress(int progressPercent);
 
         [JSImport("hide", "AppLoadingInterop")]
         private static partial void Hide();

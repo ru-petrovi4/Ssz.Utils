@@ -52,7 +52,11 @@ namespace Ssz.Operator.Core
             if (!OperatingSystem.IsBrowser())
                 throw new InvalidOperationException();
 
-            var obj = await IndexedDBInterop.GetFileAsync(ProjectDirectoryInvariantPathRelativeToRootDirectory, PhysicalPath!);            
+            // The content is keyed by name plus modification time, not by path, so that a file
+            // repeated in several directories is stored only once.
+            var obj = await IndexedDBInterop.GetFileAsync(
+                ProjectDirectoryInvariantPathRelativeToRootDirectory,
+                IndexedDBHelper.GetContentId(Name, LastModified));
             System.Runtime.InteropServices.JavaScript.JSObject jSObject =
                 (System.Runtime.InteropServices.JavaScript.JSObject)obj;
             byte[] fileData = jSObject.GetPropertyAsByteArray(@"file")!;

@@ -89,19 +89,55 @@ namespace Ssz.Operator.Core
             return new IndexedDBFileProvider(rootIndexedDBDirectory);
         }        
 
+        /// <summary>
+        ///     A project cannot hold two different files with the same name and the exact same
+        ///     modification time, so that pair identifies the content. Identifying a file by it
+        ///     lets a file repeated in several directories be downloaded and stored just once.
+        /// </summary>
+        public static string GetContentId(string name, DateTimeOffset lastModified)
+        {
+            return name + @"|" + new Ssz.Utils.Any(lastModified.UtcTicks).ValueAsString(false);
+        }
+
         public static async Task DownloadFilesStoreDirectoryAsync(
-            IndexedDBDirectory indexedDBDirectory,            
-            DsFilesStoreDirectory serverDsFilesStoreDirectory,            
+            IndexedDBDirectory indexedDBDirectory,
+            DsFilesStoreDirectory serverDsFilesStoreDirectory,
             IDataAccessProvider utilityDataAccessProvider,
             string projectDirectoryInvariantPathRelativeToRootDirectory,
             string currentDirectoryInvariantPathRelativeToProjectDirectory,
             JobProgressInfo jobProgressInfo)
+        {
+            CachedContents cachedContents = await CachedContents.CreateAsync(projectDirectoryInvariantPathRelativeToRootDirectory);
+
+            await DownloadFilesStoreDirectoryAsync(
+                indexedDBDirectory,
+                serverDsFilesStoreDirectory,
+                utilityDataAccessProvider,
+                projectDirectoryInvariantPathRelativeToRootDirectory,
+                currentDirectoryInvariantPathRelativeToProjectDirectory,
+                jobProgressInfo,
+                cachedContents);
+
+            await cachedContents.DeleteUnusedContentsAsync(projectDirectoryInvariantPathRelativeToRootDirectory);
+        }
+
+        private static async Task DownloadFilesStoreDirectoryAsync(
+            IndexedDBDirectory indexedDBDirectory,
+            DsFilesStoreDirectory serverDsFilesStoreDirectory,
+            IDataAccessProvider utilityDataAccessProvider,
+            string projectDirectoryInvariantPathRelativeToRootDirectory,
+            string currentDirectoryInvariantPathRelativeToProjectDirectory,
+            JobProgressInfo jobProgressInfo,
+            CachedContents cachedContents)
         {            
             var indexedDBFilesDictionary = indexedDBDirectory.IndexedDBFilesDictionary.ToDictionary(StringComparer.InvariantCultureIgnoreCase);
             Dictionary<string, IndexedDBFile> newIndexedDBFilesDictionary = new(indexedDBFilesDictionary.Count);
             List<string> fileInvariantPathsToDownload = new();
             foreach (var serverDsFilesStoreFile in serverDsFilesStoreDirectory.DsFilesStoreFilesCollection)
             {
+                string contentId = GetContentId(serverDsFilesStoreFile.Name, serverDsFilesStoreFile.LastModified);
+                cachedContents.UsedContentIds.Add(contentId);
+
                 bool dowload = false;
                 indexedDBFilesDictionary.Remove(serverDsFilesStoreFile.Name, out IndexedDBFile? existingIndexedDBFile);
                 if (existingIndexedDBFile is not null)
@@ -111,11 +147,11 @@ namespace Ssz.Operator.Core
                         try
                         {
 #if !TEST_BROWSER_IN_DESKTOP
-                            await IndexedDBInterop.DeleteFileAsync(projectDirectoryInvariantPathRelativeToRootDirectory, existingIndexedDBFile.PhysicalPath!);  
+                            await IndexedDBInterop.DeleteFileAsync(projectDirectoryInvariantPathRelativeToRootDirectory, existingIndexedDBFile.PhysicalPath!);
 #else
                             File.Delete(Path.Combine(GetPathInTempDirectory(projectDirectoryInvariantPathRelativeToRootDirectory), existingIndexedDBFile.PhysicalPath!));
 #endif
-                                                      
+
                             dowload = true;
                         }
                         catch (Exception)
@@ -123,9 +159,14 @@ namespace Ssz.Operator.Core
                             //Logger.LogError(ex, "Delete file error: " + existingFileInfo.FullName);
                         }
                     }
-                    else
+                    else if (cachedContents.Contains(contentId))
                     {
                         newIndexedDBFilesDictionary.Add(existingIndexedDBFile.Name, existingIndexedDBFile);
+                    }
+                    else
+                    {
+                        // The path entry survived but its content did not - fetch it again.
+                        dowload = true;
                     }
                 }
                 else
@@ -135,10 +176,36 @@ namespace Ssz.Operator.Core
 
                 if (dowload)
                 {
-                    fileInvariantPathsToDownload.Add(
+                    string fileInvariantPathRelativeToProjectDirectory =
                         currentDirectoryInvariantPathRelativeToProjectDirectory == @"" ?
                             serverDsFilesStoreFile.Name :
-                            currentDirectoryInvariantPathRelativeToProjectDirectory + @"/" + serverDsFilesStoreFile.Name);
+                            currentDirectoryInvariantPathRelativeToProjectDirectory + @"/" + serverDsFilesStoreFile.Name;
+
+                    if (cachedContents.Contains(contentId))
+                    {
+                        // The very same content is already stored for another path: point this
+                        // path at it instead of downloading and storing a second copy.
+                        var sharedIndexedDBFile = new IndexedDBFile
+                        {
+                            ProjectDirectoryInvariantPathRelativeToRootDirectory = projectDirectoryInvariantPathRelativeToRootDirectory,
+                            PhysicalPath = fileInvariantPathRelativeToProjectDirectory.Replace('/', Path.DirectorySeparatorChar),
+                            LastModified = serverDsFilesStoreFile.LastModified
+                        };
+#if !TEST_BROWSER_IN_DESKTOP
+                        await IndexedDBInterop.SaveFileAsync(
+                            projectDirectoryInvariantPathRelativeToRootDirectory,
+                            sharedIndexedDBFile.PhysicalPath!,
+                            new Ssz.Utils.Any(sharedIndexedDBFile.LastModified).ValueAsString(false),
+                            contentId,
+                            null);
+#endif
+                        newIndexedDBFilesDictionary.Add(sharedIndexedDBFile.Name, sharedIndexedDBFile);
+                        await ReportProgressAsync(jobProgressInfo, 1);
+                    }
+                    else
+                    {
+                        fileInvariantPathsToDownload.Add(fileInvariantPathRelativeToProjectDirectory);
+                    }
                 }
                 else
                 {
@@ -157,7 +224,8 @@ namespace Ssz.Operator.Core
                 foreach (var indexedDBFile in await DownloadFilesAsync(
                     utilityDataAccessProvider,
                     projectDirectoryInvariantPathRelativeToRootDirectory,
-                    batch))
+                    batch,
+                    cachedContents))
                 {
                     newIndexedDBFilesDictionary.Add(indexedDBFile.Name, indexedDBFile);
                 }
@@ -206,7 +274,8 @@ namespace Ssz.Operator.Core
                     projectDirectoryInvariantPathRelativeToRootDirectory,
                     currentDirectoryInvariantPathRelativeToProjectDirectory == @"" ? childServerDsFilesStoreDirectoryName :
                         currentDirectoryInvariantPathRelativeToProjectDirectory + @"/" + childServerDsFilesStoreDirectoryName,
-                    jobProgressInfo);
+                    jobProgressInfo,
+                    cachedContents);
                 newChildIndexedDBDirectoriesDictionary.Add(childIndexedDBDirectory.Name, childIndexedDBDirectory);                
             }
             foreach (var childIndexedDBDirectory in childIndexedDBDirectoriesDictionary.Values)
@@ -262,10 +331,66 @@ namespace Ssz.Operator.Core
                 await jobProgressInfo.JobProgress.SetJobProgressAsync(
                     jobProgressInfo.GetProgressPercent(),
                     null,
-                    // Shown next to the percentage on the loading overlay.
-                    jobProgressInfo.ProgressCurrentValue + @" / " + jobProgressInfo.ProgressMaxValue,
+                    null,
                     StatusCodes.Good);
             }
+        }
+
+        /// <summary>
+        ///     Tracks which file contents the browser store holds and which ones the project still
+        ///     refers to, so nothing is downloaded or kept twice.
+        /// </summary>
+        private class CachedContents
+        {
+            public static async Task<CachedContents> CreateAsync(string projectDirectoryInvariantPathRelativeToRootDirectory)
+            {
+                CachedContents cachedContents = new();
+#if !TEST_BROWSER_IN_DESKTOP
+                foreach (object contentId in (object[])(await IndexedDBInterop.GetContentIdsAsync(projectDirectoryInvariantPathRelativeToRootDirectory)))
+                    cachedContents._storedContentIds.Add(new Ssz.Utils.Any(contentId).ValueAsString(false));
+#endif
+                await Task.CompletedTask;
+                return cachedContents;
+            }
+
+            /// <summary>
+            ///     Contents the project refers to. Everything else is dropped at the end.
+            /// </summary>
+            public HashSet<string> UsedContentIds { get; } = new(StringComparer.Ordinal);
+
+            public bool Contains(string contentId)
+            {
+                return _storedContentIds.Contains(contentId);
+            }
+
+            public void Add(string contentId)
+            {
+                _storedContentIds.Add(contentId);
+            }
+
+            /// <summary>
+            ///     Drops contents no file of the project points at any more: files deleted on the
+            ///     server, and older versions of files that have been replaced.
+            /// </summary>
+            public async Task DeleteUnusedContentsAsync(string projectDirectoryInvariantPathRelativeToRootDirectory)
+            {
+#if !TEST_BROWSER_IN_DESKTOP
+                foreach (string contentId in _storedContentIds.Where(contentId => !UsedContentIds.Contains(contentId)).ToList())
+                {
+                    try
+                    {
+                        await IndexedDBInterop.DeleteContentAsync(projectDirectoryInvariantPathRelativeToRootDirectory, contentId);
+                        _storedContentIds.Remove(contentId);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+#endif
+                await Task.CompletedTask;
+            }
+
+            private readonly HashSet<string> _storedContentIds = new(StringComparer.Ordinal);
         }
 
         private static IndexedDBDirectory GetIndexedDBDirectory(TempIndexedDBDirectory tempIndexedDBDirectory)
@@ -316,10 +441,11 @@ namespace Ssz.Operator.Core
         //    return dsFilesStoreDirectory;
         //}
 
-        private static async Task<IEnumerable<IndexedDBFile>> DownloadFilesAsync(            
+        private static async Task<IEnumerable<IndexedDBFile>> DownloadFilesAsync(
             IDataAccessProvider utilityDataAccessProvider,
             string projectDirectoryInvariantPathRelativeToRootDirectory,
-            List<string> fileInvariantPathRelativeToProjectDirectoryCollection)
+            List<string> fileInvariantPathRelativeToProjectDirectoryCollection,
+            CachedContents cachedContents)
         {
             List<IndexedDBFile> result = new();
 
@@ -351,16 +477,21 @@ namespace Ssz.Operator.Core
                         {
 #if !TEST_BROWSER_IN_DESKTOP
                             await IndexedDBInterop.SaveFileAsync(
-                                projectDirectoryInvariantPathRelativeToRootDirectory, 
-                                indexedDBFile.PhysicalPath!, 
+                                projectDirectoryInvariantPathRelativeToRootDirectory,
+                                indexedDBFile.PhysicalPath!,
                                 new Ssz.Utils.Any(indexedDBFile.LastModified).ValueAsString(false),
-                                dsFilesStoreFileData.FileData);      
+                                GetContentId(indexedDBFile.Name, indexedDBFile.LastModified),
+                                dsFilesStoreFileData.FileData);
 #else
                             string cacheFileFullName = Path.Combine(GetPathInTempDirectory(projectDirectoryInvariantPathRelativeToRootDirectory), indexedDBFile.PhysicalPath!);
                             Directory.CreateDirectory(Path.GetDirectoryName(cacheFileFullName)!);
                             await File.WriteAllBytesAsync(cacheFileFullName, dsFilesStoreFileData.FileData);
                             File.SetLastWriteTimeUtc(cacheFileFullName, indexedDBFile.LastModified.DateTime);
 #endif
+
+                            // Another path with the same name and modification time now reuses
+                            // this content instead of downloading it again.
+                            cachedContents.Add(GetContentId(indexedDBFile.Name, indexedDBFile.LastModified));
 
                             result.Add(indexedDBFile);
                         }

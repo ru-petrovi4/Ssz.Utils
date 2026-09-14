@@ -130,19 +130,19 @@ namespace Ssz.DataAccessGrpc.Client
             if (isBrowser)
             {
                 _workingTask = Task.Run(async () =>
-                    await WorkingTaskMainAsync(cancellationToken)
+                    await WorkingTaskMainLoopAsync(cancellationToken)
                 );
             }
             else
             {
-                var taskCompletionSource = new TaskCompletionSource<int>();
-                var workingThread = new Thread(async () =>
-                {
-                    await WorkingTaskMainAsync(cancellationToken);
-                    taskCompletionSource.SetResult(0);
-                });
-                _workingTask = taskCompletionSource.Task;
-                workingThread.Start();
+                _workingTask = (new TaskFactory(
+                    CancellationToken.None,
+                    TaskCreationOptions.None,
+                    TaskContinuationOptions.None,
+                    new SingleThreadTaskScheduler("WorkingTaskMainLoop"))).StartNew(async () =>
+                    {
+                        await WorkingTaskMainLoopAsync(cancellationToken);
+                    }).Unwrap();
             }
 
             foreach (ValueSubscriptionObj valueSubscriptionObj in _valueSubscriptionsCollection.Values)
@@ -895,7 +895,7 @@ namespace Ssz.DataAccessGrpc.Client
 
         #region private functions
         
-        private async Task WorkingTaskMainAsync(CancellationToken cancellationToken)
+        private async Task WorkingTaskMainLoopAsync(CancellationToken cancellationToken)
         {
             if (!IsInitialized)
                 return;

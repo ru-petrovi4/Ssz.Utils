@@ -55,7 +55,7 @@ namespace Ssz.Operator.Core
 
             if (ProgressLabel != @"")
                 AppLoadingInterop.SetStatusSafe(ProgressLabel);
-            AppLoadingInterop.SetProjectProgressSafe(ProgressPercent, ProgressDetails);
+            AppLoadingInterop.SetProjectProgressSafe(ProgressPercent);
 
             return Task.CompletedTask;
         }

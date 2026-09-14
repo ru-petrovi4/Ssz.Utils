@@ -5,8 +5,8 @@ export function setStatus(status) {
     globalThis.appLoading?.setStatus(status);
 }
 
-export function setProjectProgress(progressPercent, details) {
-    globalThis.appLoading?.setProjectProgress(progressPercent, details);
+export function setProjectProgress(progressPercent) {
+    globalThis.appLoading?.setProjectProgress(progressPercent);
 }
 
 export function hide() {

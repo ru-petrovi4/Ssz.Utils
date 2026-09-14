@@ -16,27 +16,29 @@ namespace Ssz.Utils
         #region public functions    
 
         /// <summary>
-        ///     Compares with tolerance 0.5 seconds.
+        ///     Compares with no tolerance
         /// </summary>
         /// <param name="leftDateTimeUtc"></param>
         /// <param name="rightDateTimeUtc"></param>
         /// <returns></returns>
         public static bool FileSystemTimeIsEquals(DateTime leftDateTimeUtc, DateTime rightDateTimeUtc)
         {
-            long delta = Math.Abs(rightDateTimeUtc.Ticks - leftDateTimeUtc.Ticks);            
-            return delta < TimeSpan.TicksPerSecond * 0.5;
+            return rightDateTimeUtc.Ticks == leftDateTimeUtc.Ticks;
+            //long delta = Math.Abs(rightDateTimeUtc.Ticks - leftDateTimeUtc.Ticks);            
+            //return delta < TimeSpan.TicksPerSecond * 0.5;
         }
 
         /// <summary>
-        ///     Compares with tolerance 0.5 seconds.
+        ///     Compares with no tolerance
         /// </summary>
         /// <param name="leftDateTimeUtc"></param>
         /// <param name="rightDateTimeUtc"></param>
         /// <returns></returns>
         public static bool FileSystemTimeIsLess(DateTime leftDateTimeUtc, DateTime rightDateTimeUtc)
         {
-            long delta = rightDateTimeUtc.Ticks - leftDateTimeUtc.Ticks;
-            return delta > TimeSpan.TicksPerSecond * 0.5;
+            return leftDateTimeUtc.Ticks < rightDateTimeUtc.Ticks;
+            //long delta = rightDateTimeUtc.Ticks - leftDateTimeUtc.Ticks;
+            //return delta > TimeSpan.TicksPerSecond * 0.5;
         }
 
         /// <summary>
