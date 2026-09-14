@@ -4,6 +4,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Ssz.Operator.Core.ControlsPlay;
 using Ssz.Operator.Core.DataAccess;
 using Ssz.Utils;
@@ -148,7 +149,14 @@ public partial class BrowserPlayWindow : UserControl, IPlayWindow
 
     public WindowState WindowState { get; set; }
 
-    public bool IsActive { get; set; }
+    /// <summary>
+    ///     There is one page and no operating system windows here, so the window that owns the
+    ///     keyboard is tracked explicitly. FaceplatePlayControlBase relies on it to decide which
+    ///     faceplate may take the focus.
+    /// </summary>
+    public static BrowserPlayWindow? ActiveWindow { get; private set; }
+
+    public bool IsActive { get; private set; }
 
     public event EventHandler? Activated;
 
@@ -158,12 +166,29 @@ public partial class BrowserPlayWindow : UserControl, IPlayWindow
 
     public void Activate()
     {
+        if (ReferenceEquals(ActiveWindow, this))
+            return;
+
+        if (ActiveWindow is not null)
+            ActiveWindow.IsActive = false;
+
+        ActiveWindow = this;
         IsActive = true;
+
+        Activated?.Invoke(this, EventArgs.Empty);
     }
 
     public void Close()
     { 
         Closed?.Invoke(this, EventArgs.Empty);
+
+        if (ReferenceEquals(ActiveWindow, this))
+        {
+            ActiveWindow = null;
+            IsActive = false;
+            // Hand the keyboard back to the window this one was opened from.
+            (ParentWindow as BrowserPlayWindow)?.Activate();
+        }
 
         PlayControlWrapper.Dispose();
 
@@ -176,6 +201,12 @@ public partial class BrowserPlayWindow : UserControl, IPlayWindow
 
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
+        // Clicking a window makes it the one that owns the keyboard. The event bubbles up from the
+        // deepest control, so only the innermost window containing the click reacts - otherwise a
+        // click on a faceplate would end up activating the window underneath it.
+        if (ReferenceEquals((e.Source as Visual)?.FindAncestorOfType<BrowserPlayWindow>(true), this))
+            Activate();
+
         if (!IsRootWindow && Parent != null)
         {
             _isPressed = true;

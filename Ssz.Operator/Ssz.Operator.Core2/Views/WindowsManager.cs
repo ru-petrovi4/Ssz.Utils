@@ -697,6 +697,7 @@ internal class WindowsManager
 #else
             singleViewPlatform!.MainView = newWindow;
 #endif
+            newWindow.Activate();
         }
         else
         {
@@ -721,7 +722,12 @@ internal class WindowsManager
 
             BrowserPlayWindow? browserPlayWindow = parentWindow as BrowserPlayWindow;
             if (browserPlayWindow is not null)
+            {
                 browserPlayWindow.FaceplatesCanvas.Children.Add(newWindow);
+                // A newly opened faceplate owns the keyboard, so its input field takes the focus
+                // without the operator having to click it first.
+                newWindow.Activate();
+            }
         }            
         
         //newWindow.PlayControlWrapper.Width = Double.NaN;
