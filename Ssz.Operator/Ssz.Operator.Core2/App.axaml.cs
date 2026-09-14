@@ -159,15 +159,19 @@ public partial class App : Application
         {
             options = new Options(null);
 
-            // wwwroot/main.js passes the page address as the application argument, so
-            // https://www.pazchek.ru/SszPlay?ProjectFile=Dir/Sub/My.dsproject gives
-            // CentralServerAddress https://www.pazchek.ru and ProjectFile Dir/Sub/My.dsproject.
+            // wwwroot/main.js passes the page address as the application argument. The page is
+            // served by the central server, one path segment deeper, so
+            // https://www.pazchek.ru/MySite/SszPlay?ProjectFile=Dir/Sub/My.dsproject gives
+            // CentralServerAddress https://www.pazchek.ru/MySite and ProjectFile Dir/Sub/My.dsproject.
             string pageAddress = Environment.GetCommandLineArgs().Skip(1).FirstOrDefault() ?? @"";
             if (!Uri.TryCreate(pageAddress, UriKind.Absolute, out Uri? pageUri))
                 throw new InvalidOperationException(
                     @"The page address is not passed to the application: " + pageAddress);
 
-            options.CentralServerAddress = pageUri.GetLeftPart(UriPartial.Authority);
+            string pagePath = pageUri.AbsolutePath.TrimEnd('/');
+            int pageNameIndex = pagePath.LastIndexOf('/');
+            options.CentralServerAddress = pageUri.GetLeftPart(UriPartial.Authority) +
+                (pageNameIndex > 0 ? pagePath.Substring(0, pageNameIndex) : @"");
             options.ProjectFile = HttpUtility.ParseQueryString(pageUri.Query)[@"ProjectFile"] ?? @"";
             if (options.ProjectFile == @"")
 #if !DEBUG

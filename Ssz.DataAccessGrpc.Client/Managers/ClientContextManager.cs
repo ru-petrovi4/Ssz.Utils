@@ -100,11 +100,19 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                         httpClientHandler.ServerCertificateCustomValidationCallback = (httpRequestMessage, x509Certificate2, x509Chain, sslPolicyErrors) => true;
 #endif
 
+                    // Grpc.Net.Client builds request URIs from the address authority alone, so a
+                    // base path in serverAddress is silently dropped. Put it back, so the server
+                    // can be published under a prefix, for example https://host/MySite.
+                    HttpMessageHandler innerHandler = httpClientHandler;
+                    string basePath = GetBasePath(serverAddress);
+                    if (basePath != @"")
+                        innerHandler = new BasePathHandler(basePath, httpClientHandler);
+
                     if (useGrpcWeb)
                     {
                         var grpcWebHandler = new GrpcWebHandler(
                             GrpcWebMode.GrpcWeb,
-                            httpClientHandler);
+                            innerHandler);
                         grpcChannel = GrpcChannel.ForAddress(serverAddress,
                             new GrpcChannelOptions
                             {
@@ -117,7 +125,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                         grpcChannel = GrpcChannel.ForAddress(serverAddress, 
                             new GrpcChannelOptions
                             {
-                                HttpHandler = httpClientHandler,            // обычный HTTP/2 gRPC
+                                HttpHandler = innerHandler,            // обычный HTTP/2 gRPC
 #if NET10_0_OR_GREATER
                                 HttpVersion = HttpVersion.Version20
 #else
@@ -334,6 +342,44 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         }
 
         #endregion
+
+        /// <summary>
+        ///     The path part of the address, without a trailing slash. Empty when the server is
+        ///     published at the root.
+        /// </summary>
+        private static string GetBasePath(string serverAddress)
+        {
+            if (!Uri.TryCreate(serverAddress, UriKind.Absolute, out Uri? serverUri))
+                return @"";
+            return serverUri.AbsolutePath.TrimEnd('/');
+        }
+
+        /// <summary>
+        ///     Prefixes the base path of the channel address onto every request, which
+        ///     Grpc.Net.Client itself does not do.
+        /// </summary>
+        private sealed class BasePathHandler : DelegatingHandler
+        {
+            public BasePathHandler(string basePath, HttpMessageHandler innerHandler) :
+                base(innerHandler)
+            {
+                _basePath = basePath;
+            }
+
+            protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+                CancellationToken cancellationToken)
+            {
+                if (request.RequestUri is not null)
+                    request.RequestUri = new UriBuilder(request.RequestUri)
+                    {
+                        Path = _basePath + request.RequestUri.AbsolutePath
+                    }.Uri;
+
+                return base.SendAsync(request, cancellationToken);
+            }
+
+            private readonly string _basePath;
+        }
 
         #region private fields
 
