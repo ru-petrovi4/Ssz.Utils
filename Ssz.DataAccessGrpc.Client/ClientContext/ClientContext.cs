@@ -43,11 +43,7 @@ namespace Ssz.DataAccessGrpc.Client
 
         public async ValueTask DisposeAsync()
         {
-            if (_disposed) return;
-
-            _cancellationTokenSource.Cancel();
-
-            await WaitLoopsAsync();
+            if (_disposed) return;            
 
             if (_contextIsOperational)
             {
@@ -64,6 +60,11 @@ namespace Ssz.DataAccessGrpc.Client
                 {
                 }
             }
+
+            _cancellationTokenSource.Cancel();
+
+            await WaitLoopsAsync();
+
             _dataAccessService.Dispose();
 
             ServerContextNotification = delegate { };

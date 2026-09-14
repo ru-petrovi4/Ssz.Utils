@@ -128,8 +128,9 @@ public partial class ServerContext
             {
                 break;
             }
-            catch (System.InvalidOperationException)
+            catch (System.InvalidOperationException ex)
             {
+                Logger.LogDebug(ex, @"ServerContext Callback Thread InvalidOperationException");
                 break;
             }
             catch (Exception ex)
