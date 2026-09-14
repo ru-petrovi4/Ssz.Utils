@@ -42,9 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.36.1" />    
-    <PackageReference Include="SharpVectors" Version="1.8.5" />
-    <PackageReference Include="SharpVectors.Wpf" Version="1.8.5" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="10.0.11" />
+    <PackageReference Include="SharpVectors" Version="1.8.6" />
+    <PackageReference Include="SharpVectors.Wpf" Version="1.8.6" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="10.0.12" />
   </ItemGroup>
   <ItemGroup>
 	<Reference Include="PresentationFramework.Classic" Condition="'$(TargetFramework)' != 'net10.0-windows'" />

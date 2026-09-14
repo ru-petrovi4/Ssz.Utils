@@ -12,12 +12,22 @@ public sealed class SingleThreadTaskScheduler : TaskScheduler, IDisposable
     private readonly BlockingCollection<Task> _queue = new();
     private readonly Thread _thread;
 
-    public SingleThreadTaskScheduler(string name = "STTS")
+    /// <param name="name">Thread name.</param>
+    /// <param name="isBackground">
+    ///     <para>A background thread is abandoned by the runtime when the process
+    ///     shuts down: work in flight, including the continuation after an await, is simply
+    ///     dropped.</para>
+    ///     <para>A foreground thread keeps the process alive until the queue is completed and
+    ///     drained, so a loop runs to its end even while the application is shutting down. Pass
+    ///     false only if the owner is guaranteed to call <see cref="Dispose"/>, otherwise the
+    ///     process will never exit.</para>
+    /// </param>
+    public SingleThreadTaskScheduler(string name, bool isBackground)
     {
         _thread = new Thread(Run)
-        {
-            IsBackground = true,
-            Name = name
+        {            
+            Name = name,
+            IsBackground = isBackground,
         };
         _thread.Start();
     }
@@ -44,5 +54,10 @@ public sealed class SingleThreadTaskScheduler : TaskScheduler, IDisposable
             TryExecuteTask(task);
     }
 
+    /// <summary>
+    ///     Lets the thread finish the tasks already queued and then exit. Call it only after the
+    ///     work scheduled here has completed: a task queued afterwards - an await continuation,
+    ///     for instance - fails with TaskSchedulerException and its awaiter never completes.
+    /// </summary>
     public void Dispose() => _queue.CompleteAdding();
 }

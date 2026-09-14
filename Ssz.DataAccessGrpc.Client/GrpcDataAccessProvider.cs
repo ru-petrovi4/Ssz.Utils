@@ -135,11 +135,16 @@ namespace Ssz.DataAccessGrpc.Client
             }
             else
             {
+                // Foreground thread: WorkingTaskMainLoopAsync still has to unsubscribe from the
+                // server after it is cancelled, and the runtime would drop that continuation if
+                // the thread were a background one. CloseAsync() awaits the task and disposes the
+                // scheduler, which is what lets the process exit.
+                _workingTaskScheduler = new SingleThreadTaskScheduler("WorkingTaskMainLoop", isBackground: false);
                 _workingTask = (new TaskFactory(
                     CancellationToken.None,
                     TaskCreationOptions.None,
                     TaskContinuationOptions.None,
-                    new SingleThreadTaskScheduler("WorkingTaskMainLoop"))).StartNew(async () =>
+                    _workingTaskScheduler)).StartNew(async () =>
                     {
                         await WorkingTaskMainLoopAsync(cancellationToken);
                     }).Unwrap();
@@ -211,6 +216,14 @@ namespace Ssz.DataAccessGrpc.Client
             {
                 await _workingTask;
                 _workingTask = null;
+            }
+
+            // Only now: while the task was running, its await continuations were still being
+            // queued here, and a disposed scheduler cannot accept them.
+            if (_workingTaskScheduler is not null)
+            {
+                _workingTaskScheduler.Dispose();
+                _workingTaskScheduler = null;
             }
 
             await base.CloseAsync();
@@ -1187,6 +1200,8 @@ namespace Ssz.DataAccessGrpc.Client
         #region private fields        
 
         private Task? _workingTask;
+
+        private SingleThreadTaskScheduler? _workingTaskScheduler;
 
         private CancellationTokenSource? _cancellationTokenSource;        
 

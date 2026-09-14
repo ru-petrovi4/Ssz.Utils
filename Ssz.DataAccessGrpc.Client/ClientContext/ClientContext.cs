@@ -47,6 +47,8 @@ namespace Ssz.DataAccessGrpc.Client
 
             _cancellationTokenSource.Cancel();
 
+            await WaitLoopsAsync();
+
             if (_contextIsOperational)
             {
                 _contextIsOperational = false;
@@ -162,20 +164,26 @@ namespace Ssz.DataAccessGrpc.Client
             }
             else
             {
+                // Foreground threads: the loops have to unwind after they are cancelled, and the
+                // runtime would drop their await continuations if the threads were background
+                // ones. DisposeAsync() awaits the tasks and disposes the schedulers, which is
+                // what lets the process exit.
+                _readCallbackMessagesLoop_Scheduler = new SingleThreadTaskScheduler("ReadCallbackMessagesLoop", isBackground: false);
                 _readCallbackMessagesLoop_Task = (new TaskFactory(
                     CancellationToken.None,
                     TaskCreationOptions.None,
                     TaskContinuationOptions.None,
-                    new SingleThreadTaskScheduler("ReadCallbackMessagesLoop"))).StartNew(async () =>
+                    _readCallbackMessagesLoop_Scheduler)).StartNew(async () =>
                 {
                     await ReadCallbackMessagesLoopAsync(_callbackStreamReader, cancellationToken);
                 }).Unwrap();
-                
+
+                _keepAliveLoop_Scheduler = new SingleThreadTaskScheduler("KeepAliveLoop", isBackground: false);
                 _keepAliveLoop_Task = (new TaskFactory(
                     CancellationToken.None,
                     TaskCreationOptions.None,
                     TaskContinuationOptions.None,
-                    new SingleThreadTaskScheduler("KeepAliveLoop"))).StartNew(async () =>
+                    _keepAliveLoop_Scheduler)).StartNew(async () =>
                 {
                     await KeepAliveLoopAsync(cancellationToken);
                 }).Unwrap();
@@ -233,6 +241,48 @@ namespace Ssz.DataAccessGrpc.Client
             }
         }
 
+        /// <summary>
+        ///     Lets the loops run to their end after cancellation. They read from the callback
+        ///     stream and call the server, so they have to be finished before _dataAccessService
+        ///     and GrpcChannel are disposed - otherwise they would be working with disposed
+        ///     objects, and their own unwinding would be lost.
+        /// </summary>
+        private async Task WaitLoopsAsync()
+        {
+            if (_readCallbackMessagesLoop_Task is not null)
+            {
+                try
+                {
+                    await _readCallbackMessagesLoop_Task;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogDebug(ex, "Exception in ReadCallbackMessagesLoop.");
+                }
+                _readCallbackMessagesLoop_Task = null;
+            }
+
+            if (_keepAliveLoop_Task is not null)
+            {
+                try
+                {
+                    await _keepAliveLoop_Task;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogDebug(ex, "Exception in KeepAliveLoop.");
+                }
+                _keepAliveLoop_Task = null;
+            }
+
+            // Only now: while a task was running, its await continuations were still being queued
+            // on its scheduler, and a disposed scheduler cannot accept them.
+            _readCallbackMessagesLoop_Scheduler?.Dispose();
+            _readCallbackMessagesLoop_Scheduler = null;
+            _keepAliveLoop_Scheduler?.Dispose();
+            _keepAliveLoop_Scheduler = null;
+        }
+
         private void SetResourceManagementLastCallUtc()
         {
             // For future use, if we want to track the last time we called a resource management method on the server.
@@ -266,6 +316,9 @@ namespace Ssz.DataAccessGrpc.Client
 
         private Task? _readCallbackMessagesLoop_Task;
         private Task? _keepAliveLoop_Task;
+
+        private SingleThreadTaskScheduler? _readCallbackMessagesLoop_Scheduler;
+        private SingleThreadTaskScheduler? _keepAliveLoop_Scheduler;
 
         private ILogger<GrpcDataAccessProvider> _logger;
 

@@ -15,11 +15,11 @@
     <PackageReference Include="Google.Protobuf" Version="3.36.1" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.83.0" />
     <PackageReference Include="Grpc.Net.ClientFactory" Version="2.83.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.83.0">
+    <PackageReference Include="Grpc.Tools" Version="2.84.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.ResourceMonitoring" Version="10.9.0" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.ResourceMonitoring" Version="10.10.0" />
   </ItemGroup> 
 
   <ItemGroup>    
