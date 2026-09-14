@@ -40,6 +40,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Web;
 using System.Threading.Tasks;
 
 namespace Ssz.Operator.Play;
@@ -145,8 +146,7 @@ public partial class App : Application
 
             // TEMPCODE
             options.CentralServerAddress = @"https://www.pazchek.ru"; // @"https://localhost:60060";
-            options.ProjectDirectoryInvariantPathRelativeToRootDirectory = "CDT.2024.SaratovPCNiDCS/Operator.Data/SARATOV_POLE_Interface";
-            options.ProjectFile = @"Saratov.dsproject";
+            options.ProjectFile = "CDT.2024.SaratovPCNiDCS/Operator.Data/SARATOV_POLE_Interface/Saratov.dsproject";            
 
             DsProject.LoggersSet = new LoggersSet(
                     NullLogger.Instance,
@@ -159,10 +159,23 @@ public partial class App : Application
         {
             options = new Options(null);
 
-            // TEMPCODE
-            options.CentralServerAddress = @"https://www.pazchek.ru";
-            options.ProjectDirectoryInvariantPathRelativeToRootDirectory = "CDT.2024.SaratovPCNiDCS/Operator.Data/SARATOV_POLE_Interface";
-            options.ProjectFile = @"Saratov.dsproject";
+            // wwwroot/main.js passes the page address as the application argument, so
+            // https://www.pazchek.ru/SszPlay?ProjectFile=Dir/Sub/My.dsproject gives
+            // CentralServerAddress https://www.pazchek.ru and ProjectFile Dir/Sub/My.dsproject.
+            string pageAddress = Environment.GetCommandLineArgs().Skip(1).FirstOrDefault() ?? @"";
+            if (!Uri.TryCreate(pageAddress, UriKind.Absolute, out Uri? pageUri))
+                throw new InvalidOperationException(
+                    @"The page address is not passed to the application: " + pageAddress);
+
+            options.CentralServerAddress = pageUri.GetLeftPart(UriPartial.Authority);
+            options.ProjectFile = HttpUtility.ParseQueryString(pageUri.Query)[@"ProjectFile"] ?? @"";
+            if (options.ProjectFile == @"")
+#if !DEBUG
+                throw new InvalidOperationException(
+                    @"The ProjectFile parameter is missing from the page address: " + pageAddress);
+#else
+                options.ProjectFile = "CDT.2024.SaratovPCNiDCS/Operator.Data/SARATOV_POLE_Interface/Saratov.dsproject";
+#endif
 
             DsProject.LoggersSet = new LoggersSet(
                     NullLogger.Instance,
@@ -437,9 +450,8 @@ public partial class App : Application
                 },
                 DispatcherHelper.GetUiDispatcher());
 
-        string projectDirectoryInvariantPathRelativeToRootDirectory = options.ProjectDirectoryInvariantPathRelativeToRootDirectory;
-        if (projectDirectoryInvariantPathRelativeToRootDirectory.EndsWith('/'))
-            projectDirectoryInvariantPathRelativeToRootDirectory = projectDirectoryInvariantPathRelativeToRootDirectory.Substring(0, projectDirectoryInvariantPathRelativeToRootDirectory.Length - 1);
+        int index = options.ProjectFile.LastIndexOf('/');
+        string projectDirectoryInvariantPathRelativeToRootDirectory = options.ProjectFile.Substring(0, index);       
 
         IndexedDBFileProvider fileProvider = await IndexedDBHelper.CreateFileProviderAsync(projectDirectoryInvariantPathRelativeToRootDirectory);
 
@@ -627,9 +639,10 @@ public partial class App : Application
 
         #region public functions
 
+        /// <summary>
+        ///     Path to project file
+        /// </summary>
         public string ProjectFile { get; set; }
-
-        public string ProjectDirectoryInvariantPathRelativeToRootDirectory { get; set; }
 
         public string StartPageFile { get; set; }
 
