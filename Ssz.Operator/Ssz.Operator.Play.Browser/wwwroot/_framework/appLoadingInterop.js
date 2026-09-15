@@ -2,7 +2,7 @@
 // Every call is tolerant of a missing overlay: the page may already have hidden it.
 
 export function setStatus(status) {
-    globalThis.appLoading?.setStatus(status);
+    globalThis.appLoading?.setManagedStatus(status);
 }
 
 export function setProjectProgress(progressPercent) {

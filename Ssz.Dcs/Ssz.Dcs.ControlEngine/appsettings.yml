@@ -34,6 +34,7 @@ Kestrel:
       # пароль от файла сертификата
       Password: "identityserver"
       AllowInvalid: true
+UseGrpcWeb: "true"
 AllowedHosts: "*"
 # задается язык сообщений в журналах событий которые доступны через веб интерфейс ИТ-решения возможные значения RU EN
 UICulture: "RU"

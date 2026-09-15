@@ -13,6 +13,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace Ssz.DataAccessGrpc.Client.LocalServer
@@ -371,29 +372,15 @@ namespace Ssz.DataAccessGrpc.Client.LocalServer
         /// <param name="func"></param>
         /// <returns></returns>
         /// <exception cref="RpcException"></exception>
-        private Task<TReply> GetReplyAsync<TReply>(Func<Task<TReply>> func)
+        private async Task<TReply> GetReplyAsync<TReply>(Func<Task<TReply>> func,
+            [CallerMemberName] string callerMethodName = "")
         {
-            string parentMethodName = "";
-            if (_logger.IsEnabled(LogLevel.Trace))
-            {
-                var st = new StackTrace();
-                //foreach (var f in st.GetFrames())
-                //{
-                //    parentMethodName += "->" + f.GetMethod()?.Name;
-                //}
-                var sf = st.GetFrame(7);
-                if (sf is not null)
-                {
-                    parentMethodName = sf.GetMethod()?.Name ?? "";
-                }
-            }
-
             var taskCompletionSource = new TaskCompletionSource<TReply>();
             using var registration = _cancellationTokenSource.Token.Register(() => taskCompletionSource.TrySetException(new OperationCanceledException()));
             //context.CancellationToken.Register(() => taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);
             _localDataAccessServerWorker.ThreadSafeDispatcher.BeginInvoke(async ct =>
             {
-                _logger.LogTrace("Processing client call in worker thread: " + parentMethodName);
+                _logger.LogTrace("Processing client call in worker thread: " + callerMethodName);
                 try
                 {
                     ct.ThrowIfCancellationRequested();
@@ -408,7 +395,9 @@ namespace Ssz.DataAccessGrpc.Client.LocalServer
             });
             try
             {
-                return taskCompletionSource.Task;
+                // Awaited, not returned: a returned task leaves every catch below unreachable,
+                // so an exception from a handler reached the client without ever being logged.
+                return await taskCompletionSource.Task;
             }
             catch (OperationCanceledException ex)
             {

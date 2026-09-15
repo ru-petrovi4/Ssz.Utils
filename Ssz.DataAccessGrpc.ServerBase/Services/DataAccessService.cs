@@ -15,6 +15,7 @@ using System.Runtime.Intrinsics.Arm;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace Ssz.DataAccessGrpc.ServerBase
@@ -445,29 +446,15 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <param name="context"></param>
         /// <returns></returns>
         /// <exception cref="RpcException"></exception>
-        private Task<TReply> GetReplyAsync<TReply>(Func<Task<TReply>> func, ServerCallContext context)
+        private async Task<TReply> GetReplyAsync<TReply>(Func<Task<TReply>> func, ServerCallContext context,
+            [CallerMemberName] string callerMethodName = "")
         {
-            string parentMethodName = "";
-            if (_logger.IsEnabled(LogLevel.Trace))
-            {
-                var st = new StackTrace();
-                //foreach (var f in st.GetFrames())
-                //{
-                //    parentMethodName += "->" + f.GetMethod()?.Name;
-                //}
-                var sf = st.GetFrame(7);
-                if (sf is not null)
-                {
-                    parentMethodName = sf.GetMethod()?.Name ?? "";
-                }
-            }
-
             var taskCompletionSource = new TaskCompletionSource<TReply>();
             using var registration = _hostApplicationLifetime.ApplicationStopping.Register(() => taskCompletionSource.TrySetException(new OperationCanceledException()));
             //context.CancellationToken.Register(() => taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);
             _dataAccessServerWorker.ThreadSafeDispatcher.BeginInvoke(async ct =>
             {
-                _logger.LogTrace("Processing client call in worker thread: " + parentMethodName);
+                _logger.LogTrace("Processing client call in worker thread: " + callerMethodName);
                 try
                 {
                     ct.ThrowIfCancellationRequested();
@@ -482,7 +469,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
             });            
             try
             {
-                return taskCompletionSource.Task;
+                // Awaited, not returned: a returned task leaves every catch below unreachable,
+                // so an exception from a handler reached the client without ever being logged.
+                return await taskCompletionSource.Task;
             }
             catch (OperationCanceledException ex)
             {

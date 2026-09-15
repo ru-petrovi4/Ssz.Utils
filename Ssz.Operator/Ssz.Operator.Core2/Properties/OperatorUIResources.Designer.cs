@@ -257,5 +257,14 @@ namespace Ssz.Operator.Core.Properties {
                 return ResourceManager.GetString("Loading_OpeningProject", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The project named by the ProjectFile parameter is not found.
+        /// </summary>
+        public static string Loading_ProjectNotFound {
+            get {
+                return ResourceManager.GetString("Loading_ProjectNotFound", resourceCulture);
+            }
+        }
     }
 }

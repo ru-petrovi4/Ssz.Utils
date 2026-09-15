@@ -45,9 +45,9 @@ namespace Ssz.DataAccessGrpc.Client
         {
             if (_disposed) return;            
 
-            if (_contextIsOperational)
+            if (ContextIsOperational)
             {
-                _contextIsOperational = false;
+                ContextIsOperational = false;
 
                 try
                 {
@@ -109,7 +109,14 @@ namespace Ssz.DataAccessGrpc.Client
         
         public bool ContextIsOperational
         {
-            get { return _contextIsOperational; }            
+            get
+            {
+                return _contextIsOperational;
+            }
+            set
+            {
+                _contextIsOperational = value;
+            }
         }
 
         public async Task InitiateAsync(uint requestedServerContextTimeoutMs,
@@ -144,7 +151,7 @@ namespace Ssz.DataAccessGrpc.Client
                 ContextId = _serverContextId
             });
 
-            _contextIsOperational = true;
+            ContextIsOperational = true;
             LastServerContextCallbackMessage = DateTime.UtcNow;
 
             var cancellationToken = _cancellationTokenSource.Token;
@@ -211,7 +218,7 @@ namespace Ssz.DataAccessGrpc.Client
                     await Task.Delay(5000, cancellationToken);
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    if (!_contextIsOperational)
+                    if (!ContextIsOperational)
                         throw new OperationCanceledException();
 
                     try
@@ -291,14 +298,14 @@ namespace Ssz.DataAccessGrpc.Client
 
         private void ProcessRemoteMethodCallException(Exception ex)
         {
-            if (!_contextIsOperational)
+            if (!ContextIsOperational)
                 return;
 
             if (ex is RpcException rpcException)
             {
                 if (rpcException.StatusCode != StatusCode.Cancelled)
                 {
-                    _contextIsOperational = false;
+                    ContextIsOperational = false;
 
                     _logger.LogDebug(ex, "RpcException when server method call. ContextIsOperational = false");
                 }

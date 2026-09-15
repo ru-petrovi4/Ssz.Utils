@@ -173,6 +173,7 @@ public partial class App : Application
             options.CentralServerAddress = pageUri.GetLeftPart(UriPartial.Authority) +
                 (pageNameIndex > 0 ? pagePath.Substring(0, pageNameIndex) : @"");
             options.ProjectFile = HttpUtility.ParseQueryString(pageUri.Query)[@"ProjectFile"] ?? @"";
+            options.Constants = HttpUtility.ParseQueryString(pageUri.Query)[@"Constants"] ?? @"";
             if (options.ProjectFile == @"")
 #if !DEBUG
                 throw new InvalidOperationException(
@@ -478,7 +479,16 @@ public partial class App : Application
         DsFilesStoreDirectory? serverProjectDsFilesStoreDirectory = SerializationHelper.CreateFromOwnedData(returnData,
             () => new DsFilesStoreDirectory());
 
-        JobProgressInfo jobProgressInfo = new(jobProgress, serverProjectDsFilesStoreDirectory.GetFilesCount());        
+        // GetDirectoryInfo creates the directory on the server when it is missing and answers with
+        // an empty one, so a wrong ProjectFile looks like a project with no files: the bar would
+        // reach 100% and the application would then hang on a project file that is not there.
+        string projectFileName = options.ProjectFile.Substring(index + 1);
+        if (!serverProjectDsFilesStoreDirectory.DsFilesStoreFilesCollection.Any(
+                f => StringHelper.CompareIgnoreCase(f.Name, projectFileName)))
+            throw new InvalidOperationException(
+                OperatorUIResources.Loading_ProjectNotFound + @": " + options.ProjectFile);
+
+        JobProgressInfo jobProgressInfo = new(jobProgress, serverProjectDsFilesStoreDirectory.GetFilesCount());
 
         AppLoadingInterop.SetStatusSafe(OperatorUIResources.Loading_DownloadingProjectFiles);
 

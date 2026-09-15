@@ -115,6 +115,15 @@ function createLoadingIndicator() {
             if (!failed) status.textContent = text;
         },
 
+        // Called from managed code. It also means the application has taken the overlay over, so
+        // the fallback below must not hide it while the application is still working: a status
+        // like "connecting to the server" has to stay on screen instead of turning into a blank
+        // page.
+        setManagedStatus(text) {
+            claim();
+            api.setStatus(text);
+        },
+
         // Stage 1: .NET runtime and assemblies. The runtime reports the resource count it knows
         // about so far, so the total grows while loading - keep the shown value monotonic.
         setAppProgress(loadedCount, totalCount) {

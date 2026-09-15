@@ -184,4 +184,7 @@
   <data name="Loading_OpeningProject" xml:space="preserve">
     <value>Opening the project...</value>
   </data>
+  <data name="Loading_ProjectNotFound" xml:space="preserve">
+    <value>The project named by the ProjectFile parameter is not found</value>
+  </data>
 </root>
