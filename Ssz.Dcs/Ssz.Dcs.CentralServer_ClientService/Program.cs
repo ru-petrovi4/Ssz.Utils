@@ -67,6 +67,7 @@ namespace Ssz.Dcs.CentralServer_ClientService
                             .AddSszLogger()
                     )                
                 .UseWindowsService()
+                .UseSystemd()
                 .ConfigureServices((hostContext, services) =>
                     {
                         services.AddTransient<Worker>();
