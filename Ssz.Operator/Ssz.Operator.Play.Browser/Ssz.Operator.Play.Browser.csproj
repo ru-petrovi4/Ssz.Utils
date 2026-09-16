@@ -7,6 +7,11 @@
     <!-- SkiaSharp / HarfBuzzSharp ship static libs as @(NativeFileReference); without native
          relinking they are not linked in and Skia fails at startup with DllNotFoundException. -->
     <WasmBuildNative>true</WasmBuildNative>
+    <!-- The project format is deserialized by type name through Activator.CreateInstance, which
+         the trimmer cannot follow: with the default full trimming a published build fails with
+         MissingMethodException (Arg_NoDefCTor) on the first project it opens. No annotation can
+         cover types that are resolved from strings at run time. -->
+    <PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
 
   <ItemGroup>

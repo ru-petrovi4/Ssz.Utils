@@ -266,5 +266,14 @@ namespace Ssz.Operator.Core.Properties {
                 return ResourceManager.GetString("Loading_ProjectNotFound", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The project could not be opened.
+        /// </summary>
+        public static string Loading_ProjectOpenFailed {
+            get {
+                return ResourceManager.GetString("Loading_ProjectOpenFailed", resourceCulture);
+            }
+        }
     }
 }

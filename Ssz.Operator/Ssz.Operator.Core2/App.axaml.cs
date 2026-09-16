@@ -183,7 +183,7 @@ public partial class App : Application
 #endif
 
             DsProject.LoggersSet = new LoggersSet(
-                    NullLogger.Instance,
+                    new BrowserConsoleLogger(),
                     null);
 
             dsProjectModeEnum = DsProject.DsProjectModeEnum.BrowserPlayMode;
@@ -240,6 +240,12 @@ public partial class App : Application
         {
             fileProvider = await UpdateFilesCacheAsync(options, jobProgress);
             isReadOnly = true;
+
+            // options.ProjectFile is a path in the server files store, while the file provider is
+            // rooted at the project directory itself: inside it the project is addressed by name
+            // alone. Passing the whole path here makes the provider look for the project
+            // directory inside itself and find nothing.
+            dsProjectFileFullName = options.ProjectFile.Substring(options.ProjectFile.LastIndexOf('/') + 1);
         }
         else
         {
@@ -254,10 +260,10 @@ public partial class App : Application
         AppLoadingInterop.SetStatusSafe(OperatorUIResources.Loading_OpeningProject);
 
         bool failed = await DsProject.ReadDsProjectFromBinFileAsync(
-            dsProjectFileFullName, 
-            dsProjectModeEnum,                    
-            isReadOnly, 
-            options.AutoConvert, 
+            dsProjectFileFullName,
+            dsProjectModeEnum,
+            isReadOnly,
+            options.AutoConvert,
             options.Constants,
             null,
             fileProvider);
@@ -272,6 +278,11 @@ public partial class App : Application
         }
         if (failed)
         {
+            // ReadDsProjectFromBinFileAsync reports through MessageBoxHelper, which has no window
+            // to show yet at this point, so without this the loading screen would just stay.
+            AppLoadingInterop.ShowErrorSafe(
+                OperatorUIResources.Loading_ProjectOpenFailed + @": " + options.ProjectFile);
+
             SafeShutdown();
             return;
         }

@@ -187,4 +187,7 @@
   <data name="Loading_ProjectNotFound" xml:space="preserve">
     <value>The project named by the ProjectFile parameter is not found</value>
   </data>
+  <data name="Loading_ProjectOpenFailed" xml:space="preserve">
+    <value>The project could not be opened</value>
+  </data>
 </root>

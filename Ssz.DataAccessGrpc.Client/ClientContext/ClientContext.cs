@@ -156,46 +156,53 @@ namespace Ssz.DataAccessGrpc.Client
 
             var cancellationToken = _cancellationTokenSource.Token;
 
-            bool isBrowser = false;
-#if NET5_0_OR_GREATER
-            if (OperatingSystem.IsBrowser())
-                isBrowser = true;
-#endif
-            if (isBrowser)
-            {
-                _readCallbackMessagesLoop_Task = Task.Run(async () =>
+            _readCallbackMessagesLoop_Task = Task.Run(async () =>
                     await ReadCallbackMessagesLoopAsync(_callbackStreamReader, cancellationToken)
                 );
-                _keepAliveLoop_Task = Task.Run(async () =>
-                    await KeepAliveLoopAsync(cancellationToken)
-                );
-            }
-            else
-            {
-                // Foreground threads: the loops have to unwind after they are cancelled, and the
-                // runtime would drop their await continuations if the threads were background
-                // ones. DisposeAsync() awaits the tasks and disposes the schedulers, which is
-                // what lets the process exit.
-                _readCallbackMessagesLoop_Scheduler = new SingleThreadTaskScheduler("ReadCallbackMessagesLoop", isBackground: false);
-                _readCallbackMessagesLoop_Task = (new TaskFactory(
-                    CancellationToken.None,
-                    TaskCreationOptions.None,
-                    TaskContinuationOptions.None,
-                    _readCallbackMessagesLoop_Scheduler)).StartNew(async () =>
-                {
-                    await ReadCallbackMessagesLoopAsync(_callbackStreamReader, cancellationToken);
-                }).Unwrap();
+            _keepAliveLoop_Task = Task.Run(async () =>
+                await KeepAliveLoopAsync(cancellationToken)
+            );
 
-                _keepAliveLoop_Scheduler = new SingleThreadTaskScheduler("KeepAliveLoop", isBackground: false);
-                _keepAliveLoop_Task = (new TaskFactory(
-                    CancellationToken.None,
-                    TaskCreationOptions.None,
-                    TaskContinuationOptions.None,
-                    _keepAliveLoop_Scheduler)).StartNew(async () =>
-                {
-                    await KeepAliveLoopAsync(cancellationToken);
-                }).Unwrap();
-            }            
+//            bool isBrowser = false;
+//#if NET5_0_OR_GREATER
+//            if (OperatingSystem.IsBrowser())
+//                isBrowser = true;
+//#endif
+//            if (isBrowser)
+//            {
+//                _readCallbackMessagesLoop_Task = Task.Run(async () =>
+//                    await ReadCallbackMessagesLoopAsync(_callbackStreamReader, cancellationToken)
+//                );
+//                _keepAliveLoop_Task = Task.Run(async () =>
+//                    await KeepAliveLoopAsync(cancellationToken)
+//                );
+//            }
+//            else
+//            {
+//                // Foreground threads: the loops have to unwind after they are cancelled, and the
+//                // runtime would drop their await continuations if the threads were background
+//                // ones. DisposeAsync() awaits the tasks and disposes the schedulers, which is
+//                // what lets the process exit.
+//                _readCallbackMessagesLoop_Scheduler = new SingleThreadTaskScheduler("ReadCallbackMessagesLoop", isBackground: false);
+//                _readCallbackMessagesLoop_Task = (new TaskFactory(
+//                    CancellationToken.None,
+//                    TaskCreationOptions.None,
+//                    TaskContinuationOptions.None,
+//                    _readCallbackMessagesLoop_Scheduler)).StartNew(async () =>
+//                {
+//                    await ReadCallbackMessagesLoopAsync(_callbackStreamReader, cancellationToken);
+//                }).Unwrap();
+
+//                _keepAliveLoop_Scheduler = new SingleThreadTaskScheduler("KeepAliveLoop", isBackground: false);
+//                _keepAliveLoop_Task = (new TaskFactory(
+//                    CancellationToken.None,
+//                    TaskCreationOptions.None,
+//                    TaskContinuationOptions.None,
+//                    _keepAliveLoop_Scheduler)).StartNew(async () =>
+//                {
+//                    await KeepAliveLoopAsync(cancellationToken);
+//                }).Unwrap();
+//            }            
         }
 
         #endregion

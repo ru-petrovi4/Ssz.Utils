@@ -122,33 +122,37 @@ namespace Ssz.DataAccessGrpc.Client
             _cancellationTokenSource = new CancellationTokenSource();
             var cancellationToken = _cancellationTokenSource.Token;
 
-            bool isBrowser = false;
-#if NET5_0_OR_GREATER
-            if (OperatingSystem.IsBrowser())
-                isBrowser = true;
-#endif
-            if (isBrowser)
-            {
-                _workingTask = Task.Run(async () =>
+            _workingTask = Task.Run(async () =>
                     await WorkingTaskMainLoopAsync(cancellationToken)
                 );
-            }
-            else
-            {
-                // Foreground thread: WorkingTaskMainLoopAsync still has to unsubscribe from the
-                // server after it is cancelled, and the runtime would drop that continuation if
-                // the thread were a background one. CloseAsync() awaits the task and disposes the
-                // scheduler, which is what lets the process exit.
-                _workingTaskScheduler = new SingleThreadTaskScheduler("WorkingTaskMainLoop", isBackground: false);
-                _workingTask = (new TaskFactory(
-                    CancellationToken.None,
-                    TaskCreationOptions.None,
-                    TaskContinuationOptions.None,
-                    _workingTaskScheduler)).StartNew(async () =>
-                    {
-                        await WorkingTaskMainLoopAsync(cancellationToken);
-                    }).Unwrap();
-            }
+
+//            bool isBrowser = false;
+//#if NET5_0_OR_GREATER
+//            if (OperatingSystem.IsBrowser())
+//                isBrowser = true;
+//#endif
+//            if (isBrowser)
+//            {
+//                _workingTask = Task.Run(async () =>
+//                    await WorkingTaskMainLoopAsync(cancellationToken)
+//                );
+//            }
+//            else
+//            {
+//                // Foreground thread: WorkingTaskMainLoopAsync still has to unsubscribe from the
+//                // server after it is cancelled, and the runtime would drop that continuation if
+//                // the thread were a background one. CloseAsync() awaits the task and disposes the
+//                // scheduler, which is what lets the process exit.
+//                _workingTaskScheduler = new SingleThreadTaskScheduler("WorkingTaskMainLoop", isBackground: false);
+//                _workingTask = (new TaskFactory(
+//                    CancellationToken.None,
+//                    TaskCreationOptions.None,
+//                    TaskContinuationOptions.None,
+//                    _workingTaskScheduler)).StartNew(async () =>
+//                    {
+//                        await WorkingTaskMainLoopAsync(cancellationToken);
+//                    }).Unwrap();
+//            }
 
             foreach (ValueSubscriptionObj valueSubscriptionObj in _valueSubscriptionsCollection.Values)
             {

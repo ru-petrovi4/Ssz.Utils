@@ -187,4 +187,7 @@
   <data name="Loading_ProjectNotFound" xml:space="preserve">
     <value>Проект из свойства ProjectFile не найден</value>
   </data>
+  <data name="Loading_ProjectOpenFailed" xml:space="preserve">
+    <value>Не удалось открыть проект</value>
+  </data>
 </root>
