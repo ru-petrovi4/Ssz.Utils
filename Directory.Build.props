@@ -6,6 +6,6 @@
      Single source of truth for the NuGet packages version.
   -->
   <PropertyGroup>
-    <NuGetPackagesVersion>1.0.90.0</NuGetPackagesVersion>
+    <NuGetPackagesVersion>1.0.91.0</NuGetPackagesVersion>
   </PropertyGroup>
 </Project>

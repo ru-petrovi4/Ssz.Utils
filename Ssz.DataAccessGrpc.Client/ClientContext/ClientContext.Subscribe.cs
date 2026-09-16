@@ -92,27 +92,24 @@ namespace Ssz.DataAccessGrpc.Client
 
         private async Task ReadCallbackMessagesLoopAsync(IAsyncStreamReader<CallbackMessage> callbackStreamReader, CancellationToken cancellationToken)
         {
-            while (ContextIsOperational)
+            try
             {
-                try
+                while (ContextIsOperational)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     if (!await callbackStreamReader.MoveNext(cancellationToken))
-                    {
-                        ContextIsOperational = false;
                         break;
-                    }
                     cancellationToken.ThrowIfCancellationRequested();
 
                     LastServerContextCallbackMessage = DateTime.UtcNow;
 
                     CallbackMessage current = callbackStreamReader.Current;
                     _workingDispatcher.BeginInvoke(ct =>
-                    {    
+                    {
                         try
                         {
                             cancellationToken.ThrowIfCancellationRequested();
-                            ct.ThrowIfCancellationRequested();                            
+                            ct.ThrowIfCancellationRequested();
 
                             switch (current.OptionalMessageCase)
                             {
@@ -135,7 +132,7 @@ namespace Ssz.DataAccessGrpc.Client
                             }
                         }
                         catch when (cancellationToken.IsCancellationRequested || ct.IsCancellationRequested)
-                        {                            
+                        {
                         }
                         catch (Exception ex)
                         {
@@ -143,15 +140,13 @@ namespace Ssz.DataAccessGrpc.Client
                         }
                     });
                 }
-                catch when (cancellationToken.IsCancellationRequested)
-                {
-                    ContextIsOperational = false;                    
-                }
-                catch (Exception ex)
-                {
-                    ContextIsOperational = false;
-                    //LoggersSet.Logger.LogWarning(ex, @"ServerContext Callback Thread Exception");                    
-                } 
+            }
+            catch
+            {
+            }
+            finally
+            {
+                ContextIsOperational = false;
             }
         }
 
@@ -162,6 +157,7 @@ namespace Ssz.DataAccessGrpc.Client
                 return;
             if (ServerContextStatus.StateCode == ContextStateCodes.STATE_ABORTING)
             {
+                _contextStateCodes_STATE_ABORTING = true;
                 ContextIsOperational = false;                
             }
             ServerContextNotification(this, new ContextStatusChangedEventArgs

@@ -43,12 +43,10 @@ namespace Ssz.DataAccessGrpc.Client
 
         public async ValueTask DisposeAsync()
         {
-            if (_disposed) return;            
+            if (_disposed) return;
 
-            if (ContextIsOperational)
+            if (!_contextStateCodes_STATE_ABORTING)
             {
-                ContextIsOperational = false;
-
                 try
                 {
                     await _dataAccessService.ConcludeAsync(new ConcludeRequest
@@ -60,6 +58,8 @@ namespace Ssz.DataAccessGrpc.Client
                 {
                 }
             }
+
+            ContextIsOperational = false;
 
             _cancellationTokenSource.Cancel();
 
@@ -226,7 +226,7 @@ namespace Ssz.DataAccessGrpc.Client
                     cancellationToken.ThrowIfCancellationRequested();
 
                     if (!ContextIsOperational)
-                        throw new OperationCanceledException();
+                        break;
 
                     try
                     {
@@ -246,12 +246,8 @@ namespace Ssz.DataAccessGrpc.Client
                         ProcessRemoteMethodCallException(new RpcException(new Status(StatusCode.DeadlineExceeded, @"STATE_OPERATIONAL ContextMessage DeadlineExceeded")));
                     }
                 }
-            }
-            catch (OperationCanceledException)
-            {
-                // ignore
-            }
-            catch (Exception)
+            }            
+            catch
             {                
             }
         }
@@ -308,19 +304,9 @@ namespace Ssz.DataAccessGrpc.Client
             if (!ContextIsOperational)
                 return;
 
-            if (ex is RpcException rpcException)
-            {
-                if (rpcException.StatusCode != StatusCode.Cancelled)
-                {
-                    ContextIsOperational = false;
+            ContextIsOperational = false;
 
-                    _logger.LogDebug(ex, "RpcException when server method call. ContextIsOperational = false");
-                }
-            }
-            else
-            {
-                _logger.LogDebug(ex, "Exception when server method call.");
-            }
+            _logger.LogDebug(ex, "Exception when server method call.");
         }   
 
         #endregion
@@ -356,7 +342,9 @@ namespace Ssz.DataAccessGrpc.Client
         private long _lastServerContextCallbackMessage_Ticks;
 
         private IAsyncStreamReader<CallbackMessage>? _callbackStreamReader;
-        
+
+        private volatile bool _contextStateCodes_STATE_ABORTING;
+
         private volatile bool _contextIsOperational;
 
         /// <summary>
