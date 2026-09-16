@@ -8,7 +8,7 @@ namespace Ssz.Dcs.CentralServer.Common
 {
     public static class DataAccessConstants
     {
-        public const string CentralServer_ClientWindowsService_ClientApplicationName = @"Ssz.Dcs.CentralServer_ClientWindowsService";
+        public const string CentralServer_ClientService_ClientApplicationName = @"Ssz.Dcs.CentralServer_ClientService";
 
         public const string Launcher_ClientApplicationName = @"Launcher";
 

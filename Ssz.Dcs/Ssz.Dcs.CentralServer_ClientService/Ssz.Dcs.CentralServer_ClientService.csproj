@@ -1,12 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0-windows</TargetFramework>
-    <OutputType>Exe</OutputType>
-    <UseWPF>true</UseWPF>
-  <Nullable>enable</Nullable>
-  <LangVersion>Latest</LangVersion>
-  <Platforms>AnyCPU;x86</Platforms>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>Exe</OutputType>    
+    <Nullable>enable</Nullable>
+    <LangVersion>Latest</LangVersion>
+    <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
   
   <ItemGroup>
@@ -18,8 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Ssz.DataAccessGrpc.Client\Ssz.DataAccessGrpc.Client.csproj" />
-    <ProjectReference Include="..\..\Ssz.Utils.Wpf\Ssz.Utils.Wpf.csproj" />
+    <ProjectReference Include="..\..\Ssz.DataAccessGrpc.Client\Ssz.DataAccessGrpc.Client.csproj" />    
     <ProjectReference Include="..\Ssz.Dcs.CentralServer.Common\Ssz.Dcs.CentralServer.Common.csproj" />
     <ProjectReference Include="..\Ssz.Dcs.CentralServer_Client\Ssz.Dcs.CentralServer_Client.csproj" />
   </ItemGroup>

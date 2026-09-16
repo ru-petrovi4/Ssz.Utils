@@ -31,7 +31,7 @@ namespace Ssz.Dcs.CentralServer
                 }
                 else
                 {
-                    if (serverContext.ClientApplicationName == DataAccessConstants.CentralServer_ClientWindowsService_ClientApplicationName)
+                    if (serverContext.ClientApplicationName == DataAccessConstants.CentralServer_ClientService_ClientApplicationName)
                     {
                         if (!String.IsNullOrEmpty(serverContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_Engine_ProcessModelNames)))
                             On_EnginesHost_AddedOrRemoved(serverContext, args.Added);
@@ -223,7 +223,7 @@ namespace Ssz.Dcs.CentralServer
             public string?[] ProcessModelNames { get; set; } = null!;
 
             /// <summary>
-            ///     DataAccessConstants.CentralServer_ClientWindowsService_ClientApplicationName only
+            ///     DataAccessConstants.CentralServer_ClientService_ClientApplicationName only
             /// </summary>
             public List<ServerContext> UtilityServerContexts { get; } = new();
         }        

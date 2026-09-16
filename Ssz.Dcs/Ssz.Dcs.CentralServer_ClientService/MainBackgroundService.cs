@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Ssz.Dcs.CentralServer_ClientWindowsService
+namespace Ssz.Dcs.CentralServer_ClientService
 {
     public class MainBackgroundService : BackgroundService
     {

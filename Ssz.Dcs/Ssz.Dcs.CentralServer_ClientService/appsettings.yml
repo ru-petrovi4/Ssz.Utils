@@ -1,7 +1,7 @@
 Logging: 
   LogLevel: 
     # Задается уровень логирования событий в файлы журналов
-    Ssz.Dcs.CentralServer_ClientWindowsService.Program: "Information"
+    Ssz.Dcs.CentralServer_ClientService.Program: "Information"
     Default: "Warning"    
     Microsoft: "Warning"
     Microsoft.Hosting.Lifetime: "Warning"    

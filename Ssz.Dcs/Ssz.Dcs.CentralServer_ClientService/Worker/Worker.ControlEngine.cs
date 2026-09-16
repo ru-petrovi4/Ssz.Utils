@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ssz.Dcs.CentralServer_ClientWindowsService
+namespace Ssz.Dcs.CentralServer_ClientService
 {
     public partial class Worker
     {

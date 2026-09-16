@@ -14,7 +14,7 @@ using Ssz.Dcs.CentralServer.Common.Helpers;
 using System.IO;
 using System.Text;
 
-namespace Ssz.Dcs.CentralServer_ClientWindowsService
+namespace Ssz.Dcs.CentralServer_ClientService
 {
     public class Program
     {

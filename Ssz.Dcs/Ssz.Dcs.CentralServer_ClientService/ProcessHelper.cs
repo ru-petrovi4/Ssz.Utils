@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 
-namespace Ssz.Dcs.CentralServer_ClientWindowsService
+namespace Ssz.Dcs.CentralServer_ClientService
 {
     public static class ProcessHelper
     {

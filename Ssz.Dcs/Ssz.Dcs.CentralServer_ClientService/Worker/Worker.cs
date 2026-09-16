@@ -7,7 +7,6 @@ using Ssz.DataAccessGrpc.Client;
 using Ssz.Utils;
 using Ssz.Utils.DataAccess;
 using Ssz.Utils.Serialization;
-using Ssz.Utils.Wpf;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,7 +17,7 @@ using Ssz.Dcs.CentralServer.Common.Helpers;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
-namespace Ssz.Dcs.CentralServer_ClientWindowsService
+namespace Ssz.Dcs.CentralServer_ClientService
 {
     public partial class Worker
     {
@@ -69,7 +68,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
             MainUtilityDataAccessProvider.Initialize(null,
                 mainCentralServerAddress,
-                DataAccessConstants.CentralServer_ClientWindowsService_ClientApplicationName,
+                DataAccessConstants.CentralServer_ClientService_ClientApplicationName,
                 ConfigurationHelper.GetWorkstationName(Configuration),
                 @"",
                 new CaseInsensitiveOrderedDictionary<string?>()
@@ -158,7 +157,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
                 additionalUtilityDataAccessProvider.Initialize(null,
                     addedAdditionalUtilityDataAccessProviderHolder.CentralServerAddress,
-                    DataAccessConstants.CentralServer_ClientWindowsService_ClientApplicationName,
+                    DataAccessConstants.CentralServer_ClientService_ClientApplicationName,
                     ConfigurationHelper.GetWorkstationName(Configuration),
                     @"",
                     new CaseInsensitiveOrderedDictionary<string?>()
