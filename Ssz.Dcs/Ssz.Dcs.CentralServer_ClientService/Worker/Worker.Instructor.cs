@@ -80,7 +80,7 @@ namespace Ssz.Dcs.CentralServer_ClientService
                 "\" --CentralServerAddress=" + utilityDataAccessProvider.ServerAddress +
                 " -s \"" + processModelingSessionId + "\"";
 
-            Logger.LogDebug("Ssz.Dcs.Instructor.exe is starting.. " + binDirectoryFullName + @" " + arguments);
+            Logger.LogDebug("Ssz.Dcs.Instructor is starting.. " + binDirectoryFullName + @" " + arguments);
 
             var t = utilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.ProcessModelingSession_RunInstructorExe,
                    Encoding.UTF8.GetBytes(CsvHelper.FormatForCsv(

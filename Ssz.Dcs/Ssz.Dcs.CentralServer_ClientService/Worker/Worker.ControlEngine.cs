@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using Ssz.Dcs.CentralServer.Common;
+using Ssz.Dcs.CentralServer.Common.EntityFramework;
 using Ssz.Utils;
 using Ssz.Utils.DataAccess;
 using System;
@@ -19,12 +20,26 @@ namespace Ssz.Dcs.CentralServer_ClientService
 
         private void RunControlEngineExe(string processModelingSessionId, DirectoryInfo processModelDirectoryInfo, DirectoryInfo binDirectoryInfo, string controlEngineServerAddress, IDataAccessProvider utilityDataAccessProvider, string instanceInfo)
         {
-            string exeFileFullName = Path.Combine(binDirectoryInfo.FullName, @"Ssz.Dcs.ControlEngine.exe");
-            string arguments = "-d \"" + processModelDirectoryInfo.FullName +
-                "\" --CentralServerAddress=" + utilityDataAccessProvider.ServerAddress +
-                " --CentralServerSystemName=\"" + processModelingSessionId + "\"" +
-                " --ControlEngineServerAddress=" + controlEngineServerAddress +
-                " --EngineSessionId=" + instanceInfo;
+            string exeFileFullName;
+            string arguments;
+            if (OperatingSystem.IsWindows())
+            {
+                exeFileFullName = Path.Combine(binDirectoryInfo.FullName, @"Ssz.Dcs.ControlEngine.exe");
+                arguments = "-d \"" + processModelDirectoryInfo.FullName +
+                    "\" --CentralServerAddress=" + utilityDataAccessProvider.ServerAddress +
+                    " --CentralServerSystemName=\"" + processModelingSessionId + "\"" +
+                    " --ControlEngineServerAddress=" + controlEngineServerAddress +
+                    " --EngineSessionId=" + instanceInfo;
+            }
+            else
+            {
+                exeFileFullName = @"/usr/bin/dotnet";
+                arguments = Path.Combine(binDirectoryInfo.FullName, @"Ssz.Dcs.ControlEngine.dll") + " -d \"" + processModelDirectoryInfo.FullName +
+                    "\" --CentralServerAddress=" + utilityDataAccessProvider.ServerAddress +
+                    " --CentralServerSystemName=\"" + processModelingSessionId + "\"" +
+                    " --ControlEngineServerAddress=" + controlEngineServerAddress +
+                    " --EngineSessionId=" + instanceInfo;
+            }            
 
             Logger.LogDebug("Dcs.ControlEngine is starting.. " + exeFileFullName + @" " + arguments);
 

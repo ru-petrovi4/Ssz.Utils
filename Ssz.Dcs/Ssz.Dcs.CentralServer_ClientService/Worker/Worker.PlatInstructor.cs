@@ -17,6 +17,8 @@ namespace Ssz.Dcs.CentralServer_ClientService
 
         private void RunPlatInstructorExe(DirectoryInfo processModelDirectoryInfo, DirectoryInfo binDirectoryInfo, DirectoryInfo dataDirectoryInfo, string pathRelativeToDataDirectory, string instanceInfo)
         {   
+            // Only Windows
+
             string exeFileFullName = Path.Combine(binDirectoryInfo.FullName, @"PlatInstructor.exe");
             string arguments = "\"" + Path.Combine(dataDirectoryInfo.FullName, pathRelativeToDataDirectory) +
                 "\" /XISrv /s" +
