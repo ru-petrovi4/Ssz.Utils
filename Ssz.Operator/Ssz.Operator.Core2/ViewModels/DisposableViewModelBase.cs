@@ -1,10 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Ssz.Operator.Play.ViewModels;
+using Ssz.Operator.Core.ViewModels;
 using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
 
-namespace Ssz.Operator.Play.ViewModels
+namespace Ssz.Operator.Core.ViewModels
 {
     /// <summary>
     /// 

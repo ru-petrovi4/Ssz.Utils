@@ -101,7 +101,7 @@ namespace Ssz.Operator.Core.Addons
                 catch (Exception ex)
                 {
                     DsProject.LoggersSet.Logger.LogError(ex, Resources.AddonSerializationError);
-                    if (DsProject.Instance.Mode == DsProject.DsProjectModeEnum.VisualDesignMode)
+                    if (DsProject.Instance.Mode == DsProject.DsProjectModeEnum.DesktopDesignMode)
                         MessageBoxHelper.ShowError(Resources.AddonSerializationError + "\n" +
                                                    Resources.SeeErrorLogForDetails);
                 }
@@ -140,7 +140,7 @@ namespace Ssz.Operator.Core.Addons
                                                 addon.Name + " " + Resources
                                                     .AddonDeserializationErrorUnsupportedVersion);
                                             if (DsProject.Instance.Mode ==
-                                                DsProject.DsProjectModeEnum.VisualDesignMode)
+                                                DsProject.DsProjectModeEnum.DesktopDesignMode)
                                                 MessageBoxHelper.ShowError(addon.Name + "\n" +
                                                                             Resources
                                                                                 .AddonDeserializationErrorUnsupportedVersion +
@@ -151,7 +151,7 @@ namespace Ssz.Operator.Core.Addons
                                             DsProject.LoggersSet.Logger.LogError(ex,
                                                 addon.Name + " " + Resources.AddonDeserializationError);
                                             if (DsProject.Instance.Mode ==
-                                                DsProject.DsProjectModeEnum.VisualDesignMode)
+                                                DsProject.DsProjectModeEnum.DesktopDesignMode)
                                                 MessageBoxHelper.ShowError(addon.Name + "\n" +
                                                                             Resources.AddonDeserializationError +
                                                                             "\n" + Resources.SeeErrorLogForDetails);
@@ -161,7 +161,7 @@ namespace Ssz.Operator.Core.Addons
                                 default:
                                     DsProject.LoggersSet.Logger.LogError(propsFileInfo.FullName + " " +
                                                     Resources.AddonDeserializationErrorUnsupportedVersion);
-                                    if (DsProject.Instance.Mode == DsProject.DsProjectModeEnum.VisualDesignMode)
+                                    if (DsProject.Instance.Mode == DsProject.DsProjectModeEnum.DesktopDesignMode)
                                         MessageBoxHelper.ShowError(propsFileInfo.FullName + "\n" +
                                                                     Resources
                                                                         .AddonDeserializationErrorUnsupportedFileVersion +

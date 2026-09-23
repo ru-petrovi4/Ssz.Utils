@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Avalonia.Threading;
 
-namespace Ssz.Operator.Play;
+namespace Ssz.Operator.Core;
 
 internal class WindowsManager
 {
@@ -168,12 +168,12 @@ internal class WindowsManager
     private void DsDataAccessProvider_OnContextStatusChanged(object? sender, ContextStatusChangedEventArgs args)
     {
         if (args.ContextStateCode == ContextStateCodes.STATE_ABORTING)
-            (App.Current as App)?.SafeShutdown();
+            (PlayApp.Current as PlayApp)?.SafeShutdown();
     }        
 
     private void OnAllRootPlayWindowsClosed(object? sender, EventArgs e)
     {
-        (App.Current as App)?.SafeShutdown();
+        (PlayApp.Current as PlayApp)?.SafeShutdown();
     }
 
     private void StartProcess(StartProcessDsCommandOptions? startProcessDsCommandOptions)

@@ -12,7 +12,7 @@ using Ssz.Utils;
 
 namespace Ssz.Operator.Core.DataAccess
 {
-    public class DataValueViewModel : Play.ViewModels.DisposableViewModelBase
+    public class DataValueViewModel : ViewModels.DisposableViewModelBase
     {
         #region construction and destruction
 

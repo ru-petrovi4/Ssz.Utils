@@ -3,7 +3,7 @@ using Ssz.Operator.Core;
 using Ssz.Operator.Core.DataAccess;
 using System.Collections.Generic;
 
-namespace Ssz.Operator.Play.ViewModels;
+namespace Ssz.Operator.Core.ViewModels;
 
 public partial class MainViewModel : DataValueViewModel
 {

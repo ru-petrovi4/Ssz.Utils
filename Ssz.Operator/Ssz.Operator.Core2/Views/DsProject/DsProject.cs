@@ -97,7 +97,7 @@ namespace Ssz.Operator.Core
                 .Where(p => p.IsAutoSwitchOnForNewDsProjects).Select(p => p.Guid);
             Instance.DesiredAdditionalAddonsInfo = AddonsManager.GetAddonsInfo(addonGuids);
 
-            if (Instance.Mode == DsProjectModeEnum.VisualDesignMode)
+            if (Instance.Mode == DsProjectModeEnum.DesktopDesignMode)
             {
                 try
                 {
@@ -116,7 +116,7 @@ namespace Ssz.Operator.Core
 
             Instance.SaveUnconditionally();
 
-            if (Instance.Mode == DsProjectModeEnum.VisualDesignMode)
+            if (Instance.Mode == DsProjectModeEnum.DesktopDesignMode)
             {
                 FileInfo[] dsPageFileInfos = new DirectoryInfo(Instance.DsPagesDirectoryFullName)
                     .EnumerateFiles(@"*" + DsPageFileExtension, SearchOption.TopDirectoryOnly).ToArray();
@@ -164,7 +164,7 @@ namespace Ssz.Operator.Core
                 dsProjectFileStream.Dispose();
 
                 if (Instance.BinDeserializationSkippedBytesCount > 0 &&
-                    mode == DsProjectModeEnum.VisualDesignMode)
+                    mode == DsProjectModeEnum.DesktopDesignMode)
                 {
                     LoggersSet.Logger.LogError(Resources.NotAllDataWasReadMessage);
                     if (!autoConvert)
@@ -187,7 +187,7 @@ namespace Ssz.Operator.Core
                         .EnumerateFiles(@"*" + DsPageFileExtension, SearchOption.TopDirectoryOnly).ToArray();
                     if (progressInfo is not null)
                     {
-                        if (Instance.Mode == DsProjectModeEnum.VisualDesignMode)
+                        if (Instance.Mode == DsProjectModeEnum.DesktopDesignMode)
                             progressInfo.ProgressBarMaxValue = dsPageFileInfos.Length * 3;
                         else
                             progressInfo.ProgressBarMaxValue = 0;
@@ -284,7 +284,7 @@ namespace Ssz.Operator.Core
 
                 if (mode != DsProjectModeEnum.BrowserPlayMode)
                 {
-                    if (Instance.Mode == DsProjectModeEnum.VisualDesignMode || !allDsPagesCacheIsReaded)
+                    if (Instance.Mode == DsProjectModeEnum.DesktopDesignMode || !allDsPagesCacheIsReaded)
                     {
                         DrawingInfo[] onDriveDsPageDrawingInfos =
                             await Instance.GetDrawingInfosAsync(dsPageFileInfos!, progressInfo);
@@ -701,7 +701,7 @@ namespace Ssz.Operator.Core
                     }
                     else
                     {
-                        if (Mode == DsProjectModeEnum.VisualDesignMode)
+                        if (Mode == DsProjectModeEnum.DesktopDesignMode)
                         {
                             //if (WpfMessageBox.Show(Application.Current.MainWindow,
                             //    Resources.SaveFilesToLatestSerializationVersionQuestion,
@@ -865,7 +865,7 @@ namespace Ssz.Operator.Core
                 CsvDb.SaveData();
             }
 
-            if (Mode == DsProjectModeEnum.VisualDesignMode) 
+            if (Mode == DsProjectModeEnum.DesktopDesignMode) 
                 this.TryToUnlockDsProjectDirectory();
 
             Mode = DsProjectModeEnum.Uninitialized;
@@ -1088,7 +1088,7 @@ namespace Ssz.Operator.Core
                 drawing.Dispose();
             }
 
-            if (errorMessages.Count > 0 && Mode == DsProjectModeEnum.VisualDesignMode)
+            if (errorMessages.Count > 0 && Mode == DsProjectModeEnum.DesktopDesignMode)
                 MessageBoxHelper.ShowWarning(string.Join("\n", errorMessages));
         }
 
@@ -1274,7 +1274,7 @@ namespace Ssz.Operator.Core
 
             _saveFilesToLatestSerializationVersion = null;
 
-            if (Mode == DsProjectModeEnum.VisualDesignMode) Instance.TryToLockDsProjectDirectory();
+            if (Mode == DsProjectModeEnum.DesktopDesignMode) Instance.TryToLockDsProjectDirectory();
         }
 
         private void GlobalUITimerTimerCallback(object? sender, EventArgs e)
@@ -1357,10 +1357,10 @@ namespace Ssz.Operator.Core
         public enum DsProjectModeEnum
         {
             Uninitialized,
-            VisualDesignMode,
+            DesktopDesignMode,
             DesktopPlayMode,
-            BrowserPlayMode,
-            OtherMode
+            BrowserDesignMode,
+            BrowserPlayMode
         }
 
         public enum IfFileExistsActions

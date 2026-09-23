@@ -6,7 +6,7 @@ using Avalonia.Media;
 using Ssz.Operator.Core.CustomAttributes;
 using Ssz.Operator.Core.Properties;
 using Ssz.Operator.Core.Utils.Serialization; 
-//using Ssz.Operator.Play.Ctcm.CustomAttributes;
+//using Ssz.Operator.Core.Ctcm.CustomAttributes;
 
 namespace Ssz.Operator.Core.DsShapes
 {

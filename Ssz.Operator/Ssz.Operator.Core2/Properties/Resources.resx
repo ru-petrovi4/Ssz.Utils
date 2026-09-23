@@ -191,7 +191,7 @@
     <value>Add Pages and Shapes from Library</value>
   </data>
   <data name="AddonBaseSszOperatorVersion" xml:space="preserve">
-    <value>Ssz.Operator.Play Version</value>
+    <value>Ssz.Operator.Core Version</value>
   </data>
   <data name="AddonBaseDescription" xml:space="preserve">
     <value>Addon Description</value>

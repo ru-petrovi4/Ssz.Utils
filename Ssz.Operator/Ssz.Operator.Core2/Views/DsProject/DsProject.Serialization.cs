@@ -158,7 +158,7 @@ namespace Ssz.Operator.Core
                             string message = Resources.DsProjectFileOpenWarningAddonIsNotFound + @" ";
                             foreach (string unSupportedAddonNameToDisplay in unSupportedAddonsNameToDisplays)
                                 message += unSupportedAddonNameToDisplay + @"; ";
-                            if (Review || Mode == DsProjectModeEnum.VisualDesignMode)
+                            if (Review || Mode == DsProjectModeEnum.DesktopDesignMode)
                                 MessageBoxHelper.ShowWarning(message);
                             DsProject.LoggersSet.Logger.LogCritical(message);
                         }

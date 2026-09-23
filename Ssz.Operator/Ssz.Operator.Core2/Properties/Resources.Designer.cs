@@ -97,7 +97,7 @@ namespace Ssz.Operator.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ssz.Operator.Play Version.
+        ///   Looks up a localized string similar to Ssz.Operator.Core Version.
         /// </summary>
         public static string AddonBaseSszOperatorVersion {
             get {

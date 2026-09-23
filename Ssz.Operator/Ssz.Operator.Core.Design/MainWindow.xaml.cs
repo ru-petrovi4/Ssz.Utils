@@ -206,9 +206,9 @@ namespace Ssz.Operator.Core.Design
 
             Loaded += OnLoaded;
 
-            if (!String.IsNullOrEmpty(CommandLineOptions.DsProjectFile))
+            if (!String.IsNullOrEmpty(CommandLineOptions.ProjectFile))
             {
-                ReadDsProjectFromBinFileAsync(CommandLineOptions.DsProjectFile);
+                ReadDsProjectFromBinFileAsync(CommandLineOptions.ProjectFile);
             }
         }        
 
@@ -2144,7 +2144,7 @@ namespace Ssz.Operator.Core.Design
 
         public Options(IConfiguration configuration)
         {
-            DsProjectFile = ConfigurationHelper.GetValue<string>(configuration, "SolutionFile", @"");
+            ProjectFile = ConfigurationHelper.GetValue<string>(configuration, "ProjectFile", @"");
             AutoConvert = ConfigurationHelper.GetValue<bool>(configuration, "AutoConvert", false);
             ToolkitOperation = ConfigurationHelper.GetValue<string>(configuration, "ToolkitOperation", @"");
             ToolkitOperationsSilent = ConfigurationHelper.GetValue<bool>(configuration, "ToolkitOperationsSilent", false);
@@ -2155,7 +2155,7 @@ namespace Ssz.Operator.Core.Design
 
         #region public functions
 
-        public string DsProjectFile { get; set; }
+        public string ProjectFile { get; set; }
 
         public bool AutoConvert { get; set; }
 

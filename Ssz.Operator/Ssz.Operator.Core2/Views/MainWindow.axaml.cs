@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace Ssz.Operator.Play.Views;
+namespace Ssz.Operator.Core.Views;
 
 public partial class MainWindow : Window
 {

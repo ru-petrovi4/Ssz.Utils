@@ -2,9 +2,9 @@ using System;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Media;
-using Ssz.Operator.Play.ViewModels;
+using Ssz.Operator.Core.ViewModels;
 
-namespace Ssz.Operator.Play;
+namespace Ssz.Operator.Core;
 
 public class ViewLocator : IDataTemplate
 {

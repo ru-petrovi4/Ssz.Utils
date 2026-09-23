@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Ssz.Operator.Play.ViewModels;
+namespace Ssz.Operator.Core.ViewModels;
 
 public abstract class ViewModelBase : ObservableObject
 {
