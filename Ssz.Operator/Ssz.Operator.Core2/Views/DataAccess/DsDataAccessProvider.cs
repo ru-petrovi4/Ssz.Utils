@@ -122,7 +122,8 @@ namespace Ssz.Operator.Core.DataAccess
 
         public static async Task StaticDisposeAsync()
         {
-            await Instance.DisposeAsync();
+            if (Instance is not null)
+                await Instance.DisposeAsync();
 
             if (PlayDsProjectView.EventSourceModel.IsInitialized)
                 PlayDsProjectView.EventSourceModel.Close();

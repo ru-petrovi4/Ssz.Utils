@@ -17,7 +17,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
     {
         #region public functions
         
-        public IDataAccessServerContext AddServerContext(ILogger logger,            
+        public ServerContext AddServerContext(ILogger logger,            
             string clientApplicationName,
             string clientWorkstationName,
             uint requestedServerContextTimeoutMs,
@@ -48,7 +48,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// </summary>
         /// <param name="contextId"></param>
         /// <returns></returns>
-        public IDataAccessServerContext LookupServerContext(string contextId)
+        public ServerContext LookupServerContext(string contextId)
         {
             ServerContext? serverContext;
             _serverContexts_ImmutableDictionary.TryGetValue(contextId, out serverContext);
@@ -75,7 +75,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             return serverContext;
         }
 
-        public IDataAccessServerContext? TryLookupServerContext_ThreadSafe(string contextId)
+        public ServerContext? TryLookupServerContext_ThreadSafe(string contextId)
         {
             ServerContext? serverContext;
             _serverContexts_ImmutableDictionary.TryGetValue(contextId, out serverContext);            
@@ -92,6 +92,21 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
             ServerContextAddedOrRemoved(this, new ServerContextAddedOrRemovedEventArgs { ServerContext = serverContext, Added = false });
         }
+
+        IDataAccessServerContext IDataAccessServerWorker.AddServerContext(ILogger logger, string clientApplicationName, string clientWorkstationName, uint requestedServerContextTimeoutMs, string requestedCultureName, string systemNameToConnect, CaseInsensitiveOrderedDictionary<string?> contextParams)
+        {
+            return AddServerContext(logger, clientApplicationName, clientWorkstationName, requestedServerContextTimeoutMs, requestedCultureName, systemNameToConnect, contextParams);
+        }
+
+        IDataAccessServerContext IDataAccessServerWorker.LookupServerContext(string contextId)
+        {
+            return LookupServerContext(contextId);
+        }
+
+        IDataAccessServerContext? IDataAccessServerWorker.TryLookupServerContext_ThreadSafe(string contextId)
+        {
+            return TryLookupServerContext_ThreadSafe(contextId);
+        }        
 
         #endregion
 

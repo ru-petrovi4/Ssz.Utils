@@ -76,13 +76,68 @@ namespace Ssz.Packaging.Targets.Deb
                                         $"/usr/sbin/useradd -g {userName} -s /sbin/nologin -r {userName} 2>/dev/null || :\n";
             }
 
+            //if (installService)
+            //{
+            //    pkg.PostInstallScript += "set -e\n" +
+            //        "\n" +
+            //        "#DEBHELPER#\n" +
+            //        "\n";
+
+            //    pkg.PreRemoveScript += "set -e\n" +
+            //        "\n" +
+            //        "#DEBHELPER#\n" +
+            //        "\n";
+
+            //    pkg.PostRemoveScript = "set -e\n" +
+            //        "\n" +
+            //        "#DEBHELPER#\n" +
+            //        "\n";
+            //}
+
             if (installService)
             {
-                // Install and activate the service.
-                pkg.PostInstallScript += $"systemctl daemon-reload\n";
-                pkg.PostInstallScript += $"systemctl enable --now {serviceName}.service\n";
-                pkg.PreRemoveScript += $"systemctl --no-reload disable --now {serviceName}.service\n";            
+                // Post-Install: Включение и запуск сервиса
+                pkg.PostInstallScript +=
+                    "if [ \"$1\" = \"configure\" ] ; then \n" +
+                    "    # Убираем возможную маску, созданную при удалении пакета\n" +
+                    "    deb-systemd-helper unmask '" + serviceName + ".service' >/dev/null || true \n" +
+                    "    \n" +
+                    "    # Проверяем, был ли сервис включен ранее (для обновлений)\n" +
+                    "    if deb-systemd-helper --quiet was-enabled '" + serviceName + ".service'; then \n" +
+                    "        # Включаем сервис (создает симлинки)\n" +
+                    "        deb-systemd-helper enable '" + serviceName + ".service' >/dev/null || true \n" +
+                    "    else \n" +
+                    "        # Обновляем файл состояния (добавляем новые симлинки)\n" +
+                    "        deb-systemd-helper update-state '" + serviceName + ".service' >/dev/null || true \n" +
+                    "    fi \n" +
+                    "    \n" +
+                    "    # Перезагружаем systemd и запускаем сервис (только если systemd запущен)\n" +
+                    "    if [ -d /run/systemd/system ]; then \n" +
+                    "        systemctl --system daemon-reload >/dev/null || true \n" +
+                    "        deb-systemd-invoke start '" + serviceName + ".service' >/dev/null || true \n" +
+                    "    fi \n" +
+                    "fi\n";
+
+                // Pre-Remove: Остановка сервиса
+                pkg.PreRemoveScript +=
+                    "if [ \"$1\" = \"remove\" ] || [ \"$1\" = \"purge\" ] ; then \n" +
+                    "    # Останавливаем сервис, если systemd запущен\n" +
+                    "    if [ -d /run/systemd/system ]; then \n" +
+                    "        deb-systemd-invoke stop '" + serviceName + ".service' >/dev/null || true \n" +
+                    "    fi \n" +
+                    "    \n" +
+                    "    # Отключаем сервис (удаляем симлинки)\n" +
+                    "    deb-systemd-helper disable '" + serviceName + ".service' >/dev/null || true \n" +
+                    "fi\n";
             }
+
+            //if (installService)
+            //{
+            //    // Install and activate the service.
+            //    pkg.PostInstallScript += $"systemctl daemon-reload\n";
+            //    pkg.PostInstallScript += $"systemctl enable --now {serviceName}.service\n";
+            //    pkg.PreRemoveScript += $"systemctl --no-reload disable --now {serviceName}.service\n";            
+            //}
 
             // Remove all directories marked as such (these are usually directories which contain temporary files)
             foreach (var entryToRemove in archiveEntries.Where(e => e.RemoveOnUninstall))
@@ -99,6 +154,7 @@ namespace Ssz.Packaging.Targets.Deb
                     pkg.PreInstallScript += "\n";
                 }
             }
+            pkg.PreInstallScript += "exit 0\n";
 
             if (!string.IsNullOrEmpty(postInstallScript))
             {
@@ -109,6 +165,7 @@ namespace Ssz.Packaging.Targets.Deb
                     pkg.PostInstallScript += "\n";
                 }
             }
+            pkg.PostInstallScript += "exit 0\n";
 
             if (!string.IsNullOrEmpty(preRemoveScript))
             {
@@ -119,6 +176,7 @@ namespace Ssz.Packaging.Targets.Deb
                     pkg.PreRemoveScript += "\n";
                 }
             }
+            pkg.PreRemoveScript += "exit 0\n";
 
             if (!string.IsNullOrEmpty(postRemoveScript))
             {
@@ -129,6 +187,7 @@ namespace Ssz.Packaging.Targets.Deb
                     pkg.PostRemoveScript += "\n";
                 }
             }
+            pkg.PostRemoveScript += "exit 0\n";
 
             if (additionalDependencies != null && additionalDependencies.Any())
             {

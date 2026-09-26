@@ -338,26 +338,72 @@ namespace Ssz.Packaging.Targets.Rpm
                     $"/usr/sbin/useradd -g {userName} -s /sbin/nologin -r {userName} 2>/dev/null || :\n";
             }
 
+            //if (installService)
+            //{
+            //     Install and activate the service using deb-systemd-helper
+            //    postIn += "set -e\n" +
+            //        "\n" +
+            //        "#DEBHELPER#\n" +
+            //        "\n";
+            //    "exit 0\n";
+
+            //    preUn += "set -e\n" +
+            //        "\n" +
+            //        "#DEBHELPER#\n" +
+            //        "\n";
+            //    "exit 0\n";
+
+            //    postUn += "set -e\n" +
+            //        "\n" +
+            //        "#DEBHELPER#\n" +
+            //        "\n";
+            //        "exit 0\n";
+            //}
+
             if (installService)
             {
-                // Install and activate the service.
+                // Install and activate the service using deb-systemd-helper
                 postIn +=
                     $"if [ $1 -eq 1 ] ; then \n" +
-                    $"    systemctl enable --now {serviceName}.service >/dev/null 2>&1 || : \n" +
+                    $"    deb-systemd-helper unmask '{serviceName}.service' >/dev/null || true \n" +
+                    $"    if deb-systemd-helper --quiet was-enabled '{serviceName}.service'; then \n" +
+                    $"        deb-systemd-helper enable '{serviceName}.service' >/dev/null || true \n" +
+                    $"    else \n" +
+                    $"        deb-systemd-helper update-state '{serviceName}.service' >/dev/null || true \n" +
+                    $"    fi \n" +
                     $"fi\n";
 
                 preUn +=
                     $"if [ $1 -eq 0 ] ; then \n" +
-                    $"    # Package removal, not upgrade \n" +
-                    $"    systemctl --no-reload disable --now {serviceName}.service > /dev/null 2>&1 || : \n" +
+                    $"    deb-systemd-helper disable '{serviceName}.service' >/dev/null || true \n" +
                     $"fi\n";
 
                 postUn +=
                     $"if [ $1 -ge 1 ] ; then \n" +
-                    $"    # Package upgrade, not uninstall \n" +
-                    $"    systemctl try-restart {serviceName}.service >/dev/null 2>&1 || : \n" +
+                    $"    deb-systemd-invoke try-restart '{serviceName}.service' >/dev/null || true \n" +
                     $"fi\n";
             }
+
+            //if (installService)
+            //{
+            //    // Install and activate the service.
+            //    postIn +=
+            //        $"if [ $1 -eq 1 ] ; then \n" +
+            //        $"    systemctl enable --now {serviceName}.service >/dev/null 2>&1 || : \n" +
+            //        $"fi\n";
+
+            //    preUn +=
+            //        $"if [ $1 -eq 0 ] ; then \n" +
+            //        $"    # Package removal, not upgrade \n" +
+            //        $"    systemctl --no-reload disable --now {serviceName}.service > /dev/null 2>&1 || : \n" +
+            //        $"fi\n";
+
+            //    postUn +=
+            //        $"if [ $1 -ge 1 ] ; then \n" +
+            //        $"    # Package upgrade, not uninstall \n" +
+            //        $"    systemctl try-restart {serviceName}.service >/dev/null 2>&1 || : \n" +
+            //        $"fi\n";
+            //}
 
             // Remove all directories marked as such (these are usually directories which contain temporary files)
             foreach (var entryToRemove in archiveEntries.Where(e => e.RemoveOnUninstall))

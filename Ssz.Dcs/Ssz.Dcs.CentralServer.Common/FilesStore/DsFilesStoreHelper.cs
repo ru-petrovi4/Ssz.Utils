@@ -19,9 +19,9 @@ namespace Ssz.Dcs.CentralServer.Common
         public static string GetDirectoryPath_RelativeToProcessModelDirectory_OfSavesDirectory(string creatorUserName)
         {
             if (creatorUserName == @"")
-                return DsFilesStoreConstants.SavesDirectoryNameUpper;
+                return DsFilesStoreConstants.SavesDirectoryName;
             else
-                return Path.Combine(DsFilesStoreConstants.SavesDirectoryNameUpper, GetDsFilesStoreDirectoryName(creatorUserName));
+                return Path.Combine(DsFilesStoreConstants.SavesDirectoryName, GetDsFilesStoreDirectoryName(creatorUserName));
         }
 
         public static string GetDsFilesStoreDirectoryName(string userName)
@@ -48,25 +48,25 @@ namespace Ssz.Dcs.CentralServer.Common
 
         public static DsFilesStoreDirectoryType GetDsFilesStoreDirectoryType(DsFilesStoreDirectory dsFilesStoreDirectory)
         {
-            switch (dsFilesStoreDirectory.Name.ToUpperInvariant())
+            switch (dsFilesStoreDirectory.Name)
             {
-                case DsFilesStoreConstants.SavesDirectoryNameUpper:
+                case DsFilesStoreConstants.SavesDirectoryName:
                     return DsFilesStoreDirectoryType.Saves;                
-                case DsFilesStoreConstants.InstructorBinDirectoryNameUpper:
+                case DsFilesStoreConstants.InstructorBinDirectoryName:
                     return DsFilesStoreDirectoryType.InstructorBin;
-                case DsFilesStoreConstants.InstructorDataDirectoryNameUpper:
+                case DsFilesStoreConstants.InstructorDataDirectoryName:
                     return DsFilesStoreDirectoryType.InstructorData;
-                case DsFilesStoreConstants.ControlEngineBinDirectoryNameUpper:
+                case DsFilesStoreConstants.ControlEngineBinDirectoryName:
                     return DsFilesStoreDirectoryType.ControlEngineBin;
-                case DsFilesStoreConstants.ControlEngineDataDirectoryNameUpper:
+                case DsFilesStoreConstants.ControlEngineDataDirectoryName:
                     return DsFilesStoreDirectoryType.ControlEngineData;
-                case DsFilesStoreConstants.OperatorBinDirectoryNameUpper:
+                case DsFilesStoreConstants.OperatorBinDirectoryName:
                     return DsFilesStoreDirectoryType.OperatorBin;
-                case DsFilesStoreConstants.OperatorDataDirectoryNameUpper:
+                case DsFilesStoreConstants.OperatorDataDirectoryName:
                     return DsFilesStoreDirectoryType.OperatorData;
-                case DsFilesStoreConstants.PlatInstructorBinDirectoryNameUpper:
+                case DsFilesStoreConstants.PlatInstructorBinDirectoryName:
                     return DsFilesStoreDirectoryType.PlatInstructorBin;
-                case DsFilesStoreConstants.PlatInstructorDataDirectoryNameUpper:
+                case DsFilesStoreConstants.PlatInstructorDataDirectoryName:
                     return DsFilesStoreDirectoryType.PlatInstructorData;                
                 default:
                     return DsFilesStoreDirectoryType.General;

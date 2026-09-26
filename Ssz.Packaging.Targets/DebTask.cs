@@ -233,23 +233,24 @@ namespace Ssz.Packaging.Targets
 
                 archiveEntries.AddRange(archiveBuilder.FromLinuxFolders(this.LinuxFolders));
 
-                if (this.InstallService)
-                {
-                    archiveEntries.Add(
-                        new ArchiveEntry()
-                        {
-                            Mode = LinuxFileMode.S_IXOTH | LinuxFileMode.S_IROTH | LinuxFileMode.S_IXGRP | LinuxFileMode.S_IRGRP | LinuxFileMode.S_IXUSR | LinuxFileMode.S_IWUSR | LinuxFileMode.S_IRUSR | LinuxFileMode.S_IFLNK,
-                            Modified = DateTimeOffset.UtcNow,
-                            Group = "root",
-                            Owner = "root",
-                            TargetPath = $"/etc/systemd/system/{this.ServiceName}.service",
-                            LinkTo = $"/lib/systemd/system/{this.ServiceName}.service",
-                            Inode = archiveBuilder.Inode,
-                            Sha256 = Array.Empty<byte>(),
-                        });
+                // systemctl enable сам создаст нужные ссылки при установке
+                //if (this.InstallService)
+                //{
+                //    archiveEntries.Add(
+                //        new ArchiveEntry()
+                //        {
+                //            Mode = LinuxFileMode.S_IXOTH | LinuxFileMode.S_IROTH | LinuxFileMode.S_IXGRP | LinuxFileMode.S_IRGRP | LinuxFileMode.S_IXUSR | LinuxFileMode.S_IWUSR | LinuxFileMode.S_IRUSR | LinuxFileMode.S_IFLNK,
+                //            Modified = DateTimeOffset.UtcNow,
+                //            Group = "root",
+                //            Owner = "root",
+                //            TargetPath = $"/etc/systemd/system/{this.ServiceName}.service",
+                //            LinkTo = $"/lib/systemd/system/{this.ServiceName}.service",
+                //            Inode = archiveBuilder.Inode,
+                //            Sha256 = Array.Empty<byte>(),
+                //        });
 
-                    archiveBuilder.Inode += 1;
-                }
+                //    archiveBuilder.Inode += 1;
+                //}
 
                 EnsureDirectories(archiveEntries);
 

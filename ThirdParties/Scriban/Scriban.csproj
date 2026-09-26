@@ -1,5 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="Scriban.props" />
+	<PropertyGroup>
+		<!--<TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>-->
+		<TargetFrameworks>net10.0</TargetFrameworks>
+		<Description>Scriban is a fast, powerful, safe and lightweight scripting language and engine for .NET, which was primarily developed for text templating with a compatibility mode for parsing liquid templates.</Description>
+		<Copyright>Alexandre Mutel</Copyright>
+		<NeutralLanguage>en-US</NeutralLanguage>
+		<LangVersion>8.0</LangVersion>
+		<DefineConstants>$(DefineConstants);SCRIBAN_PUBLIC</DefineConstants>
+		<Authors>Alexandre Mutel</Authors>		
+		<PackageTags>templating;handlebars;liquid</PackageTags>
+		<PackageIcon>scriban.png</PackageIcon>
+		<PackageReadmeFile>readme.md</PackageReadmeFile>
+		<PackageProjectUrl>https://github.com/lunet-io/scriban</PackageProjectUrl>
+		<PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>
+		<NoWarn>$(NoWarn);CS1591;NU5129</NoWarn>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<!-- This is enabled but still not used in scriban, only setup to protect embedding source to produce new warnings if the user project is using nullable -->
+		<Nullable>enable</Nullable>
+		<!--Add support for sourcelink-->
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	</PropertyGroup>
+	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETStandard'">
+		<PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+		<PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.0" />
+	</ItemGroup>
   <PropertyGroup>
     <PackageId>Scriban</PackageId>
   </PropertyGroup>

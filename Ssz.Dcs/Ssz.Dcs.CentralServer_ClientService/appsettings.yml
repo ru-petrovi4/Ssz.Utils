@@ -29,6 +29,8 @@ FilesStoreSyncWithCentralServer: "true"
 ShowPlatInstructor: "false"
 # Comma-separated process model names to host engines. '*' for all, '' for none.
 Engine_ProcessModelNames: ""
+# Comma-separated process model names to host operator interfaces. '*' for all, '' for none.
+Operator_ProcessModelNames: "*"
 # Connect to all available central servers
 AllCentralServers: "false"
 ---

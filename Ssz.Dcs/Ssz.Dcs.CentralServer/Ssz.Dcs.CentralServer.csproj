@@ -8,20 +8,15 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>  
     <Platforms>AnyCPU;x86</Platforms>  
-  </PropertyGroup>  
-
-  <PropertyGroup>
-    <ServerGarbageCollection>true</ServerGarbageCollection>
-    <GarbageCollectionAdaptationMode>1</GarbageCollectionAdaptationMode>
-  </PropertyGroup> 
+  </PropertyGroup>    
   
   <ItemGroup>
     <Protobuf Include="Protos\ProcessModelingSessionsManagement.proto" GrpcServices="Server" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Grpc.AspNetCore" Version="2.83.0" />
-    <PackageReference Include="Grpc.AspNetCore.Web" Version="2.83.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.84.0" />
+    <PackageReference Include="Grpc.AspNetCore.Web" Version="2.84.0" />
     <PackageReference Include="Grpc.Tools" Version="2.84.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

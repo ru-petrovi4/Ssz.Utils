@@ -38,7 +38,7 @@ namespace Ssz.Dcs.ControlEngine
             _processDirectoryInfo = processDirectoryInfo;
             if (_processDirectoryInfo is not null)
             {                
-                _dataDirectoryInfo = new DirectoryInfo(Path.Combine(_processDirectoryInfo.FullName, DsFilesStoreConstants.ControlEngineDataDirectoryNameUpper));
+                _dataDirectoryInfo = new DirectoryInfo(Path.Combine(_processDirectoryInfo.FullName, DsFilesStoreConstants.ControlEngineDataDirectoryName));
             }
             _dispatcher = dispatcher;
 

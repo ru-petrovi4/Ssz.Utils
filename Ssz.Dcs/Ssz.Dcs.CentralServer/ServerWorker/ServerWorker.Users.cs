@@ -201,14 +201,14 @@ namespace Ssz.Dcs.CentralServer
             try
             {
                 var directoryInfo = new DirectoryInfo(Path.Combine(
-                    FilesStoreDirectoryInfo.FullName, processModelName, DsFilesStoreConstants.SavesDirectoryNameUpper));
+                    FilesStoreDirectoryInfo.FullName, processModelName, DsFilesStoreConstants.SavesDirectoryName));
                 if (!directoryInfo.Exists) return;
                 foreach (var userDirectoryInfo in directoryInfo.EnumerateDirectories().ToArray())
                 {
                     if (String.Equals(userDirectoryInfo.Name, userDirectoryName, StringComparison.InvariantCultureIgnoreCase))
                     {
                         FileSystemHelper.MoveDirectory(userDirectoryInfo.FullName, Path.Combine(
-                                FilesStoreDirectoryInfo.FullName, processModelName, DsFilesStoreConstants.SavesDirectoryNameUpper,
+                                FilesStoreDirectoryInfo.FullName, processModelName, DsFilesStoreConstants.SavesDirectoryName,
                                 DsFilesStoreHelper.GetDsFilesStoreDirectoryName(newUserName)));
                         break;
                     }                    

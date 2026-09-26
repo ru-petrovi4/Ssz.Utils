@@ -96,7 +96,7 @@
   </ItemGroup>  
   <ItemGroup>
     <PackageReference Include="Fluent.Ribbon" Version="11.0.2" />
-    <PackageReference Include="Google.Protobuf" Version="3.36.1" />
+    <PackageReference Include="Google.Protobuf" Version="3.36.2" />
     <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
   </ItemGroup>
   <ItemGroup>

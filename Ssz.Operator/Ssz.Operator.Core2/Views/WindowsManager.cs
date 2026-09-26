@@ -137,7 +137,7 @@ internal class WindowsManager
     public void Close()
     {
         CommandsManager.RemoveCommandHandler(CommandsManager_OnGotCommand);
-        DsDataAccessProvider.Instance.ContextStatusChanged -= DsDataAccessProvider_OnContextStatusChanged;            
+        DsDataAccessProvider.Instance?.ContextStatusChanged -= DsDataAccessProvider_OnContextStatusChanged;            
         AllRootPlayWindowsClosed -= OnAllRootPlayWindowsClosed;
 
         var virtualKeyboardWindow = PlayDsProjectView.VirtualKeyboardWindow as Window;

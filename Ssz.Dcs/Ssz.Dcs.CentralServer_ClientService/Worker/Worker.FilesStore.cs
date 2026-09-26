@@ -556,7 +556,7 @@ namespace Ssz.Dcs.CentralServer_ClientService
             {
                 var request = new GetDirectoryInfoRequest
                 {
-                    InvariantPathRelativeToRootDirectory = Path.Combine(processModelName, DsFilesStoreConstants.SavesDirectoryNameUpper),
+                    InvariantPathRelativeToRootDirectory = processModelName + "/" + DsFilesStoreConstants.SavesDirectoryName,
                     FilesAndDirectoriesIncludeLevel = Int32.MaxValue
                 };
                 var returnData = await utilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
@@ -574,7 +574,7 @@ namespace Ssz.Dcs.CentralServer_ClientService
             {
                 var request = new GetDirectoryInfoRequest
                 {
-                    InvariantPathRelativeToRootDirectory = Path.Combine(processModelName, DsFilesStoreConstants.SavesDirectoryNameUpper),
+                    InvariantPathRelativeToRootDirectory = processModelName + "/" + DsFilesStoreConstants.SavesDirectoryName,
                     FilesAndDirectoriesIncludeLevel = 1
                 };
                 var returnData = await utilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
@@ -588,8 +588,8 @@ namespace Ssz.Dcs.CentralServer_ClientService
 
                 request = new GetDirectoryInfoRequest
                 {
-                    InvariantPathRelativeToRootDirectory = Path.Combine(processModelName, DsFilesStoreConstants.SavesDirectoryNameUpper,
-                        DsFilesStoreHelper.GetDsFilesStoreDirectoryName(userName)),
+                    InvariantPathRelativeToRootDirectory = processModelName + "/" + DsFilesStoreConstants.SavesDirectoryName + "/" +
+                        DsFilesStoreHelper.GetDsFilesStoreDirectoryName(userName),
                     FilesAndDirectoriesIncludeLevel = Int32.MaxValue
                 };
                 returnData = await utilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,

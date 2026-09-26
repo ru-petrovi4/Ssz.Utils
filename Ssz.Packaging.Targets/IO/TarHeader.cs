@@ -67,8 +67,8 @@ namespace Ssz.Packaging.Targets.IO
         /// </summary>
         public string FileName
         {
-            get => this.GetString(this.name, 100);
-            set => this.name = this.CreateString(value, 100);
+            get => this.GetString(this.name, 4096); // TODO File Name check 255
+            set => this.name = this.CreateString(value, 4096); // TODO File Name check 255
         }
 
         public LinuxFileMode FileMode
