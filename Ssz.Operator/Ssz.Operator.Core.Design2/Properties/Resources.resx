@@ -1,0 +1,751 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AddDsPagesAndDsShapesFromLibraryMenu" xml:space="preserve">
+    <value>Add Pages and Shapes from Library</value>
+  </data>
+  <data name="AddDsPagesAndDsShapesFromLibraryToolTip" xml:space="preserve">
+    <value>Adds Pages and Shapes to Project from library</value>
+  </data>
+  <data name="AddDsShapeButtonText" xml:space="preserve">
+    <value>Add Shape</value>
+  </data>
+  <data name="AddonSimpleDsShapesTreeViewItemHeader" xml:space="preserve">
+    <value>Addons Simple Shapes</value>
+  </data>
+  <data name="AlignBottomToolTip" xml:space="preserve">
+    <value>Align bottom of all selected Shapes with bottom of the main selected Shape</value>
+  </data>
+  <data name="AlignHorizontalCentersToolTip" xml:space="preserve">
+    <value>Align centers of all selected Shapes with center of the main selected Shape horizontally</value>
+  </data>
+  <data name="AlignLeftToolTip" xml:space="preserve">
+    <value>Align left of all selected Shapes with left of the main selected Shape</value>
+  </data>
+  <data name="AlignmentGroupHeader" xml:space="preserve">
+    <value>Alignment</value>
+  </data>
+  <data name="AlignRightToolTip" xml:space="preserve">
+    <value>Align right of all selected Shapes with right of the main selected Shape</value>
+  </data>
+  <data name="AlignTopToolTip" xml:space="preserve">
+    <value>Align top of all selected Shapes with top of the main selected Shape</value>
+  </data>
+  <data name="AlignVerticalCentersToolTip" xml:space="preserve">
+    <value>Align centers of all selected Shapes with center of the main selected Shape vertically</value>
+  </data>
+  <data name="AMSSupportInfo" xml:space="preserve">
+    <value>Please contact your regional Aftermarket Services for contract provision or renewal:
+Americas:
+    ots.support@Simcode.com
+Europe, Middle East and  Africa:
+    ots.support.emea@Simcode.com
+Asia Pacific:
+    Ssz.support.ap@Simcode.com</value>
+  </data>
+  <data name="ApplicationMenuHeader" xml:space="preserve">
+    <value>Project</value>
+  </data>
+  <data name="AppUnhandledExceptionMessage" xml:space="preserve">
+    <value>The toolkitOperation completed with error. See log file for details.</value>
+  </data>
+  <data name="BringForward" xml:space="preserve">
+    <value>Bring Forward</value>
+  </data>
+  <data name="BringToFront" xml:space="preserve">
+    <value>Bring to Front</value>
+  </data>
+  <data name="Button100PercentToolTip" xml:space="preserve">
+    <value>Sets drawing view scale to 100%.</value>
+  </data>
+  <data name="ButtonFullDrawingToolTip" xml:space="preserve">
+    <value>Shows full drawing on screen</value>
+  </data>
+  <data name="CannotCopyFiles" xml:space="preserve">
+    <value>Cannot copy files</value>
+  </data>
+  <data name="CannotEditStandardComplexDsShapeMessage" xml:space="preserve">
+    <value>Cann't edit standard complex Shape!</value>
+  </data>
+  <data name="CenterToolTip" xml:space="preserve">
+    <value>Moves view to drawing center.</value>
+  </data>
+  <data name="ClearRecentFilesListButtonLabel" xml:space="preserve">
+    <value>Clear List</value>
+  </data>
+  <data name="CloseOtherDrawings" xml:space="preserve">
+    <value>Close Other</value>
+  </data>
+  <data name="CompareContentQuestion" xml:space="preserve">
+    <value>Compare Shapes content? Click 'Yes' to compare complex Shapes content, click 'No' to use only complex Shapes names for comparison.</value>
+  </data>
+  <data name="ComplexDsShapeProperties" xml:space="preserve">
+    <value>Shape Properties</value>
+  </data>
+  <data name="ComplexDsShapesTreeViewItemHeader" xml:space="preserve">
+    <value>Complex Shapes</value>
+  </data>
+  <data name="ConvertToComplexDsShapeMenuItemHeader" xml:space="preserve">
+    <value>Convert Content to Group</value>
+  </data>
+  <data name="CreateDsPagesButtonLabel" xml:space="preserve">
+    <value>Create Pages</value>
+  </data>
+  <data name="CreateDsPagesSelectImageFilesMessageBox" xml:space="preserve">
+    <value>Select files for pages backgrounds (image, XPS, OXPS, XAML, HTML). New pages names will be the same as the names of the files (excluding extension). If page with that name already exists, new page will not be created.</value>
+  </data>
+  <data name="CreateDsPagesToolTip" xml:space="preserve">
+    <value>Creates pages with backgrounds from selected set of files (image, XPS, XAML, HTML). New pages names will be the same as the names of the files (excluding extension). If page with that name already exists, new page will not be created.</value>
+  </data>
+  <data name="CropUnusedSpaceMenuItemHeader" xml:space="preserve">
+    <value>Crop Unused Space</value>
+  </data>
+  <data name="DataGroupHeader" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="DebugDsPageGroupHeader" xml:space="preserve">
+    <value>Debug Page</value>
+  </data>
+  <data name="DebugDsPagesGroupHeader" xml:space="preserve">
+    <value>Pages</value>
+  </data>
+  <data name="DebugFindDuplicatesButtonLabel" xml:space="preserve">
+    <value>Find Duplicate Tags</value>
+  </data>
+  <data name="DebugFindDuplicatesToolTip" xml:space="preserve">
+    <value>Finds duplicate generic params values on pages</value>
+  </data>
+  <data name="DebugFindIncorrectDsPagesRefsButtonLabel" xml:space="preserve">
+    <value>Find Incorrect Pages Refs</value>
+  </data>
+  <data name="DebugFindIncorrectDsPagesRefsToolTip" xml:space="preserve">
+    <value>Finds jumps to non-existent pages and non-existent faceplates calls</value>
+  </data>
+  <data name="DebugFindIncorrectExpressionsButtonLabel" xml:space="preserve">
+    <value>Find Incorrect Expressions</value>
+  </data>
+  <data name="DebugFindIncorrectExpressionsToolTip" xml:space="preserve">
+    <value>Finds incorrect C# expressions in converters</value>
+  </data>
+  <data name="DebugFindIncorrectOpcTagsButtonLabel" xml:space="preserve">
+    <value>Find Incorrect OPC Tags</value>
+  </data>
+  <data name="DebugFindIncorrectOpcTagsToolTip" xml:space="preserve">
+    <value>Connects to model using default server URL (See Project -&gt; Properties) and finds incorrect OPC tags on pages</value>
+  </data>
+  <data name="DebugRibbonTabHeader" xml:space="preserve">
+    <value>Debug</value>
+  </data>
+  <data name="DeleteComplexDsShapesText" xml:space="preserve">
+    <value>Delete Shape(s)</value>
+  </data>
+  <data name="DeleteDrawingError" xml:space="preserve">
+    <value>Delete drawing error.</value>
+  </data>
+  <data name="DeleteDsPagesText" xml:space="preserve">
+    <value>Delete Page(s)</value>
+  </data>
+  <data name="DiscreteModeComboBoxToolTip" xml:space="preserve">
+    <value>Grid Step</value>
+  </data>
+  <data name="DiscreteModeToolTip" xml:space="preserve">
+    <value>Turn On/Off discrete mode for Shapes sizes and positions</value>
+  </data>
+  <data name="DistributeHorizontalToolTip" xml:space="preserve">
+    <value>Distribute Horizontal</value>
+  </data>
+  <data name="DistributeVerticalToolTip" xml:space="preserve">
+    <value>Distribute Vertical</value>
+  </data>
+  <data name="Done" xml:space="preserve">
+    <value>Done</value>
+  </data>
+  <data name="DrawingTabItemHeader" xml:space="preserve">
+    <value>Drawing Explorer</value>
+  </data>
+  <data name="DsPageProperties" xml:space="preserve">
+    <value>Page Properties</value>
+  </data>
+  <data name="DsPagesAndDsShapesGroupHeader" xml:space="preserve">
+    <value>Pages &amp; Shapes</value>
+  </data>
+  <data name="DsPagesTabItemHeader" xml:space="preserve">
+    <value>Pages</value>
+  </data>
+  <data name="DsPagesToolkitGroupHeader" xml:space="preserve">
+    <value>Pages</value>
+  </data>
+  <data name="DsPageTypeObjectProperties" xml:space="preserve">
+    <value>Page Style Properties</value>
+  </data>
+  <data name="DsProjectDirectoryWriteAccessError" xml:space="preserve">
+    <value>Cannot access Project directory for writing. Access is denied.</value>
+  </data>
+  <data name="DsProjectFileNotFound" xml:space="preserve">
+    <value>Project File Not Found</value>
+  </data>
+  <data name="DsProjectFileSavedToDiskMessageBox" xml:space="preserve">
+    <value>Settings were saved to disk</value>
+  </data>
+  <data name="DsProjectGroupBoxHeader" xml:space="preserve">
+    <value>Project</value>
+  </data>
+  <data name="DsProjectIsReadOnlyMessage" xml:space="preserve">
+    <value>Project is in read only mode! Project files cannot be saved! No further warnings will be generated! </value>
+  </data>
+  <data name="DsProjectPropertiesButtonText" xml:space="preserve">
+    <value>Properties</value>
+  </data>
+  <data name="DsProjectRunButtonText" xml:space="preserve">
+    <value>Run</value>
+  </data>
+  <data name="DsProjectStartDsPageToolTip" xml:space="preserve">
+    <value>Project Start Page</value>
+  </data>
+  <data name="DsProjectTreeViewItemHeader" xml:space="preserve">
+    <value>Project</value>
+  </data>
+  <data name="DsShapeDock" xml:space="preserve">
+    <value>Dock Fill</value>
+  </data>
+  <data name="DsShapeDockBottom" xml:space="preserve">
+    <value>Dock Bottom</value>
+  </data>
+  <data name="DsShapeDockContextMenuGroup" xml:space="preserve">
+    <value>Dock</value>
+  </data>
+  <data name="DsShapeDockLeft" xml:space="preserve">
+    <value>Dock Left</value>
+  </data>
+  <data name="DsShapeDockRight" xml:space="preserve">
+    <value>Dock Right</value>
+  </data>
+  <data name="DsShapeDockTop" xml:space="preserve">
+    <value>Dock Top</value>
+  </data>
+  <data name="DsShapeExportImportProperties" xml:space="preserve">
+    <value>Export/Import Properties</value>
+  </data>
+  <data name="DsShapeExportPropertiesDescription" xml:space="preserve">
+    <value>Exports properties of selected Shape to XAML file.</value>
+  </data>
+  <data name="DsShapeGeometryGroupHeader" xml:space="preserve">
+    <value>Geometry</value>
+  </data>
+  <data name="DsShapeGroupHeader" xml:space="preserve">
+    <value>Shape</value>
+  </data>
+  <data name="DsShapeImportPropertiesDescription" xml:space="preserve">
+    <value>Imports properties from XAML file into each of the selected Shapes.</value>
+  </data>
+  <data name="DsShapeLock" xml:space="preserve">
+    <value>Lock</value>
+  </data>
+  <data name="DsShapeLockContextMenuGroup" xml:space="preserve">
+    <value>Lock</value>
+  </data>
+  <data name="DsShapesOrder" xml:space="preserve">
+    <value>Order</value>
+  </data>
+  <data name="DsShapesTabItemHeader" xml:space="preserve">
+    <value>Shapes</value>
+  </data>
+  <data name="DsShapesToolkitGroupHeader" xml:space="preserve">
+    <value>Shapes</value>
+  </data>
+  <data name="DsShapeUnlock" xml:space="preserve">
+    <value>Unlock</value>
+  </data>
+  <data name="EditGeometry" xml:space="preserve">
+    <value>Edit Geometry On/Off</value>
+  </data>
+  <data name="EqualizeHeightToolTip" xml:space="preserve">
+    <value>Set height of all selected Shapes as height of the main selected Shape</value>
+  </data>
+  <data name="EqualizeWidthToolTip" xml:space="preserve">
+    <value>Set width of all selected Shapes as width of the main selected Shape</value>
+  </data>
+  <data name="ExportToXamlButtonText" xml:space="preserve">
+    <value>Export to XAML</value>
+  </data>
+  <data name="ExportToXamlGetDsPageDrawingInfosListFromUser" xml:space="preserve">
+    <value>Select one or more pages to export to XAML</value>
+  </data>
+  <data name="ExportToXamlMenu" xml:space="preserve">
+    <value>_Export to XAML</value>
+  </data>
+  <data name="ExportToXamlSaveAsDialogTitle" xml:space="preserve">
+    <value>Please, specify new XAML file name to export to</value>
+  </data>
+  <data name="ExportToXamlToolTip" xml:space="preserve">
+    <value>Export one or more pages from current Project to single XAML file.</value>
+  </data>
+  <data name="FileMustBeInDsShapesDir" xml:space="preserve">
+    <value>File must be in Project \Shapes dir</value>
+  </data>
+  <data name="FileSavedInNewerVersionOfDesign" xml:space="preserve">
+    <value>File saved in newer version of designer!</value>
+  </data>
+  <data name="FilesExists" xml:space="preserve">
+    <value>Files alredy exists:</value>
+  </data>
+  <data name="FindAndReplaceWindowTitle" xml:space="preserve">
+    <value>Find and Replace</value>
+  </data>
+  <data name="FindMenu" xml:space="preserve">
+    <value>Find...</value>
+  </data>
+  <data name="FindToolTip" xml:space="preserve">
+    <value>Finds object in Project by name or property value</value>
+  </data>
+  <data name="FlipHorizontalToolTip" xml:space="preserve">
+    <value>Flipes Shape horizontal relative to Center Point</value>
+  </data>
+  <data name="GroupDsPagesByGroupText" xml:space="preserve">
+    <value>Group Property</value>
+  </data>
+  <data name="GroupDsPagesByMarkText" xml:space="preserve">
+    <value>Mark</value>
+  </data>
+  <data name="GroupDsPagesByStyleText" xml:space="preserve">
+    <value>Style Property</value>
+  </data>
+  <data name="GroupDsPagesByText" xml:space="preserve">
+    <value>Group by:</value>
+  </data>
+  <data name="GroupingMenuItemHeader" xml:space="preserve">
+    <value>Grouping</value>
+  </data>
+  <data name="GroupMenuItemHeader" xml:space="preserve">
+    <value>Group</value>
+  </data>
+  <data name="HelpToolTip" xml:space="preserve">
+    <value>Show information about the application.</value>
+  </data>
+  <data name="ImportFromXamlButtonText" xml:space="preserve">
+    <value>Import from XAML</value>
+  </data>
+  <data name="ImportFromXamlDialogTitle" xml:space="preserve">
+    <value>Please, specify XAML file name to import</value>
+  </data>
+  <data name="ImportFromXamlMenu" xml:space="preserve">
+    <value>_Import from XAML</value>
+  </data>
+  <data name="ImportFromXamlToolTip" xml:space="preserve">
+    <value>Import single XAML file with one or more pages into current Project.</value>
+  </data>
+  <data name="InputDsShapeNameToAdd" xml:space="preserve">
+    <value>Simple Shape name to add:</value>
+  </data>
+  <data name="InputNewDsPageDrawingName" xml:space="preserve">
+    <value>Input new name for Page:</value>
+  </data>
+  <data name="InputNewDsShapeDrawingName" xml:space="preserve">
+    <value>Input new name for Complex Shape:</value>
+  </data>
+  <data name="MainRibbonButtonText" xml:space="preserve">
+    <value>Project</value>
+  </data>
+  <data name="MainRibbonTabHeader" xml:space="preserve">
+    <value>Main</value>
+  </data>
+  <data name="NameErrorDsPageDrawing" xml:space="preserve">
+    <value>Page name error! File with the same name allready exists.</value>
+  </data>
+  <data name="NameErrorDsShapeDrawing" xml:space="preserve">
+    <value>Complex Shape name error! File with the same name allready exists.</value>
+  </data>
+  <data name="NewDsPageButtonText" xml:space="preserve">
+    <value>New Page</value>
+  </data>
+  <data name="NewDsPageToolTip" xml:space="preserve">
+    <value>Creates new Page and opens it in editor.</value>
+  </data>
+  <data name="NewDsProjectButtonText" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="NewDsProjectCannotCreateDirectory" xml:space="preserve">
+    <value>Cannot create Project directory!</value>
+  </data>
+  <data name="NewDsProjectDirectoryDoesNotExsist" xml:space="preserve">
+    <value>New Project directory does not exsist! Please, specify existing directory and try again.</value>
+  </data>
+  <data name="NewDsProjectDirectoryExsists" xml:space="preserve">
+    <value>New Project directory already exsists! Please, specify different Project name and try again.</value>
+  </data>
+  <data name="NewDsProjectFolderDialogDescription" xml:space="preserve">
+    <value>Please, specify new Project location, where Project folder will be created.</value>
+  </data>
+  <data name="NewDsProjectNameInputDialogPrompt" xml:space="preserve">
+    <value>Please, specify new Project name. This name will be used as Project directory name.</value>
+  </data>
+  <data name="NewDsShapeButtonText" xml:space="preserve">
+    <value>New Shape</value>
+  </data>
+  <data name="NewDsShapeToolTip" xml:space="preserve">
+    <value>Creates new Complex Shape Drawing and opens it in editor.</value>
+  </data>
+  <data name="NewMenu" xml:space="preserve">
+    <value>_New Project</value>
+  </data>
+  <data name="NewToolTip" xml:space="preserve">
+    <value>Create a new Project.</value>
+  </data>
+  <data name="NoFVLicense" xml:space="preserve">
+    <value>No Ssz.Operator.Play licenses are available.</value>
+  </data>
+  <data name="NoFVLicenseTitle" xml:space="preserve">
+    <value>Ssz.Operator.Play License Unavailable</value>
+  </data>
+  <data name="NoMaintLicense" xml:space="preserve">
+    <value>Editing a Ssz.Operator.Play Project requires a Maintenance License but none are available.  Ssz.Operator.Play will operate in Read-Only mode and you will be unable to save.
+Do you want to continue?</value>
+  </data>
+  <data name="NoMaintLicenseTitle" xml:space="preserve">
+    <value>Maintenance License Unavailable</value>
+  </data>
+  <data name="OkToExit" xml:space="preserve">
+    <value>Select 'OK' to Exit</value>
+  </data>
+  <data name="OpenComplexDsShapesText" xml:space="preserve">
+    <value>Open Shape(s)</value>
+  </data>
+  <data name="OpenDsPagesText" xml:space="preserve">
+    <value>Open Page(s)</value>
+  </data>
+  <data name="OpenDsProjectButtonText" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="OpenFilesLocationOfComplexDsShapesText" xml:space="preserve">
+    <value>Open File(s) Location</value>
+  </data>
+  <data name="OpenFilesLocationOfDsPagesText" xml:space="preserve">
+    <value>Open File(s) Location</value>
+  </data>
+  <data name="OpenMenu" xml:space="preserve">
+    <value>_Open Project</value>
+  </data>
+  <data name="OpenToolTip" xml:space="preserve">
+    <value>Open an existing Project.</value>
+  </data>
+  <data name="OrderDsShapesByNameText" xml:space="preserve">
+    <value>Shape Name</value>
+  </data>
+  <data name="OrderDsShapesByText" xml:space="preserve">
+    <value>Order Shapes by:</value>
+  </data>
+  <data name="OrderDsShapesByTypeText" xml:space="preserve">
+    <value>Shape Type</value>
+  </data>
+  <data name="OrderDsShapesByZIndexText" xml:space="preserve">
+    <value>Shape Z Index</value>
+  </data>
+  <data name="PrintToolTip" xml:space="preserve">
+    <value>Prints current opened drawing.</value>
+  </data>
+  <data name="ProgressInfo_CreatingDsProject_Header" xml:space="preserve">
+    <value>Creating Project...</value>
+  </data>
+  <data name="ProgressInfo_LoadingDsProject_Header" xml:space="preserve">
+    <value>Loading Project...</value>
+  </data>
+  <data name="Properties" xml:space="preserve">
+    <value>Properties</value>
+  </data>
+  <data name="PropertiesMenu" xml:space="preserve">
+    <value>_Project Properties</value>
+  </data>
+  <data name="PropertiesToolTip" xml:space="preserve">
+    <value>Show properties of current Project.</value>
+  </data>
+  <data name="ReadDrawingErrorMessage" xml:space="preserve">
+    <value>Cannot read drawing. See error log for details.</value>
+  </data>
+  <data name="RecentDsProjects" xml:space="preserve">
+    <value>Recent Projects</value>
+  </data>
+  <data name="RedoToolTip" xml:space="preserve">
+    <value>Repeats the last action.</value>
+  </data>
+  <data name="RefreshDsPagesButtonText" xml:space="preserve">
+    <value>Refresh List</value>
+  </data>
+  <data name="RefreshDsShapesButtonText" xml:space="preserve">
+    <value>Refresh List</value>
+  </data>
+  <data name="RenameComplexDsShapeText" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="RenameDsPageError" xml:space="preserve">
+    <value>Rename page error.</value>
+  </data>
+  <data name="RenameDsPageText" xml:space="preserve">
+    <value>Rename Page</value>
+  </data>
+  <data name="ReplaceMenu" xml:space="preserve">
+    <value>Replace...</value>
+  </data>
+  <data name="ReplaceToolTip" xml:space="preserve">
+    <value>Replaces in properties values</value>
+  </data>
+  <data name="ResetStatusText" xml:space="preserve">
+    <value>Clear Mark</value>
+  </data>
+  <data name="RotateClockwiseToolTip" xml:space="preserve">
+    <value>Rotates Shape clockwise 90 degrees.</value>
+  </data>
+  <data name="RotateCounterClockwiseToolTip" xml:space="preserve">
+    <value>Rotates Shape counterclockwise 90 degrees.</value>
+  </data>
+  <data name="RunCurrentToolTip" xml:space="preserve">
+    <value>Runs current opened page.</value>
+  </data>
+  <data name="RunToolTip" xml:space="preserve">
+    <value>Runs the Project.</value>
+  </data>
+  <data name="SaveAllToolTip" xml:space="preserve">
+    <value>Saves all opened drawings.</value>
+  </data>
+  <data name="SaveAsToolTip" xml:space="preserve">
+    <value>Saves copy of current opened drawing with different name and opens it in editor.</value>
+  </data>
+  <data name="SaveToolTip" xml:space="preserve">
+    <value>Saves current opened drawing.</value>
+  </data>
+  <data name="Scale" xml:space="preserve">
+    <value>Scale</value>
+  </data>
+  <data name="SelectAllMenuItemHeader" xml:space="preserve">
+    <value>Select All</value>
+  </data>
+  <data name="SendBackward" xml:space="preserve">
+    <value>Send Backward</value>
+  </data>
+  <data name="SendToBack" xml:space="preserve">
+    <value>Send to Back</value>
+  </data>
+  <data name="SetAsDsProjectStartDsPageText" xml:space="preserve">
+    <value>Set as Project Start Page</value>
+  </data>
+  <data name="SetStatusText" xml:space="preserve">
+    <value>Mark</value>
+  </data>
+  <data name="ShowHideDsShapesInfoButtonLabel" xml:space="preserve">
+    <value>Show/Hide Shapes Info</value>
+  </data>
+  <data name="ShowHideDsShapesInfoButtonToolTip" xml:space="preserve">
+    <value>Shows/hides tooltips with generic params values for each complex Shape on page</value>
+  </data>
+  <data name="ShowHideDsShapesInfoFontSize" xml:space="preserve">
+    <value>F:</value>
+  </data>
+  <data name="ShowHideDsShapesInfoFontSizeToolTip" xml:space="preserve">
+    <value>Shapes Info Font Size</value>
+  </data>
+  <data name="ShowHideDsShapesInfoOpacity" xml:space="preserve">
+    <value>O:</value>
+  </data>
+  <data name="ShowHideDsShapesInfoOpacityToolTip" xml:space="preserve">
+    <value>Shapes Info Opacity</value>
+  </data>
+  <data name="SimpleDsShapeNotFound" xml:space="preserve">
+    <value>Simple Shape not Found</value>
+  </data>
+  <data name="SimpleDsShapesTreeViewItemHeader" xml:space="preserve">
+    <value>Simple Shapes</value>
+  </data>
+  <data name="SpecifyRemoveDsShapesFromDsPagesToolkitOperationOptionsMessage" xml:space="preserve">
+    <value>Please specify region (in drawing coordinates) for removing Shapes from it</value>
+  </data>
+  <data name="String1DebugFindIncorrectDsPagesRefsToolTip" xml:space="preserve">
+    <value>Find Incorrect Pages Refs</value>
+  </data>
+  <data name="SyncWithActiveDrawingButtonToolTip" xml:space="preserve">
+    <value>Sync with Active Drawing</value>
+  </data>
+  <data name="ToolkitRibbonTabHeader" xml:space="preserve">
+    <value>Toolkit</value>
+  </data>
+  <data name="TreeViewMainGroupHeader" xml:space="preserve">
+    <value>Main</value>
+  </data>
+  <data name="UncknownReason" xml:space="preserve">
+    <value>Uncknown reason:</value>
+  </data>
+  <data name="UndoToolTip" xml:space="preserve">
+    <value>Undo (Ctrl+Z)</value>
+  </data>
+  <data name="UndoToolTip" xml:space="preserve">
+    <value>Reverses the last action.</value>
+  </data>
+  <data name="UngroupAndReplaceConstantsMenuItemHeader" xml:space="preserve">
+    <value>Ungroup and Subst Params</value>
+  </data>
+  <data name="UngroupMenuItemHeader" xml:space="preserve">
+    <value>Ungroup</value>
+  </data>
+  <data name="UnSupportedAddons" xml:space="preserve">
+    <value>Addon(s) unavailable</value>
+  </data>
+  <data name="UpdateComplexDsShapesExtendedText" xml:space="preserve">
+    <value>Update Shapes +</value>
+  </data>
+  <data name="UpdateComplexDsShapesExtendedToolTip" xml:space="preserve">
+    <value>Update Shapes with options: select pages to update, reset Shapes size on pages to original, move centers of Shapes.</value>
+  </data>
+  <data name="UpdateComplexDsShapesOnDsPagesText" xml:space="preserve">
+    <value>Update Shapes on Page(s)</value>
+  </data>
+  <data name="UpdateComplexDsShapesSizeText" xml:space="preserve">
+    <value>Update Shape(s) Size on Pages</value>
+  </data>
+  <data name="UpdateComplexDsShapesText" xml:space="preserve">
+    <value>Update Shapes</value>
+  </data>
+  <data name="UpdateComplexDsShapesToolTip" xml:space="preserve">
+    <value>Each page contains its own copies of the complex Shapes. Therefore, when you change complex Shape drawing (prototype drawing), changes you made will not automatically appear on each page. In order to start toolkitOperation of updating of all complex Shapes on all pages with latest changes from prototype drawings, you need to push this button.</value>
+  </data>
+  <data name="UpdateComplexDsShapes_GetDsPageDrawingInfosListFromUser" xml:space="preserve">
+    <value>Please, select pages and/or Shapes drawings to update Shapes on them.</value>
+  </data>
+  <data name="UpdateComplexDsShapeText" xml:space="preserve">
+    <value>Update on Other Drawings</value>
+  </data>
+  <data name="UpdateDsPagesButtonLabel" xml:space="preserve">
+    <value>Update Pages</value>
+  </data>
+  <data name="UpdateDsPagesSelectImageFilesMessageBox" xml:space="preserve">
+    <value>Select files for updating pages backgrounds (image, XPS, XAML, HTML). Updating pages names are the same as the names of the files (excluding extension). If page with that name does not exist, file is skipped.</value>
+  </data>
+  <data name="UpdateDsPagesToolTip" xml:space="preserve">
+    <value>Updates pages backgrounds with selected set of files (image, XPS, XAML, HTML). Updating pages names are the same as the names of the files (excluding extension). If page with that name does not exist, file is skipped.</value>
+  </data>
+  <data name="ViewGroupHeader" xml:space="preserve">
+    <value>Drawing View</value>
+  </data>
+  <data name="WarningDsProjectStartupWindowIsUndefined" xml:space="preserve">
+    <value>Warning: Project start page is undefined</value>
+  </data>
+  <data name="WindowTitleIsReadOnly" xml:space="preserve">
+    <value>Read Only:</value>
+  </data>
+  <data name="WindowTitleNoCurrentFile" xml:space="preserve">
+    <value>&lt;No current file&gt;</value>
+  </data>
+</root>

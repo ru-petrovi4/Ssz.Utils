@@ -1,0 +1,49 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:p="using:Ssz.Operator.Core.Design.Properties"
+             mc:Ignorable="d"
+             x:Class="Ssz.Operator.Core.Design.Views.DesignMainView">
+  <Grid RowDefinitions="Auto,*,Auto">
+
+    <!-- The ribbon takes this row. -->
+    <Border Grid.Row="0" Name="RibbonPlaceholder"
+            Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+            Height="120" />
+
+    <!-- The docking layout takes this row. Until then the panes sit in a fixed grid, which keeps
+         the shell usable while the controls that go into them are ported one by one. -->
+    <Grid Grid.Row="1" ColumnDefinitions="260,4,*,4,320">
+      <Border Grid.Column="0" Name="DsPagesPane" BorderThickness="1"
+              BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
+        <HeaderedContentControl Header="{x:Static p:Resources.DsPagesTabItemHeader}" />
+      </Border>
+
+      <GridSplitter Grid.Column="1" ResizeDirection="Columns" />
+
+      <Border Grid.Column="2" Name="DrawingsPane" BorderThickness="1"
+              BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" />
+
+      <GridSplitter Grid.Column="3" ResizeDirection="Columns" />
+
+      <Grid Grid.Column="4" RowDefinitions="*,4,*">
+        <Border Grid.Row="0" Name="DrawingDsShapesPane" BorderThickness="1"
+                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
+          <HeaderedContentControl Header="{x:Static p:Resources.DrawingTabItemHeader}" />
+        </Border>
+
+        <GridSplitter Grid.Row="1" ResizeDirection="Rows" />
+
+        <Border Grid.Row="2" Name="DsShapesPane" BorderThickness="1"
+                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
+          <HeaderedContentControl Header="{x:Static p:Resources.DsShapesTabItemHeader}" />
+        </Border>
+      </Grid>
+    </Grid>
+
+    <Border Grid.Row="2" Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
+      <TextBlock Name="StatusTextBlock" Margin="6,3" />
+    </Border>
+  </Grid>
+</UserControl>

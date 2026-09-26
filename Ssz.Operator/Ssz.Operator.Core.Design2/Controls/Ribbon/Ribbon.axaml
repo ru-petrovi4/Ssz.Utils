@@ -1,0 +1,210 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:ribbon="using:Ssz.Operator.Core.Design.Controls.Ribbon">
+
+  <!-- Control themes of the editor ribbon. The ribbon is built here rather than taken from a
+       library, because Fluent.Ribbon is WPF only and the editor uses a small part of it. -->
+
+  <ControlTheme x:Key="{x:Type ribbon:Ribbon}" TargetType="ribbon:Ribbon">
+    <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAltHighBrush}" />
+    <Setter Property="ItemsPanel">
+      <ItemsPanelTemplate>
+        <StackPanel Orientation="Horizontal" />
+      </ItemsPanelTemplate>
+    </Setter>
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Background="{TemplateBinding Background}">
+          <Grid RowDefinitions="Auto,Auto,*">
+
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="4,2" Spacing="4">
+              <Button Name="PART_ApplicationMenuButton"
+                      Padding="10,2"
+                      Content="{TemplateBinding MenuHeader}"
+                      IsVisible="{TemplateBinding MenuHeader,
+                                  Converter={x:Static ObjectConverters.IsNotNull}}" />
+              <StackPanel Name="PART_QuickAccessToolBar"
+                          Orientation="Horizontal"
+                          IsVisible="{TemplateBinding IsQuickAccessToolBarVisible}" />
+            </StackPanel>
+
+            <ItemsPresenter Grid.Row="1"
+                            Name="PART_ItemsPresenter"
+                            ItemsPanel="{TemplateBinding ItemsPanel}" />
+
+            <Border Grid.Row="2"
+                    BorderThickness="0,1,0,1"
+                    BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
+              <ContentPresenter Name="PART_SelectedContentHost"
+                                Margin="2"
+                                Content="{TemplateBinding SelectedContent}"
+                                ContentTemplate="{TemplateBinding SelectedContentTemplate}" />
+            </Border>
+          </Grid>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+
+  <ControlTheme x:Key="{x:Type ribbon:RibbonTabItem}" TargetType="ribbon:RibbonTabItem">
+    <Setter Property="Padding" Value="12,5" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Border"
+                Background="{TemplateBinding Background}"
+                BorderThickness="1,1,1,0"
+                BorderBrush="Transparent"
+                CornerRadius="3,3,0,0">
+          <ContentPresenter Margin="{TemplateBinding Padding}"
+                            Content="{TemplateBinding Header}"
+                            ContentTemplate="{TemplateBinding HeaderTemplate}" />
+        </Border>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:pointerover /template/ Border#PART_Border">
+      <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}" />
+    </Style>
+    <Style Selector="^:selected /template/ Border#PART_Border">
+      <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAltHighBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SystemControlForegroundBaseLowBrush}" />
+    </Style>
+  </ControlTheme>
+
+  <ControlTheme x:Key="{x:Type ribbon:RibbonGroupBox}" TargetType="ribbon:RibbonGroupBox">
+    <Setter Property="ItemsPanel">
+      <ItemsPanelTemplate>
+        <!-- Small buttons stack up in a column and start a new one when the group is full, which is
+             how the groups of the editor are laid out. -->
+        <WrapPanel Orientation="Vertical" MaxHeight="74" />
+      </ItemsPanelTemplate>
+    </Setter>
+    <Setter Property="Template">
+      <ControlTemplate>
+        <!-- The line on the right is what separates one group from the next. -->
+        <Border BorderThickness="0,0,1,0"
+                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                Padding="4,2">
+          <Grid RowDefinitions="*,Auto">
+            <ItemsPresenter Grid.Row="0" ItemsPanel="{TemplateBinding ItemsPanel}" />
+            <TextBlock Grid.Row="1"
+                       HorizontalAlignment="Center"
+                       FontSize="11"
+                       Opacity="0.7"
+                       Text="{TemplateBinding Header}" />
+          </Grid>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+
+  <!-- A button carries both layouts and the size definition hides one of them: a template cannot be
+       swapped by a style setter, and two themes would mean writing the states twice. -->
+
+  <ControlTheme x:Key="{x:Type ribbon:RibbonButton}" TargetType="ribbon:RibbonButton">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+    <Setter Property="Padding" Value="4,2" />
+    <Setter Property="VerticalAlignment" Value="Top" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Border"
+                Background="{TemplateBinding Background}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                CornerRadius="3"
+                Padding="{TemplateBinding Padding}">
+          <Panel>
+            <StackPanel Name="PART_LargeContent"
+                        Orientation="Vertical"
+                        HorizontalAlignment="Center"
+                        MinWidth="40">
+              <Image Width="32" Height="32" Margin="2"
+                     Source="{TemplateBinding LargeIcon}"
+                     IsVisible="{TemplateBinding LargeIcon,
+                                 Converter={x:Static ObjectConverters.IsNotNull}}" />
+              <Image Width="24" Height="24" Margin="2"
+                     Source="{TemplateBinding Icon}"
+                     IsVisible="{TemplateBinding LargeIcon,
+                                 Converter={x:Static ObjectConverters.IsNull}}" />
+              <TextBlock HorizontalAlignment="Center"
+                         TextAlignment="Center"
+                         MaxWidth="80"
+                         TextWrapping="Wrap"
+                         Text="{TemplateBinding Header}" />
+            </StackPanel>
+
+            <StackPanel Name="PART_SmallContent"
+                        Orientation="Horizontal"
+                        Spacing="4"
+                        VerticalAlignment="Center">
+              <Image Width="16" Height="16"
+                     Source="{TemplateBinding Icon}"
+                     IsVisible="{TemplateBinding Icon,
+                                 Converter={x:Static ObjectConverters.IsNotNull}}" />
+              <TextBlock VerticalAlignment="Center" Text="{TemplateBinding Header}" />
+            </StackPanel>
+          </Panel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^[SizeDefinition=Large] /template/ StackPanel#PART_SmallContent">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <Style Selector="^[SizeDefinition=Small] /template/ StackPanel#PART_LargeContent">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <Style Selector="^:pointerover /template/ Border#PART_Border">
+      <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" />
+    </Style>
+    <Style Selector="^:pressed /template/ Border#PART_Border">
+      <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" />
+    </Style>
+    <Style Selector="^:disabled">
+      <Setter Property="Opacity" Value="0.4" />
+    </Style>
+  </ControlTheme>
+
+  <ControlTheme x:Key="{x:Type ribbon:RibbonToggleButton}" TargetType="ribbon:RibbonToggleButton">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+    <Setter Property="Padding" Value="4,2" />
+    <Setter Property="VerticalAlignment" Value="Top" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Border"
+                Background="{TemplateBinding Background}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                CornerRadius="3"
+                Padding="{TemplateBinding Padding}">
+          <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+            <Image Width="16" Height="16"
+                   Source="{TemplateBinding Icon}"
+                   IsVisible="{TemplateBinding Icon,
+                               Converter={x:Static ObjectConverters.IsNotNull}}" />
+            <TextBlock VerticalAlignment="Center" Text="{TemplateBinding Header}" />
+          </StackPanel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:pointerover /template/ Border#PART_Border">
+      <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}" />
+    </Style>
+    <Style Selector="^:checked /template/ Border#PART_Border">
+      <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+    </Style>
+    <Style Selector="^:disabled">
+      <Setter Property="Opacity" Value="0.4" />
+    </Style>
+  </ControlTheme>
+
+</ResourceDictionary>

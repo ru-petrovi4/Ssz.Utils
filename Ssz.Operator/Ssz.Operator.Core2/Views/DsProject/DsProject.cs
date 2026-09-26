@@ -181,7 +181,7 @@ namespace Ssz.Operator.Core
                 }
 
                 FileInfo[]? dsPageFileInfos = null;
-                if (mode != DsProjectModeEnum.BrowserPlayMode)
+                if (!IsBrowserMode(mode))
                 {
                     dsPageFileInfos = new DirectoryInfo(Instance.DsPagesDirectoryFullName)
                         .EnumerateFiles(@"*" + DsPageFileExtension, SearchOption.TopDirectoryOnly).ToArray();
@@ -282,7 +282,7 @@ namespace Ssz.Operator.Core
                     }
                 }
 
-                if (mode != DsProjectModeEnum.BrowserPlayMode)
+                if (!IsBrowserMode(mode))
                 {
                     if (Instance.Mode == DsProjectModeEnum.DesktopDesignMode || !allDsPagesCacheIsReaded)
                     {
@@ -437,6 +437,13 @@ namespace Ssz.Operator.Core
 
         [Browsable(false)] 
         public bool IsInitialized => Mode != DsProjectModeEnum.Uninitialized;
+
+        /// <summary>
+        ///     In the browser the project files come from a file provider and not from a drive, so
+        ///     nothing may be enumerated or written through System.IO there.
+        /// </summary>
+        public static bool IsBrowserMode(DsProjectModeEnum mode) =>
+            mode == DsProjectModeEnum.BrowserDesignMode || mode == DsProjectModeEnum.BrowserPlayMode;
 
         [Browsable(false)] 
         public DsProjectModeEnum Mode { get; private set; }

@@ -1,0 +1,318 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:res="clr-namespace:Ssz.Operator.Core.Design.Properties"
+                    xmlns:commonRes="clr-namespace:Ssz.Operator.Core.Properties;assembly=Ssz.Operator.Core"
+                    xmlns:designerMainWindow="clr-namespace:Ssz.Operator.Core.Design"
+                    xmlns:common="clr-namespace:Ssz.Operator.Core;assembly=Ssz.Operator.Core">
+    <ContextMenu x:Key="DsPagesItemContextMenu">
+        <MenuItem Header="{x:Static res:Resources.OpenDsPagesText}"
+                  Command="{x:Static designerMainWindow:MainWindow.OpenDsPages}">
+            <MenuItem.Icon>
+                <Image Source="Images/Open.png" Width="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="{x:Static res:Resources.OpenFilesLocationOfDsPagesText}"
+                  Command="{x:Static designerMainWindow:MainWindow.OpenFilesLocationOfDsPages}"
+                  CommandParameter="{Binding DrawingInfo}">
+            <MenuItem.Icon>
+                <Image Source="Images/Properties.png" Width="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="{x:Static res:Resources.UpdateComplexDsShapesOnDsPagesText}"
+                  Command="{x:Static designerMainWindow:MainWindow.UpdateComplexDsShapesOnDsPages}"
+                  CommandParameter="{Binding DrawingInfo}">
+            <MenuItem.Icon>
+                <Image Source="Images/UpdateComplexDsShape.png" Width="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="{x:Static res:Resources.DeleteDsPagesText}"
+                  Command="{x:Static designerMainWindow:MainWindow.DeleteDsPages}"
+                  CommandParameter="{Binding DrawingInfo}">
+            <MenuItem.Icon>
+                <Image Source="Images/Delete.png" Width="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <Separator />
+        <MenuItem Header="{x:Static res:Resources.RenameDsPageText}"
+                  Command="{x:Static designerMainWindow:MainWindow.RenameDsPage}"
+                  CommandParameter="{Binding DrawingInfo}">
+            <MenuItem.Icon>
+                <Image Source="Images/Rename.png" Width="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="{x:Static res:Resources.SetAsDsProjectStartDsPageText}"
+                  Command="{x:Static designerMainWindow:MainWindow.SetAsDsProjectStartDsPage}"
+                  CommandParameter="{Binding DrawingInfo}">
+            <MenuItem.Icon>
+                <Image Source="Images/Properties.png" Width="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <Separator />
+        <MenuItem Header="{x:Static res:Resources.SetStatusText}"
+                  Command="{x:Static designerMainWindow:MainWindow.SetMark1}" >
+            <MenuItem.Icon>
+                <Ellipse Width="5" Height="5" Fill="Red" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="{x:Static res:Resources.SetStatusText}"
+                  Command="{x:Static designerMainWindow:MainWindow.SetMark2}" >
+            <MenuItem.Icon>
+                <Ellipse Width="5" Height="5" Fill="Orange" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="{x:Static res:Resources.SetStatusText}"
+                  Command="{x:Static designerMainWindow:MainWindow.SetMark3}" >
+            <MenuItem.Icon>
+                <Ellipse Width="5" Height="5" Fill="YellowGreen" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="{x:Static res:Resources.SetStatusText}"
+                  Command="{x:Static designerMainWindow:MainWindow.SetMark4}" >
+            <MenuItem.Icon>
+                <Ellipse Width="5" Height="5" Fill="Blue" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="{x:Static res:Resources.SetStatusText}"
+                  Command="{x:Static designerMainWindow:MainWindow.SetMark5}" >
+            <MenuItem.Icon>
+                <Ellipse Width="5" Height="5" Fill="Magenta" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="{x:Static res:Resources.SetStatusText}"
+                  Command="{x:Static designerMainWindow:MainWindow.SetMark6}" >
+            <MenuItem.Icon>
+                <Ellipse Width="5" Height="5" Fill="Black" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="{x:Static res:Resources.ResetStatusText}"
+                  Command="{x:Static designerMainWindow:MainWindow.SetMark0}" />
+        <Separator />
+        <MenuItem Header="{x:Static res:Resources.DsPageTypeObjectProperties}"
+                  Command="{x:Static designerMainWindow:MainWindow.ShowDsPageTypeObjectPropertiesCommand}"
+                  CommandParameter="{Binding DrawingInfo}">
+            <MenuItem.Icon>
+                <Image Source="Images/Properties.png" Width="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="{x:Static res:Resources.DsPageProperties}"
+                  Command="{x:Static designerMainWindow:MainWindow.ShowDrawingPropertiesCommand}"
+                  CommandParameter="{Binding DrawingInfo}">
+            <MenuItem.Icon>
+                <Image Source="Images/Properties.png" Width="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+    </ContextMenu>
+    <ContextMenu x:Key="DrawingsCollectionControlHeaderContextMenu">
+        <MenuItem Header="{x:Static res:Resources.CloseOtherDrawings}" Command="{Binding CloseOther}" />
+    </ContextMenu>
+    <ContextMenu x:Key="ComplexDsShapesItemContextMenu">
+        <MenuItem Header="{x:Static res:Resources.OpenComplexDsShapesText}"
+                  Command="{x:Static designerMainWindow:MainWindow.OpenComplexDsShapes}">
+            <MenuItem.Icon>
+                <Image Source="Images/Open.png" Width="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="{x:Static res:Resources.OpenFilesLocationOfComplexDsShapesText}"
+                  Command="{x:Static designerMainWindow:MainWindow.OpenFilesLocationOfComplexDsShapes}"
+                  CommandParameter="{Binding DrawingInfo}">
+            <MenuItem.Icon>
+                <Image Source="Images/Properties.png" Width="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <!--
+        <MenuItem Header="{x:Static res:Resources.RenameComplexDsShapeText}"
+                  Command="{x:Static designer:MainWindow.RenameComplexDsShape}">
+            <MenuItem.Icon>
+                <Image Source="Images/Properties.png" Width="16" />
+            </MenuItem.Icon>
+        </MenuItem>-->
+        <MenuItem Header="{x:Static res:Resources.UpdateComplexDsShapesSizeText}"
+                  Command="{x:Static designerMainWindow:MainWindow.UpdateComplexDsShapesSize}">
+            <MenuItem.Icon>
+                <Image Source="Images/UpdateComplexDsShapeSize.png" Width="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="{x:Static res:Resources.DeleteComplexDsShapesText}"
+                  Command="{x:Static designerMainWindow:MainWindow.DeleteComplexDsShapes}"
+                  CommandParameter="{Binding DrawingInfo}">
+            <MenuItem.Icon>
+                <Image Source="Images/Delete.png" Width="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <Separator/>
+        <MenuItem Header="{x:Static res:Resources.ComplexDsShapeProperties}"
+                  Command="{x:Static designerMainWindow:MainWindow.ShowDrawingPropertiesCommand}"
+                  CommandParameter="{Binding DrawingInfo}">
+            <MenuItem.Icon>
+                <Image Source="Images/Properties.png" Width="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+    </ContextMenu>
+    <ContextMenu x:Key="DesignDrawingContextMenu">
+        <MenuItem Header="{Binding CurrentCursorPointToDisplay}" Command="{Binding CopyCurrentCursorPoint}" />
+        <Separator />
+        <MenuItem Header="{x:Static commonRes:Resources.Paste}" Command="ApplicationCommands.Paste">
+            <MenuItem.Icon>
+                <Image Source="Images/Paste.png" Width="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="{x:Static res:Resources.SelectAllMenuItemHeader}"
+                  Command="ApplicationCommands.SelectAll" />
+        <MenuItem Header="{x:Static res:Resources.CropUnusedSpaceMenuItemHeader}"
+                  Command="{x:Static common:DesignDsProjectViewModel.CropUnusedSpace}" />
+        <MenuItem Header="{Binding DrawingPropertiesMenuItemHeader}"
+                  Command="ApplicationCommands.Properties" CommandParameter="Drawing">
+            <MenuItem.Icon>
+                <Image Source="Images/Properties.png" Width="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+    </ContextMenu>
+    <ContextMenu x:Key="DesignDsShapeContextMenu">
+        <MenuItem Header="{x:Static commonRes:Resources.Cut}" Command="ApplicationCommands.Cut">
+            <MenuItem.Icon>
+                <Image Source="Images/Cut.png" Width="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="{x:Static commonRes:Resources.Copy}" Command="ApplicationCommands.Copy">
+            <MenuItem.Icon>
+                <Image Source="Images/Copy.png" Width="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="{x:Static commonRes:Resources.Delete}" Command="ApplicationCommands.Delete">
+            <MenuItem.Icon>
+                <Image Source="Images/Delete.png" Width="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <Separator />
+        <MenuItem Header="{x:Static res:Resources.GroupingMenuItemHeader}">
+            <MenuItem Header="{x:Static res:Resources.GroupMenuItemHeader}" Command="{x:Static common:DesignDsProjectViewModel.Group}">
+                <MenuItem.Icon>
+                    <Image Source="Images/Group.png" Width="16" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="{x:Static res:Resources.UngroupMenuItemHeader}" Command="{x:Static common:DesignDsProjectViewModel.Ungroup}">
+                <MenuItem.Icon>
+                    <Image Source="Images/Ungroup.png" Width="16" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="{x:Static res:Resources.UngroupAndReplaceConstantsMenuItemHeader}" Command="{x:Static common:DesignDsProjectViewModel.UngroupAndReplaceConstants}">
+                <MenuItem.Icon>
+                    <Image Source="Images/Ungroup.png" Width="16" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="{x:Static res:Resources.ConvertToComplexDsShapeMenuItemHeader}" Command="{x:Static common:DesignDsProjectViewModel.ConvertToComplexDsShape}">
+                <MenuItem.Icon>
+                    <Image Source="Images/Ungroup.png" Width="16" />
+                </MenuItem.Icon>
+            </MenuItem>
+        </MenuItem>
+        <MenuItem Header="{x:Static res:Resources.DsShapesOrder}">
+            <MenuItem Header="{x:Static res:Resources.SendToBack}"
+                      Command="{x:Static common:DesignDsProjectViewModel.SendToBack}">
+                <MenuItem.Icon>
+                    <Image Source="Images/SendToBack.png" Width="16" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="{x:Static res:Resources.SendBackward}"
+                      Command="{x:Static common:DesignDsProjectViewModel.SendBackward}">
+                <MenuItem.Icon>
+                    <Image Source="Images/SendBackward.png" Width="16" />
+                </MenuItem.Icon>
+            </MenuItem>            
+            <MenuItem Header="{x:Static res:Resources.BringForward}"
+                      Command="{x:Static common:DesignDsProjectViewModel.BringForward}">
+                <MenuItem.Icon>
+                    <Image Source="Images/BringForward.png" Width="16" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="{x:Static res:Resources.BringToFront}"
+                      Command="{x:Static common:DesignDsProjectViewModel.BringToFront}">
+                <MenuItem.Icon>
+                    <Image Source="Images/BringToFront.png" Width="16" />
+                </MenuItem.Icon>
+            </MenuItem>
+        </MenuItem>        
+        <MenuItem Header="{x:Static res:Resources.DsShapeDockContextMenuGroup}">
+            <MenuItem Header="{x:Static res:Resources.DsShapeDock}"
+                      Command="{x:Static common:DesignDsProjectViewModel.DsShapeDock}">
+                <MenuItem.Icon>
+                    <Image Source="Images/Dock.png" Width="16" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="{x:Static res:Resources.DsShapeDockLeft}"
+                      Command="{x:Static common:DesignDsProjectViewModel.DsShapeDockLeft}">
+                <MenuItem.Icon>
+                    <Image Source="Images/Dock.png" Width="16" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="{x:Static res:Resources.DsShapeDockTop}"
+                      Command="{x:Static common:DesignDsProjectViewModel.DsShapeDockTop}">
+                <MenuItem.Icon>
+                    <Image Source="Images/Dock.png" Width="16" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="{x:Static res:Resources.DsShapeDockRight}"
+                      Command="{x:Static common:DesignDsProjectViewModel.DsShapeDockRight}">
+                <MenuItem.Icon>
+                    <Image Source="Images/Dock.png" Width="16" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="{x:Static res:Resources.DsShapeDockBottom}"
+                      Command="{x:Static common:DesignDsProjectViewModel.DsShapeDockBottom}">
+                <MenuItem.Icon>
+                    <Image Source="Images/Dock.png" Width="16" />
+                </MenuItem.Icon>
+            </MenuItem>
+        </MenuItem>
+        <MenuItem Header="{x:Static res:Resources.DsShapeLockContextMenuGroup}">
+            <MenuItem Header="{x:Static res:Resources.DsShapeLock}"
+                      Command="{x:Static common:DesignDsProjectViewModel.DsShapeLock}">
+                <MenuItem.Icon>
+                    <Image Source="Images/LockClosed.png" Width="16" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="{x:Static res:Resources.DsShapeUnlock}"
+                      Command="{x:Static common:DesignDsProjectViewModel.DsShapeUnlock}">
+                <MenuItem.Icon>
+                    <Image Source="Images/LockOpen.png" Width="16" />
+                </MenuItem.Icon>
+            </MenuItem>
+        </MenuItem>
+        <MenuItem Header="{Binding OpenDsShapeDrawingMenuItemHeader}"
+                  Visibility="{Binding OpenDsShapeDrawingMenuItemVisibility}"
+                  Command="{x:Static designerMainWindow:MainWindow.OpenDsShapeDrawingFromComplexDsShape}">
+            <MenuItem.Icon>
+                <Image Source="Images/CreateDsShapeDrawing.png" Width="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <!--
+        <MenuItem Header="{x:Static res:Resources.DsShapeExportImportProperties}">
+            <MenuItem Header="{x:Static res:Resources.DsShapeExportProperties}"
+                      ToolTip="{x:Static res:Resources.DsShapeExportPropertiesDescription}"
+                      Command="{x:Static common:DesignDsProjectViewModel.DsShapeExportProperties}">
+                <MenuItem.Icon>
+                    <Image Source="Images/ExportToXaml.png" Width="16" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="{x:Static res:Resources.DsShapeImportProperties}"
+                      ToolTip="{x:Static res:Resources.DsShapeImportPropertiesDescription}"
+                      Command="{x:Static common:DesignDsProjectViewModel.DsShapeImportProperties}">
+                <MenuItem.Icon>
+                    <Image Source="Images/ImportFromXaml.png" Width="16" />
+                </MenuItem.Icon>
+            </MenuItem>
+        </MenuItem>-->
+        <MenuItem Header="{x:Static res:Resources.EditGeometry}" Command="{x:Static common:DesignDsProjectViewModel.EditGeometry}"
+                  CommandParameter="DsShape">
+            <MenuItem.Icon>
+                <Image Source="Images/GeometryEditingMode.png" Width="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="{x:Static res:Resources.Properties}" Command="ApplicationCommands.Properties"
+                  CommandParameter="DsShape">
+            <MenuItem.Icon>
+                <Image Source="Images/Properties.png" Width="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+    </ContextMenu>
+</ResourceDictionary>

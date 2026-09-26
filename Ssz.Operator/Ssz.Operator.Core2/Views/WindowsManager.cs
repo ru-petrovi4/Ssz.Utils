@@ -28,7 +28,7 @@ using Avalonia.Threading;
 
 namespace Ssz.Operator.Core;
 
-internal class WindowsManager
+public class WindowsManager
 {
     #region public functions
 
