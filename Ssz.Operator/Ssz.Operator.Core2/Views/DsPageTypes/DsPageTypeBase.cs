@@ -1,3 +1,4 @@
+using Ssz.Operator.Core.VisualEditors;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,12 +20,12 @@ namespace Ssz.Operator.Core.DsPageTypes
 
         [DsCategory(ResourceStrings.SystemCategory)]
         [DsDisplayName(ResourceStrings.DsPageTypeBase_Desc)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public abstract string Desc { get; }
 
         [DsCategory(ResourceStrings.SystemCategory)]
         [DsDisplayName(ResourceStrings.DsPageTypeBase_IsFaceplate)]
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         public abstract bool IsFaceplate { get; }
 
         [Browsable(false)] public virtual string Hint => "";

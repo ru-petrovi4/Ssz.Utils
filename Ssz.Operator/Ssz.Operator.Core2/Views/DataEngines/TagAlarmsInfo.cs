@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Avalonia.Media;
@@ -46,50 +48,48 @@ namespace Ssz.Operator.Core.DataEngines
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.TagAlarmsInfo_CsvDbFileName)]
         [LocalizedDescription(ResourceStrings.TagAlarmsInfo_CsvDbFileName_Description)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public string CsvDbFileName { get; set; } = @"";
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.TagAlarmsInfo_AlarmsIsVisible)]
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         public bool AlarmsIsVisible { get; set; }
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.TagAlarmsInfo_AlarmConditionInfosList)]
-        //[PropertyOrder(3)]
-        //[Editor(//typeof(SameTypeCloneableObjectsListTypeEditor),
-            //typeof(SameTypeCloneableObjectsListTypeEditor))]
+        [PropertyOrder(3)]
+        [Editor(typeof(SameTypeCloneableObjectsListTypeEditor), typeof(SameTypeCloneableObjectsListTypeEditor))]
         public List<AlarmConditionInfo> AlarmConditionInfosList { get; set; }
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.TagAlarmsInfo_AlarmCategory0DsBrush)]
-        //[PropertyOrder(4)]
-        //[Editor(typeof(SolidBrushTypeEditor), typeof(SolidBrushTypeEditor))]
+        [PropertyOrder(4)]
+        [Editor(typeof(SolidBrushTypeEditor), typeof(SolidBrushTypeEditor))]
         public SolidDsBrush AlarmCategory0DsBrush { get; set; }
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.TagAlarmsInfo_AlarmCategory1DsBrush)]
-        //[PropertyOrder(5)]
-        //[Editor(typeof(SolidBrushTypeEditor), typeof(SolidBrushTypeEditor))]
+        [PropertyOrder(5)]
+        [Editor(typeof(SolidBrushTypeEditor), typeof(SolidBrushTypeEditor))]
         public SolidDsBrush AlarmCategory1DsBrush { get; set; }
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.TagAlarmsInfo_AlarmCategory2DsBrush)]
-        //[PropertyOrder(6)]
-        //[Editor(typeof(SolidBrushTypeEditor), typeof(SolidBrushTypeEditor))]
+        [PropertyOrder(6)]
+        [Editor(typeof(SolidBrushTypeEditor), typeof(SolidBrushTypeEditor))]
         public SolidDsBrush AlarmCategory2DsBrush { get; set; }
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.TagAlarmsInfo_AlarmCategory3DsBrush)]
-        //[PropertyOrder(7)]
-        //[Editor(typeof(SolidBrushTypeEditor), typeof(SolidBrushTypeEditor))]
+        [PropertyOrder(7)]
+        [Editor(typeof(SolidBrushTypeEditor), typeof(SolidBrushTypeEditor))]
         public SolidDsBrush AlarmCategory3DsBrush { get; set; }
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.TagAlarmsInfo_AlarmPriorityInfosList)]
-        //[PropertyOrder(8)]
-        //[Editor(//typeof(SameTypeCloneableObjectsListTypeEditor),
-            //typeof(SameTypeCloneableObjectsListTypeEditor))]
+        [PropertyOrder(8)]
+        [Editor(typeof(SameTypeCloneableObjectsListTypeEditor), typeof(SameTypeCloneableObjectsListTypeEditor))]
         public List<AlarmPriorityInfo> AlarmPriorityInfosList { get; set; }
 
         [Browsable(false)]

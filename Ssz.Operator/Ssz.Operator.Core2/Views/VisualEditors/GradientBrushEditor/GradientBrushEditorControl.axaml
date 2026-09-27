@@ -1,0 +1,81 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:colorEditor="using:Ssz.Operator.Core.VisualEditors.ColorEditor"
+             xmlns:gradient="using:Ssz.Operator.Core.VisualEditors.GradientBrushEditor"
+             mc:Ignorable="d"
+             x:Class="Ssz.Operator.Core.VisualEditors.GradientBrushEditor.GradientBrushEditorControl"
+             x:DataType="gradient:GradientBrushEditorViewModel">
+  <Grid ColumnDefinitions="Auto,Auto,Auto">
+
+    <colorEditor:ColorEditorControl Name="SolidColorPicker"
+                                    SelectedColor="{Binding SelectedColor, Mode=TwoWay}" />
+
+    <Grid Grid.Column="1" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+      <ComboBox Name="BrushTypeComboBox" Grid.Row="0" Margin="5,0,0,0"
+                ItemsSource="{Binding AvailableBrushTypeValues}"
+                SelectedItem="{Binding BrushType, Mode=TwoWay}" />
+
+      <!-- A radial gradient is told where its centre is and how far it reaches. -->
+      <Grid Grid.Row="1" IsVisible="{Binding IsRadial}"
+            ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto">
+        <TextBlock Grid.Row="0" Grid.Column="0" Margin="5,5,0,0" Text="Gradient Origin" />
+        <TextBox Grid.Row="0" Grid.Column="1" Margin="5,5,0,0"
+                 Text="{Binding GradientOriginString, Mode=TwoWay}" />
+        <TextBlock Grid.Row="1" Grid.Column="0" Margin="5,5,0,0" Text="Center" />
+        <TextBox Grid.Row="1" Grid.Column="1" Margin="5,5,0,0"
+                 Text="{Binding CenterString, Mode=TwoWay}" />
+        <TextBlock Grid.Row="2" Grid.Column="0" Margin="5,5,0,0" Text="Radius X" />
+        <TextBox Grid.Row="2" Grid.Column="1" Margin="5,5,0,0"
+                 Text="{Binding RadiusXString, Mode=TwoWay}" />
+        <TextBlock Grid.Row="3" Grid.Column="0" Margin="5,5,0,0" Text="Radius Y" />
+        <TextBox Grid.Row="3" Grid.Column="1" Margin="5,5,0,0"
+                 Text="{Binding RadiusYString, Mode=TwoWay}" />
+      </Grid>
+
+      <!-- A linear one only needs where it starts and where it ends. -->
+      <Grid Grid.Row="1" IsVisible="{Binding IsLinear}"
+            ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto">
+        <TextBlock Grid.Row="0" Grid.Column="0" Margin="5,5,0,0" Text="Start Point" />
+        <TextBox Grid.Row="0" Grid.Column="1" Margin="5,5,0,0"
+                 Text="{Binding StartPointString, Mode=TwoWay}" />
+        <TextBlock Grid.Row="1" Grid.Column="0" Margin="5,5,0,0" Text="End Point" />
+        <TextBox Grid.Row="1" Grid.Column="1" Margin="5,5,0,0"
+                 Text="{Binding EndPointString, Mode=TwoWay}" />
+      </Grid>
+
+      <ListBox Grid.Row="3" Margin="5,5,0,0" Height="168"
+               ItemsSource="{Binding GradientStops}"
+               SelectedItem="{Binding SelectedGradientStop, Mode=TwoWay}">
+        <ListBox.ItemTemplate>
+          <DataTemplate DataType="gradient:GradientStopViewModel">
+            <StackPanel Orientation="Horizontal" Spacing="5">
+              <Border Width="22" Height="22" BorderThickness="1" BorderBrush="Black"
+                      Background="{Binding Brush}" />
+              <TextBox Width="60" VerticalAlignment="Center"
+                       Text="{Binding Offset, Mode=TwoWay}" />
+              <Slider Width="100" VerticalAlignment="Center" Minimum="0" Maximum="1"
+                      SmallChange="0.01" LargeChange="0.1"
+                      Value="{Binding Offset, Mode=TwoWay}" />
+            </StackPanel>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+
+      <Grid Grid.Row="4" ColumnDefinitions="*,*">
+        <Button Grid.Column="0" Margin="5,5,0,0" HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
+                Content="+" Command="{Binding AddCommand}" />
+        <Button Grid.Column="1" Margin="5,5,0,0" HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
+                Content="-" Command="{Binding RemoveCommand}" />
+      </Grid>
+    </Grid>
+
+    <!-- What the gradient looks like as it is being built. -->
+    <Border Grid.Column="2" VerticalAlignment="Top" Margin="5,0,0,0"
+            Height="257" Width="257" BorderBrush="Black" BorderThickness="1"
+            Background="{Binding Brush}" />
+  </Grid>
+</UserControl>

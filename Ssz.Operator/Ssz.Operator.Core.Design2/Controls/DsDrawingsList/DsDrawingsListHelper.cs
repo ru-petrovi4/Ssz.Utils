@@ -1,18 +1,21 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using Ssz.Operator.Core.Utils; using Ssz.Utils; 
-using Ssz.Operator.Core;
-using Ssz.Operator.Core.ControlsDesign;
+using Ssz.Operator.Core.Addons;
 using Ssz.Operator.Core.Drawings;
 using Ssz.Operator.Core.DsShapes;
 using Ssz.Operator.Core.VisualEditors;
-using Ssz.Operator.Core.Addons;
+using Ssz.Utils;
 
 namespace Ssz.Operator.Core.Design.Controls
 {
+    /// <summary>
+    ///     Builds the tree the lists of the editor show.
+    ///     <para>
+    ///         Ported from the WPF editor. Only the pages part is here; the part that builds the shapes
+    ///         list follows with that list.
+    ///     </para>
+    /// </summary>
     internal static class DsDrawingsListHelper
     {
         #region public functions
@@ -202,7 +205,8 @@ namespace Ssz.Operator.Core.Design.Controls
             }
         }
 
-        public static void UpdateDsPageDrawingProps(DsPageDrawing dsPageDrawing, DsPageDrawingInfosGroupViewModel newDsPageGroupViewModel)
+        public static void UpdateDsPageDrawingProps(DsPageDrawing dsPageDrawing,
+            DsPageDrawingInfosGroupViewModel newDsPageGroupViewModel)
         {
             if (newDsPageGroupViewModel.DrawingTypeGuid.HasValue)
             {
@@ -213,7 +217,8 @@ namespace Ssz.Operator.Core.Design.Controls
                 else
                 {
                     dsPageDrawing.DsPageTypeGuid = newDsPageGroupViewModel.DrawingTypeGuid.Value;
-                    if (newDsPageGroupViewModel.DrawingGroup is not null) dsPageDrawing.Group = newDsPageGroupViewModel.DrawingGroup;
+                    if (newDsPageGroupViewModel.DrawingGroup is not null)
+                        dsPageDrawing.Group = newDsPageGroupViewModel.DrawingGroup;
                 }
             }
             else
@@ -244,10 +249,11 @@ namespace Ssz.Operator.Core.Design.Controls
                 GroupViewModel? childGroupViewModel;
                 if (!groupDictionary.TryGetValue(dsPageDrawingInfo.DsPageTypeInfo.Guid, out childGroupViewModel))
                 {
-                    childGroupViewModel = new DsPageDrawingInfosGroupViewModel(null, dsPageDrawingInfo.DsPageTypeInfo.Guid)
-                    {
-                        Header = dsPageDrawingInfo.DsPageTypeInfo.Name ?? @""
-                    };
+                    childGroupViewModel =
+                        new DsPageDrawingInfosGroupViewModel(null, dsPageDrawingInfo.DsPageTypeInfo.Guid)
+                        {
+                            Header = dsPageDrawingInfo.DsPageTypeInfo.Name ?? @""
+                        };
                     groupDictionary[dsPageDrawingInfo.DsPageTypeInfo.Guid] = childGroupViewModel;
                 }
                 childGroupViewModel.Entities.Add(entityInfoViewModel);
@@ -350,22 +356,10 @@ namespace Ssz.Operator.Core.Design.Controls
 
             rootGroupViewModel.Entities.Clear();
 
-            /*
-            GroupViewModel mainGroupViewModel;
-            if (groupDictionary.TryGetValue(0, out mainGroupViewModel))
-            {
-                foreach (var entityInfoViewModel in mainGroupViewModel.Entities)
-                {
-                    rootGroupViewModel.Entities.Add(entityInfoViewModel);
-                }
-            }*/
-
             foreach (
                 var keyValuePair in
                     groupDictionary.OrderByDescending(kvp => kvp.Key))
             {
-                //if (keyValuePair.Key == 0) continue;
-
                 foreach (EntityInfoViewModel entityInfoViewModel in keyValuePair.Value.Entities)
                 {
                     rootGroupViewModel.Entities.Add(entityInfoViewModel);
@@ -382,14 +376,14 @@ namespace Ssz.Operator.Core.Design.Controls
 
             foreach (EntityInfoViewModel entityInfoViewModel in rootGroupViewModel.Entities)
             {
-                ((DsPageDrawingInfoViewModel)entityInfoViewModel).Number = number;
+                ((DsPageDrawingInfoViewModel) entityInfoViewModel).Number = number;
                 number += 1;
-            }            
+            }
         }
 
         #endregion
     }
-    
+
     public class DsPagesGroupingFilter
     {
         public bool GroupByStyle { get; set; }

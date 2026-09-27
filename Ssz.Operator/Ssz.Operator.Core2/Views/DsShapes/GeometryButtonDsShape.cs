@@ -5,7 +5,7 @@ using Ssz.Operator.Core.CustomAttributes;
 
 
 using Ssz.Operator.Core.Properties;
-//using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using Ssz.Operator.Core.Utils.Serialization;
 
 namespace Ssz.Operator.Core.DsShapes
@@ -51,8 +51,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ControlDsShapeStyleInfo)]
-        //[Editor(////typeof(DsUIElementPropertyTypeEditor<GeometryButtonStyleInfoSupplier>),
-            ////typeof(DsUIElementPropertyTypeEditor<GeometryButtonStyleInfoSupplier>))]
+        [Editor(typeof(DsUIElementPropertyTypeEditor<GeometryButtonStyleInfoSupplier>), typeof(DsUIElementPropertyTypeEditor<GeometryButtonStyleInfoSupplier>))]
         // For XAML serialization
         public override DsUIElementProperty StyleInfo
         {
@@ -78,8 +77,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.GeometryDsShapeGeometryInfo)]
-        //[Editor(//typeof(DsUIElementPropertyTypeEditor<GeometryInfoSupplier>),
-            //typeof(DsUIElementPropertyTypeEditor<GeometryInfoSupplier>))]
+        [Editor(typeof(DsUIElementPropertyTypeEditor<GeometryInfoSupplier>), typeof(DsUIElementPropertyTypeEditor<GeometryInfoSupplier>))]
         public DsUIElementProperty GeometryInfo
         {
             get => _geometryInfo;

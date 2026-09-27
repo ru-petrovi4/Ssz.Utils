@@ -1,3 +1,4 @@
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -22,7 +23,7 @@ namespace Ssz.Operator.Core.Addons
         #region public functions
 
         [DisplayName(@" ")]
-        //[Editor(typeof(AddonsCollectionTypeEditor), typeof(AddonsCollectionTypeEditor))]
+        [Editor(typeof(AddonsCollectionTypeEditor), typeof(AddonsCollectionTypeEditor))]
         public ObservableCollection<AddonBase> ObservableCollection { get; } = new();
 
         public override string ToString()

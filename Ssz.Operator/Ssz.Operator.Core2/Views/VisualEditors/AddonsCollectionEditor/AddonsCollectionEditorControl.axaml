@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:res="using:Ssz.Operator.Core.Properties"
+             xmlns:addons="using:Ssz.Operator.Core.VisualEditors.AddonsCollectionEditor"
+             mc:Ignorable="d"
+             x:Class="Ssz.Operator.Core.VisualEditors.AddonsCollectionEditor.AddonsCollectionEditorControl"
+             x:DataType="addons:AddonsCollectionEditorViewModel">
+  <Grid Name="MainGrid" RowDefinitions="*,Auto">
+    <ListBox Grid.Row="0" ItemsSource="{Binding ItemsSource}">
+      <ListBox.ItemTemplate>
+        <DataTemplate DataType="addons:AddonViewModel">
+          <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}"
+                    Content="{Binding Header}"
+                    ToolTip.Tip="{Binding ToolTip}" />
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+
+    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left">
+      <Button Width="160" Margin="0,5,0,0" HorizontalContentAlignment="Center"
+              Content="{x:Static res:Resources.RefreshAddonsCollectionButtonText}"
+              Click="RefreshAddonsCollectionButtonOnClick" />
+    </StackPanel>
+  </Grid>
+</UserControl>

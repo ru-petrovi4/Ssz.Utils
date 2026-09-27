@@ -190,4 +190,19 @@
   <data name="Loading_ProjectOpenFailed" xml:space="preserve">
     <value>The project could not be opened</value>
   </data>
+  <data name="MessageBox_Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="MessageBox_No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="MessageBox_YesForAll" xml:space="preserve">
+    <value>Yes for all</value>
+  </data>
+  <data name="MessageBox_NoForAll" xml:space="preserve">
+    <value>No for all</value>
+  </data>
+  <data name="MessageBox_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
 </root>

@@ -1,3 +1,4 @@
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.ComponentModel;
 using Avalonia.Media;
@@ -29,22 +30,22 @@ namespace Ssz.Operator.Core.Addons
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.TextDsShapeDsFont)]
-        //[Editor(typeof(DsFontTypeEditor), typeof(DsFontTypeEditor))]
+        [Editor(typeof(DsFontTypeEditor), typeof(DsFontTypeEditor))]
         public DsFont? DsFont { get; set; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.WpfModel3DPlayWindowParamsBackgroundDsBrush)]
-        //[Editor(typeof(BrushTypeEditor), typeof(BrushTypeEditor))]
+        [Editor(typeof(BrushTypeEditor), typeof(BrushTypeEditor))]
         public DsBrushBase? BackgroundDsBrush { get; set; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.WpfModel3DPlayWindowParamsTitleDsBrush)]
-        //[Editor(typeof(BrushTypeEditor), typeof(BrushTypeEditor))]
+        [Editor(typeof(BrushTypeEditor), typeof(BrushTypeEditor))]
         public DsBrushBase? TitleDsBrush { get; set; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.WpfModel3DPlayWindowParamsAmbientLightColor)]
-        //[Editor(typeof(ColorEditor), typeof(ColorEditor))]
+        [Editor(typeof(ColorEditor), typeof(ColorEditor))]
         public Color AmbientLightColor { get; set; }
 
         public override void SerializeOwnedData(SerializationWriter writer, object? context)

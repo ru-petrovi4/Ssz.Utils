@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Avalonia.Markup;
@@ -28,8 +30,8 @@ namespace Ssz.Operator.Core.Commands.DsCommandOptions
         #region public functions
 
         [DsDisplayName(ResourceStrings.JumpDsCommandOptions_FileRelativePath)]
-        //[Editor(typeof(FileNameTypeEditor), typeof(FileNameTypeEditor))]
-        //[PropertyOrder(10)]
+        [Editor(typeof(FileNameTypeEditor), typeof(FileNameTypeEditor))]
+        [PropertyOrder(10)]
         public string FileRelativePath { get; set; } = @"";        
 
         public override void SerializeOwnedData(SerializationWriter writer, object? context)

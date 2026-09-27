@@ -76,39 +76,41 @@ namespace Ssz.Operator.Core.DsShapes
             var width = dsShape.WidthInitialNotRounded;
             var height = dsShape.HeightInitialNotRounded;
 
-            //if (testResizeThumb)
-            //    return -DesignDsShapeView.ResizeThumbThikness <= dsShapePoint.X &&
-            //           dsShapePoint.X <= width + DesignDsShapeView.ResizeThumbThikness &&
-            //           -DesignDsShapeView.ResizeThumbThikness <= dsShapePoint.Y &&
-            //           dsShapePoint.Y <= height + DesignDsShapeView.ResizeThumbThikness;
+            // A shape already selected answers to the band its handles sit in as well, so that it
+            // stays grabbed while the pointer is on a handle just outside its edge.
+            if (testResizeThumb)
+                return -DesignDsShapeView.ResizeThumbThikness <= dsShapePoint.X &&
+                       dsShapePoint.X <= width + DesignDsShapeView.ResizeThumbThikness &&
+                       -DesignDsShapeView.ResizeThumbThikness <= dsShapePoint.Y &&
+                       dsShapePoint.Y <= height + DesignDsShapeView.ResizeThumbThikness;
 
             return 0 <= dsShapePoint.X && dsShapePoint.X <= width &&
                    0 <= dsShapePoint.Y && dsShapePoint.Y <= height;
         }
 
-        //public static bool ResizeThumbContains(this DsShapeBase dsShape, Point dsShapePoint)
-        //{
-        //    if (dsShape is null) return false;
+        public static bool ResizeThumbContains(this DsShapeBase dsShape, Point dsShapePoint)
+        {
+            if (dsShape is null) return false;
 
-        //    var width = dsShape.WidthInitialNotRounded;
-        //    var height = dsShape.HeightInitialNotRounded;
+            var width = dsShape.WidthInitialNotRounded;
+            var height = dsShape.HeightInitialNotRounded;
 
-        //    if (-DesignDsShapeView.ResizeThumbThikness <= dsShapePoint.X && dsShapePoint.X <= 0 &&
-        //        -DesignDsShapeView.ResizeThumbThikness <= dsShapePoint.Y &&
-        //        dsShapePoint.Y <= height + DesignDsShapeView.ResizeThumbThikness ||
-        //        -DesignDsShapeView.ResizeThumbThikness <= dsShapePoint.X &&
-        //        dsShapePoint.X <= width + DesignDsShapeView.ResizeThumbThikness &&
-        //        -DesignDsShapeView.ResizeThumbThikness <= dsShapePoint.Y && dsShapePoint.Y <= 0 ||
-        //        width <= dsShapePoint.X && dsShapePoint.X <= width + DesignDsShapeView.ResizeThumbThikness &&
-        //        -DesignDsShapeView.ResizeThumbThikness <= dsShapePoint.Y &&
-        //        dsShapePoint.Y <= height + DesignDsShapeView.ResizeThumbThikness ||
-        //        -DesignDsShapeView.ResizeThumbThikness <= dsShapePoint.X &&
-        //        dsShapePoint.X <= width + DesignDsShapeView.ResizeThumbThikness &&
-        //        height <= dsShapePoint.Y &&
-        //        dsShapePoint.Y <= height + DesignDsShapeView.ResizeThumbThikness) return true;
+            if (-DesignDsShapeView.ResizeThumbThikness <= dsShapePoint.X && dsShapePoint.X <= 0 &&
+                -DesignDsShapeView.ResizeThumbThikness <= dsShapePoint.Y &&
+                dsShapePoint.Y <= height + DesignDsShapeView.ResizeThumbThikness ||
+                -DesignDsShapeView.ResizeThumbThikness <= dsShapePoint.X &&
+                dsShapePoint.X <= width + DesignDsShapeView.ResizeThumbThikness &&
+                -DesignDsShapeView.ResizeThumbThikness <= dsShapePoint.Y && dsShapePoint.Y <= 0 ||
+                width <= dsShapePoint.X && dsShapePoint.X <= width + DesignDsShapeView.ResizeThumbThikness &&
+                -DesignDsShapeView.ResizeThumbThikness <= dsShapePoint.Y &&
+                dsShapePoint.Y <= height + DesignDsShapeView.ResizeThumbThikness ||
+                -DesignDsShapeView.ResizeThumbThikness <= dsShapePoint.X &&
+                dsShapePoint.X <= width + DesignDsShapeView.ResizeThumbThikness &&
+                height <= dsShapePoint.Y &&
+                dsShapePoint.Y <= height + DesignDsShapeView.ResizeThumbThikness) return true;
 
-        //    return false;
-        //}
+            return false;
+        }
 
         public static Point GetCenterInitialPositionOnDrawing(this DsShapeBase dsShape)
         {

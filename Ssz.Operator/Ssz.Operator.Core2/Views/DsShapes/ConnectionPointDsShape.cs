@@ -1,3 +1,4 @@
+using Ssz.Operator.Core.VisualEditors;
 using System;
 using Ssz.Operator.Core.CustomAttributes;
 using Ssz.Operator.Core.Properties;
@@ -49,7 +50,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.ConnectionPointDsShape_Type)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public ConnectionPointDsShapeType Type
         {
             get => _type;

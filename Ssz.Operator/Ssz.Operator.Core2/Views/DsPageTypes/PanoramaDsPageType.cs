@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.ComponentModel;
 using Ssz.Operator.Core.CustomAttributes;
@@ -43,44 +45,44 @@ namespace Ssz.Operator.Core.DsPageTypes
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.PanoramaDsPageTypeFrameDsPageDrawingFileName)]
         [LocalizedDescription(ResourceStrings.PanoramaDsPageTypeFrameDsPageDrawingFileNameDescription)]
-        //[Editor(typeof(FileNameTypeEditor), typeof(FileNameTypeEditor))]
-        //[PropertyOrder(1)]
+        [Editor(typeof(FileNameTypeEditor), typeof(FileNameTypeEditor))]
+        [PropertyOrder(1)]
         public string FrameDsPageDrawingFileName { get; set; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.PanoramaDsPageTypePanoramaType)]
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         public PanoramaType PanoramaType { get; set; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.PanoramaDsPageTypeX)]
-        //[PropertyOrder(3)]
+        [PropertyOrder(3)]
         public double? X { get; set; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.PanoramaDsPageTypeY)]
-        //[PropertyOrder(4)]
+        [PropertyOrder(4)]
         public double? Y { get; set; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.PanoramaDsPageTypeZ)]
-        //[PropertyOrder(5)]
+        [PropertyOrder(5)]
         public double? Z { get; set; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.PanoramaDsPageTypeLeftEdgeAzimuth)]
-        //[PropertyOrder(6)]
+        [PropertyOrder(6)]
         public int LeftEdgeAzimuth { get; set; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.PanoramaDsPageTypeDefaultViewAzimuth)]
-        //[PropertyOrder(7)]
+        [PropertyOrder(7)]
         public int DefaultViewAzimuth { get; set; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.PanoramaDsPageTypeHorizonAngle)]
         [LocalizedDescription(ResourceStrings.PanoramaDsPageTypeHorizonAngleDescription)]
-        //[PropertyOrder(8)]
+        [PropertyOrder(8)]
         public int HorizonAngle
         {
             get => _horizonAngle;
@@ -94,7 +96,7 @@ namespace Ssz.Operator.Core.DsPageTypes
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.PanoramaDsPageTypeHorizontalImageAngle)]
-        //[PropertyOrder(9)]
+        [PropertyOrder(9)]
         public int HorizontalImageAngle
         {
             get => _horizontalImageAngle;
@@ -109,7 +111,7 @@ namespace Ssz.Operator.Core.DsPageTypes
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.PanoramaDsPageTypeCameraH)]
         [LocalizedDescription(ResourceStrings.PanoramaDsPageTypeCameraHDescription)]
-        //[PropertyOrder(13)]
+        [PropertyOrder(13)]
         public double? CameraH { get; set; }
 
         public override void SerializeOwnedData(SerializationWriter writer, object? context)

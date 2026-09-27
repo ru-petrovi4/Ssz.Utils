@@ -1,0 +1,75 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:editors="using:Ssz.Operator.Core.VisualEditors"
+             mc:Ignorable="d"
+             x:Class="Ssz.Operator.Core.VisualEditors.PropertyGrid"
+             x:DataType="editors:PropertyGrid"
+             x:Name="Root">
+  <Grid RowDefinitions="Auto,*">
+
+    <!-- What object is being edited. -->
+    <Border Grid.Row="0" Padding="4,3"
+            Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+            IsVisible="{Binding #Root.ShowTitle}">
+      <TextBlock FontWeight="SemiBold" TextTrimming="CharacterEllipsis"
+                 Text="{Binding #Root.SelectedObjectTypeName}" />
+    </Border>
+
+    <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
+      <ItemsControl ItemsSource="{Binding #Root.Categories}">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate DataType="editors:PropertyCategoryViewModel">
+            <Expander IsExpanded="True" HorizontalAlignment="Stretch" Margin="0,0,0,2">
+              <Expander.Header>
+                <TextBlock FontWeight="SemiBold" Text="{Binding Header}" />
+              </Expander.Header>
+
+              <ItemsControl ItemsSource="{Binding Items}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate DataType="editors:PropertyItemViewModel">
+                    <Panel>
+                      <!-- A property that has properties of its own opens into them, which is how
+                           the bindings and the converters of a shape are reached. -->
+                      <Expander IsVisible="{Binding IsExpandable}" Margin="0,1"
+                                HorizontalAlignment="Stretch" Padding="0">
+                        <Expander.Header>
+                          <Grid ColumnDefinitions="*,6,3*" ToolTip.Tip="{Binding Description}">
+                            <TextBlock Grid.Column="0" VerticalAlignment="Center"
+                                       TextTrimming="CharacterEllipsis"
+                                       Text="{Binding DisplayName}" />
+                            <editors:PropertyValueEditor Grid.Column="2" />
+                          </Grid>
+                        </Expander.Header>
+
+                        <editors:PropertyGrid ShowTitle="False" Margin="12,0,0,0"
+                                              SelectedObject="{Binding Value}" />
+                      </Expander>
+
+                      <Grid IsVisible="{Binding !IsExpandable}"
+                            ColumnDefinitions="*,6,3*" Margin="0,1"
+                            ToolTip.Tip="{Binding Description}">
+                        <TextBlock Grid.Column="0" VerticalAlignment="Center"
+                                   TextTrimming="CharacterEllipsis"
+                                   Text="{Binding DisplayName}" />
+                        <editors:PropertyValueEditor Grid.Column="2" />
+                      </Grid>
+                    </Panel>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </Expander>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </ScrollViewer>
+  </Grid>
+
+  <UserControl.Styles>
+    <!-- A property that opens into its own properties gets the plainer header of the two. -->
+    <Style Selector="Expander > Grid">
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+  </UserControl.Styles>
+</UserControl>

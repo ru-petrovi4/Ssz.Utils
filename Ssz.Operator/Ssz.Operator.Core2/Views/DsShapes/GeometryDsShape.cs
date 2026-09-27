@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.ComponentModel;
 using Avalonia.Media;
@@ -57,11 +59,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.GeometryDsShapeFillInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(BrushTypeEditor), typeof(BrushTypeEditor))]
-        //[PropertyOrder(1)]
+        [Editor(typeof(BrushTypeEditor), typeof(BrushTypeEditor))]
+        [PropertyOrder(1)]
         public BrushDataBinding FillInfo
         {
             get => _fillInfo;
@@ -70,11 +72,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.GeometryDsShapeStrokeInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(BrushTypeEditor), typeof(BrushTypeEditor))]
-        //[PropertyOrder(2)]
+        [Editor(typeof(BrushTypeEditor), typeof(BrushTypeEditor))]
+        [PropertyOrder(2)]
         public BrushDataBinding StrokeInfo
         {
             get => _strokeInfo;
@@ -83,7 +85,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.GeometryDsShapeStrokeThickness)]
-        //[PropertyOrder(3)]
+        [PropertyOrder(3)]
         public double StrokeThickness
         {
             get => _strokeThickness;
@@ -93,7 +95,7 @@ namespace Ssz.Operator.Core.DsShapes
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.GeometryDsShapeStrokeDashLength)]
         [DefaultValue(null)] // For XAML serialization
-        //[PropertyOrder(4)]
+        [PropertyOrder(4)]
         public double? StrokeDashLength
         {
             get => _strokeDashLength;
@@ -103,7 +105,7 @@ namespace Ssz.Operator.Core.DsShapes
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.GeometryDsShapeStrokeGapLength)]
         [DefaultValue(null)] // For XAML serialization
-        //[PropertyOrder(5)]
+        [PropertyOrder(5)]
         public double? StrokeGapLength
         {
             get => _strokeGapLength;
@@ -115,7 +117,7 @@ namespace Ssz.Operator.Core.DsShapes
         [DsDisplayName(ResourceStrings.GeometryDsShapeStrokeDashArray)]
         [LocalizedDescription(ResourceStrings.GeometryDsShapeStrokeDashArrayDescription)]
         [DefaultValue(null)] // For XAML serialization
-        //[PropertyOrder(6)]
+        [PropertyOrder(6)]
         public string StrokeDashArray
         {
             get => _strokeDashArray;
@@ -124,7 +126,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.GeometryDsShapeStrokeLineJoin)]
-        //[PropertyOrder(7)]
+        [PropertyOrder(7)]
         public PenLineJoin StrokeLineJoin
         {
             get => _strokeLineJoin;
@@ -133,7 +135,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.GeometryDsShapeStrokeStartLineCap)]
-        //[PropertyOrder(8)]
+        [PropertyOrder(8)]
         public PenLineCap StrokeStartLineCap
         {
             get => _strokeStartLineCap;
@@ -142,9 +144,8 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.GeometryDsShapeGeometryInfo)]
-        //[Editor(//typeof(DsUIElementPropertyTypeEditor<GeometryInfoSupplier>),
-            //typeof(DsUIElementPropertyTypeEditor<GeometryInfoSupplier>))]
-        //[PropertyOrder(10)]
+        [Editor(typeof(DsUIElementPropertyTypeEditor<GeometryInfoSupplier>), typeof(DsUIElementPropertyTypeEditor<GeometryInfoSupplier>))]
+        [PropertyOrder(10)]
         public DsUIElementProperty GeometryInfo
         {
             get => _geometryInfo;

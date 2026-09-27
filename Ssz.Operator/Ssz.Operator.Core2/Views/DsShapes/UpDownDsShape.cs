@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.ComponentModel;
 using Avalonia;
@@ -74,10 +76,10 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.TextDsShapeTextInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
         public TextDataBinding TextInfo
         {
             get => _textInfo;

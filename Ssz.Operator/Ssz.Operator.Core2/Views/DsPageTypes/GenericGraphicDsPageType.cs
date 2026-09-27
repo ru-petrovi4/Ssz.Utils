@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -38,14 +40,14 @@ namespace Ssz.Operator.Core.DsPageTypes
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.GenericGraphicDsPageType_FramesDsPageFileRelativePath)]
         [LocalizedDescription(ResourceStrings.GenericGraphicDsPageType_FramesDsPageFileRelativePath_Description)]
-        //[Editor(typeof(FileNameTypeEditor), typeof(FileNameTypeEditor))]
-        //[PropertyOrder(1)]
+        [Editor(typeof(FileNameTypeEditor), typeof(FileNameTypeEditor))]
+        [PropertyOrder(1)]
         public string FramesDsPageFileRelativePath { get; set; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.GenericGraphicDsPageType_FrameInitializationInfosCollection)]
-        //[Editor(//typeof(SameTypeCloneableObjectsListTypeEditor), //typeof(SameTypeCloneableObjectsListTypeEditor))]
-        //[PropertyOrder(2)]
+        [Editor(typeof(SameTypeCloneableObjectsListTypeEditor), typeof(SameTypeCloneableObjectsListTypeEditor))]
+        [PropertyOrder(2)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<FrameInitializationInfo> FrameInitializationInfosCollection { get; set; }
 

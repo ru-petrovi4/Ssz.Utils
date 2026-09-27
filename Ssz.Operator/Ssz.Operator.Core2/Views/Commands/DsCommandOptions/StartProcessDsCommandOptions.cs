@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Ssz.Operator.Core.Constants;
@@ -28,13 +30,13 @@ namespace Ssz.Operator.Core.Commands.DsCommandOptions
 
         [DsDisplayName(ResourceStrings.StartProcessDsCommandOptionsCommand)]
         [LocalizedDescription(ResourceStrings.StartProcessDsCommandOptionsCommandDescription)]
-        //[Editor(typeof(FileNameTypeEditor), typeof(FileNameTypeEditor))]
-        //[PropertyOrder(1)]
+        [Editor(typeof(FileNameTypeEditor), typeof(FileNameTypeEditor))]
+        [PropertyOrder(1)]
         public string Command { get; set; }
 
         [DsDisplayName(ResourceStrings.StartProcessDsCommandOptionsArguments)]
-        //[Editor(typeof(FileNameTypeEditor), typeof(FileNameTypeEditor))]
-        //[PropertyOrder(2)]
+        [Editor(typeof(FileNameTypeEditor), typeof(FileNameTypeEditor))]
+        [PropertyOrder(2)]
         public string Arguments { get; set; }
 
         [Browsable(false)]

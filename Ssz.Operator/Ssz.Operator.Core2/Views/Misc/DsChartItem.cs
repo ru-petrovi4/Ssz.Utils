@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Avalonia.Media;
@@ -42,27 +44,27 @@ namespace Ssz.Operator.Core
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.DsChartItemHeaderInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
         [DefaultValue(typeof(TextDataBinding), @"")] // For XAML serialization
         public TextDataBinding HeaderInfo { get; set; }
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.DsChartItemValueInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
         public DoubleDataBinding ValueInfo { get; set; }
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.DsChartItemDsBrush)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(BrushTypeEditor), typeof(BrushTypeEditor))]
+        [Editor(typeof(BrushTypeEditor), typeof(BrushTypeEditor))]
         public BrushDataBinding DsBrush { get; set; }
 
         [Browsable(false)]

@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.ComponentModel;
 using Ssz.Operator.Core.CustomAttributes;
@@ -41,10 +43,10 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ContentDsShapeContentInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(XamlTypeEditor), typeof(XamlTypeEditor))]
+        [Editor(typeof(XamlTypeEditor), typeof(XamlTypeEditor))]
         public XamlDataBinding ContentInfo
         {
             get => _contentInfo;

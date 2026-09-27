@@ -1,0 +1,212 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:p="using:Ssz.Operator.Core.Design.Properties"
+                    xmlns:commonRes="using:Ssz.Operator.Core.Properties"
+                    xmlns:core="using:Ssz.Operator.Core"
+                    xmlns:views="using:Ssz.Operator.Core.Design.Views">
+
+  <!--
+    The menu a shape on the drawing is right clicked with. It is looked up by this key from the
+    application resources, because the shape views live in the core project, which knows nothing of
+    the editor - which is how the WPF editor reached it too, through a DynamicResource.
+  -->
+  <ContextMenu x:Key="DesignDsShapeContextMenu">
+    <MenuItem Header="{x:Static commonRes:Resources.Cut}"
+              Command="{x:Static views:DesignMainView.Cut}">
+      <MenuItem.Icon>
+        <Image Width="16" Height="16"
+               Source="avares://Ssz.Operator.Core.Design/Resources/Images/Cut.png" />
+      </MenuItem.Icon>
+    </MenuItem>
+    <MenuItem Header="{x:Static commonRes:Resources.Copy}"
+              Command="{x:Static views:DesignMainView.Copy}">
+      <MenuItem.Icon>
+        <Image Width="16" Height="16"
+               Source="avares://Ssz.Operator.Core.Design/Resources/Images/Copy.png" />
+      </MenuItem.Icon>
+    </MenuItem>
+    <MenuItem Header="{x:Static commonRes:Resources.Delete}"
+              Command="{x:Static views:DesignMainView.Delete}">
+      <MenuItem.Icon>
+        <Image Width="16" Height="16"
+               Source="avares://Ssz.Operator.Core.Design/Resources/Images/Delete.png" />
+      </MenuItem.Icon>
+    </MenuItem>
+
+    <Separator />
+
+    <MenuItem Header="{x:Static p:Resources.GroupingMenuItemHeader}">
+      <MenuItem Header="{x:Static p:Resources.GroupMenuItemHeader}"
+                Command="{x:Static core:DesignDsProjectViewModel.Group}">
+        <MenuItem.Icon>
+          <Image Width="16" Height="16"
+                 Source="avares://Ssz.Operator.Core.Design/Resources/Images/Group.png" />
+        </MenuItem.Icon>
+      </MenuItem>
+      <MenuItem Header="{x:Static p:Resources.UngroupMenuItemHeader}"
+                Command="{x:Static core:DesignDsProjectViewModel.Ungroup}">
+        <MenuItem.Icon>
+          <Image Width="16" Height="16"
+                 Source="avares://Ssz.Operator.Core.Design/Resources/Images/Ungroup.png" />
+        </MenuItem.Icon>
+      </MenuItem>
+      <MenuItem Header="{x:Static p:Resources.UngroupAndReplaceConstantsMenuItemHeader}"
+                Command="{x:Static core:DesignDsProjectViewModel.UngroupAndReplaceConstants}">
+        <MenuItem.Icon>
+          <Image Width="16" Height="16"
+                 Source="avares://Ssz.Operator.Core.Design/Resources/Images/Ungroup.png" />
+        </MenuItem.Icon>
+      </MenuItem>
+      <MenuItem Header="{x:Static p:Resources.ConvertToComplexDsShapeMenuItemHeader}"
+                Command="{x:Static core:DesignDsProjectViewModel.ConvertToComplexDsShape}">
+        <MenuItem.Icon>
+          <Image Width="16" Height="16"
+                 Source="avares://Ssz.Operator.Core.Design/Resources/Images/Ungroup.png" />
+        </MenuItem.Icon>
+      </MenuItem>
+    </MenuItem>
+
+    <MenuItem Header="{x:Static p:Resources.DsShapesOrder}">
+      <MenuItem Header="{x:Static p:Resources.SendToBack}"
+                Command="{x:Static core:DesignDsProjectViewModel.SendToBack}">
+        <MenuItem.Icon>
+          <Image Width="16" Height="16"
+                 Source="avares://Ssz.Operator.Core.Design/Resources/Images/SendToBack.png" />
+        </MenuItem.Icon>
+      </MenuItem>
+      <MenuItem Header="{x:Static p:Resources.SendBackward}"
+                Command="{x:Static core:DesignDsProjectViewModel.SendBackward}">
+        <MenuItem.Icon>
+          <Image Width="16" Height="16"
+                 Source="avares://Ssz.Operator.Core.Design/Resources/Images/SendBackward.png" />
+        </MenuItem.Icon>
+      </MenuItem>
+      <MenuItem Header="{x:Static p:Resources.BringForward}"
+                Command="{x:Static core:DesignDsProjectViewModel.BringForward}">
+        <MenuItem.Icon>
+          <Image Width="16" Height="16"
+                 Source="avares://Ssz.Operator.Core.Design/Resources/Images/BringForward.png" />
+        </MenuItem.Icon>
+      </MenuItem>
+      <MenuItem Header="{x:Static p:Resources.BringToFront}"
+                Command="{x:Static core:DesignDsProjectViewModel.BringToFront}">
+        <MenuItem.Icon>
+          <Image Width="16" Height="16"
+                 Source="avares://Ssz.Operator.Core.Design/Resources/Images/BringToFront.png" />
+        </MenuItem.Icon>
+      </MenuItem>
+    </MenuItem>
+
+    <MenuItem Header="{x:Static p:Resources.DsShapeDockContextMenuGroup}">
+      <MenuItem Header="{x:Static p:Resources.DsShapeDock}"
+                Command="{x:Static core:DesignDsProjectViewModel.DsShapeDock}">
+        <MenuItem.Icon>
+          <Image Width="16" Height="16"
+                 Source="avares://Ssz.Operator.Core.Design/Resources/Images/Dock.png" />
+        </MenuItem.Icon>
+      </MenuItem>
+      <MenuItem Header="{x:Static p:Resources.DsShapeDockLeft}"
+                Command="{x:Static core:DesignDsProjectViewModel.DsShapeDockLeft}">
+        <MenuItem.Icon>
+          <Image Width="16" Height="16"
+                 Source="avares://Ssz.Operator.Core.Design/Resources/Images/Dock.png" />
+        </MenuItem.Icon>
+      </MenuItem>
+      <MenuItem Header="{x:Static p:Resources.DsShapeDockTop}"
+                Command="{x:Static core:DesignDsProjectViewModel.DsShapeDockTop}">
+        <MenuItem.Icon>
+          <Image Width="16" Height="16"
+                 Source="avares://Ssz.Operator.Core.Design/Resources/Images/Dock.png" />
+        </MenuItem.Icon>
+      </MenuItem>
+      <MenuItem Header="{x:Static p:Resources.DsShapeDockRight}"
+                Command="{x:Static core:DesignDsProjectViewModel.DsShapeDockRight}">
+        <MenuItem.Icon>
+          <Image Width="16" Height="16"
+                 Source="avares://Ssz.Operator.Core.Design/Resources/Images/Dock.png" />
+        </MenuItem.Icon>
+      </MenuItem>
+      <MenuItem Header="{x:Static p:Resources.DsShapeDockBottom}"
+                Command="{x:Static core:DesignDsProjectViewModel.DsShapeDockBottom}">
+        <MenuItem.Icon>
+          <Image Width="16" Height="16"
+                 Source="avares://Ssz.Operator.Core.Design/Resources/Images/Dock.png" />
+        </MenuItem.Icon>
+      </MenuItem>
+    </MenuItem>
+
+    <MenuItem Header="{x:Static p:Resources.DsShapeLockContextMenuGroup}">
+      <MenuItem Header="{x:Static p:Resources.DsShapeLock}"
+                Command="{x:Static core:DesignDsProjectViewModel.DsShapeLock}">
+        <MenuItem.Icon>
+          <Image Width="16" Height="16"
+                 Source="avares://Ssz.Operator.Core.Design/Resources/Images/LockClosed.png" />
+        </MenuItem.Icon>
+      </MenuItem>
+      <MenuItem Header="{x:Static p:Resources.DsShapeUnlock}"
+                Command="{x:Static core:DesignDsProjectViewModel.DsShapeUnlock}">
+        <MenuItem.Icon>
+          <Image Width="16" Height="16"
+                 Source="avares://Ssz.Operator.Core.Design/Resources/Images/LockOpen.png" />
+        </MenuItem.Icon>
+      </MenuItem>
+    </MenuItem>
+
+    <!-- Only a complex shape came from a drawing of its own, so only then is this offered. -->
+    <MenuItem Header="{ReflectionBinding OpenDsShapeDrawingMenuItemHeader}"
+              IsVisible="{ReflectionBinding OpenDsShapeDrawingMenuItemVisibility}"
+              Command="{x:Static views:DesignMainView.OpenDsShapeDrawingFromComplexDsShape}">
+      <MenuItem.Icon>
+        <Image Width="16" Height="16"
+               Source="avares://Ssz.Operator.Core.Design/Resources/Images/CreateDsShapeDrawing.png" />
+      </MenuItem.Icon>
+    </MenuItem>
+
+    <MenuItem Header="{x:Static p:Resources.EditGeometry}"
+              Command="{x:Static core:DesignDsProjectViewModel.EditGeometry}"
+              CommandParameter="DsShape">
+      <MenuItem.Icon>
+        <Image Width="16" Height="16"
+               Source="avares://Ssz.Operator.Core.Design/Resources/Images/GeometryEditingMode.png" />
+      </MenuItem.Icon>
+    </MenuItem>
+
+    <MenuItem Header="{x:Static p:Resources.Properties}"
+              Command="{x:Static views:DesignMainView.Properties}"
+              CommandParameter="DsShape">
+      <MenuItem.Icon>
+        <Image Width="16" Height="16"
+               Source="avares://Ssz.Operator.Core.Design/Resources/Images/Properties.png" />
+      </MenuItem.Icon>
+    </MenuItem>
+  </ContextMenu>
+
+  <!-- The menu the empty part of a drawing is right clicked with. -->
+  <ContextMenu x:Key="DesignDrawingContextMenu">
+    <MenuItem Header="{ReflectionBinding CurrentCursorPointToDisplay}"
+              Command="{ReflectionBinding CopyCurrentCursorPoint}" />
+
+    <Separator />
+
+    <MenuItem Header="{x:Static commonRes:Resources.Paste}"
+              Command="{x:Static views:DesignMainView.Paste}">
+      <MenuItem.Icon>
+        <Image Width="16" Height="16"
+               Source="avares://Ssz.Operator.Core.Design/Resources/Images/Paste.png" />
+      </MenuItem.Icon>
+    </MenuItem>
+    <MenuItem Header="{x:Static p:Resources.SelectAllMenuItemHeader}"
+              Command="{x:Static views:DesignMainView.SelectAll}" />
+    <MenuItem Header="{x:Static p:Resources.CropUnusedSpaceMenuItemHeader}"
+              Command="{x:Static core:DesignDsProjectViewModel.CropUnusedSpace}" />
+    <MenuItem Header="{ReflectionBinding DrawingPropertiesMenuItemHeader}"
+              Command="{x:Static views:DesignMainView.Properties}"
+              CommandParameter="Drawing">
+      <MenuItem.Icon>
+        <Image Width="16" Height="16"
+               Source="avares://Ssz.Operator.Core.Design/Resources/Images/Properties.png" />
+      </MenuItem.Icon>
+    </MenuItem>
+  </ContextMenu>
+
+</ResourceDictionary>

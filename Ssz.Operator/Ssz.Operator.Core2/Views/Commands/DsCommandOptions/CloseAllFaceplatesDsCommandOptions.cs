@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Avalonia.Markup;
@@ -20,9 +22,9 @@ namespace Ssz.Operator.Core.Commands.DsCommandOptions
         
         [DsDisplayName(ResourceStrings.CloseAllFaceplatesDsCommandOptions_PlayWindowClassInfo)]
         [LocalizedDescription(ResourceStrings.CloseAllFaceplatesDsCommandOptions_PlayWindowClassInfo_Description)]
-        //[ExpandableObject]
-        //[Editor(typeof(TextBlockEditor), typeof(TextBlockEditor))]
-        //[PropertyOrder(1)]
+        [ExpandableObject]
+        [Editor(typeof(TextBlockEditor), typeof(TextBlockEditor))]
+        [PropertyOrder(1)]
         public PlayWindowClassInfo PlayWindowClassInfo { get; set; } = new();
 
         [Browsable(false)]

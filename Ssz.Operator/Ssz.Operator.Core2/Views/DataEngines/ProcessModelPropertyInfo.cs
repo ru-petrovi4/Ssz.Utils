@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -39,94 +41,94 @@ namespace Ssz.Operator.Core.DataEngines
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.ModelTagPropertyInfoTagType)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public string TagType { get; set; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.ModelTagPropertyInfoPropertyPath)]
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         public string PropertyPath { get; set; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.ModelTagPropertyInfoPropertyPathToDisplay)]
-        //[PropertyOrder(3)]
+        [PropertyOrder(3)]
         public string PropertyPathToDisplay { get; set; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.ModelTagPropertyInfoMaxScaleInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(4)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(4)]
         public DoubleDataBinding MaxScaleInfo { get; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.ModelTagPropertyInfoMinScaleInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(5)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(5)]
         public DoubleDataBinding MinScaleInfo { get; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.ModelTagPropertyInfoEUInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(6)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(6)]
         public TextDataBinding EUInfo { get; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.ModelTagPropertyInfoFormatInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(7)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(7)]
         public TextDataBinding FormatInfo { get; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.ModelTagPropertyInfoHiHiAlarmInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(8)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(8)]
         public DoubleDataBinding HiHiAlarmInfo { get; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.ModelTagPropertyInfoHiAlarmInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(9)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(9)]
         public DoubleDataBinding HiAlarmInfo { get; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.ModelTagPropertyInfoLoAlarmInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(10)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(10)]
         public DoubleDataBinding LoAlarmInfo { get; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.ModelTagPropertyInfoLoLoAlarmInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(11)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(11)]
         public DoubleDataBinding LoLoAlarmInfo { get; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.ModelTagPropertyInfoAddToTrendGroups)]
-        //[PropertyOrder(12)]
+        [PropertyOrder(12)]
         public bool AddToTrendGroups { get; set; }
 
         [Browsable(false)]

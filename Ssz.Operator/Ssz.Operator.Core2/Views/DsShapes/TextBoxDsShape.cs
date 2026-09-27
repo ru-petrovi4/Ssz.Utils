@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.ComponentModel;
 using Avalonia;
@@ -49,8 +51,11 @@ namespace Ssz.Operator.Core.DsShapes
             set => base.HorizontalContentAlignment = value;
         }
 
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] // For XAML serialization
+        [DsCategory(ResourceStrings.AppearanceCategory)]
+        [DsDisplayName(ResourceStrings.ControlDsShapeStyleInfo)]
+        [Editor(typeof(DsUIElementPropertyTypeEditor<TextBoxStyleInfoSupplier>),
+            typeof(DsUIElementPropertyTypeEditor<TextBoxStyleInfoSupplier>))]
+        // For XAML serialization
         public override DsUIElementProperty StyleInfo
         {
             get => base.StyleInfo;
@@ -75,10 +80,10 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.TextDsShapeTextInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
         public TextDataBinding TextInfo
         {
             get => _textInfo;
@@ -87,10 +92,10 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.TextBoxDsShapeIsReadOnlyInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(CheckBoxEditor), typeof(CheckBoxEditor))]
+        [Editor(typeof(CheckBoxEditor), typeof(CheckBoxEditor))]
         public BooleanDataBinding IsReadOnlyInfo
         {
             get => _isReadOnlyInfo;

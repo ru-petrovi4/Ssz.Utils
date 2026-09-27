@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -129,11 +131,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.DataCategory)]
         [DsDisplayName(ResourceStrings.MultiChartDsShape_MaximumXInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(2)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(2)]
         public DoubleDataBinding MaximumXInfo
         {
             get => _maximumXInfo;
@@ -142,11 +144,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.DataCategory)]
         [DsDisplayName(ResourceStrings.MultiChartDsShape_MinimumXInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(3)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(3)]
         public DoubleDataBinding MinimumXInfo
         {
             get => _minimumXInfo;
@@ -155,11 +157,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.DataCategory)]
         [DsDisplayName(ResourceStrings.MultiChartDsShape_FormatXInfo)]
-        //[PropertyOrder(4)]
-        //[ExpandableObject]
+        [PropertyOrder(4)]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
         public TextDataBinding FormatXInfo
         {
             get => _formatXInfo;
@@ -168,11 +170,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.DataCategory)]
         [DsDisplayName(ResourceStrings.MultiChartDsShape_EngUnitXInfo)]
-        //[PropertyOrder(5)]
-        //[ExpandableObject]
+        [PropertyOrder(5)]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
         public TextDataBinding EngUnitXInfo
         {
             get => _engUnitXInfo;
@@ -181,11 +183,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.DataCategory)]
         [DsDisplayName(ResourceStrings.MultiChartDsShape_TickFrequencyXInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(6)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(6)]
         public DoubleDataBinding TickFrequencyXInfo
         {
             get => _tickFrequencyXInfo;
@@ -194,11 +196,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.DataCategory)]
         [DsDisplayName(ResourceStrings.MultiChartDsShape_TextTickFrequencyXInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(7)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(7)]
         public DoubleDataBinding TextTickFrequencyXInfo
         {
             get => _textTickFrequencyXInfo;
@@ -207,11 +209,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.DataCategory)]
         [DsDisplayName(ResourceStrings.MultiChartDsShape_MaximumYInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(8)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(8)]
         public DoubleDataBinding MaximumYInfo
         {
             get => _maximumYInfo;
@@ -220,11 +222,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.DataCategory)]
         [DsDisplayName(ResourceStrings.MultiChartDsShape_MinimumYInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(9)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(9)]
         public DoubleDataBinding MinimumYInfo
         {
             get => _minimumYInfo;
@@ -233,11 +235,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.DataCategory)]
         [DsDisplayName(ResourceStrings.MultiChartDsShape_FormatYInfo)]
-        //[PropertyOrder(10)]
-        //[ExpandableObject]
+        [PropertyOrder(10)]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
         public TextDataBinding FormatYInfo
         {
             get => _formatYInfo;
@@ -246,11 +248,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.DataCategory)]
         [DsDisplayName(ResourceStrings.MultiChartDsShape_EngUnitYInfo)]
-        //[PropertyOrder(11)]
-        //[ExpandableObject]
+        [PropertyOrder(11)]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
         public TextDataBinding EngUnitYInfo
         {
             get => _engUnitYInfo;
@@ -259,11 +261,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.DataCategory)]
         [DsDisplayName(ResourceStrings.MultiChartDsShape_TickFrequencyYInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(12)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(12)]
         public DoubleDataBinding TickFrequencyYInfo
         {
             get => _tickFrequencyYInfo;
@@ -272,11 +274,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.DataCategory)]
         [DsDisplayName(ResourceStrings.MultiChartDsShape_TextTickFrequencyYInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(13)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(13)]
         public DoubleDataBinding TextTickFrequencyYInfo
         {
             get => _textTickFrequencyYInfo;
@@ -285,17 +287,16 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.DataCategory)]
         [DsDisplayName(ResourceStrings.MultiChartDsShape_MultiDsChartItemsCollection)]
-        //[Editor(//typeof(MiscTypeCloneableObjectsCollectionTypeEditor),
-            //typeof(MiscTypeCloneableObjectsCollectionTypeEditor))]
+        [Editor(typeof(MiscTypeCloneableObjectsCollectionTypeEditor), typeof(MiscTypeCloneableObjectsCollectionTypeEditor))]
         //[NewItemTypes(typeof(MultiDsChartItem))]
-        //[PropertyOrder(14)]
+        [PropertyOrder(14)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         // For XAML serialization of collections
         public ObservableCollection<MultiDsChartItem> MultiDsChartItemsCollection { get; } = new();
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.MultiChartDsShape_AxisYLeftIsVisible)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public bool AxisYLeftIsVisible
         {
             get => _axisYLeftIsVisible;
@@ -304,7 +305,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.MultiChartDsShape_AxisXTopIsVisible)]
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         public bool AxisXTopIsVisible
         {
             get => _axisXTopIsVisible;
@@ -313,7 +314,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.MultiChartDsShape_AxisYRightIsVisible)]
-        //[PropertyOrder(3)]
+        [PropertyOrder(3)]
         public bool AxisYRightIsVisible
         {
             get => _axisYRightIsVisible;
@@ -322,7 +323,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.MultiChartDsShape_AxisXBottomIsVisible)]
-        //[PropertyOrder(4)]
+        [PropertyOrder(4)]
         public bool AxisXBottomIsVisible
         {
             get => _axisXBottomIsVisible;
@@ -331,7 +332,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.MultiChartDsShape_ChartGridIsVisible)]
-        //[PropertyOrder(5)]
+        [PropertyOrder(5)]
         public bool ChartGridIsVisible
         {
             get => _chartGridIsVisible;
@@ -340,7 +341,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.MultiChartDsShape_ChartGridLabelsLeftIsVisible)]
-        //[PropertyOrder(6)]
+        [PropertyOrder(6)]
         public bool ChartGridLabelsLeftIsVisible
         {
             get => _chartGridLabelsLeftIsVisible;
@@ -349,7 +350,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.MultiChartDsShape_ChartGridLabelsTopIsVisible)]
-        //[PropertyOrder(7)]
+        [PropertyOrder(7)]
         public bool ChartGridLabelsTopIsVisible
         {
             get => _chartGridLabelsTopIsVisible;
@@ -358,7 +359,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.MultiChartDsShape_ChartGridLabelsRightIsVisible)]
-        //[PropertyOrder(8)]
+        [PropertyOrder(8)]
         public bool ChartGridLabelsRightIsVisible
         {
             get => _chartGridLabelsRightIsVisible;
@@ -367,7 +368,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.MultiChartDsShape_ChartGridLabelsBottomIsVisible)]
-        //[PropertyOrder(9)]
+        [PropertyOrder(9)]
         public bool ChartGridLabelsBottomIsVisible
         {
             get => _chartGridLabelsBottomIsVisible;
@@ -376,8 +377,8 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.MultiChartDsShape_ChartGridBrush)]
-        //[Editor(typeof(SolidBrushTypeEditor), typeof(SolidBrushTypeEditor))]
-        //[PropertyOrder(10)]
+        [Editor(typeof(SolidBrushTypeEditor), typeof(SolidBrushTypeEditor))]
+        [PropertyOrder(10)]
         public SolidDsBrush ChartGridBrush
         {
             get => _chartGridBrush;
@@ -386,7 +387,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.MultiChartDsShape_TickStrokeThickness)]
-        //[PropertyOrder(11)]
+        [PropertyOrder(11)]
         public double TickStrokeThickness
         {
             get => _tickStrokeThickness;
@@ -395,7 +396,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.MultiChartDsShape_TickLength)]
-        //[PropertyOrder(12)]
+        [PropertyOrder(12)]
         public double TickLength
         {
             get => _tickLength;

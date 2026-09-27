@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Avalonia;
@@ -48,38 +50,38 @@ namespace Ssz.Operator.Core.Commands.DsCommandOptions
         #region public functions
 
         [DsDisplayName(ResourceStrings.ShowWindowDsCommandOptions_FileRelativePath)]
-        //[Editor(typeof(FileNameTypeEditor), typeof(FileNameTypeEditor))]
-        //[PropertyOrder(0)]
+        [Editor(typeof(FileNameTypeEditor), typeof(FileNameTypeEditor))]
+        [PropertyOrder(0)]
         public virtual string FileRelativePath { get; set; }
 
         [DsDisplayName(ResourceStrings.ShowWindowDsCommandOptions_ShowOnTouchScreen)]
         [DefaultValue(DefaultFalseTrue.Default)] // For XAML serialization
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public DefaultFalseTrue ShowOnTouchScreen { get; set; }
 
         [DsDisplayName(ResourceStrings.ShowWindowDsCommandOptions_WindowStyle)]
         [DefaultValue(PlayWindowStyle.Default)] // For XAML serialization
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         public PlayWindowStyle WindowStyle { get; set; }
 
         [DsDisplayName(ResourceStrings.ShowWindowDsCommandOptions_WindowResizeMode)]
         [DefaultValue(PlayWindowResizeMode.Default)] // For XAML serialization
-        //[PropertyOrder(3)]
+        [PropertyOrder(3)]
         public PlayWindowResizeMode WindowResizeMode { get; set; }
 
         [DsDisplayName(ResourceStrings.ShowWindowDsCommandOptions_WindowStartupLocation)]
         [DefaultValue(PlayWindowStartupLocation.Default)] // For XAML serialization
-        //[PropertyOrder(4)]
+        [PropertyOrder(4)]
         public PlayWindowStartupLocation WindowStartupLocation { get; set; }
 
         [DsDisplayName(ResourceStrings.ShowWindowDsCommandOptions_WindowFullScreen)]
         [DefaultValue(DefaultFalseTrue.Default)] // For XAML serialization
-        //[PropertyOrder(5)]
+        [PropertyOrder(5)]
         public DefaultFalseTrue WindowFullScreen { get; set; }
         
         [DsDisplayName(ResourceStrings.ShowWindowDsCommandOptions_AutoCloseMs)]
         [LocalizedDescription(ResourceStrings.ShowWindowDsCommandOptions_AutoCloseMs_Description)]
-        //[PropertyOrder(6)]
+        [PropertyOrder(6)]
         [DefaultValue(0)] // For XAML serialization
         public int AutoCloseMs { get; set; }
 
@@ -96,38 +98,38 @@ namespace Ssz.Operator.Core.Commands.DsCommandOptions
         public double? ContentHeight { get; set; }
 
         [DsDisplayName(ResourceStrings.ShowWindowDsCommandOptions_TitleInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(7)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(7)]
         public virtual TextDataBinding TitleInfo { get; set; }
 
         [DsDisplayName(ResourceStrings.ShowWindowDsCommandOptions_WindowCategory)]
         [LocalizedDescription(ResourceStrings.ShowWindowDsCommandOptions_WindowCategory_Description)]
-        //[PropertyOrder(8)]
+        [PropertyOrder(8)]
         public virtual string WindowCategory { get; set; }
 
         [DsDisplayName(ResourceStrings.ShowWindowDsCommandOptions_FrameName)]
         [LocalizedDescription(ResourceStrings.ShowWindowDsCommandOptions_FrameName_Description)]
-        //[PropertyOrder(9)]
+        [PropertyOrder(9)]
         public virtual string FrameName { get; set; }
 
         [DsDisplayName(ResourceStrings.ShowWindowDsCommandOptions_WindowShowInTaskbar)]
         [DefaultValue(DefaultFalseTrue.Default)] // For XAML serialization
-        //[PropertyOrder(10)]
+        [PropertyOrder(10)]
         public DefaultFalseTrue WindowShowInTaskbar { get; set; }
 
         [DsDisplayName(ResourceStrings.ShowWindowDsCommandOptions_WindowTopmost)]
         [DefaultValue(DefaultFalseTrue.Default)] // For XAML serialization
-        //[PropertyOrder(11)]
+        [PropertyOrder(11)]
         public DefaultFalseTrue WindowTopmost { get; set; }
 
         /// <summary>
         ///     Parent Window for new WIndow
         /// </summary>
         [DsDisplayName(ResourceStrings.ShowWindowDsCommandOptions_ParentWindow)]
-        //[PropertyOrder(12)]
+        [PropertyOrder(12)]
         public virtual TargetWindow ParentWindow { get; set; }
 
         [Browsable(false)]

@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -49,8 +51,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ControlDsShapeStyleInfo)]
-        //[Editor(////typeof(DsUIElementPropertyTypeEditor<ComboBoxStyleInfoSupplier>),
-            ////typeof(DsUIElementPropertyTypeEditor<ComboBoxStyleInfoSupplier>))]
+        [Editor(typeof(DsUIElementPropertyTypeEditor<ComboBoxStyleInfoSupplier>), typeof(DsUIElementPropertyTypeEditor<ComboBoxStyleInfoSupplier>))]
         // For XAML serialization
         public override DsUIElementProperty StyleInfo
         {
@@ -60,10 +61,10 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.ComboBoxDsShapeSelectedIndexInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
         public Int32DataBinding SelectedIndexInfo
         {
             get => _selectedIndexInfo;
@@ -72,10 +73,10 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.VarComboBoxDsShape_MenuItemsInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
         public TextDataBinding MenuItemsInfo
         {
             get => _menuItemsInfo;

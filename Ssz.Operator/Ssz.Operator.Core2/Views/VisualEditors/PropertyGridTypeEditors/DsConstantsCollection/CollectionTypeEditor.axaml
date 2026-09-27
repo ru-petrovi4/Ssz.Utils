@@ -1,0 +1,61 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:res="using:Ssz.Operator.Core.Properties"
+             xmlns:constants="using:Ssz.Operator.Core.Constants"
+             mc:Ignorable="d"
+             x:Class="Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors.DsConstantsCollection.CollectionTypeEditor">
+  <Grid RowDefinitions="*,Auto">
+    <DataGrid Grid.Row="0" Name="MainDataGrid" MaxHeight="240"
+              x:DataType="constants:DsConstantViewModel"
+              AutoGenerateColumns="False" HeadersVisibility="Column"
+              CanUserResizeColumns="True" CanUserSortColumns="False">
+      <DataGrid.ContextMenu>
+        <ContextMenu>
+          <MenuItem Header="{x:Static res:Resources.Copy}" Click="CopyMenuItemOnClick" />
+          <MenuItem Header="{x:Static res:Resources.Paste}" Click="PasteMenuItemOnClick" />
+          <MenuItem Header="{x:Static res:Resources.Delete}" Click="DeleteMenuItemOnClick" />
+        </ContextMenu>
+      </DataGrid.ContextMenu>
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="Name" Width="100" IsReadOnly="True" Binding="{Binding Name}" />
+        <!-- The value is the only thing the author changes here; a constant with a set of allowed
+             values offers them in a list. -->
+        <DataGridTemplateColumn Header="Value" Width="250">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate DataType="constants:DsConstantViewModel">
+              <TextBlock VerticalAlignment="Center" Margin="4,0"
+                         Text="{Binding Value}"
+                         Foreground="{Binding Foreground}"
+                         ToolTip.Tip="{Binding ToolTip}" />
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+          <DataGridTemplateColumn.CellEditingTemplate>
+            <DataTemplate DataType="constants:DsConstantViewModel">
+              <Panel>
+                <ComboBox HorizontalAlignment="Stretch"
+                          IsVisible="{Binding ValuesItemsSource, Converter={x:Static ObjectConverters.IsNotNull}}"
+                          ItemsSource="{Binding ValuesItemsSource}"
+                          SelectedValueBinding="{Binding Value}"
+                          SelectedValue="{Binding Value, Mode=TwoWay}" />
+                <TextBox IsVisible="{Binding ValuesItemsSource, Converter={x:Static ObjectConverters.IsNull}}"
+                         Text="{Binding Value, Mode=TwoWay}" />
+              </Panel>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellEditingTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTextColumn Header="Type" Width="100" IsReadOnly="True" Binding="{Binding Type}" />
+        <DataGridTextColumn Header="Description" Width="*" IsReadOnly="True" Binding="{Binding Desc}" />
+      </DataGrid.Columns>
+    </DataGrid>
+
+    <!-- Only the editor with add and remove shows these. -->
+    <StackPanel Grid.Row="1" Name="AddRemovePanel" Orientation="Horizontal" Margin="0,5,0,0"
+                IsVisible="False">
+      <Button Width="30" HorizontalContentAlignment="Center" Content="+" Click="AddButtonOnClick" />
+      <Button Width="30" Margin="5,0,0,0" HorizontalContentAlignment="Center" Content="X"
+              Click="RemoveButtonOnClick" />
+    </StackPanel>
+  </Grid>
+</UserControl>

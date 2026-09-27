@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
+using Ssz.Operator.Core.VisualEditors;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -34,15 +36,15 @@ namespace Ssz.Operator.Core.Commands.DsCommandOptions
 
         [DsCategory(ResourceStrings.DataCategory)]
         [DsDisplayName(ResourceStrings.ValueDataBindingBaseDataBindingItemsCollection)]
-        //[Editor(typeof(DataBindingItemsCollectionTypeEditor), typeof(DataBindingItemsCollectionTypeEditor))]
-        //[PropertyOrder(1)]
+        [Editor(typeof(DataBindingItemsCollectionTypeEditor), typeof(DataBindingItemsCollectionTypeEditor))]
+        [PropertyOrder(1)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] // For XAML serialization
         public ObservableCollection<DataBindingItem> DataBindingItemsCollection => ValueInfo.DataBindingItemsCollection;
 
         [DsCategory(ResourceStrings.DataCategory)]
         [DsDisplayName(ResourceStrings.ValueDataBindingBaseConverter)]
-        //[Editor(typeof(OneWayToSourceStructConverterTypeEditor), typeof(OneWayToSourceStructConverterTypeEditor))]
-        //[PropertyOrder(2)]
+        [Editor(typeof(OneWayToSourceStructConverterTypeEditor), typeof(OneWayToSourceStructConverterTypeEditor))]
+        [PropertyOrder(2)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] // For XAML serialization
         public ValueConverterBase? Converter
         {

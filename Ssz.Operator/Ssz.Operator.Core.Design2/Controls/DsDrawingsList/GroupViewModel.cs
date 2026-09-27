@@ -1,11 +1,13 @@
 using System.Collections.Generic;
-using Ssz.Operator.Core.ControlsCommon;
 using Ssz.Operator.Core.ControlsDesign;
+using Ssz.Operator.Core.ViewModels;
 using Ssz.Operator.Core.VisualEditors;
-using Ssz.Utils;
 
 namespace Ssz.Operator.Core.Design.Controls
 {
+    /// <summary>
+    ///     A node of a list of the editor that holds entities and further groups.
+    /// </summary>
     public class GroupViewModel : ViewModelBase
     {
         #region construction and destruction
@@ -23,8 +25,8 @@ namespace Ssz.Operator.Core.Design.Controls
 
         public string Header
         {
-            get { return _header; }
-            set { SetValue(ref _header, value); }
+            get => _header;
+            set => SetProperty(ref _header, value);
         }
 
         public IList<GroupViewModel> ChildGroups { get; set; }
@@ -48,8 +50,8 @@ namespace Ssz.Operator.Core.Design.Controls
 
         public bool IsExpanded
         {
-            get { return _isExpanded; }
-            set { SetValue(ref _isExpanded, value); }
+            get => _isExpanded;
+            set => SetProperty(ref _isExpanded, value);
         }
 
         public bool IsEmpty()
@@ -73,7 +75,7 @@ namespace Ssz.Operator.Core.Design.Controls
 
         public static void InitializeSelectionService<T>(this GroupViewModel groupViewModel,
             SelectionService<T> selectionService)
-            where T: class, ISelectable
+            where T : class, ISelectable
         {
             foreach (EntityInfoViewModel entity in groupViewModel.Entities)
                 selectionService.Attach((entity as T)!);

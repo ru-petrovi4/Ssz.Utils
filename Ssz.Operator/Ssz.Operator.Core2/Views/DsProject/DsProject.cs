@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -25,7 +27,7 @@ using Ssz.Operator.Core.Drawings;
 using Ssz.Operator.Core.DsShapes;
 using Ssz.Operator.Core.Properties;
 //using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
-//using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors.DsConstantsCollection;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors.DsConstantsCollection;
 using Ssz.Operator.Core.Utils;
 using Ssz.Operator.Core.Utils.Serialization;
 using MsBox.Avalonia;
@@ -368,36 +370,34 @@ namespace Ssz.Operator.Core
 
         [DsCategory(ResourceStrings.AppInfoCategory)]
         [DsDisplayName(ResourceStrings.DsProjectExeVersionDateTime)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public string ExeVersionDateTime => ObsoleteAnyHelper.ConvertTo<string>(GetExeBuildDateTimeUtc().ToLocalTime(), true);
 
         [DsCategory(ResourceStrings.AppInfoCategory)]
         [DsDisplayName(ResourceStrings.DsProjectDrawingCurrentSerializationVersionDateTime)]
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         public string DrawingCurrentSerializationVersionDateTime =>
             ObsoleteAnyHelper.ConvertTo<string>(DrawingBase.CurrentSerializationVersionDateTime, true);
 
         [DsCategory(ResourceStrings.BehaviourCategory)]
         [DsDisplayName(ResourceStrings.DsProject_ConditionalDsCommandsCollection)]
         [LocalizedDescription(ResourceStrings.DsProject_ConditionalDsCommandsCollection_Description)]
-        //[Editor(//typeof(MiscTypeCloneableObjectsCollectionTypeEditor),
-            //typeof(MiscTypeCloneableObjectsCollectionTypeEditor))]
+        [Editor(typeof(MiscTypeCloneableObjectsCollectionTypeEditor), typeof(MiscTypeCloneableObjectsCollectionTypeEditor))]
         //[NewItemTypes(typeof(DsCommand))]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public ObservableCollection<DsCommand> ConditionalDsCommandsCollection { get; } = new();
 
         [DsCategory(ResourceStrings.BehaviourCategory)]
         [DsDisplayName(ResourceStrings.DsProject_PlayWindowClassOptionsCollection)]
         [LocalizedDescription(ResourceStrings.DsProject_PlayWindowClassOptionsCollection_Description)]
-        //[Editor(//typeof(MiscTypeCloneableObjectsCollectionTypeEditor),
-            //typeof(MiscTypeCloneableObjectsCollectionTypeEditor))]
+        [Editor(typeof(MiscTypeCloneableObjectsCollectionTypeEditor), typeof(MiscTypeCloneableObjectsCollectionTypeEditor))]
         //[NewItemTypes(typeof(PlayWindowClassOptions))]
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         public ObservableCollection<PlayWindowClassOptions> PlayWindowClassOptionsCollection { get; } = new();
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DsProjectFileFullName)]
-        //[PropertyOrder(0)]
+        [PropertyOrder(0)]
         public string? DsProjectFileFullName { get; private set; }
 
         /// <summary>
@@ -413,7 +413,7 @@ namespace Ssz.Operator.Core
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DsProjectName)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public string Name
         {
             get => _name ?? "";
@@ -422,7 +422,7 @@ namespace Ssz.Operator.Core
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DsProjectDesc)]
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         public string Desc
         {
             get => _desc ?? "";
@@ -450,42 +450,42 @@ namespace Ssz.Operator.Core
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DsProject_DefaultDsPageSize)]
-        //[PropertyOrder(3)]
+        [PropertyOrder(3)]
         public Size DefaultDsPageSize { get; set; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DsProject_DsPageStretchMode)]
         [LocalizedDescription(ResourceStrings.DsProject_DsPageStretchMode_Description)]
-        //[PropertyOrder(4)]
+        [PropertyOrder(4)]
         public DsPageStretchMode DsPageStretchMode { get; set; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DsProject_DsPageHorizontalAlignment)]
         [LocalizedDescription(ResourceStrings.DsProject_DsPageHorizontalAlignment_Description)]
-        //[PropertyOrder(5)]
+        [PropertyOrder(5)]
         public DsPageHorizontalAlignment DsPageHorizontalAlignment { get; set; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DsProject_DsPageVerticalAlignment)]
         [LocalizedDescription(ResourceStrings.DsProject_DsPageVerticalAlignment_Description)]
-        //[PropertyOrder(6)]
+        [PropertyOrder(6)]
         public DsPageVerticalAlignment DsPageVerticalAlignment { get; set; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DsProject_DsPageBackground)]
         [LocalizedDescription(ResourceStrings.DsProject_DsPageBackground_Description)]
-        //[Editor(typeof(SolidBrushOrNullTypeEditor), typeof(SolidBrushOrNullTypeEditor))]
-        //[PropertyOrder(7)]
+        [Editor(typeof(SolidBrushOrNullTypeEditor), typeof(SolidBrushOrNullTypeEditor))]
+        [PropertyOrder(7)]
         public SolidDsBrush? DsPageBackground { get; set; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DsProject_TryConvertXamlToDsShapes)]
-        //[PropertyOrder(8)]
+        [PropertyOrder(8)]
         public bool TryConvertXamlToDsShapes { get; set; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DsProject_DataEngineGuidAndName)]
-        //[PropertyOrder(9)]
+        [PropertyOrder(9)]
         //[ItemsSource(typeof(DataEngineInfoItemsSource))]
         public GuidAndName DataEngineGuidAndName
         {
@@ -516,8 +516,8 @@ namespace Ssz.Operator.Core
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DsProject_DataEngine)]
-        //[PropertyOrder(10)]
-        //[Editor(typeof(CloneableObjectTypeEditor), typeof(CloneableObjectTypeEditor))]
+        [PropertyOrder(10)]
+        [Editor(typeof(CloneableObjectTypeEditor), typeof(CloneableObjectTypeEditor))]
         public DataEngineBase DataEngine
         {
             get => _dataEngine;
@@ -529,7 +529,7 @@ namespace Ssz.Operator.Core
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DsProjectDrawingsStoreMode)]
-        //[PropertyOrder(11)]
+        [PropertyOrder(11)]
         //[ItemsSource(typeof(DsProjectDrawingsStoreModeItemsSource))]
         public DrawingsStoreModeEnum DrawingsStoreModeForUser
         {
@@ -563,7 +563,7 @@ namespace Ssz.Operator.Core
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DsProject_OperatorUICultureName)]
-        //[PropertyOrder(12)]
+        [PropertyOrder(12)]
         public string OperatorUICultureName
         {
             get => _operatorUICultureName;
@@ -591,8 +591,8 @@ namespace Ssz.Operator.Core
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DsProjectRootWindowProps)]
         [LocalizedDescription(ResourceStrings.DsProjectRootWindowPropsDescription)]
-        //[PropertyOrder(13)]
-        //[Editor(typeof(CloneableObjectTypeEditor), typeof(CloneableObjectTypeEditor))]
+        [PropertyOrder(13)]
+        [Editor(typeof(CloneableObjectTypeEditor), typeof(CloneableObjectTypeEditor))]
         public WindowProps RootWindowProps
         {
             get => _rootWindowProps;
@@ -601,8 +601,8 @@ namespace Ssz.Operator.Core
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DsProjectStartDsPageFileRelativePath)]
-        //[Editor(typeof(FileNameTypeEditor), typeof(FileNameTypeEditor))]
-        //[PropertyOrder(14)]
+        [Editor(typeof(FileNameTypeEditor), typeof(FileNameTypeEditor))]
+        [PropertyOrder(14)]
         public string StartDsPageFileRelativePath
         {
             get => RootWindowProps.FileRelativePath;
@@ -647,9 +647,8 @@ namespace Ssz.Operator.Core
         [DsCategory(ResourceStrings.DataCategory)]
         [DsDisplayName(ResourceStrings.DsProjectDsConstantsCollection)]
         [LocalizedDescription(ResourceStrings.DsConstantsCollectionDescription)]
-        //[PropertyOrder(1)]
-        //[Editor(//typeof(CollectionWithAddRemoveTypeEditor),
-            //typeof(CollectionWithAddRemoveTypeEditor))]
+        [PropertyOrder(1)]
+        [Editor(typeof(CollectionWithAddRemoveTypeEditor), typeof(CollectionWithAddRemoveTypeEditor))]
         public ObservableCollection<DsConstant> DsConstantsCollection { get; } = new();
 
         [Browsable(false)]
@@ -666,13 +665,13 @@ namespace Ssz.Operator.Core
 
         [DsCategory(ResourceStrings.DataCategory)]
         [DsDisplayName(ResourceStrings.DsProject_DefaultServerAddress)]
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         //[ItemsSource(typeof(DefaultServerAddress_ItemsSource), true)]
         public string DefaultServerAddress { get; set; } = @"";
 
         [DsCategory(ResourceStrings.DataCategory)]
         [DsDisplayName(ResourceStrings.DsProject_DefaultSystemNameToConnect)]
-        //[PropertyOrder(3)]
+        [PropertyOrder(3)]
         //[ItemsSource(typeof(DefaultSystemNameToConnect_ItemsSource), true)]
         public string DefaultSystemNameToConnect { get; set; } = @"";
 
@@ -752,8 +751,8 @@ namespace Ssz.Operator.Core
 
         [DsCategory(ResourceStrings.AddonsCategory)]
         [DsDisplayName(ResourceStrings.DsProjectAddonsCollection)]
-        //[PropertyOrder(1)]
-        //[ExpandableObject]
+        [PropertyOrder(1)]
+        [ExpandableObject]
         public AddonsCollection AddonsCollection => AddonsManager.AddonsCollection;
 
         //[DsCategory(ResourceStrings.AddonsCategory),

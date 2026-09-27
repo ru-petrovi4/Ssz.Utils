@@ -1,0 +1,25 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:res="using:Ssz.Operator.Core.Properties"
+             xmlns:editors="using:Ssz.Operator.Core.VisualEditors"
+             mc:Ignorable="d"
+             x:Class="Ssz.Operator.Core.VisualEditors.ToolkitOperationOptionsControl">
+  <Grid RowDefinitions="Auto,*,Auto">
+    <TextBlock Grid.Row="0" Name="DescriptionTextBlock" TextWrapping="Wrap" />
+
+    <editors:ObjectPropertiesControl Grid.Row="1" Name="ObjectPropertiesControl" Margin="0,10,0,0" />
+
+    <StackPanel Grid.Row="2" Margin="0,5,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
+      <Button Width="160" Margin="5,5,0,0" Focusable="False" IsCancel="True"
+              HorizontalContentAlignment="Center"
+              Content="{x:Static res:Resources.CancelButtonText}"
+              Click="CancelButtonOnClick" />
+      <Button Width="160" Margin="5,5,0,0" Focusable="False" FontWeight="Bold"
+              HorizontalContentAlignment="Center"
+              Content="{x:Static res:Resources.StartToolkitOperationButtonText}"
+              Click="StartToolkitOperationButtonOnClick" />
+    </StackPanel>
+  </Grid>
+</UserControl>

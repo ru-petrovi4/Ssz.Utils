@@ -1,3 +1,4 @@
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -40,7 +41,7 @@ namespace Ssz.Operator.Core.Addons
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.GenericAddon_FileRelativePath)]
         [LocalizedDescription(ResourceStrings.GenericAddon_FileRelativePath_Description)]
-        //[Editor(typeof(FileNameTypeEditor), typeof(FileNameTypeEditor))]
+        [Editor(typeof(FileNameTypeEditor), typeof(FileNameTypeEditor))]
         public string FramesDsPageFileRelativePath { get; set; } = @"";
 
         [DsCategory(ResourceStrings.BasicCategory)]

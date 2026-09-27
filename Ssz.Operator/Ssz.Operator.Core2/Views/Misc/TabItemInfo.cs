@@ -1,4 +1,6 @@
 ﻿using Ssz.Operator.Core.Constants;
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using Ssz.Operator.Core.CustomAttributes;
 using Ssz.Operator.Core.Utils.Serialization;
 //using Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
@@ -26,8 +28,8 @@ namespace Ssz.Operator.Core
 
         [DsCategory(ResourceStrings.BasicCategory),
          DsDisplayName(ResourceStrings.TabItemInfo_PageFileRelativePath)]
-        //[Editor(typeof(FileNameTypeEditor), typeof(FileNameTypeEditor))]
-        //[PropertyOrder(2)]
+        [Editor(typeof(FileNameTypeEditor), typeof(FileNameTypeEditor))]
+        [PropertyOrder(2)]
         public string PageFileRelativePath { get; set; }        
 
         public override void SerializeOwnedData(SerializationWriter writer, object? context)

@@ -14,6 +14,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="avares://Ssz.Operator.Core.Design/Controls/Ribbon/Ribbon.axaml" />
+                <ResourceInclude Source="avares://Ssz.Operator.Core.Design/Resources/ContextMenus.axaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.ComponentModel;
 using System.IO;
@@ -36,7 +38,7 @@ namespace Ssz.Operator.Core
             [DsDisplayName(ResourceStrings.CreateDsPagesToolkitOperationOptions_TemplateDsPageDrawingFileName)]
             [LocalizedDescription(ResourceStrings
                 .CreateDsPagesToolkitOperationOptions_TemplateDsPageDrawingFileName_Description)]
-            //[Editor(typeof(FileNameTypeEditor), typeof(FileNameTypeEditor))]
+            [Editor(typeof(FileNameTypeEditor), typeof(FileNameTypeEditor))]
             public string TemplateDsPageDrawingFileName { get; set; }
 
             [DsDisplayName(ResourceStrings.CreateDsPagesToolkitOperationOptions_TryCreateDsPagesWithSizeOfImage)]
@@ -100,31 +102,31 @@ namespace Ssz.Operator.Core
             [DsDisplayName(ResourceStrings.UpdateComplexDsShapesToolkitOperationOptions_ComplexDsShapeNames)]
             [LocalizedDescription(ResourceStrings
                 .UpdateComplexDsShapesToolkitOperationOptions_ComplexDsShapeNamesDescription)]
-            //[Editor(typeof(ComplexDsShapeNameTypeEditor), typeof(ComplexDsShapeNameTypeEditor))]
-            //[PropertyOrder(1)]
+            [Editor(typeof(ComplexDsShapeNameTypeEditor), typeof(ComplexDsShapeNameTypeEditor))]
+            [PropertyOrder(1)]
             public string ComplexDsShapeNames { get; set; }
 
             [DsDisplayName(ResourceStrings.UpdateComplexDsShapesToolkitOperationOptions_UpdateOnAllDsPages)]
-            //[PropertyOrder(2)]
+            [PropertyOrder(2)]
             public bool UpdateOnAllDsPages { get; set; }
 
             [DsDisplayName(ResourceStrings.UpdateComplexDsShapesToolkitOperationOptions_ResetSizeToOriginal)]
             [LocalizedDescription(ResourceStrings
                 .UpdateComplexDsShapesToolkitOperationOptions_ResetSizeToOriginalDescription)]
-            //[PropertyOrder(3)]
+            [PropertyOrder(3)]
             public bool ResetSizeToOriginal { get; set; }
 
             [DsDisplayName(ResourceStrings
                 .UpdateComplexDsShapesToolkitOperationOptions_ResetCenterRelativePositionToOriginal)]
             [LocalizedDescription(ResourceStrings
                 .UpdateComplexDsShapesToolkitOperationOptions_ResetCenterRelativePositionToOriginalDescription)]
-            //[PropertyOrder(4)]
+            [PropertyOrder(4)]
             public bool ResetCenterRelativePositionToOriginal { get; set; }
 
             [DsDisplayName(ResourceStrings.UpdateComplexDsShapesToolkitOperationOptions_MoveCenterPointOfDsShapes)]
             [LocalizedDescription(ResourceStrings
                 .UpdateComplexDsShapesToolkitOperationOptions_MoveCenterPointOfDsShapesDescription)]
-            //[PropertyOrder(5)]
+            [PropertyOrder(5)]
             public Point MoveCenterPointOfDsShapes { get; set; }
 
             public override string ToString()

@@ -18,17 +18,6 @@
     <AvaloniaResource Include="Resources\Images\**" />
   </ItemGroup>
 
-  <!--
-    Sources still written against WPF. They stay in the tree as the material being ported and are
-    added back to the build one by one as their Avalonia versions appear. The .xaml files next to
-    them are not compiled by this SDK at all, so only the code needs excluding.
-  -->
-  <ItemGroup>
-    <Compile Remove="MainWindow.xaml.cs" />
-    <Compile Remove="Controls\*.cs" />
-    <Compile Remove="Controls\DsDrawingsList\**\*.cs" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\Ssz.DataAccessGrpc.Client\Ssz.DataAccessGrpc.Client.csproj" />
     <ProjectReference Include="..\..\Ssz.Utils\Ssz.Utils.csproj" />

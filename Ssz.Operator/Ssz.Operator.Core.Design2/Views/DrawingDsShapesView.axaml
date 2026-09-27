@@ -1,0 +1,39 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:p="using:Ssz.Operator.Core.Design.Properties"
+             xmlns:controls="using:Ssz.Operator.Core.Design.Controls"
+             xmlns:dsShapeViews="using:Ssz.Operator.Core.DsShapeViews"
+             xmlns:core="using:Ssz.Operator.Core"
+             mc:Ignorable="d"
+             x:Class="Ssz.Operator.Core.Design.Views.DrawingDsShapesView"
+             x:DataType="controls:DrawingDsShapesViewModel">
+  <Grid RowDefinitions="Auto,*">
+
+    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2" Spacing="4">
+      <TextBlock VerticalAlignment="Center" Text="{x:Static p:Resources.OrderDsShapesByText}" />
+      <ComboBox Name="OrderDsShapesByComboBox" MinWidth="120"
+                SelectedIndex="{Binding Source={x:Static core:DesignDsProjectViewModel.Instance},
+                                        Path=DsShapesOrdering, Mode=TwoWay}">
+        <ComboBoxItem Content="{x:Static p:Resources.OrderDsShapesByZIndexText}" />
+        <ComboBoxItem Content="{x:Static p:Resources.OrderDsShapesByTypeText}" />
+        <ComboBoxItem Content="{x:Static p:Resources.OrderDsShapesByNameText}" />
+      </ComboBox>
+    </StackPanel>
+
+    <ListBox Grid.Row="1" Name="DrawingDsShapesListBox" Margin="0,4,0,0"
+             ItemsSource="{Binding DrawingDsShapesTreeViewItemsSource}">
+      <ListBox.ItemTemplate>
+        <DataTemplate DataType="dsShapeViews:DsShapeViewModel">
+          <TextBlock Text="{Binding Header}"
+                     PointerPressed="DsShapeOnPointerPressed"
+                     DoubleTapped="DsShapeOnDoubleTapped"
+                     Background="{Binding SelectionBackground}"
+                     Foreground="{Binding SelectionForeground}"
+                     ContextMenu="{DynamicResource DesignDsShapeContextMenu}" />
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+  </Grid>
+</UserControl>

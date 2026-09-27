@@ -1,0 +1,168 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:p="using:Ssz.Operator.Core.Design.Properties"
+             xmlns:controls="using:Ssz.Operator.Core.Design.Controls"
+             xmlns:views="using:Ssz.Operator.Core.Design.Views"
+             mc:Ignorable="d"
+             x:Class="Ssz.Operator.Core.Design.Views.DsPagesListView"
+             x:DataType="controls:DsPagesListViewModel">
+  <Grid RowDefinitions="Auto,*">
+
+    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2" Spacing="4">
+      <Button Name="RefreshDsPagesButton" Padding="5,2" Focusable="False"
+              Click="RefreshDsPagesButtonOnClick">
+        <StackPanel Orientation="Horizontal" Spacing="5">
+          <Image Width="16" Height="16"
+                 Source="avares://Ssz.Operator.Core.Design/Resources/Images/Refresh.png" />
+          <TextBlock VerticalAlignment="Center" Text="{x:Static p:Resources.RefreshDsPagesButtonText}" />
+        </StackPanel>
+      </Button>
+      <Button Name="SyncWithActiveDrawingButton" Padding="5,2" Focusable="False"
+              ToolTip.Tip="{x:Static p:Resources.SyncWithActiveDrawingButtonToolTip}"
+              Click="SyncWithActiveDrawingButtonOnClick">
+        <Image Width="16" Height="16"
+               Source="avares://Ssz.Operator.Core.Design/Resources/Images/Sync.png" />
+      </Button>
+    </StackPanel>
+
+    <TreeView Grid.Row="1" Name="DsPagesTreeView" Margin="0,4,0,0"
+              ItemsSource="{Binding DsPagesTreeViewItemsSource}">
+      <TreeView.ItemContainerTheme>
+        <!-- The groups decide themselves whether they are open, as they did in the WPF editor. -->
+        <ControlTheme TargetType="TreeViewItem" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+          <Setter Property="IsExpanded" Value="{ReflectionBinding IsExpanded}" />
+        </ControlTheme>
+      </TreeView.ItemContainerTheme>
+      <TreeView.DataTemplates>
+
+        <!-- A group of pages: pages by type, then by the group the author gave them. -->
+        <TreeDataTemplate DataType="controls:GroupViewModel" ItemsSource="{Binding Items}">
+          <TextBlock Text="{Binding Header}" />
+        </TreeDataTemplate>
+
+        <DataTemplate DataType="controls:DsPageDrawingInfoViewModel">
+          <StackPanel Orientation="Horizontal" Spacing="4"
+                      Background="{Binding SelectionBackground}"
+                      PointerPressed="DsPageOnPointerPressed"
+                      PointerReleased="DsPageOnPointerReleased"
+                      DoubleTapped="DsPageOnDoubleTapped"
+                      ToolTip.Tip="{Binding ToolTip}">
+            <StackPanel.ContextMenu>
+              <!-- The same menu the WPF editor put on a page of the list, item for item. -->
+              <ContextMenu>
+                <MenuItem Header="{x:Static p:Resources.OpenDsPagesText}"
+                          Command="{x:Static views:DesignMainView.OpenDsPages}">
+                  <MenuItem.Icon>
+                    <Image Width="16" Height="16" Source="avares://Ssz.Operator.Core.Design/Resources/Images/Open.png" />
+                  </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="{x:Static p:Resources.OpenFilesLocationOfDsPagesText}"
+                          Command="{x:Static views:DesignMainView.OpenFilesLocationOfDsPages}"
+                          CommandParameter="{Binding DrawingInfo}">
+                  <MenuItem.Icon>
+                    <Image Width="16" Height="16" Source="avares://Ssz.Operator.Core.Design/Resources/Images/Properties.png" />
+                  </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="{x:Static p:Resources.UpdateComplexDsShapesOnDsPagesText}"
+                          Command="{x:Static views:DesignMainView.UpdateComplexDsShapesOnDsPages}"
+                          CommandParameter="{Binding DrawingInfo}">
+                  <MenuItem.Icon>
+                    <Image Width="16" Height="16" Source="avares://Ssz.Operator.Core.Design/Resources/Images/UpdateComplexDsShape.png" />
+                  </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="{x:Static p:Resources.DeleteDsPagesText}"
+                          Command="{x:Static views:DesignMainView.DeleteDsPages}"
+                          CommandParameter="{Binding DrawingInfo}">
+                  <MenuItem.Icon>
+                    <Image Width="16" Height="16" Source="avares://Ssz.Operator.Core.Design/Resources/Images/Delete.png" />
+                  </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="{x:Static p:Resources.RenameDsPageText}"
+                          Command="{x:Static views:DesignMainView.RenameDsPage}"
+                          CommandParameter="{Binding DrawingInfo}">
+                  <MenuItem.Icon>
+                    <Image Width="16" Height="16" Source="avares://Ssz.Operator.Core.Design/Resources/Images/Rename.png" />
+                  </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="{x:Static p:Resources.SetAsDsProjectStartDsPageText}"
+                          Command="{x:Static views:DesignMainView.SetAsDsProjectStartDsPage}"
+                          CommandParameter="{Binding DrawingInfo}">
+                  <MenuItem.Icon>
+                    <Image Width="16" Height="16" Source="avares://Ssz.Operator.Core.Design/Resources/Images/Properties.png" />
+                  </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="{x:Static p:Resources.SetStatusText}"
+                          Command="{x:Static views:DesignMainView.SetMark1}">
+                  <MenuItem.Icon>
+                    <Ellipse Width="5" Height="5" Fill="Red" />
+                  </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="{x:Static p:Resources.SetStatusText}"
+                          Command="{x:Static views:DesignMainView.SetMark2}">
+                  <MenuItem.Icon>
+                    <Ellipse Width="5" Height="5" Fill="Orange" />
+                  </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="{x:Static p:Resources.SetStatusText}"
+                          Command="{x:Static views:DesignMainView.SetMark3}">
+                  <MenuItem.Icon>
+                    <Ellipse Width="5" Height="5" Fill="YellowGreen" />
+                  </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="{x:Static p:Resources.SetStatusText}"
+                          Command="{x:Static views:DesignMainView.SetMark4}">
+                  <MenuItem.Icon>
+                    <Ellipse Width="5" Height="5" Fill="Blue" />
+                  </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="{x:Static p:Resources.SetStatusText}"
+                          Command="{x:Static views:DesignMainView.SetMark5}">
+                  <MenuItem.Icon>
+                    <Ellipse Width="5" Height="5" Fill="Magenta" />
+                  </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="{x:Static p:Resources.SetStatusText}"
+                          Command="{x:Static views:DesignMainView.SetMark6}">
+                  <MenuItem.Icon>
+                    <Ellipse Width="5" Height="5" Fill="Black" />
+                  </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="{x:Static p:Resources.ResetStatusText}"
+                          Command="{x:Static views:DesignMainView.SetMark0}" />
+                <Separator />
+                <MenuItem Header="{x:Static p:Resources.DsPageTypeObjectProperties}"
+                          Command="{x:Static views:DesignMainView.ShowDsPageTypeObjectPropertiesCommand}"
+                          CommandParameter="{Binding DrawingInfo}">
+                  <MenuItem.Icon>
+                    <Image Width="16" Height="16" Source="avares://Ssz.Operator.Core.Design/Resources/Images/Properties.png" />
+                  </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="{x:Static p:Resources.DsPageProperties}"
+                          Command="{x:Static views:DesignMainView.ShowDrawingPropertiesCommand}"
+                          CommandParameter="{Binding DrawingInfo}">
+                  <MenuItem.Icon>
+                    <Image Width="16" Height="16" Source="avares://Ssz.Operator.Core.Design/Resources/Images/Properties.png" />
+                  </MenuItem.Icon>
+                </MenuItem>
+              </ContextMenu>
+            </StackPanel.ContextMenu>
+
+            <!-- The colour the author marked the page with; no mark means no dot. -->
+            <Ellipse Width="5" Height="5" VerticalAlignment="Center" Fill="{Binding MarkBrush}" />
+            <TextBlock FontWeight="Bold" Foreground="White"
+                       VerticalAlignment="Center"
+                       Text="{Binding HintText}"
+                       Background="{Binding HintBackground}"
+                       IsVisible="{Binding HintText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+            <TextBlock VerticalAlignment="Center" Text="{Binding Header}"
+                       Foreground="{Binding SelectionForeground}" />
+          </StackPanel>
+        </DataTemplate>
+      </TreeView.DataTemplates>
+    </TreeView>
+  </Grid>
+</UserControl>

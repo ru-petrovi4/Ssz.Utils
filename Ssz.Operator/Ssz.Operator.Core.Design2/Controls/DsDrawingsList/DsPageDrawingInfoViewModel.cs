@@ -1,12 +1,14 @@
 using System;
-using System.Windows.Media;
-using Ssz.Operator.Core;
-using Ssz.Operator.Core.Drawings;
-using Ssz.Operator.Core.VisualEditors;
+using Avalonia.Media;
 using Ssz.Operator.Core.Design.Properties;
+using Ssz.Operator.Core.Drawings;
 
 namespace Ssz.Operator.Core.Design.Controls
 {
+    /// <summary>
+    ///     One page in the pages list: the drawing plus what marks it out - the start page marker and
+    ///     the colour the author gave it.
+    /// </summary>
     public class DsPageDrawingInfoViewModel : DrawingInfoViewModel
     {
         #region construction and destruction
@@ -19,23 +21,23 @@ namespace Ssz.Operator.Core.Design.Controls
         #endregion
 
         #region public functions
-         
-        public DsPageDrawingInfo DsPageDrawingInfo { get { return (DsPageDrawingInfo)DrawingInfo; } }
+
+        public DsPageDrawingInfo DsPageDrawingInfo => (DsPageDrawingInfo) DrawingInfo;
 
         public bool IsStartDsPage
         {
-            get { return _isStartDsPage; }
+            get => _isStartDsPage;
             set
             {
-                if (SetValue(ref _isStartDsPage, value))
+                if (SetProperty(ref _isStartDsPage, value))
                     OnEntityInfoChanged();
             }
         }
 
-        public Brush? MarkBrush
+        public IBrush? MarkBrush
         {
-            get { return _markBrush; }
-            set { SetValue(ref _markBrush, value); }
+            get => _markBrush;
+            set => SetProperty(ref _markBrush, value);
         }
 
         public bool IsExpanded { get; set; }
@@ -52,7 +54,7 @@ namespace Ssz.Operator.Core.Design.Controls
         protected override void OnEntityInfoChanged()
         {
             base.OnEntityInfoChanged();
-            
+
             if (DsPageDrawingInfo.DsPageTypeObject is not null)
             {
                 string hint = DsPageDrawingInfo.DsPageTypeObject.Hint;
@@ -62,7 +64,7 @@ namespace Ssz.Operator.Core.Design.Controls
                     if (!String.IsNullOrEmpty(ToolTip)) ToolTip += "\n";
                     ToolTip += hint;
                 }
-            }            
+            }
 
             if (IsStartDsPage)
             {
@@ -72,7 +74,7 @@ namespace Ssz.Operator.Core.Design.Controls
                 if (!String.IsNullOrEmpty(ToolTip)) ToolTip += "\n";
                 ToolTip += Resources.DsProjectStartDsPageToolTip;
             }
-            
+
             switch (DrawingInfo.Mark)
             {
                 case 1:
@@ -104,7 +106,7 @@ namespace Ssz.Operator.Core.Design.Controls
         #region private fields
 
         private bool _isStartDsPage;
-        private Brush? _markBrush;
+        private IBrush? _markBrush;
 
         #endregion
     }

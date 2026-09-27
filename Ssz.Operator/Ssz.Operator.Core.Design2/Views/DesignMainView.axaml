@@ -3,47 +3,406 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:p="using:Ssz.Operator.Core.Design.Properties"
+             xmlns:views="using:Ssz.Operator.Core.Design.Views"
+             xmlns:ribbon="using:Ssz.Operator.Core.Design.Controls.Ribbon"
+             xmlns:core="using:Ssz.Operator.Core"
+             xmlns:controlsDesign="using:Ssz.Operator.Core.ControlsDesign"
              mc:Ignorable="d"
-             x:Class="Ssz.Operator.Core.Design.Views.DesignMainView">
+             x:Class="Ssz.Operator.Core.Design.Views.DesignMainView"
+             x:DataType="core:DesignDsProjectViewModel">
   <Grid RowDefinitions="Auto,*,Auto">
 
-    <!-- The ribbon takes this row. -->
-    <Border Grid.Row="0" Name="RibbonPlaceholder"
-            Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
-            Height="120" />
+    <ribbon:Ribbon Grid.Row="0" Name="MainRibbon"
+                   MenuHeader="{x:Static p:Resources.ApplicationMenuHeader}">
 
-    <!-- The docking layout takes this row. Until then the panes sit in a fixed grid, which keeps
-         the shell usable while the controls that go into them are ported one by one. -->
-    <Grid Grid.Row="1" ColumnDefinitions="260,4,*,4,320">
-      <Border Grid.Column="0" Name="DsPagesPane" BorderThickness="1"
+      <!-- The buttons of the bar above the tabs. They are the ones of the hidden tab below, so that
+           a command is written down once. -->
+      <ribbon:Ribbon.QuickAccessItems>
+        <ribbon:QuickAccessMenuItem Target="{Binding #ApplicationCommandsSaveButton}" />
+        <ribbon:QuickAccessMenuItem Target="{Binding #ApplicationCommandsSaveAsButton}" />
+        <ribbon:QuickAccessMenuItem Target="{Binding #ApplicationCommandsPrintButton}" IsChecked="False" />
+        <ribbon:QuickAccessMenuItem Target="{Binding #ApplicationCommandsSaveAllButton}" />
+        <ribbon:QuickAccessMenuItem Target="{Binding #ApplicationCommandsRunButton}" />
+        <ribbon:QuickAccessMenuItem Target="{Binding #ApplicationCommandsRunCurrentButton}" />
+        <ribbon:QuickAccessMenuItem Target="{Binding #ApplicationCommandsUndoButton}" />
+        <ribbon:QuickAccessMenuItem Target="{Binding #ApplicationCommandsRedoButton}" />
+        <ribbon:QuickAccessMenuItem Target="{Binding #ApplicationCommandsRunMultiPlatformButton}" />
+        <ribbon:QuickAccessMenuItem Target="{Binding #ApplicationCommandsRunCurrentMultiPlatformButton}" />
+      </ribbon:Ribbon.QuickAccessItems>
+
+      <ribbon:Ribbon.Menu>
+        <StackPanel Orientation="Vertical" MinWidth="240" Margin="4">
+          <MenuItem Command="{x:Static views:DesignMainView.New}"
+                    Header="{x:Static p:Resources.NewMenu}"
+                    ToolTip.Tip="{x:Static p:Resources.NewToolTip}">
+            <MenuItem.Icon>
+              <Image Source="avares://Ssz.Operator.Core.Design/Resources/Images/New.png" />
+            </MenuItem.Icon>
+          </MenuItem>
+          <MenuItem Command="{x:Static views:DesignMainView.Open}"
+                    Header="{x:Static p:Resources.OpenMenu}"
+                    ToolTip.Tip="{x:Static p:Resources.OpenToolTip}">
+            <MenuItem.Icon>
+              <Image Source="avares://Ssz.Operator.Core.Design/Resources/Images/Open.png" />
+            </MenuItem.Icon>
+          </MenuItem>
+          <Separator />
+          <MenuItem Command="{x:Static views:DesignMainView.ExportToXaml}"
+                    Header="{x:Static p:Resources.ExportToXamlMenu}"
+                    ToolTip.Tip="{x:Static p:Resources.ExportToXamlToolTip}">
+            <MenuItem.Icon>
+              <Image Source="avares://Ssz.Operator.Core.Design/Resources/Images/ExportToXaml.png" />
+            </MenuItem.Icon>
+          </MenuItem>
+          <MenuItem Command="{x:Static views:DesignMainView.ImportFromXaml}"
+                    Header="{x:Static p:Resources.ImportFromXamlMenu}"
+                    ToolTip.Tip="{x:Static p:Resources.ImportFromXamlToolTip}">
+            <MenuItem.Icon>
+              <Image Source="avares://Ssz.Operator.Core.Design/Resources/Images/ImportFromXaml.png" />
+            </MenuItem.Icon>
+          </MenuItem>
+          <MenuItem Command="{x:Static views:DesignMainView.AddDsPagesAndDsShapesFromLibrary}"
+                    Header="{x:Static p:Resources.AddDsPagesAndDsShapesFromLibraryMenu}"
+                    ToolTip.Tip="{x:Static p:Resources.AddDsPagesAndDsShapesFromLibraryToolTip}">
+            <MenuItem.Icon>
+              <Image Source="avares://Ssz.Operator.Core.Design/Resources/Images/Add.png" />
+            </MenuItem.Icon>
+          </MenuItem>
+          <Separator />
+          <MenuItem Command="{x:Static views:DesignMainView.Find}"
+                    Header="{x:Static p:Resources.FindMenu}"
+                    ToolTip.Tip="{x:Static p:Resources.FindToolTip}">
+            <MenuItem.Icon>
+              <Image Source="avares://Ssz.Operator.Core.Design/Resources/Images/Find.png" />
+            </MenuItem.Icon>
+          </MenuItem>
+          <MenuItem Command="{x:Static views:DesignMainView.Replace}"
+                    Header="{x:Static p:Resources.ReplaceMenu}"
+                    ToolTip.Tip="{x:Static p:Resources.ReplaceToolTip}">
+            <MenuItem.Icon>
+              <Image Source="avares://Ssz.Operator.Core.Design/Resources/Images/Find.png" />
+            </MenuItem.Icon>
+          </MenuItem>
+          <MenuItem Command="{x:Static views:DesignMainView.Properties}"
+                    Header="{x:Static p:Resources.PropertiesMenu}"
+                    ToolTip.Tip="{x:Static p:Resources.PropertiesToolTip}">
+            <MenuItem.Icon>
+              <Image Source="avares://Ssz.Operator.Core.Design/Resources/Images/Properties.png" />
+            </MenuItem.Icon>
+          </MenuItem>
+        </StackPanel>
+      </ribbon:Ribbon.Menu>
+
+      <!-- These buttons are not shown as a tab: they exist so that the quick access bar above has
+           something to repeat, exactly as in the WPF editor. -->
+      <ribbon:RibbonTabItem IsVisible="False">
+        <ribbon:RibbonGroupBox>
+          <ribbon:RibbonButton Name="ApplicationCommandsSaveButton"
+                               Command="{x:Static views:DesignMainView.Save}"
+                               ribbon:RibbonControl.Icon="avares://Ssz.Operator.Core.Design/Resources/Images/Save.png"
+                               ToolTip.Tip="{x:Static p:Resources.SaveToolTip}" />
+          <ribbon:RibbonButton Name="ApplicationCommandsSaveAsButton"
+                               Command="{x:Static views:DesignMainView.SaveAs}"
+                               ribbon:RibbonControl.Icon="avares://Ssz.Operator.Core.Design/Resources/Images/SaveAs.png"
+                               ToolTip.Tip="{x:Static p:Resources.SaveAsToolTip}" />
+          <ribbon:RibbonButton Name="ApplicationCommandsPrintButton"
+                               Command="{x:Static views:DesignMainView.Print}"
+                               ribbon:RibbonControl.Icon="avares://Ssz.Operator.Core.Design/Resources/Images/Print.png"
+                               ToolTip.Tip="{x:Static p:Resources.PrintToolTip}" />
+          <ribbon:RibbonButton Name="ApplicationCommandsSaveAllButton"
+                               Command="{x:Static views:DesignMainView.SaveAll}"
+                               ribbon:RibbonControl.Icon="avares://Ssz.Operator.Core.Design/Resources/Images/SaveAll.png"
+                               ToolTip.Tip="{x:Static p:Resources.SaveAllToolTip}" />
+          <ribbon:RibbonButton Name="ApplicationCommandsRunButton"
+                               Command="{x:Static views:DesignMainView.Run}"
+                               ribbon:RibbonControl.Icon="avares://Ssz.Operator.Core.Design/Resources/Images/Run.png"
+                               ToolTip.Tip="{x:Static p:Resources.RunToolTip}" />
+          <ribbon:RibbonButton Name="ApplicationCommandsRunCurrentButton"
+                               Command="{x:Static views:DesignMainView.RunCurrent}"
+                               ribbon:RibbonControl.Icon="avares://Ssz.Operator.Core.Design/Resources/Images/RunCurrent.png"
+                               ToolTip.Tip="{x:Static p:Resources.RunCurrentToolTip}" />
+          <ribbon:RibbonButton Name="ApplicationCommandsUndoButton"
+                               Command="{x:Static views:DesignMainView.Undo}"
+                               ribbon:RibbonControl.Icon="avares://Ssz.Operator.Core.Design/Resources/Images/undo.png"
+                               ToolTip.Tip="{x:Static p:Resources.UndoToolTip}" />
+          <ribbon:RibbonButton Name="ApplicationCommandsRedoButton"
+                               Command="{x:Static views:DesignMainView.Redo}"
+                               ribbon:RibbonControl.Icon="avares://Ssz.Operator.Core.Design/Resources/Images/redo.png"
+                               ToolTip.Tip="{x:Static p:Resources.RedoToolTip}" />
+          <ribbon:RibbonButton Name="ApplicationCommandsRunMultiPlatformButton"
+                               Command="{x:Static views:DesignMainView.RunMultiPlatform}"
+                               ribbon:RibbonControl.Icon="avares://Ssz.Operator.Core.Design/Resources/Images/RunMultiPlatform.png"
+                               ToolTip.Tip="{x:Static p:Resources.RunToolTip}" />
+          <ribbon:RibbonButton Name="ApplicationCommandsRunCurrentMultiPlatformButton"
+                               Command="{x:Static views:DesignMainView.RunCurrentMultiPlatform}"
+                               ribbon:RibbonControl.Icon="avares://Ssz.Operator.Core.Design/Resources/Images/RunCurrentMultiPlatform.png"
+                               ToolTip.Tip="{x:Static p:Resources.RunCurrentToolTip}" />
+        </ribbon:RibbonGroupBox>
+      </ribbon:RibbonTabItem>
+
+      <ribbon:RibbonTabItem Header="{x:Static p:Resources.MainRibbonTabHeader}" IsSelected="True">
+
+        <ribbon:RibbonGroupBox Header="{x:Static p:Resources.DsPagesAndDsShapesGroupHeader}">
+          <ribbon:RibbonButton Command="{x:Static views:DesignMainView.NewDsPageDrawing}"
+                               Header="{x:Static p:Resources.NewDsPageButtonText}"
+                               Icon="avares://Ssz.Operator.Core.Design/Resources/Images/New.png"
+                               ToolTip.Tip="{x:Static p:Resources.NewDsPageToolTip}" />
+          <ribbon:RibbonButton Command="{x:Static views:DesignMainView.NewDsShapeDrawing}"
+                               Header="{x:Static p:Resources.NewDsShapeButtonText}"
+                               Icon="avares://Ssz.Operator.Core.Design/Resources/Images/New.png"
+                               ToolTip.Tip="{x:Static p:Resources.NewDsShapeToolTip}" />
+          <ribbon:RibbonButton Command="{x:Static views:DesignMainView.UpdateComplexDsShapesOnAllDsPages}"
+                               Header="{x:Static p:Resources.UpdateComplexDsShapesText}"
+                               Icon="avares://Ssz.Operator.Core.Design/Resources/Images/UpdateComplexDsShapes.png"
+                               ToolTip.Tip="{x:Static p:Resources.UpdateComplexDsShapesToolTip}" />
+        </ribbon:RibbonGroupBox>
+
+        <ribbon:RibbonGroupBox Header="{x:Static p:Resources.DsShapeGeometryGroupHeader}">
+          <ribbon:RibbonButton Command="{x:Static core:DesignDsProjectViewModel.RotateCounterClockwise}"
+                               Icon="avares://Ssz.Operator.Core.Design/Resources/Images/RotateCounterClockwise.png"
+                               ToolTip.Tip="{x:Static p:Resources.RotateCounterClockwiseToolTip}" />
+          <ribbon:RibbonButton Command="{x:Static core:DesignDsProjectViewModel.FlipHorizontal}"
+                               Icon="avares://Ssz.Operator.Core.Design/Resources/Images/FlipHorizontal.png"
+                               ToolTip.Tip="{x:Static p:Resources.FlipHorizontalToolTip}" />
+          <ribbon:RibbonButton Command="{x:Static core:DesignDsProjectViewModel.RotateClockwise}"
+                               Icon="avares://Ssz.Operator.Core.Design/Resources/Images/RotateClockwise.png"
+                               ToolTip.Tip="{x:Static p:Resources.RotateClockwiseToolTip}" />
+        </ribbon:RibbonGroupBox>
+
+        <ribbon:RibbonGroupBox Header="{x:Static p:Resources.DsShapeGroupHeader}">
+          <StackPanel Orientation="Horizontal" Margin="2" Spacing="2" VerticalAlignment="Center">
+            <ribbon:RibbonToggleButton Name="DiscreteModeButton"
+                                       Command="{x:Static views:DesignMainView.DiscreteMode}"
+                                       Icon="avares://Ssz.Operator.Core.Design/Resources/Images/DiscreteMode.png"
+                                       ToolTip.Tip="{x:Static p:Resources.DiscreteModeToolTip}" />
+
+            <!-- The step is typed in the box; the list beside it only offers the usual values, as
+                 the editable combo of the WPF editor did. -->
+            <TextBox Name="DiscreteModeStepTextBox" Width="44"
+                     Text="{Binding DiscreteModeComboBoxText, Mode=TwoWay}"
+                     ToolTip.Tip="{x:Static p:Resources.DiscreteModeComboBoxToolTip}" />
+            <ComboBox Name="DiscreteModeComboBox" Width="30"
+                      SelectionChanged="DiscreteModeComboBoxOnSelectionChanged"
+                      ToolTip.Tip="{x:Static p:Resources.DiscreteModeComboBoxToolTip}">
+              <ComboBoxItem Content="1" />
+              <ComboBoxItem Content="2" />
+              <ComboBoxItem Content="3" />
+              <ComboBoxItem Content="4" />
+              <ComboBoxItem Content="5" />
+            </ComboBox>
+          </StackPanel>
+        </ribbon:RibbonGroupBox>
+
+        <ribbon:RibbonGroupBox Header="{x:Static p:Resources.AlignmentGroupHeader}">
+          <ribbon:RibbonButton Name="AlignLeftButton" SizeDefinition="Small"
+                               Command="{x:Static core:DesignDsProjectViewModel.AlignLeft}"
+                               Icon="avares://Ssz.Operator.Core.Design/Resources/Images/AlignObjectsLeft.png"
+                               ToolTip.Tip="{x:Static p:Resources.AlignLeftToolTip}" />
+          <ribbon:RibbonButton Name="AlignHorizontalCentersButton" SizeDefinition="Small"
+                               Command="{x:Static core:DesignDsProjectViewModel.AlignHorizontalCenters}"
+                               Icon="avares://Ssz.Operator.Core.Design/Resources/Images/AlignObjectsCenteredHorizontal.png"
+                               ToolTip.Tip="{x:Static p:Resources.AlignHorizontalCentersToolTip}" />
+          <ribbon:RibbonButton Name="AlignRightButton" SizeDefinition="Small"
+                               Command="{x:Static core:DesignDsProjectViewModel.AlignRight}"
+                               Icon="avares://Ssz.Operator.Core.Design/Resources/Images/AlignObjectsRight.png"
+                               ToolTip.Tip="{x:Static p:Resources.AlignRightToolTip}" />
+          <ribbon:RibbonButton Name="AlignTopButton" SizeDefinition="Small"
+                               Command="{x:Static core:DesignDsProjectViewModel.AlignTop}"
+                               Icon="avares://Ssz.Operator.Core.Design/Resources/Images/AlignObjectsTop.png"
+                               ToolTip.Tip="{x:Static p:Resources.AlignTopToolTip}" />
+          <ribbon:RibbonButton Name="AlignVerticalCentersButton" SizeDefinition="Small"
+                               Command="{x:Static core:DesignDsProjectViewModel.AlignVerticalCenters}"
+                               Icon="avares://Ssz.Operator.Core.Design/Resources/Images/AlignObjectsCenteredVertical.png"
+                               ToolTip.Tip="{x:Static p:Resources.AlignVerticalCentersToolTip}" />
+          <ribbon:RibbonButton Name="AlignBottomButton" SizeDefinition="Small"
+                               Command="{x:Static core:DesignDsProjectViewModel.AlignBottom}"
+                               Icon="avares://Ssz.Operator.Core.Design/Resources/Images/AlignObjectsBottom.png"
+                               ToolTip.Tip="{x:Static p:Resources.AlignBottomToolTip}" />
+          <ribbon:RibbonButton Name="DistributeHorizontalButton" SizeDefinition="Small"
+                               Command="{x:Static core:DesignDsProjectViewModel.DistributeHorizontal}"
+                               Icon="avares://Ssz.Operator.Core.Design/Resources/Images/DistributeObjectsHorizontal.png"
+                               ToolTip.Tip="{x:Static p:Resources.DistributeHorizontalToolTip}" />
+          <ribbon:RibbonButton Name="DistributeVerticalButton" SizeDefinition="Small"
+                               Command="{x:Static core:DesignDsProjectViewModel.DistributeVertical}"
+                               Icon="avares://Ssz.Operator.Core.Design/Resources/Images/DistributeObjectsVertical.png"
+                               ToolTip.Tip="{x:Static p:Resources.DistributeVerticalToolTip}" />
+          <ribbon:RibbonButton Name="EqualizeWidthButton" SizeDefinition="Small"
+                               Command="{x:Static core:DesignDsProjectViewModel.EqualizeWidth}"
+                               Icon="avares://Ssz.Operator.Core.Design/Resources/Images/EqualizeWidth.png"
+                               ToolTip.Tip="{x:Static p:Resources.EqualizeWidthToolTip}" />
+          <ribbon:RibbonButton Name="EqualizeHeightButton" SizeDefinition="Small"
+                               Command="{x:Static core:DesignDsProjectViewModel.EqualizeHeight}"
+                               Icon="avares://Ssz.Operator.Core.Design/Resources/Images/EqualizeHeight.png"
+                               ToolTip.Tip="{x:Static p:Resources.EqualizeHeightToolTip}" />
+        </ribbon:RibbonGroupBox>
+
+        <ribbon:RibbonGroupBox Header="{x:Static p:Resources.ViewGroupHeader}">
+          <Grid Margin="2" RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,Auto,Auto">
+            <TextBlock Grid.Row="0" Grid.Column="0" Margin="0,0,4,0" VerticalAlignment="Center"
+                       Text="{x:Static p:Resources.Scale}" />
+            <TextBox Grid.Row="0" Grid.Column="1" Name="ScaleTextBox" Width="60"
+                     Text="{Binding ScaleComboBoxText, Mode=TwoWay}" />
+            <ComboBox Grid.Row="0" Grid.Column="2" Name="ScaleComboBox" Width="30"
+                      SelectionChanged="ScaleComboBoxOnSelectionChanged">
+              <ComboBoxItem Content="400%" />
+              <ComboBoxItem Content="200%" />
+              <ComboBoxItem Content="150%" />
+              <ComboBoxItem Content="100%" />
+              <ComboBoxItem Content="50%" />
+              <ComboBoxItem Content="25%" />
+            </ComboBox>
+
+            <StackPanel Grid.Row="1" Grid.ColumnSpan="3" Orientation="Horizontal" Spacing="2"
+                        Margin="0,2,0,0">
+              <ribbon:RibbonButton Name="CenterButton" SizeDefinition="Small"
+                                   Click="ButtonCenterOnClick"
+                                   Icon="avares://Ssz.Operator.Core.Design/Resources/Images/Center.png"
+                                   ToolTip.Tip="{x:Static p:Resources.CenterToolTip}" />
+              <ribbon:RibbonButton Name="Button100Percent" SizeDefinition="Small"
+                                   Click="Button100PercentOnClick"
+                                   Header="100%"
+                                   ToolTip.Tip="{x:Static p:Resources.Button100PercentToolTip}" />
+              <ribbon:RibbonButton Name="FullDrawingButton" SizeDefinition="Small"
+                                   Click="ButtonFullDrawingOnClick"
+                                   Icon="avares://Ssz.Operator.Core.Design/Resources/Images/FullDrawing.png"
+                                   ToolTip.Tip="{x:Static p:Resources.ButtonFullDrawingToolTip}" />
+            </StackPanel>
+          </Grid>
+        </ribbon:RibbonGroupBox>
+
+        <ribbon:RibbonGroupBox Header="{x:Static p:Resources.DebugDsPageGroupHeader}">
+          <Grid Margin="2" RowDefinitions="*,*" ColumnDefinitions="Auto,Auto,160">
+            <ribbon:RibbonToggleButton Grid.RowSpan="2"
+                                       Name="ShowHideDsShapesInfoTooltipsButton"
+                                       VerticalAlignment="Center"
+                                       Header="{x:Static p:Resources.ShowHideDsShapesInfoButtonLabel}"
+                                       Command="{x:Static views:DesignMainView.ShowHideDsShapesInfoTooltips}"
+                                       Icon="avares://Ssz.Operator.Core.Design/Resources/Images/DebugInfo.png"
+                                       ToolTip.Tip="{x:Static p:Resources.ShowHideDsShapesInfoButtonToolTip}" />
+            <TextBlock Grid.Column="1" Margin="6,0,0,0" VerticalAlignment="Center"
+                       Text="{x:Static p:Resources.ShowHideDsShapesInfoFontSize}" />
+            <Slider Grid.Column="2" Margin="5,0,0,0" VerticalAlignment="Center"
+                    Minimum="0.5" Maximum="3"
+                    ToolTip.Tip="{x:Static p:Resources.ShowHideDsShapesInfoFontSizeToolTip}"
+                    Value="{Binding DsShapesInfoFontSizeScale}" />
+            <TextBlock Grid.Row="1" Grid.Column="1" Margin="6,0,0,0" VerticalAlignment="Center"
+                       Text="{x:Static p:Resources.ShowHideDsShapesInfoOpacity}" />
+            <Slider Grid.Row="1" Grid.Column="2" Margin="5,0,0,0" VerticalAlignment="Center"
+                    Minimum="0" Maximum="1"
+                    ToolTip.Tip="{x:Static p:Resources.ShowHideDsShapesInfoOpacityToolTip}"
+                    Value="{Binding DsShapesInfoOpacity}" />
+          </Grid>
+        </ribbon:RibbonGroupBox>
+      </ribbon:RibbonTabItem>
+
+      <ribbon:RibbonTabItem Name="ToolkitRibbonTabItem"
+                            Header="{x:Static p:Resources.ToolkitRibbonTabHeader}">
+        <ribbon:RibbonGroupBox Name="DsPagesToolkitRibbonGroupBox"
+                               Header="{x:Static p:Resources.DsPagesToolkitGroupHeader}">
+          <ribbon:RibbonButton Command="{x:Static views:DesignMainView.CreateDsPages}"
+                               Header="{x:Static p:Resources.CreateDsPagesButtonLabel}"
+                               Icon="avares://Ssz.Operator.Core.Design/Resources/Images/Add.png"
+                               ToolTip.Tip="{x:Static p:Resources.CreateDsPagesToolTip}" />
+          <ribbon:RibbonButton Command="{x:Static views:DesignMainView.UpdateDsPages}"
+                               Header="{x:Static p:Resources.UpdateDsPagesButtonLabel}"
+                               Icon="avares://Ssz.Operator.Core.Design/Resources/Images/update.png"
+                               ToolTip.Tip="{x:Static p:Resources.UpdateDsPagesToolTip}" />
+          <ribbon:RibbonButton Command="{x:Static views:DesignMainView.UpdateComplexDsShapesExtended}"
+                               Header="{x:Static p:Resources.UpdateComplexDsShapesExtendedText}"
+                               Icon="avares://Ssz.Operator.Core.Design/Resources/Images/UpdateComplexDsShapes.png"
+                               ToolTip.Tip="{x:Static p:Resources.UpdateComplexDsShapesExtendedToolTip}" />
+        </ribbon:RibbonGroupBox>
+      </ribbon:RibbonTabItem>
+
+      <ribbon:RibbonTabItem Name="DebugRibbonTabItem"
+                            Header="{x:Static p:Resources.DebugRibbonTabHeader}">
+        <ribbon:RibbonGroupBox Header="{x:Static p:Resources.DebugDsPagesGroupHeader}">
+          <ribbon:RibbonButton Command="{x:Static views:DesignMainView.DebugFindDuplicates}"
+                               Header="{x:Static p:Resources.DebugFindDuplicatesButtonLabel}"
+                               Icon="avares://Ssz.Operator.Core.Design/Resources/Images/tag.png"
+                               ToolTip.Tip="{x:Static p:Resources.DebugFindDuplicatesToolTip}" />
+          <ribbon:RibbonButton Command="{x:Static views:DesignMainView.DebugFindIncorrectDsPagesRefs}"
+                               Header="{x:Static p:Resources.DebugFindIncorrectDsPagesRefsButtonLabel}"
+                               Icon="avares://Ssz.Operator.Core.Design/Resources/Images/Link.png"
+                               ToolTip.Tip="{x:Static p:Resources.DebugFindIncorrectDsPagesRefsToolTip}" />
+          <ribbon:RibbonButton Command="{x:Static views:DesignMainView.DebugFindIncorrectOpcTags}"
+                               Header="{x:Static p:Resources.DebugFindIncorrectOpcTagsButtonLabel}"
+                               Icon="avares://Ssz.Operator.Core.Design/Resources/Images/tag.png"
+                               ToolTip.Tip="{x:Static p:Resources.DebugFindIncorrectOpcTagsToolTip}" />
+          <ribbon:RibbonButton Command="{x:Static views:DesignMainView.DebugFindIncorrectExpressions}"
+                               Header="{x:Static p:Resources.DebugFindIncorrectExpressionsButtonLabel}"
+                               Icon="avares://Ssz.Operator.Core.Design/Resources/Images/Link.png"
+                               ToolTip.Tip="{x:Static p:Resources.DebugFindIncorrectExpressionsToolTip}" />
+        </ribbon:RibbonGroupBox>
+      </ribbon:RibbonTabItem>
+    </ribbon:Ribbon>
+
+    <!-- The drawing area, and beside it the one pane that holds the three lists. This is the
+         layout of the WPF editor; the docking library replaces the fixed split later. -->
+    <Grid Grid.Row="1" ColumnDefinitions="*,4,400">
+
+      <!-- The opened drawings, one tab each. -->
+      <Border Grid.Column="0" Name="DrawingsPane" BorderThickness="1"
               BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
-        <HeaderedContentControl Header="{x:Static p:Resources.DsPagesTabItemHeader}" />
+        <TabControl Name="DrawingsTabControl"
+                    ItemsSource="{Binding OpenedDesignDrawingViewModels}"
+                    SelectedItem="{Binding FocusedDesignDrawingViewModel, Mode=TwoWay}">
+          <TabControl.ItemTemplate>
+            <DataTemplate DataType="controlsDesign:DesignDrawingViewModel">
+              <TextBlock Text="{Binding Title}" />
+            </DataTemplate>
+          </TabControl.ItemTemplate>
+          <TabControl.ContentTemplate>
+            <DataTemplate DataType="controlsDesign:DesignDrawingViewModel">
+              <views:DesignDrawingView />
+            </DataTemplate>
+          </TabControl.ContentTemplate>
+        </TabControl>
       </Border>
 
       <GridSplitter Grid.Column="1" ResizeDirection="Columns" />
 
-      <Border Grid.Column="2" Name="DrawingsPane" BorderThickness="1"
-              BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" />
-
-      <GridSplitter Grid.Column="3" ResizeDirection="Columns" />
-
-      <Grid Grid.Column="4" RowDefinitions="*,4,*">
-        <Border Grid.Row="0" Name="DrawingDsShapesPane" BorderThickness="1"
-                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
-          <HeaderedContentControl Header="{x:Static p:Resources.DrawingTabItemHeader}" />
-        </Border>
-
-        <GridSplitter Grid.Row="1" ResizeDirection="Rows" />
-
-        <Border Grid.Row="2" Name="DsShapesPane" BorderThickness="1"
-                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
-          <HeaderedContentControl Header="{x:Static p:Resources.DsShapesTabItemHeader}" />
-        </Border>
-      </Grid>
+      <Border Grid.Column="2" BorderThickness="1"
+              BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
+        <TabControl Name="ListsTabControl" TabStripPlacement="Bottom" Classes="lists">
+          <TabItem Header="{x:Static p:Resources.DsPagesTabItemHeader}">
+            <views:DsPagesListView Name="DsPagesListView" />
+          </TabItem>
+          <TabItem Header="{x:Static p:Resources.DsShapesTabItemHeader}">
+            <views:DsShapesListView Name="DsShapesListView" />
+          </TabItem>
+          <TabItem Header="{x:Static p:Resources.DrawingTabItemHeader}">
+            <views:DrawingDsShapesView Name="DrawingDsShapesView" />
+          </TabItem>
+        </TabControl>
+      </Border>
     </Grid>
 
     <Border Grid.Row="2" Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
-      <TextBlock Name="StatusTextBlock" Margin="6,3" />
+      <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+        <TextBlock Grid.Column="0" Name="StatusTextBlock" Margin="6,3" VerticalAlignment="Center" />
+
+        <TextBlock Grid.Column="1" Margin="6,3" VerticalAlignment="Center"
+                   Text="{Binding UsedMemory, StringFormat='{}{0:N0} KB'}" />
+
+        <TextBlock Grid.Column="2" Margin="6,3" VerticalAlignment="Center"
+                   Text="{Binding #ZoomSlider.Value, StringFormat='{}{0:P3}'}" />
+
+        <!-- The zoom of the editor itself, as in the WPF editor: it is what decides whether text is
+             laid out for the screen or for the ideal shapes of the glyphs. -->
+        <Slider Grid.Column="3" Name="ZoomSlider" Width="160" Margin="6,0" VerticalAlignment="Center"
+                Minimum="0.5" Maximum="2.0"
+                SmallChange="0.1" LargeChange="0.1" TickFrequency="0.1" IsSnapToTickEnabled="True"
+                Value="{Binding Zoom, Mode=TwoWay}" />
+      </Grid>
     </Border>
   </Grid>
+
+  <UserControl.Styles>
+    <Style Selector="TabControl.lists > TabItem">
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="MinHeight" Value="0" />
+      <Setter Property="Padding" Value="8,3" />
+    </Style>
+  </UserControl.Styles>
 </UserControl>

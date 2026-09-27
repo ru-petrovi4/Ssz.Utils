@@ -1,3 +1,4 @@
+using Ssz.Operator.Core.VisualEditors;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Ssz.Operator.Core.Constants;
@@ -16,22 +17,22 @@ namespace Ssz.Operator.Core.Commands.DsCommandOptions
 
         [DsDisplayName(ResourceStrings.WindowDsCommandOptionsBase_TargetWindow)]
         [LocalizedDescription(ResourceStrings.WindowDsCommandOptionsBase_TargetWindow_Description)]
-        //[PropertyOrder(0)]
+        [PropertyOrder(0)]
         public virtual TargetWindow TargetWindow { get; set; }
 
         [DsDisplayName(ResourceStrings.WindowDsCommandOptionsBase_RootWindowNum)]
         [LocalizedDescription(ResourceStrings.WindowDsCommandOptionsBase_RootWindowNum_Description)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public virtual string RootWindowNum { get; set; } = @"";
 
         [DsDisplayName(ResourceStrings.WindowDsCommandOptionsBase_CurrentFrame)]
         [LocalizedDescription(ResourceStrings.WindowDsCommandOptionsBase_CurrentFrame_Description)]
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         public virtual bool CurrentFrame { get; set; }
 
         [DsDisplayName(ResourceStrings.WindowDsCommandOptionsBase_FrameName)]
         [LocalizedDescription(ResourceStrings.WindowDsCommandOptionsBase_FrameName_Description)]
-        //[PropertyOrder(3)]
+        [PropertyOrder(3)]
         public virtual string FrameName { get; set; } = "";
 
         [Browsable(false)]

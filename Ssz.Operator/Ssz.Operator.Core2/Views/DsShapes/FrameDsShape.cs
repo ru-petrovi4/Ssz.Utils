@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.ComponentModel;
 using Ssz.Operator.Core.CustomAttributes;
@@ -34,7 +36,7 @@ namespace Ssz.Operator.Core.DsShapes
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.FrameDsShape_FrameName)]
         [LocalizedDescription(ResourceStrings.FrameDsShape_FrameName_Description)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public string FrameName
         {
             get => _frameName;
@@ -48,8 +50,8 @@ namespace Ssz.Operator.Core.DsShapes
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.FrameDsShape_StartDsPageFileRelativePath)]
         [LocalizedDescription(ResourceStrings.FrameDsShape_StartDsPageFileRelativePath_Description)]
-        //[Editor(typeof(FileNameTypeEditor), typeof(FileNameTypeEditor))]
-        //[PropertyOrder(2)]
+        [Editor(typeof(FileNameTypeEditor), typeof(FileNameTypeEditor))]
+        [PropertyOrder(2)]
         public string StartDsPageFileRelativePath
         {
             get => _startDsPageFileRelativePath;

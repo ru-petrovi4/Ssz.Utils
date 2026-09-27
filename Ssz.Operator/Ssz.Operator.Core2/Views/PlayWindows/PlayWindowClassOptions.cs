@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -50,21 +52,21 @@ namespace Ssz.Operator.Core
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.PlayWindowClassOptions_PlayWindowClassInfo)]
         [LocalizedDescription(ResourceStrings.PlayWindowClassOptions_PlayWindowClassInfo_Description)]
-        //[ExpandableObject]
-        //[Editor(typeof(TextBlockEditor), typeof(TextBlockEditor))]
-        //[PropertyOrder(1)]
+        [ExpandableObject]
+        [Editor(typeof(TextBlockEditor), typeof(TextBlockEditor))]
+        [PropertyOrder(1)]
         public PlayWindowClassInfo PlayWindowClassInfo { get; } = new();
 
         [DsCategory(ResourceStrings.BehaviourCategory)]
         [DsDisplayName(ResourceStrings.PlayWindowClassOptions_WindowsMaxCount)]
         [LocalizedDescription(ResourceStrings.PlayWindowClassOptions_WindowsMaxCount_Description)]
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         public int WindowsMaxCount { get; set; }
 
         [DsCategory(ResourceStrings.BehaviourCategory)]
         [DsDisplayName(ResourceStrings.PlayWindowClassOptions_CloseWindowsOnParentJump)]
         [LocalizedDescription(ResourceStrings.PlayWindowClassOptions_CloseWindowsOnParentJump_Description)]
-        //[PropertyOrder(3)]
+        [PropertyOrder(3)]
         public bool CloseWindowsOnParentJump { get; set; }
 
         [Browsable(false)]

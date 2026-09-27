@@ -1,0 +1,34 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:properties="using:Ssz.Operator.Core.Properties"
+             xmlns:libraryPath="using:Ssz.Operator.Core.VisualEditors.LibraryPath"
+             mc:Ignorable="d"
+             x:Class="Ssz.Operator.Core.VisualEditors.LibraryPath.LibraryPathControl"
+             x:DataType="libraryPath:LibraryPathViewModel">
+  <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto">
+    <TextBlock Grid.Column="0" VerticalAlignment="Center"
+               Text="{x:Static properties:Resources.LibPathLabel}" />
+
+    <!-- The path is typed here; the list beside it only offers the libraries used before, which is
+         what the editable combo of the WPF editor did. -->
+    <TextBox Grid.Column="1" Name="GoLibraryTextBox" Margin="5,0,0,0" />
+    <ComboBox Grid.Column="2" Name="GoLibraryComboBox" Width="30"
+              ItemsSource="{Binding RecentFilesCollectionManager.RecentFilesCollection}"
+              SelectionChanged="GoLibraryComboBoxOnSelectionChanged">
+      <ComboBox.ItemTemplate>
+        <DataTemplate>
+          <TextBlock Text="{Binding FullFileName}" />
+        </DataTemplate>
+      </ComboBox.ItemTemplate>
+    </ComboBox>
+
+    <Button Grid.Column="3" Name="BrowseButton" Margin="5,0,0,0" Padding="8,0"
+            Content="{x:Static properties:Resources.BrowseButtonLabel}"
+            Click="BrowseButtonOnClick" />
+    <Button Grid.Column="4" Name="GoLibraryButton" Margin="5,0,0,0" Padding="8,0"
+            Content="{x:Static properties:Resources.GoLibraryButtonLabel}"
+            Click="GoLibraryButtonOnClick" />
+  </Grid>
+</UserControl>

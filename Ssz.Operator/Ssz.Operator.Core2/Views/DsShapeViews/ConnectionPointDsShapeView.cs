@@ -27,6 +27,13 @@ namespace Ssz.Operator.Core.DsShapeViews
 
         #region public functions
 
+        /// <summary>
+        ///     What the drawing surface knows about this connection point: which connectors start and
+        ///     end at it. The surface fills it in and clears it again.
+        /// </summary>
+        public ControlsDesign.ConnectionPointInfo? ConnectionPointInfo { get; set; }
+
+
         //public ConnectionPointInfo? ConnectionPointInfo { get; set; }
 
         #endregion

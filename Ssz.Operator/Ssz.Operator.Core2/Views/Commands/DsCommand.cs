@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -80,7 +82,7 @@ namespace Ssz.Operator.Core.Commands
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DsCommandCommand)]
         //[ItemsSource(typeof(DsCommandCommandsItemsSource), true)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public string Command
         {
             get => _command;
@@ -121,8 +123,8 @@ namespace Ssz.Operator.Core.Commands
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DsCommandDsCommandOptions)]
-        //[Editor(typeof(CloneableObjectTypeEditor), typeof(CloneableObjectTypeEditor))]
-        //[PropertyOrder(2)]
+        [Editor(typeof(CloneableObjectTypeEditor), typeof(CloneableObjectTypeEditor))]
+        [PropertyOrder(2)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] // For XAML serialization
         public OwnedDataSerializableAndCloneable? DsCommandOptions
         {
@@ -152,7 +154,7 @@ namespace Ssz.Operator.Core.Commands
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DsCommandCommandUrl)]
         //[ReadOnlyInEditor]
-        //[PropertyOrder(3)]
+        [PropertyOrder(3)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] // For XAML serialization
         public string CommandUrl
         {
@@ -171,11 +173,11 @@ namespace Ssz.Operator.Core.Commands
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DsCommandIsEnabledInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(CheckBoxEditor), typeof(CheckBoxEditor))]
-        //[PropertyOrder(4)]
+        [Editor(typeof(CheckBoxEditor), typeof(CheckBoxEditor))]
+        [PropertyOrder(4)]
         [DefaultValue(typeof(BooleanDataBinding), "True")] // For XAML serialization
         public BooleanDataBinding IsEnabledInfo
         {

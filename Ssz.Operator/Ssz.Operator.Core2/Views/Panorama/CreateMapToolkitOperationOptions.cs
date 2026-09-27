@@ -1,3 +1,4 @@
+using Ssz.Operator.Core.VisualEditors;
 using Ssz.Operator.Core.CustomAttributes;
 using Ssz.Operator.Core.Properties;
 using Ssz.Operator.Core.Utils;
@@ -21,12 +22,12 @@ namespace Ssz.Operator.Core.Panorama
         #region public functions
 
         [DsDisplayName(ResourceStrings.CreateMapToolkitOperationOptionsMutualPointRefsMaxAngleDelta)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public double MutualPointRefsMaxAngleDelta { get; set; }
 
 
         [DsDisplayName(ResourceStrings.CreateMapToolkitOperationOptionsMaxPointsDelta)]
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         public double MaxPointsDelta { get; set; }
 
         public override void SerializeOwnedData(SerializationWriter writer, object? context)

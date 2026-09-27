@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -120,37 +122,37 @@ namespace Ssz.Operator.Core.Addons
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.PanoramaAddonFrameDsPageDrawingFileName)]
         [LocalizedDescription(ResourceStrings.PanoramaAddonFrameDsPageDrawingFileNameDescription)]
-        //[Editor(typeof(FileNameTypeEditor), typeof(FileNameTypeEditor))]
-        //[PropertyOrder(1)]
+        [Editor(typeof(FileNameTypeEditor), typeof(FileNameTypeEditor))]
+        [PropertyOrder(1)]
         public string FrameDsPageDrawingFileName { get; set; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.PanoramaAddonAnimationDurationMs)]
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         public int AnimationDurationMs { get; set; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.PanoramaAddonDefaultCameraH)]
         [LocalizedDescription(ResourceStrings.PanoramaAddonDefaultCameraHDescription)]
-        //[PropertyOrder(3)]
+        [PropertyOrder(3)]
         public double DefaultCameraH { get; set; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.PanoramaAddonTagsConstantsTypes)]
         [LocalizedDescription(ResourceStrings.PanoramaAddonTagsConstantsTypesDescription)]
-        //[PropertyOrder(4)]
+        [PropertyOrder(4)]
         public string TagsConstantsTypes { get; set; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.PanoramaAddonAllowDesignModeInPlay)]
         [LocalizedDescription(ResourceStrings.PanoramaAddonAllowDesignModeInPlayDescription)]
-        //[PropertyOrder(5)]
+        [PropertyOrder(5)]
         public bool AllowDesignModeInPlay { get; set; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.PanoramaAddonShowLines)]
         [LocalizedDescription(ResourceStrings.PanoramaAddonShowLinesDescription)]
-        //[PropertyOrder(6)]
+        [PropertyOrder(6)]
         public bool ShowLines { get; set; }
 
 

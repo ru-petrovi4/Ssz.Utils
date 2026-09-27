@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Ssz.Operator.Core.Commands;
@@ -43,10 +45,10 @@ namespace Ssz.Operator.Core
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.MenuItemInfoHeaderInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
         [DefaultValue(typeof(TextDataBinding), @"")] // For XAML serialization
         public virtual TextDataBinding HeaderInfo
         {
@@ -61,19 +63,19 @@ namespace Ssz.Operator.Core
 
         [DsCategory(ResourceStrings.BehaviourCategory)]
         [DsDisplayName(ResourceStrings.MenuItemInfoDsCommand)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"DsCommandString")]
         //[IsValueEditorEnabledPropertyPath(@"IsEmpty")]
-        //[Editor(typeof(TextBlockEditor), typeof(TextBlockEditor))]
+        [Editor(typeof(TextBlockEditor), typeof(TextBlockEditor))]
         [DefaultValue(typeof(DsCommand), @"")] // For XAML serialization
         public virtual DsCommand DsCommand { get; set; } = null!;
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.MenuItemInfoIsVisibleInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(CheckBoxEditor), typeof(CheckBoxEditor))]
+        [Editor(typeof(CheckBoxEditor), typeof(CheckBoxEditor))]
         [DefaultValue(typeof(BooleanDataBinding), "True")] // For XAML serialization
         public BooleanDataBinding IsVisibleInfo
         {

@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
+using Ssz.Operator.Core.VisualEditors;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,7 +13,7 @@ using Ssz.Operator.Core.Constants;
 using Ssz.Operator.Core.CustomAttributes;
 using Ssz.Operator.Core.Drawings;
 using Ssz.Operator.Core.Properties;
-//using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors.DsConstantsCollection;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors.DsConstantsCollection;
 using Ssz.Operator.Core.Utils.Serialization;
 using Ssz.Utils;
 using Ssz.Utils.MonitoredUndo;
@@ -300,12 +302,12 @@ namespace Ssz.Operator.Core.DsShapes
         [DsCategory(ResourceStrings.PrototypeDsShapeDrawingCategory)]
         [DsDisplayName(ResourceStrings.ComplexDsShape_DrawingGuid)]
         //[ReadOnlyInEditor]
-        //[PropertyOrder(0)]
+        [PropertyOrder(0)]
         public Guid DsShapeDrawingGuid { get; set; }
 
         [DsCategory(ResourceStrings.PrototypeDsShapeDrawingCategory)]
         [DsDisplayName(ResourceStrings.ComplexDsShape_DrawingName)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public string DsShapeDrawingName
         {
             get => _dsShapeDrawingName;
@@ -315,7 +317,7 @@ namespace Ssz.Operator.Core.DsShapes
         [DsCategory(ResourceStrings.PrototypeDsShapeDrawingCategory)]
         [DsDisplayName(ResourceStrings.ComplexDsShape_DrawingDesc)]
         //[ReadOnlyInEditor]
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         [DefaultValue(@"")] // For XAML serialization
         public string DsShapeDrawingDesc
         {
@@ -326,7 +328,7 @@ namespace Ssz.Operator.Core.DsShapes
         [DsCategory(ResourceStrings.PrototypeDsShapeDrawingCategory)]
         [DsDisplayName(ResourceStrings.ComplexDsShape_DrawingGroup)]
         //[ReadOnlyInEditor]
-        //[PropertyOrder(3)]
+        [PropertyOrder(3)]
         [DefaultValue(@"")] // For XAML serialization
         public string DsShapeDrawingGroup
         {
@@ -337,7 +339,7 @@ namespace Ssz.Operator.Core.DsShapes
         [DsCategory(ResourceStrings.PrototypeDsShapeDrawingCategory)]
         [DsDisplayName(ResourceStrings.ComplexDsShape_DrawingWidth)]
         //[ReadOnlyInEditor]
-        //[PropertyOrder(4)]
+        [PropertyOrder(4)]
         public double DsShapeDrawingWidth
         {
             get => _dsShapeDrawingWidth;
@@ -351,7 +353,7 @@ namespace Ssz.Operator.Core.DsShapes
         [DsCategory(ResourceStrings.PrototypeDsShapeDrawingCategory)]
         [DsDisplayName(ResourceStrings.ComplexDsShape_DrawingHeight)]
         //[ReadOnlyInEditor]
-        //[PropertyOrder(5)]
+        [PropertyOrder(5)]
         public double DsShapeDrawingHeight
         {
             get => _dsShapeDrawingHeight;
@@ -365,7 +367,7 @@ namespace Ssz.Operator.Core.DsShapes
         [DsCategory(ResourceStrings.PrototypeDsShapeDrawingCategory)]
         [DsDisplayName(ResourceStrings.ComplexDsShape_DrawingCenterRelativePosition)]
         //[ReadOnlyInEditor]
-        //[PropertyOrder(6)]
+        [PropertyOrder(6)]
         public Point DsShapeDrawingCenterRelativePosition
         {
             get => _dsShapeDrawingCenterRelativePosition;
@@ -400,8 +402,8 @@ namespace Ssz.Operator.Core.DsShapes
         [DsCategory(ResourceStrings.DataCategory)]
         [DsDisplayName(ResourceStrings.ComplexDsShapeDsConstantsCollection)]
         [LocalizedDescription(ResourceStrings.DsConstantsCollectionDescription)]
-        //[Editor(typeof(CollectionTypeEditor), typeof(CollectionTypeEditor))]
-        //[PropertyOrder(1)]
+        [Editor(typeof(CollectionTypeEditor), typeof(CollectionTypeEditor))]
+        [PropertyOrder(1)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [field: Searchable(false)]
         // For XAML serialization of collections
@@ -416,7 +418,7 @@ namespace Ssz.Operator.Core.DsShapes
         [DsDisplayName(ResourceStrings.ChildWindowInfo)]
         [LocalizedDescription(ResourceStrings.ChildWindowInfoDescription)]
         //[ReadOnlyInEditor]
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] // For XAML serialization
         public string ChildWindowInfo
         {

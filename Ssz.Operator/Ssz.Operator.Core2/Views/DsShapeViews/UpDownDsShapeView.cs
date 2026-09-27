@@ -7,7 +7,6 @@ using Ssz.Operator.Core.ControlsPlay;
 
 using Ssz.Operator.Core.DsShapes;
 using Ssz.Operator.Core.MultiValueConverters;
-using Ssz.Xceed.Wpf.Toolkit;
 
 namespace Ssz.Operator.Core.DsShapeViews
 {

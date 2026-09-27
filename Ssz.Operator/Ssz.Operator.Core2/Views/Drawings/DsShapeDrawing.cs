@@ -1,3 +1,4 @@
+using Ssz.Operator.Core.VisualEditors;
 using System;
 using System.Collections;
 using System.ComponentModel;
@@ -5,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using Avalonia;
+using Avalonia.Controls;
 using Ssz.Operator.Core.Constants;
 using Ssz.Operator.Core.CustomAttributes;
 using Ssz.Operator.Core.DsShapes;
@@ -59,7 +61,7 @@ namespace Ssz.Operator.Core.Drawings
         [DsCategory(ResourceStrings.DrawingCategory)]
         [DsDisplayName(ResourceStrings.ComplexDsShapeName)]
         //[ReadOnlyInEditor]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public override string Name
         {
             get => base.Name;
@@ -68,7 +70,7 @@ namespace Ssz.Operator.Core.Drawings
 
         [DsCategory(ResourceStrings.DrawingCategory)]
         [DsDisplayName(ResourceStrings.ComplexDsShapeDesc)]
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         public override string Desc
         {
             get => base.Desc;
@@ -77,7 +79,7 @@ namespace Ssz.Operator.Core.Drawings
 
         [DsCategory(ResourceStrings.DrawingCategory)]
         [DsDisplayName(ResourceStrings.ComplexDsShapeGroup)]
-        //[PropertyOrder(3)]
+        [PropertyOrder(3)]
         public override string Group
         {
             get => base.Group;
@@ -86,7 +88,7 @@ namespace Ssz.Operator.Core.Drawings
 
         [DsCategory(ResourceStrings.DrawingCategory)]
         [DsDisplayName(ResourceStrings.DrawingWidth)]
-        //[PropertyOrder(4)]
+        [PropertyOrder(4)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] // For XAML serialization
         public double WidthForUser
         {
@@ -100,7 +102,7 @@ namespace Ssz.Operator.Core.Drawings
 
         [DsCategory(ResourceStrings.DrawingCategory)]
         [DsDisplayName(ResourceStrings.DrawingHeight)]
-        //[PropertyOrder(5)]
+        [PropertyOrder(5)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] // For XAML serialization
         public double HeightForUser
         {
@@ -128,7 +130,7 @@ namespace Ssz.Operator.Core.Drawings
 
         [DsCategory(ResourceStrings.GeometryCategory)]
         [DsDisplayName(ResourceStrings.DsShapeCenterRelativePosition)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public Point CenterRelativePosition
         {
             get
@@ -206,10 +208,10 @@ namespace Ssz.Operator.Core.Drawings
             }
         }
 
-        //public void CreatePreviewImage(Control frameworkElement)
-        //{
-        //    PreviewImageBytes = XamlHelper.CreatePreviewImageBytes(frameworkElement, 64, 64);
-        //}
+        public void CreatePreviewImage(Control control)
+        {
+            PreviewImageBytes = PreviewImageHelper.CreatePreviewImageBytes(control, 64, 64);
+        }
 
         public override void ResizeHorizontalFromLeft(double horizontalChange)
         {

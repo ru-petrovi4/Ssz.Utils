@@ -14,7 +14,7 @@
 
   ***********************************************************************************/
 
-namespace Ssz.Xceed.Wpf.Toolkit
+namespace Ssz.Operator.Core.Utils
 {
     internal static partial class VisualStates
     {

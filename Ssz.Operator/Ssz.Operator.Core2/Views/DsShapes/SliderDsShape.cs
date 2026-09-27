@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.ComponentModel;
 using Ssz.Operator.Core.CustomAttributes;
@@ -44,8 +46,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ControlDsShapeStyleInfo)]
-        //[Editor(//typeof(DsUIElementPropertyTypeEditor<SliderStyleInfoSupplier>),
-            //typeof(DsUIElementPropertyTypeEditor<SliderStyleInfoSupplier>))]
+        [Editor(typeof(DsUIElementPropertyTypeEditor<SliderStyleInfoSupplier>), typeof(DsUIElementPropertyTypeEditor<SliderStyleInfoSupplier>))]
         // For XAML serialization
         public override DsUIElementProperty StyleInfo
         {
@@ -55,10 +56,10 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.SliderDsShapeXamlInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(XamlTypeEditor), typeof(XamlTypeEditor))]
+        [Editor(typeof(XamlTypeEditor), typeof(XamlTypeEditor))]
         [DefaultValue(typeof(XamlDataBinding), @"")] // For XAML serialization
         public XamlDataBinding XamlInfo
         {
@@ -68,11 +69,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.SliderDsShapeMaximumInfo)]
-        //[PropertyOrder(0)]
-        //[ExpandableObject]
+        [PropertyOrder(0)]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
         public DoubleDataBinding MaximumInfo
         {
             get => _maximumInfo;
@@ -81,11 +82,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.SliderDsShapeMinimumInfo)]
-        //[PropertyOrder(1)]
-        //[ExpandableObject]
+        [PropertyOrder(1)]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
         public DoubleDataBinding MinimumInfo
         {
             get => _minimumInfo;
@@ -94,11 +95,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.SliderDsShapeValueInfo)]
-        //[PropertyOrder(2)]
-        //[ExpandableObject]
+        [PropertyOrder(2)]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
         public DoubleDataBinding ValueInfo
         {
             get => _valueInfo;
@@ -107,7 +108,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.SliderDsShapeLargeChangePercent)]
-        //[PropertyOrder(3)]
+        [PropertyOrder(3)]
         public double LargeChangePercent
         {
             get => _largeChangePercent;
@@ -116,7 +117,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.SliderDsShapeSmallChangePercent)]
-        //[PropertyOrder(4)]
+        [PropertyOrder(4)]
         public double SmallChangePercent
         {
             get => _smallChangePercent;
@@ -125,7 +126,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.SliderDsShapeInterval)]
-        //[PropertyOrder(5)]
+        [PropertyOrder(5)]
         public int Interval
         {
             get => _interval;

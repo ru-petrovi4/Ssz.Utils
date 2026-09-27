@@ -8,7 +8,7 @@ using System.Linq;
 using Avalonia.Markup;
 using Ssz.Operator.Core.CustomAttributes;
 using Ssz.Operator.Core.Properties;
-//using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using Ssz.Operator.Core.Utils.Serialization;
 using Ssz.Utils.MonitoredUndo;
 //using Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
@@ -69,8 +69,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.ContextMenuDsShapeMenuItemInfosCollection)]
-        //[Editor(//typeof(MiscTypeCloneableObjectsCollectionTypeEditor),
-            //typeof(MiscTypeCloneableObjectsCollectionTypeEditor))]
+        [Editor(typeof(MiscTypeCloneableObjectsCollectionTypeEditor), typeof(MiscTypeCloneableObjectsCollectionTypeEditor))]
         //[NewItemTypes(typeof(MenuItemInfo), typeof(SeparatorMenuItemInfo))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] // For XAML serialization
         public ObservableCollection<ICloneable> MenuItemInfosCollection { get; } = new();

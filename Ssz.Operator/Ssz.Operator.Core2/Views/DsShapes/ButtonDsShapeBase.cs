@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System.ComponentModel;
 using Avalonia;
 using Ssz.Operator.Core.Commands;
@@ -43,9 +45,8 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ControlDsShapeStyleInfo)]
-        //[Editor(//typeof(DsUIElementPropertyTypeEditor<ButtonStyleInfoSupplier>),
-            //typeof(DsUIElementPropertyTypeEditor<ButtonStyleInfoSupplier>))]
-        //[PropertyOrder(101)]
+        [Editor(typeof(DsUIElementPropertyTypeEditor<ButtonStyleInfoSupplier>), typeof(DsUIElementPropertyTypeEditor<ButtonStyleInfoSupplier>))]
+        [PropertyOrder(101)]
         // For XAML serialization
         public override DsUIElementProperty StyleInfo
         {
@@ -55,11 +56,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.BehaviourCategory)]
         [DsDisplayName(ResourceStrings.ButtonDsShapeBase_ClickDsCommand)]
-        //[PropertyOrder(0)]
-        //[ExpandableObject]
+        [PropertyOrder(0)]
+        [ExpandableObject]
         //[ValuePropertyPath(@"DsCommandString")]
         //[IsValueEditorEnabledPropertyPath(@"IsEmpty")]
-        //[Editor(typeof(TextBlockEditor), typeof(TextBlockEditor))]
+        [Editor(typeof(TextBlockEditor), typeof(TextBlockEditor))]
         [DefaultValue(typeof(DsCommand), @"")] // For XAML serialization
         public DsCommand ClickDsCommand
         {
@@ -69,11 +70,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.BehaviourCategory)]
         [DsDisplayName(ResourceStrings.ButtonDsShapeBase_DoubleClickDsCommand)]
-        //[PropertyOrder(1)]
-        //[ExpandableObject]
+        [PropertyOrder(1)]
+        [ExpandableObject]
         //[ValuePropertyPath(@"DsCommandString")]
         //[IsValueEditorEnabledPropertyPath(@"IsEmpty")]
-        //[Editor(typeof(TextBlockEditor), typeof(TextBlockEditor))]
+        [Editor(typeof(TextBlockEditor), typeof(TextBlockEditor))]
         [DefaultValue(typeof(DsCommand), @"")] // For XAML serialization
         public DsCommand DoubleClickDsCommand
         {
@@ -83,11 +84,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.BehaviourCategory)]
         [DsDisplayName(ResourceStrings.ButtonDsShapeBase_RightClickDsCommand)]
-        //[PropertyOrder(2)]
-        //[ExpandableObject]
+        [PropertyOrder(2)]
+        [ExpandableObject]
         //[ValuePropertyPath(@"DsCommandString")]
         //[IsValueEditorEnabledPropertyPath(@"IsEmpty")]
-        //[Editor(typeof(TextBlockEditor), typeof(TextBlockEditor))]
+        [Editor(typeof(TextBlockEditor), typeof(TextBlockEditor))]
         [DefaultValue(typeof(DsCommand), @"")] // For XAML serialization
         public DsCommand RightClickDsCommand
         {
@@ -97,11 +98,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.BehaviourCategory)]
         [DsDisplayName(ResourceStrings.ButtonDsShapeBase_HoldDsCommand)]
-        //[PropertyOrder(3)]
-        //[ExpandableObject]
+        [PropertyOrder(3)]
+        [ExpandableObject]
         //[ValuePropertyPath(@"DsCommandString")]
         //[IsValueEditorEnabledPropertyPath(@"IsEmpty")]
-        //[Editor(typeof(TextBlockEditor), typeof(TextBlockEditor))]
+        [Editor(typeof(TextBlockEditor), typeof(TextBlockEditor))]
         [DefaultValue(typeof(DsCommand), @"")] // For XAML serialization
         public DsCommand HoldDsCommand
         {
@@ -112,7 +113,7 @@ namespace Ssz.Operator.Core.DsShapes
         [DsCategory(ResourceStrings.BehaviourCategory)]
         [DsDisplayName(ResourceStrings.ButtonDsShapeBase_HoldCommandDelayMs)]
         [LocalizedDescription(ResourceStrings.ButtonDsShapeBase_HoldCommandDelayMsDescription)]
-        //[PropertyOrder(4)]
+        [PropertyOrder(4)]
         public int HoldCommandDelayMs
         {
             get => _holdCommandDelayMs;
@@ -122,7 +123,7 @@ namespace Ssz.Operator.Core.DsShapes
         [DsCategory(ResourceStrings.BehaviourCategory)]
         [DsDisplayName(ResourceStrings.ButtonDsShapeBase_HoldCommandIntervalMs)]
         [LocalizedDescription(ResourceStrings.ButtonDsShapeBase_HoldCommandIntervalMsDescription)]
-        //[PropertyOrder(5)]
+        [PropertyOrder(5)]
         public int HoldCommandIntervalMs
         {
             get => _holdCommandIntervalMs;
@@ -131,11 +132,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.BehaviourCategory)]
         [DsDisplayName(ResourceStrings.ButtonDsShapeBase_MouseEnterDsCommand)]
-        //[PropertyOrder(6)]
-        //[ExpandableObject]
+        [PropertyOrder(6)]
+        [ExpandableObject]
         //[ValuePropertyPath(@"DsCommandString")]
         //[IsValueEditorEnabledPropertyPath(@"IsEmpty")]
-        //[Editor(typeof(TextBlockEditor), typeof(TextBlockEditor))]
+        [Editor(typeof(TextBlockEditor), typeof(TextBlockEditor))]
         [DefaultValue(typeof(DsCommand), @"")] // For XAML serialization
         public DsCommand PointerEnteredDsCommand
         {
@@ -145,11 +146,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.BehaviourCategory)]
         [DsDisplayName(ResourceStrings.ButtonDsShapeBase_MouseLeaveDsCommand)]
-        //[PropertyOrder(7)]
-        //[ExpandableObject]
+        [PropertyOrder(7)]
+        [ExpandableObject]
         //[ValuePropertyPath(@"DsCommandString")]
         //[IsValueEditorEnabledPropertyPath(@"IsEmpty")]
-        //[Editor(typeof(TextBlockEditor), typeof(TextBlockEditor))]
+        [Editor(typeof(TextBlockEditor), typeof(TextBlockEditor))]
         [DefaultValue(typeof(DsCommand), @"")] // For XAML serialization
         public DsCommand PointerExitedDsCommand
         {
@@ -160,11 +161,11 @@ namespace Ssz.Operator.Core.DsShapes
         [DsCategory(ResourceStrings.BehaviourCategory)]
         [DsDisplayName(ResourceStrings.ButtonDsShapeBase_IsDefaultInfo)]
         [LocalizedDescription(ResourceStrings.ButtonDsShapeBase_IsDefaultInfoDescription)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(CheckBoxEditor), typeof(CheckBoxEditor))]
-        //[PropertyOrder(6)]
+        [Editor(typeof(CheckBoxEditor), typeof(CheckBoxEditor))]
+        [PropertyOrder(6)]
         [DefaultValue(typeof(BooleanDataBinding), @"False")] // For XAML serialization
         public BooleanDataBinding IsDefaultInfo
         {
@@ -175,11 +176,11 @@ namespace Ssz.Operator.Core.DsShapes
         [DsCategory(ResourceStrings.BehaviourCategory)]
         [DsDisplayName(ResourceStrings.ButtonDsShapeBase_IsCancelInfo)]
         [LocalizedDescription(ResourceStrings.ButtonDsShapeBase_IsCancelInfoDescription)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(CheckBoxEditor), typeof(CheckBoxEditor))]
-        //[PropertyOrder(7)]
+        [Editor(typeof(CheckBoxEditor), typeof(CheckBoxEditor))]
+        [PropertyOrder(7)]
         [DefaultValue(typeof(BooleanDataBinding), @"False")] // For XAML serialization
         public BooleanDataBinding IsCancelInfo
         {

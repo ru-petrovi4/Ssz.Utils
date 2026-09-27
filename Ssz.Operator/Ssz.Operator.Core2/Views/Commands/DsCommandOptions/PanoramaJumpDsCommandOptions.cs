@@ -1,3 +1,4 @@
+using Ssz.Operator.Core.VisualEditors;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Avalonia.Markup;
@@ -38,16 +39,16 @@ namespace Ssz.Operator.Core.Commands.DsCommandOptions
         }
 
         [DsDisplayName(ResourceStrings.PanoramaJumpDsCommandOptionsHorizontalLength)]
-        //[PropertyOrder(100)]
+        [PropertyOrder(100)]
         public string HorizontalLength { get; set; }
 
         [DsDisplayName(ResourceStrings.PanoramaJumpDsCommandOptionsVerticalDelta)]
-        //[PropertyOrder(101)]
+        [PropertyOrder(101)]
         public string VerticalDelta { get; set; }
 
         [DsDisplayName(ResourceStrings.PanoramaJumpDsCommandOptionsHorizontalDeltaToButton)]
         [LocalizedDescription(ResourceStrings.PanoramaJumpDsCommandOptionsHorizontalDeltaToButtonDescription)]
-        //[PropertyOrder(102)]
+        [PropertyOrder(102)]
         public string HorizontalDeltaToButton { get; set; }
 
 

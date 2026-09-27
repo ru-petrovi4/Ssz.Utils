@@ -90,8 +90,13 @@ public partial class DesignApp : Application
         catch (Exception ex)
         {
             // Nothing observes this task, so without this a startup failure would leave the
-            // loading overlay on screen with no explanation.
+            // loading overlay on screen with no explanation. Outside the browser there is no
+            // overlay and the interop does nothing, so the failure is logged as well - otherwise
+            // the editor would just never open a window and say nothing.
             AppLoadingInterop.ShowErrorSafe(ex.ToString());
+
+            DsProject.LoggersSet.Logger.LogCritical(ex, @"The editor failed to start.");
+            Console.Error.WriteLine(ex.ToString());
         }
     }
 
@@ -110,6 +115,7 @@ public partial class DesignApp : Application
 
             var logger = Host.Services.GetRequiredService<ILogger<DesignApp>>();
             IConfiguration configuration = Host.Services.GetRequiredService<IConfiguration>();
+            _configuration = configuration;
             CultureHelper.InitializeUICulture(configuration, logger);
 
             logger.LogInformation($"App starting with args: \"{String.Join(" ", desktop.Args ?? [])}\"; Environment: {EnvironmentName}; Working Directory: \"{Directory.GetCurrentDirectory()}\"; Workstation Name: {ConfigurationHelper.GetWorkstationName(configuration)}");
@@ -283,183 +289,32 @@ public partial class DesignApp : Application
             throw new InvalidOperationException();
         }
 
-        AppLoadingInterop.SetStatusSafe(OperatorUIResources.Loading_OpeningProject);
+        // The editor connects to the data server the same way the WPF editor did, so that the
+        // shapes of a drawing can show live values while it is being edited.
+        await DsDataAccessProvider.StaticInitialize(
+            mode,
+            // No map yet: the editor connects before a project is opened, exactly as the WPF editor
+            // did, and a project that is opened later brings its own.
+            null,
+            DsProject.Instance.DefaultServerAddress,
+            @"Cdt.Operator",
+            DsProject.Instance.DefaultSystemNameToConnect,
+            new CaseInsensitiveOrderedDictionary<string?>(),
+            DispatcherHelper.GetUiDispatcher());
 
-        if (mode == DsProject.DsProjectModeEnum.DesktopDesignMode || mode == DsProject.DsProjectModeEnum.BrowserDesignMode)
+        DesignMainView.CommandLineOptions = new DesignOptions(_configuration)
         {
-            await StartDesignAsync(options, mode, dsProjectFileFullName, isReadOnly, fileProvider);
-        }
-        else
-        {
-            // A play application has nothing to show without a project.
-            if (String.IsNullOrEmpty(dsProjectFileFullName))
-            {
-                SafeShutdown();
-                return;
-            }
-
-            bool failed = await DsProject.ReadDsProjectFromBinFileAsync(
-                dsProjectFileFullName,
-                mode,
-                isReadOnly,
-                options.AutoConvert,
-                options.Constants,
-                null,
-                fileProvider);
-            if (!failed)
-            {
-                failed = !ConsumeDcsConsoleLicenseIfRequired();
-                if (failed)
-                {
-                    //WpfMessageBox.Show(Play.Properties.Resources.NoDcsConsoleEmulationLicense + "\n\n" + Play.Properties.Resources.OkToExit,
-                    //    Play.Properties.Resources.NoFVLicenseTitle, WpfMessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            if (failed)
-            {
-                // ReadDsProjectFromBinFileAsync reports through MessageBoxHelper, which has no window
-                // to show yet at this point, so without this the loading screen would just stay.
-                AppLoadingInterop.ShowErrorSafe(
-                    OperatorUIResources.Loading_ProjectOpenFailed + @": " + options.ProjectFile);
-
-                SafeShutdown();
-                return;
-            }
-
-            if (!String.IsNullOrEmpty(options.UserTagsFile))
-            {
-                // TODO
-            }
-            DsProject.Instance.Review = options.Review;
-            DsProject.Instance.NoSound = options.NoSound;
-            DsProject.Instance.AddonsCommandLineOptions = NameValueCollectionHelper.Parse(options.Options_);
-
-            #region StartDataAccessProvider        
-
-            string serverAddress = GetServerAddress(options,
-                DsProject.Instance.DefaultServerAddress);
-            string systemNameToConnect = GetSystemNameToConnect(options,
-                DsProject.Instance.DefaultSystemNameToConnect);
-            string operatorSessionId;
-            if (options.OperatorSessionId != @"") operatorSessionId = options.OperatorSessionId;
-            else operatorSessionId = Guid.NewGuid().ToString();
-
-            CaseInsensitiveOrderedDictionary<string?> contextParams;
-            if (!String.IsNullOrEmpty(options.ContextParams))
-            {
-                contextParams = NameValueCollectionHelper.Parse(options.ContextParams);
-            }
-            else
-            {
-                contextParams = new CaseInsensitiveOrderedDictionary<string?>();
-                contextParams[@"OperatorSessionId"] = operatorSessionId;
-            }
-            await DsDataAccessProvider.StaticInitialize(
-                mode,
-                DsProject.Instance.ElementIdsMap,
-                serverAddress,
-                @"Ssz.Operator",
-                systemNameToConnect,
-                contextParams,
-                DispatcherHelper.GetUiDispatcher()
-            );
-
-            DsDataAccessProvider.Instance.PropertyChanged += DataAccessProviderOnPropertyChanged;
-            DataAccessProviderOnConnectedOrDisconnected();
-
-            #endregion
-
-            PlayDsProjectView.Initialize();
-
-            foreach (AddonBase addon in AddonsManager.AddonsCollection.ObservableCollection)
-            {
-                addon.InitializeInPlayMode();
-            }
-
-            #region Conditional Commands
-
-            if (DsProject.Instance.ConditionalDsCommandsCollection.Count > 0)
-            {
-                _conditionalDsCommandViewsCollection = new List<DsCommandView>();
-
-                foreach (DsCommand dsCommand in DsProject.Instance.ConditionalDsCommandsCollection)
-                {
-                    var genericContainer = new GenericContainer();
-                    genericContainer.ParentItem = DsProject.Instance;
-                    dsCommand.ParentItem = genericContainer; // For using LastActiveRootPlayWindow as parent window.
-                    var dsCommandView = new DsCommandView(null,
-                        dsCommand,
-                        new DataValueViewModel(null, false));
-                    _conditionalDsCommandViewsCollection.Add(dsCommandView);
-
-                    if (dsCommandView.IsEnabled)
-                        dsCommandView.DoCommand();
-                    dsCommandView.PropertyChanged += (sender, e) =>
-                    {
-                        if (e.Property == DsCommandView.IsEnabledProperty)
-                            DsCommandViewOnIsEnabledChanged(sender, e);
-                    };
-                }
-            }
-
-            #endregion
-
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopFinal)
-            {
-#if !TEST_BROWSER_IN_DESKTOP
-                WindowsManager.Instance.Initialize(options.StartPageFile, desktopFinal);
-#else
-            WindowsManager.Instance.Initialize(options.StartPageFile, (ISingleViewApplicationLifetime?)null);
-#endif
-            }
-            else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatformFinal)
-            {
-                WindowsManager.Instance.Initialize(options.StartPageFile, singleViewPlatformFinal);
-
-                // The project is loaded and the start page is shown - drop the HTML overlay.
-                AppLoadingInterop.HideSafe();
-            }
-        }               
-    }    
-
-    /// <summary>
-    ///     The whole editor lives in one view: a window hosts it on the desktop and it is the single
-    ///     view in the browser. The editor has no second window on either target.
-    /// </summary>
-    private async Task StartDesignAsync(
-        Options options,
-        DsProject.DsProjectModeEnum mode,
-        string dsProjectFileFullName,
-        bool isReadOnly,
-        IFileProvider? fileProvider)
-    {
-        if (!String.IsNullOrEmpty(dsProjectFileFullName))
-        {
-            bool failed = await DsProject.ReadDsProjectFromBinFileAsync(
-                dsProjectFileFullName,
-                mode,
-                isReadOnly,
-                options.AutoConvert,
-                options.Constants,
-                null,
-                fileProvider);
-            if (failed)
-            {
-                AppLoadingInterop.ShowErrorSafe(
-                    OperatorUIResources.Loading_ProjectOpenFailed + @": " + options.ProjectFile);
-
-                SafeShutdown();
-                return;
-            }
-        }
+            ProjectFile = options.ProjectFile,
+            AutoConvert = options.AutoConvert
+        };
 
         var designMainView = new DesignMainView();
 
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop3)
         {
             var designMainWindow = new DesignMainWindow();
             designMainWindow.Content = designMainView;
-            desktop.MainWindow = designMainWindow;
+            desktop3.MainWindow = designMainWindow;
             designMainWindow.Show();
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
@@ -469,7 +324,16 @@ public partial class DesignApp : Application
 
         // The editor is on screen - drop the HTML loading overlay.
         AppLoadingInterop.HideSafe();
-    }
+
+        // The project named on the command line is opened by the editor itself, which is what shows
+        // the busy indicator while it loads, exactly as the WPF editor did.
+        if (!String.IsNullOrEmpty(dsProjectFileFullName))
+        {
+            AppLoadingInterop.SetStatusSafe(OperatorUIResources.Loading_OpeningProject);
+
+            await designMainView.ReadDsProjectFromBinFileAsync(dsProjectFileFullName);
+        }
+    } 
 
     public async void SafeShutdown()
     {
@@ -717,6 +581,8 @@ public partial class DesignApp : Application
     }
 
     #region private fields
+
+    private static IConfiguration? _configuration;
 
     private List<DsCommandView>? _conditionalDsCommandViewsCollection;
 

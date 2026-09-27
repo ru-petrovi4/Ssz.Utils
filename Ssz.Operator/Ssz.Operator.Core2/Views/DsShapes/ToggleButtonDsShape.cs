@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.ComponentModel;
 using Avalonia;
@@ -58,8 +60,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ControlDsShapeStyleInfo)]
-        //[Editor(//typeof(DsUIElementPropertyTypeEditor<ToggleButtonStyleInfoSupplier>),
-            //typeof(DsUIElementPropertyTypeEditor<ToggleButtonStyleInfoSupplier>))]
+        [Editor(typeof(DsUIElementPropertyTypeEditor<ToggleButtonStyleInfoSupplier>), typeof(DsUIElementPropertyTypeEditor<ToggleButtonStyleInfoSupplier>))]
         // For XAML serialization
         public override DsUIElementProperty StyleInfo
         {
@@ -69,10 +70,10 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ToggleButtonDsShapeUncheckedContentInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(XamlTypeEditor), typeof(XamlTypeEditor))]
+        [Editor(typeof(XamlTypeEditor), typeof(XamlTypeEditor))]
         public XamlDataBinding UncheckedContentInfo
         {
             get => _uncheckedContentInfo;
@@ -81,10 +82,10 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ToggleButtonDsShapeCheckedContentInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(XamlTypeEditor), typeof(XamlTypeEditor))]
+        [Editor(typeof(XamlTypeEditor), typeof(XamlTypeEditor))]
         public XamlDataBinding CheckedContentInfo
         {
             get => _checkedContentInfo;
@@ -93,10 +94,10 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ToggleButtonDsShapePressedContentInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(XamlTypeEditor), typeof(XamlTypeEditor))]
+        [Editor(typeof(XamlTypeEditor), typeof(XamlTypeEditor))]
         public XamlDataBinding PressedContentInfo
         {
             get => _pressedContentInfo;
@@ -105,10 +106,10 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.ToggleButtonDsShapeIsCheckedInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(CheckBoxEditor), typeof(CheckBoxEditor))]
+        [Editor(typeof(CheckBoxEditor), typeof(CheckBoxEditor))]
         public BooleanDataBinding IsCheckedInfo
         {
             get => _isCheckedInfo;

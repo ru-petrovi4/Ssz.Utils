@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -87,7 +89,7 @@ namespace Ssz.Operator.Core.DsShapes
         [DsDisplayName(ResourceStrings.CommandListenerDsShape_CommandToListen)]
         [LocalizedDescription(ResourceStrings.CommandListenerDsShape_CommandToListenDescription)]
         //[ItemsSource(typeof(CommandToListenItemsSource), true)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public string CommandToListen
         {
             get => _commandToListen;
@@ -97,7 +99,7 @@ namespace Ssz.Operator.Core.DsShapes
         [DsCategory(ResourceStrings.BehaviourCategory)]
         [DsDisplayName(ResourceStrings.CommandListenerDsShape_CommandToListenOptions)]
         [LocalizedDescription(ResourceStrings.CommandListenerDsShape_CommandToListenOptionsDescription)]
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         public CommandListenerOptions CommandToListenOptions
         {
             get => _commandToListenOptions;
@@ -107,11 +109,11 @@ namespace Ssz.Operator.Core.DsShapes
         [DsCategory(ResourceStrings.BehaviourCategory)]
         [DsDisplayName(ResourceStrings.CommandListenerDsShape_CommandToListenDsCommand)]
         [LocalizedDescription(ResourceStrings.CommandListenerDsShape_CommandToListenDsCommandDescription)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"DsCommandString")]
         //[IsValueEditorEnabledPropertyPath(@"IsEmpty")]
-        //[Editor(typeof(TextBlockEditor), typeof(TextBlockEditor))]
-        //[PropertyOrder(3)]
+        [Editor(typeof(TextBlockEditor), typeof(TextBlockEditor))]
+        [PropertyOrder(3)]
         [DefaultValue(typeof(DsCommand), @"")] // For XAML serialization
         public DsCommand CommandToListenDsCommand
         {
@@ -122,11 +124,11 @@ namespace Ssz.Operator.Core.DsShapes
         [DsCategory(ResourceStrings.BehaviourCategory)]
         [DsDisplayName(ResourceStrings.CommandListenerDsShape_LoadedDsCommand)]
         [LocalizedDescription(ResourceStrings.CommandListenerDsShape_LoadedDsCommandDescription)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"DsCommandString")]
         //[IsValueEditorEnabledPropertyPath(@"IsEmpty")]
-        //[Editor(typeof(TextBlockEditor), typeof(TextBlockEditor))]
-        //[PropertyOrder(4)]
+        [Editor(typeof(TextBlockEditor), typeof(TextBlockEditor))]
+        [PropertyOrder(4)]
         [DefaultValue(typeof(DsCommand), @"")] // For XAML serialization
         public DsCommand LoadedDsCommand
         {
@@ -137,11 +139,11 @@ namespace Ssz.Operator.Core.DsShapes
         [DsCategory(ResourceStrings.BehaviourCategory)]
         [DsDisplayName(ResourceStrings.CommandListenerDsShape_EachSecondDsCommand)]
         [LocalizedDescription(ResourceStrings.CommandListenerDsShape_EachSecondDsCommandDescription)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"DsCommandString")]
         //[IsValueEditorEnabledPropertyPath(@"IsEmpty")]
-        //[Editor(typeof(TextBlockEditor), typeof(TextBlockEditor))]
-        //[PropertyOrder(5)]
+        [Editor(typeof(TextBlockEditor), typeof(TextBlockEditor))]
+        [PropertyOrder(5)]
         [DefaultValue(typeof(DsCommand), @"")] // For XAML serialization
         public DsCommand EachSecondDsCommand
         {
@@ -152,10 +154,9 @@ namespace Ssz.Operator.Core.DsShapes
         [DsCategory(ResourceStrings.BehaviourCategory)]
         [DsDisplayName(ResourceStrings.CommandListenerDsShape_ConditionalDsCommandsCollection)]
         [LocalizedDescription(ResourceStrings.CommandListenerDsShape_ConditionalDsCommandsCollectionDescription)]
-        //[Editor(//typeof(MiscTypeCloneableObjectsCollectionTypeEditor),
-            //typeof(MiscTypeCloneableObjectsCollectionTypeEditor))]
+        [Editor(typeof(MiscTypeCloneableObjectsCollectionTypeEditor), typeof(MiscTypeCloneableObjectsCollectionTypeEditor))]
         //[NewItemTypes(typeof(DsCommand))]
-        //[PropertyOrder(6)]
+        [PropertyOrder(6)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         // For XAML serialization of collections
         public ObservableCollection<DsCommand> ConditionalDsCommandsCollection { get; } = new();
@@ -163,11 +164,11 @@ namespace Ssz.Operator.Core.DsShapes
         [DsCategory(ResourceStrings.BehaviourCategory)]
         [DsDisplayName(ResourceStrings.CommandListenerDsShape_UnloadedDsCommand)]
         [LocalizedDescription(ResourceStrings.CommandListenerDsShape_UnloadedDsCommandDescription)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"DsCommandString")]
         //[IsValueEditorEnabledPropertyPath(@"IsEmpty")]
-        //[Editor(typeof(TextBlockEditor), typeof(TextBlockEditor))]
-        //[PropertyOrder(7)]
+        [Editor(typeof(TextBlockEditor), typeof(TextBlockEditor))]
+        [PropertyOrder(7)]
         [DefaultValue(typeof(DsCommand), @"")] // For XAML serialization
         public DsCommand UnloadedDsCommand
         {

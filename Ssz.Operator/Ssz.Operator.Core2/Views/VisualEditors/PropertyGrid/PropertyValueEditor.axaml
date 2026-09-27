@@ -1,0 +1,56 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:editors="using:Ssz.Operator.Core.VisualEditors"
+             mc:Ignorable="d"
+             x:Class="Ssz.Operator.Core.VisualEditors.PropertyValueEditor"
+             x:DataType="editors:PropertyItemViewModel">
+  <!-- The editor that fits the property. Exactly one is shown: the one the property asked for by
+       name, or else the one its type calls for. -->
+  <Panel>
+    <ContentControl IsVisible="{Binding HasEditor}"
+                    Content="{Binding Editor}" />
+
+    <CheckBox IsVisible="{Binding IsBoolean}"
+              Classes.hidden="{Binding HasEditor}"
+              IsEnabled="{Binding !IsReadOnly}"
+              IsChecked="{Binding Value, Mode=TwoWay}" />
+
+    <ComboBox IsVisible="{Binding IsEnum}"
+              Classes.hidden="{Binding HasEditor}"
+              IsEnabled="{Binding !IsReadOnly}"
+              HorizontalAlignment="Stretch"
+              ItemsSource="{Binding EnumValues}"
+              SelectedItem="{Binding Value, Mode=TwoWay}" />
+
+    <TextBox IsVisible="{Binding HasNoEditor}"
+             IsEnabled="{Binding !IsReadOnly}"
+             Classes.hidden="{Binding IsEnum}"
+             Classes.plain="{Binding IsExpandable}"
+             Text="{Binding ValueAsString, Mode=TwoWay}"
+             AcceptsReturn="True"
+             MaxHeight="120"
+             TextWrapping="Wrap" />
+  </Panel>
+
+  <UserControl.Styles>
+    <!-- An enumeration is shown in the drop-down, so the text box beside it steps aside; and
+         everything steps aside for an editor the property asked for by name. -->
+    <Style Selector="TextBox.hidden">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <Style Selector="CheckBox.hidden">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <Style Selector="ComboBox.hidden">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <!-- A property that opens into its own properties only says what it holds. -->
+    <Style Selector="TextBox.plain">
+      <Setter Property="IsReadOnly" Value="True" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Background" Value="Transparent" />
+    </Style>
+  </UserControl.Styles>
+</UserControl>

@@ -1,0 +1,34 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:p="using:Ssz.Operator.Core.Properties"
+             xmlns:editors="using:Ssz.Operator.Core.VisualEditors"
+             mc:Ignorable="d"
+             x:Class="Ssz.Operator.Core.VisualEditors.BusyWithStopControl"
+             x:DataType="editors:BusyWithStopControl"
+             x:Name="Root">
+  <Panel>
+    <!-- What the control is wrapped around stays where it is; the notice goes over it. -->
+    <ContentPresenter Name="PART_ContentPresenter"
+                      Content="{Binding #Root.Content}" />
+
+    <Rectangle Fill="Blue" Opacity="0.05" IsVisible="{Binding #Root.IsBusy}" />
+
+    <Border IsVisible="{Binding #Root.IsBusy}"
+            HorizontalAlignment="Center" VerticalAlignment="Center"
+            Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+            BorderBrush="Gray" BorderThickness="1" Padding="10">
+      <StackPanel Margin="5" MinWidth="240">
+        <TextBlock HorizontalAlignment="Center" FontWeight="Bold" Text="{Binding #Root.Text1}" />
+        <StackPanel Margin="5">
+          <TextBlock HorizontalAlignment="Center" Text="{Binding #Root.Text2}" />
+          <ProgressBar Height="15" Minimum="0" Maximum="100"
+                       Value="{Binding #Root.ProgressPercent}" />
+        </StackPanel>
+        <Button HorizontalAlignment="Center" Click="StopButtonOnClick"
+                Content="{x:Static p:Resources.StopButtonText}" />
+      </StackPanel>
+    </Border>
+  </Panel>
+</UserControl>

@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -61,8 +63,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ControlDsShapeStyleInfo)]
-        //[Editor(////typeof(DsUIElementPropertyTypeEditor<ComboBoxStyleInfoSupplier>),
-            ////typeof(DsUIElementPropertyTypeEditor<ComboBoxStyleInfoSupplier>))]
+        [Editor(typeof(DsUIElementPropertyTypeEditor<ComboBoxStyleInfoSupplier>), typeof(DsUIElementPropertyTypeEditor<ComboBoxStyleInfoSupplier>))]
         // For XAML serialization
         public override DsUIElementProperty StyleInfo
         {
@@ -72,10 +73,10 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.ComboBoxDsShapeTextInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
         public TextDataBinding TextInfo
         {
             get => _textInfo;
@@ -84,10 +85,10 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ComboBoxDsShapeIsEditableInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(CheckBoxEditor), typeof(CheckBoxEditor))]
+        [Editor(typeof(CheckBoxEditor), typeof(CheckBoxEditor))]
         public BooleanDataBinding IsEditableInfo
         {
             get => _isEditableInfo;
@@ -96,8 +97,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.ComboBoxDsShapeMenuItemInfosCollection)]
-        //[Editor(//typeof(MiscTypeCloneableObjectsCollectionTypeEditor),
-            //typeof(MiscTypeCloneableObjectsCollectionTypeEditor))]
+        [Editor(typeof(MiscTypeCloneableObjectsCollectionTypeEditor), typeof(MiscTypeCloneableObjectsCollectionTypeEditor))]
         //[NewItemTypes(typeof(SimpleMenuItemInfo), typeof(SeparatorMenuItemInfo))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] // For XAML serialization
         public ObservableCollection<ICloneable> MenuItemInfosCollection { get; } = new();

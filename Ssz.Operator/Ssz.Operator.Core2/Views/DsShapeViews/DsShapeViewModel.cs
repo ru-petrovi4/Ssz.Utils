@@ -1,3 +1,4 @@
+using Avalonia.Media;
 using System;
 using System.ComponentModel;
 using Avalonia;
@@ -268,6 +269,9 @@ namespace Ssz.Operator.Core.DsShapeViews
             {
                 if (SetProperty(ref _isSelected, value))
                 {
+                    OnPropertyChanged(nameof(SelectionBackground));
+                    OnPropertyChanged(nameof(SelectionForeground));
+
                     if (value) SetGeometryEditingMode();
                     else GeometryEditingMode = false;
                 }
@@ -277,8 +281,22 @@ namespace Ssz.Operator.Core.DsShapeViews
         public bool IsFirstSelected
         {
             get => _isFirstSelected;
-            set => SetProperty(ref _isFirstSelected, value);
+            set
+            {
+                if (!SetProperty(ref _isFirstSelected, value)) return;
+                OnPropertyChanged(nameof(SelectionBackground));
+                OnPropertyChanged(nameof(SelectionForeground));
+            }
         }
+
+        /// <summary>
+        ///     What the row of this shape is painted with in the drawing explorer.
+        /// </summary>
+        public IBrush SelectionBackground =>
+            ControlsDesign.SelectionBrushes.Background(_isSelected, _isFirstSelected);
+
+        public IBrush SelectionForeground =>
+            ControlsDesign.SelectionBrushes.Foreground(_isSelected, _isFirstSelected);
 
         public bool GeometryEditingMode
         {

@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Avalonia.Media;
@@ -73,52 +75,52 @@ namespace Ssz.Operator.Core.DsShapes.Trends
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.DsTrendItemTag)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public string TagName { get; set; }
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.ModelTagPropertyInfoTagType)]
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         public string TagType { get; set; }
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.ModelTagPropertyInfoPropertyPath)]
         //[ItemsSource(typeof(PropertyPathsItemsSource), true)]
-        //[PropertyOrder(3)]
+        [PropertyOrder(3)]
         public string PropertyPath { get; set; }
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.DsTrendItem_ValueFormat)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(4)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(4)]
         public TextDataBinding ValueFormatInfo { get; set; }
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.DsTrendItemHdaId)]
-        //[PropertyOrder(5)]
+        [PropertyOrder(5)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         // For XAML serialization of collections
         public string HdaId => TagName + PropertyPath;
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.ModelTagPropertyInfo_DescriptionInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(6)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(6)]
         public TextDataBinding DescriptionInfo { get; set; }
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.DsTrendItemColor)]
-        //[PropertyOrder(7)]
-        //[ExpandableObject]
+        [PropertyOrder(7)]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(SolidBrushTypeEditor), typeof(SolidBrushTypeEditor))]
+        [Editor(typeof(SolidBrushTypeEditor), typeof(SolidBrushTypeEditor))]
         public BrushDataBinding DsBrush { get; set; }
 
         [Browsable(false)]

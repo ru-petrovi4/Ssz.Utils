@@ -1,13 +1,16 @@
 using System;
-using System.Windows.Media;
-using Ssz.Operator.Core;
+using Avalonia.Media;
 using Ssz.Operator.Core.Addons;
+using Ssz.Operator.Core.Design.Properties;
 using Ssz.Operator.Core.Drawings;
 using Ssz.Operator.Core.VisualEditors;
-using Ssz.Operator.Core.Design.Properties;
 
 namespace Ssz.Operator.Core.Design.Controls
 {
+    /// <summary>
+    ///     One drawing in a list of the editor. The hint is the coloured badge in front of the name that
+    ///     warns about a drawing this build cannot fully read.
+    /// </summary>
     public class DrawingInfoViewModel : EntityInfoViewModel
     {
         #region construction and destruction
@@ -21,22 +24,19 @@ namespace Ssz.Operator.Core.Design.Controls
 
         #region public functions
 
-        public DrawingInfo DrawingInfo
-        {
-            get { return (DrawingInfo) EntityInfo; }
-        }
+        public DrawingInfo DrawingInfo => (DrawingInfo) EntityInfo;
 
         public string? HintText
         {
-            get { return _hintText; }
-            set { SetValue(ref _hintText, value); }
+            get => _hintText;
+            set => SetProperty(ref _hintText, value);
         }
 
-        public Brush? HintBackground
+        public IBrush? HintBackground
         {
-            get { return _hintBackground; }
-            set { SetValue(ref _hintBackground, value); }
-        }        
+            get => _hintBackground;
+            set => SetProperty(ref _hintBackground, value);
+        }
 
         #endregion
 
@@ -65,7 +65,7 @@ namespace Ssz.Operator.Core.Design.Controls
                 else
                 {
                     HintText = "";
-                    HintBackground = Brushes.DeepSkyBlue;                    
+                    HintBackground = Brushes.DeepSkyBlue;
                 }
             }
         }
@@ -75,7 +75,7 @@ namespace Ssz.Operator.Core.Design.Controls
         #region private fields
 
         private string? _hintText;
-        private Brush? _hintBackground;        
+        private IBrush? _hintBackground;
 
         #endregion
     }

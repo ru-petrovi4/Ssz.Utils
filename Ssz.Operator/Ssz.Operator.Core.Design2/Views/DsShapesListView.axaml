@@ -1,0 +1,110 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:p="using:Ssz.Operator.Core.Design.Properties"
+             xmlns:controls="using:Ssz.Operator.Core.Design.Controls"
+             xmlns:visualEditors="using:Ssz.Operator.Core.VisualEditors"
+             xmlns:views="using:Ssz.Operator.Core.Design.Views"
+             mc:Ignorable="d"
+             x:Class="Ssz.Operator.Core.Design.Views.DsShapesListView"
+             x:DataType="controls:DsShapesListViewModel">
+  <Grid RowDefinitions="Auto,*">
+
+    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2" Spacing="4">
+      <Button Name="RefreshDsShapesButton" Padding="5,2" Focusable="False"
+              Click="RefreshDsShapesButtonOnClick">
+        <StackPanel Orientation="Horizontal" Spacing="5">
+          <Image Width="16" Height="16"
+                 Source="avares://Ssz.Operator.Core.Design/Resources/Images/Refresh.png" />
+          <TextBlock VerticalAlignment="Center" Text="{x:Static p:Resources.RefreshDsShapesButtonText}" />
+        </StackPanel>
+      </Button>
+      <Button Name="SyncWithActiveDrawingButton" Padding="5,2" Focusable="False"
+              ToolTip.Tip="{x:Static p:Resources.SyncWithActiveDrawingButtonToolTip}"
+              Click="SyncWithActiveDrawingButtonOnClick">
+        <Image Width="16" Height="16"
+               Source="avares://Ssz.Operator.Core.Design/Resources/Images/Sync.png" />
+      </Button>
+    </StackPanel>
+
+    <TreeView Grid.Row="1" Name="DsShapesTreeView" Margin="0,4,0,0"
+              ItemsSource="{Binding DsShapesTreeViewItemsSource}">
+      <TreeView.ItemContainerTheme>
+        <ControlTheme TargetType="TreeViewItem" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+          <Setter Property="IsExpanded" Value="{ReflectionBinding IsExpanded}" />
+        </ControlTheme>
+      </TreeView.ItemContainerTheme>
+      <TreeView.DataTemplates>
+
+        <TreeDataTemplate DataType="controls:GroupViewModel" ItemsSource="{Binding Items}">
+          <TextBlock Text="{Binding Header}" />
+        </TreeDataTemplate>
+
+        <!-- A complex shape of the project, with the preview it was saved with. -->
+        <DataTemplate DataType="controls:DrawingInfoViewModel">
+          <StackPanel Orientation="Horizontal" Spacing="4"
+                      Background="{Binding SelectionBackground}"
+                      ToolTip.Tip="{Binding ToolTip}"
+                      PointerPressed="DsShapeOnPointerPressed"
+                      DoubleTapped="DsShapeOnDoubleTapped">
+            <StackPanel.ContextMenu>
+              <!-- The same menu the WPF editor put on a complex shape of the list. -->
+              <ContextMenu>
+                <MenuItem Header="{x:Static p:Resources.OpenComplexDsShapesText}"
+                          Command="{x:Static views:DesignMainView.OpenComplexDsShapes}">
+                  <MenuItem.Icon>
+                    <Image Width="16" Height="16" Source="avares://Ssz.Operator.Core.Design/Resources/Images/Open.png" />
+                  </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="{x:Static p:Resources.OpenFilesLocationOfComplexDsShapesText}"
+                          Command="{x:Static views:DesignMainView.OpenFilesLocationOfComplexDsShapes}"
+                          CommandParameter="{Binding DrawingInfo}">
+                  <MenuItem.Icon>
+                    <Image Width="16" Height="16" Source="avares://Ssz.Operator.Core.Design/Resources/Images/Properties.png" />
+                  </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="{x:Static p:Resources.UpdateComplexDsShapesSizeText}"
+                          Command="{x:Static views:DesignMainView.UpdateComplexDsShapesSize}">
+                  <MenuItem.Icon>
+                    <Image Width="16" Height="16" Source="avares://Ssz.Operator.Core.Design/Resources/Images/UpdateComplexDsShapeSize.png" />
+                  </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="{x:Static p:Resources.DeleteComplexDsShapesText}"
+                          Command="{x:Static views:DesignMainView.DeleteComplexDsShapes}"
+                          CommandParameter="{Binding DrawingInfo}">
+                  <MenuItem.Icon>
+                    <Image Width="16" Height="16" Source="avares://Ssz.Operator.Core.Design/Resources/Images/Delete.png" />
+                  </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="{x:Static p:Resources.ComplexDsShapeProperties}"
+                          Command="{x:Static views:DesignMainView.ShowDrawingPropertiesCommand}"
+                          CommandParameter="{Binding DrawingInfo}">
+                  <MenuItem.Icon>
+                    <Image Width="16" Height="16" Source="avares://Ssz.Operator.Core.Design/Resources/Images/Properties.png" />
+                  </MenuItem.Icon>
+                </MenuItem>
+              </ContextMenu>
+            </StackPanel.ContextMenu>
+
+            <Image Width="32" Height="32" Source="{Binding PreviewImage}" />
+            <TextBlock FontWeight="Bold" Foreground="White" VerticalAlignment="Center"
+                       Text="{Binding HintText}"
+                       Background="{Binding HintBackground}"
+                       IsVisible="{Binding HintText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+            <TextBlock VerticalAlignment="Center" Text="{Binding Header}"
+                       Foreground="{Binding SelectionForeground}" />
+          </StackPanel>
+        </DataTemplate>
+
+        <!-- A shape type the author drags onto the drawing. -->
+        <DataTemplate DataType="visualEditors:EntityInfoViewModel">
+          <TextBlock Text="{Binding Header}" Background="Transparent"
+                     ToolTip.Tip="{Binding ToolTip}"
+                     PointerPressed="DsShapeOnPointerPressed" />
+        </DataTemplate>
+      </TreeView.DataTemplates>
+    </TreeView>
+  </Grid>
+</UserControl>

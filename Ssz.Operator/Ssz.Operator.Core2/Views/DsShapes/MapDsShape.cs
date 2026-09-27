@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.ComponentModel;
 using Avalonia.Media;
@@ -69,10 +71,10 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.MapDsShapeStrokeInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(BrushTypeEditor), typeof(BrushTypeEditor))]
+        [Editor(typeof(BrushTypeEditor), typeof(BrushTypeEditor))]
         public BrushDataBinding StrokeInfo
         {
             get => _strokeInfo;

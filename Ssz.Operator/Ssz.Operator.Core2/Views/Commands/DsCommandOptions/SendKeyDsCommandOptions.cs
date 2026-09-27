@@ -1,3 +1,4 @@
+using Ssz.Operator.Core.VisualEditors;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -48,7 +49,7 @@ namespace Ssz.Operator.Core.Commands.DsCommandOptions
         [DsDisplayName(ResourceStrings.SendKeyDsCommandOptionsKey)]
         [LocalizedDescription(ResourceStrings.SendKeyDsCommandOptionsKeyDescription)]
         //[ItemsSource(typeof(KeysItemsSource), true)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public string Key { get; set; }
 
         [Browsable(false)]

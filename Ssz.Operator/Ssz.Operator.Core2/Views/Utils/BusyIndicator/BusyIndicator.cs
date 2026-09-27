@@ -5,7 +5,7 @@ using Avalonia.Styling;
 using Avalonia.Threading;
 using System;
 
-namespace Ssz.Xceed.Wpf.Toolkit
+namespace Ssz.Operator.Core.Utils
 {
   /// <summary>
   ///     A control to provide a visual indicator when an application is busy.

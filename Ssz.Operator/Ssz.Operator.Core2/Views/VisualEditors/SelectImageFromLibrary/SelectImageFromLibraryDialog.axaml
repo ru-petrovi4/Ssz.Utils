@@ -1,0 +1,55 @@
+<controlsCommon:LocationMindfulWindow
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:p="using:Ssz.Operator.Core.Properties"
+    xmlns:visualEditors="using:Ssz.Operator.Core.VisualEditors"
+    xmlns:libraryPath="using:Ssz.Operator.Core.VisualEditors.LibraryPath"
+    xmlns:selectImage="using:Ssz.Operator.Core.VisualEditors.SelectImageFromLibrary"
+    xmlns:controlsCommon="using:Ssz.Operator.Core.ControlsCommon"
+    mc:Ignorable="d"
+    x:Class="Ssz.Operator.Core.VisualEditors.SelectImageFromLibrary.SelectImageFromLibraryDialog"
+    x:DataType="selectImage:SelectImageFromLibraryViewModel"
+    FontSize="13"
+    Title="{x:Static p:Resources.AddDrawingsFromLibraryDialogTitle}"
+    ShowInTaskbar="False">
+
+  <Grid Name="MainGrid" Margin="5" RowDefinitions="Auto,*,Auto">
+    <libraryPath:LibraryPathControl Grid.Row="0" Name="LibraryPathControl"
+                                    LibraryDirectoryInfoChanged="OnLibraryDirectoryInfoChanged"
+                                    IsEnabled="{Binding IsNotBusy}" />
+
+    <visualEditors:BusyWithStopControl Grid.Row="1"
+                                       IsBusy="{Binding IsBusy}"
+                                       Text1="{x:Static p:Resources.SelectImageFromLibraryBusyText}"
+                                       Text2="{Binding ProgressString}"
+                                       ProgressPercent="{Binding ProgressPercent}"
+                                       Stopped="BusyControlOnStopped">
+      <ListBox Margin="0,5,0,0"
+               ItemsSource="{Binding MainListViewItemsSource}"
+               SelectedItem="{Binding SelectedImage, Mode=TwoWay}"
+               ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+        <ListBox.ItemsPanel>
+          <ItemsPanelTemplate>
+            <WrapPanel Orientation="Horizontal" />
+          </ItemsPanelTemplate>
+        </ListBox.ItemsPanel>
+        <ListBox.ItemTemplate>
+          <DataTemplate DataType="selectImage:ImageViewModel">
+            <Image Source="{Binding Image}" Width="100" Height="100"
+                   DoubleTapped="ImageOnDoubleTapped"
+                   ToolTip.Tip="{Binding FileInfo.Name}" />
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </visualEditors:BusyWithStopControl>
+
+    <Grid Grid.Row="2" ColumnDefinitions="*,Auto,Auto">
+      <Button Grid.Column="1" Width="80" Margin="5,5,0,0" IsDefault="True" Focusable="False"
+              HorizontalContentAlignment="Center" Content="OK" Click="OkButtonOnClick" />
+      <Button Grid.Column="2" Width="80" Margin="5,5,0,0" IsCancel="True" Focusable="False"
+              HorizontalContentAlignment="Center" Content="Cancel" Click="CancelButtonOnClick" />
+    </Grid>
+  </Grid>
+</controlsCommon:LocationMindfulWindow>

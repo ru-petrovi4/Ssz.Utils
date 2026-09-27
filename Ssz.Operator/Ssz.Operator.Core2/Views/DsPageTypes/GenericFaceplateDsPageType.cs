@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -47,48 +49,48 @@ namespace Ssz.Operator.Core.DsPageTypes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ShowWindowDsCommandOptions_ShowOnTouchScreen)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         [DefaultValue(DefaultFalseTrue.Default)] // For XAML serialization        
         public DefaultFalseTrue ShowOnTouchScreen { get; set; }
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ShowWindowDsCommandOptions_WindowStyle)]
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         [DefaultValue(PlayWindowStyle.Default)] // For XAML serialization
         public PlayWindowStyle WindowStyle { get; set; }
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ShowWindowDsCommandOptions_WindowResizeMode)]
-        //[PropertyOrder(3)]
+        [PropertyOrder(3)]
         [DefaultValue(PlayWindowResizeMode.Default)] // For XAML serialization
         public PlayWindowResizeMode WindowResizeMode { get; set; }
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ShowWindowDsCommandOptions_WindowStartupLocation)]
-        //[PropertyOrder(4)]
+        [PropertyOrder(4)]
         [DefaultValue(PlayWindowStartupLocation.Default)] // For XAML serialization
         public PlayWindowStartupLocation WindowStartupLocation { get; set; }
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ShowWindowDsCommandOptions_WindowFullScreen)]
-        //[PropertyOrder(5)]
+        [PropertyOrder(5)]
         [DefaultValue(PlayWindowResizeMode.Default)] // For XAML serialization
         public DefaultFalseTrue WindowFullScreen { get; set; }
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ShowWindowDsCommandOptions_AutoCloseMs)]
         [LocalizedDescription(ResourceStrings.ShowWindowDsCommandOptions_AutoCloseMs_Description)]
-        //[PropertyOrder(6)]
+        [PropertyOrder(6)]
         [DefaultValue(0)] // For XAML serialization
         public int AutoCloseMs { get; set; }
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ShowWindowDsCommandOptions_TitleInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(7)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(7)]
         [DefaultValue(typeof(TextDataBinding), @"")] // For XAML serialization
         public TextDataBinding TitleInfo
         {
@@ -103,26 +105,26 @@ namespace Ssz.Operator.Core.DsPageTypes
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ShowWindowDsCommandOptions_WindowCategory)]
         [LocalizedDescription(ResourceStrings.ShowWindowDsCommandOptions_WindowCategory_Description)]
-        //[PropertyOrder(8)]
+        [PropertyOrder(8)]
         [DefaultValue(@"")] // For XAML serialization
         public string WindowCategory { get; set; }
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ShowWindowDsCommandOptions_FrameName)]
         [LocalizedDescription(ResourceStrings.ShowWindowDsCommandOptions_FrameName_Description)]
-        //[PropertyOrder(9)]
+        [PropertyOrder(9)]
         [DefaultValue(@"")] // For XAML serialization
         public string FrameName { get; set; }
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ShowWindowDsCommandOptions_WindowShowInTaskbar)]
-        //[PropertyOrder(10)]
+        [PropertyOrder(10)]
         [DefaultValue(DefaultFalseTrue.Default)] // For XAML serialization
         public DefaultFalseTrue WindowShowInTaskbar { get; set; }
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ShowWindowDsCommandOptions_WindowTopmost)]
-        //[PropertyOrder(11)]
+        [PropertyOrder(11)]
         [DefaultValue(DefaultFalseTrue.Default)] // For XAML serialization
         public DefaultFalseTrue WindowTopmost { get; set; }
 

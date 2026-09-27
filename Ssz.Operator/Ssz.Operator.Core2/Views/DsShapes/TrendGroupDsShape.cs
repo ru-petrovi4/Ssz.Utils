@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -54,8 +56,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.TrendGroupDsShapeDsTrendItemsCollection)]
-        //[Editor(//typeof(MiscTypeCloneableObjectsCollectionTypeEditor),
-            //typeof(MiscTypeCloneableObjectsCollectionTypeEditor))]
+        [Editor(typeof(MiscTypeCloneableObjectsCollectionTypeEditor), typeof(MiscTypeCloneableObjectsCollectionTypeEditor))]
         //[NewItemTypes(typeof(DsTrendItem))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         // For XAML serialization of collections
@@ -63,8 +64,8 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.TrendGroupDsShapeBackground)]
-        //[PropertyOrder(1)]
-        //[Editor(typeof(SolidBrushTypeEditor), typeof(SolidBrushTypeEditor))]
+        [PropertyOrder(1)]
+        [Editor(typeof(SolidBrushTypeEditor), typeof(SolidBrushTypeEditor))]
         public DsBrushBase Background
         {
             get => _background;
@@ -73,8 +74,8 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.TrendGroupDsShapeChartBackground)]
-        //[PropertyOrder(2)]
-        //[Editor(typeof(SolidBrushTypeEditor), typeof(SolidBrushTypeEditor))]
+        [PropertyOrder(2)]
+        [Editor(typeof(SolidBrushTypeEditor), typeof(SolidBrushTypeEditor))]
         public DsBrushBase ChartBackground
         {
             get => _chartBackground;
@@ -83,8 +84,8 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.TrendGroupDsShapeChartGridBrush)]
-        //[PropertyOrder(3)]
-        //[Editor(typeof(SolidBrushTypeEditor), typeof(SolidBrushTypeEditor))]
+        [PropertyOrder(3)]
+        [Editor(typeof(SolidBrushTypeEditor), typeof(SolidBrushTypeEditor))]
         public DsBrushBase ChartGridBrush
         {
             get => _chartGridBrush;
@@ -93,8 +94,8 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.TrendGroupDsShapeChartAxisBrush)]
-        //[PropertyOrder(4)]
-        //[Editor(typeof(SolidBrushTypeEditor), typeof(SolidBrushTypeEditor))]
+        [PropertyOrder(4)]
+        [Editor(typeof(SolidBrushTypeEditor), typeof(SolidBrushTypeEditor))]
         public DsBrushBase ChartAxisBrush
         {
             get => _chartAxisBrush;
@@ -103,7 +104,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.TrendGroupDsShapeTrendsInfoTableVisibility)]
-        //[PropertyOrder(5)]
+        [PropertyOrder(5)]
         public bool TrendsInfoTableVisibility
         {
             get => _trendsInfoTableVisibility;
@@ -112,7 +113,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.TrendGroupDsShapeTrendsTuningVisibility)]
-        //[PropertyOrder(6)]
+        [PropertyOrder(6)]
         public bool TrendsTuningVisibility
         {
             get => _trendsTuningVisibility;
@@ -121,7 +122,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.TrendGroupDsShapeTrendsAxisXVisibility)]
-        //[PropertyOrder(7)]
+        [PropertyOrder(7)]
         public bool TrendsAxisXVisibility
         {
             get => _trendsAxisXVisibility;
@@ -130,7 +131,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.TrendGroupDsShapeTrendsAxisYVisibility)]
-        //[PropertyOrder(8)]
+        [PropertyOrder(8)]
         public bool TrendsAxisYVisibility
         {
             get => _trendsAxisYVisibility;
@@ -139,7 +140,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.TrendGroupDsShapeTrendsScrollbarsVisibility)]
-        //[PropertyOrder(9)]
+        [PropertyOrder(9)]
         public bool TrendsScrollbarsVisibility
         {
             get => _trendsScrollbarsVisibility;

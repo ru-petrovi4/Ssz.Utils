@@ -1,7 +1,7 @@
 ﻿using Ssz.Operator.Core;
 using Ssz.Operator.Core.CustomAttributes;
 using Ssz.Operator.Core.DsShapes;
-//using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using Ssz.Operator.Core.Properties;
 //using Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 using System;
@@ -45,8 +45,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory),
          DsDisplayName(ResourceStrings.ControlDsShapeStyleInfo)]
-        //[Editor(//typeof(DsUIElementPropertyTypeEditor<TabStyleInfoSupplier>),
-            //typeof(DsUIElementPropertyTypeEditor<TabStyleInfoSupplier>))]
+        [Editor(typeof(DsUIElementPropertyTypeEditor<TabStyleInfoSupplier>), typeof(DsUIElementPropertyTypeEditor<TabStyleInfoSupplier>))]
         // For XAML serialization
         public override DsUIElementProperty StyleInfo
         {
@@ -56,8 +55,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory),
          DsDisplayName(ResourceStrings.TabDsShape_TabItemInfosCollection)]
-        //[Editor(//typeof(MiscTypeCloneableObjectsCollectionTypeEditor),
-            //typeof(MiscTypeCloneableObjectsCollectionTypeEditor))]
+        [Editor(typeof(MiscTypeCloneableObjectsCollectionTypeEditor), typeof(MiscTypeCloneableObjectsCollectionTypeEditor))]
         //[NewItemTypes(typeof(TabItemInfo))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] // For XAML serialization
         public ObservableCollection<ICloneable> TabItemInfosCollection

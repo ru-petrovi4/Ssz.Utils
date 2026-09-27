@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System.ComponentModel;
 using Avalonia;
 using Ssz.Operator.Core.Constants;
@@ -42,8 +44,8 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.TextDsShapeDsFont)]
-        //[Editor(typeof(DsFontTypeEditor), typeof(DsFontTypeEditor))]
-        //[PropertyOrder(1)]
+        [Editor(typeof(DsFontTypeEditor), typeof(DsFontTypeEditor))]
+        [PropertyOrder(1)]
         public virtual DsFont? DsFont
         {
             get => _dsFont;
@@ -52,11 +54,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ControlDsShapeBackgroundInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(BrushTypeEditor), typeof(BrushTypeEditor))]
-        //[PropertyOrder(2)]
+        [Editor(typeof(BrushTypeEditor), typeof(BrushTypeEditor))]
+        [PropertyOrder(2)]
         public virtual BrushDataBinding BackgroundInfo
         {
             get => _backgroundInfo;
@@ -65,11 +67,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ControlDsShapeForegroundInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(BrushTypeEditor), typeof(BrushTypeEditor))]
-        //[PropertyOrder(3)]
+        [Editor(typeof(BrushTypeEditor), typeof(BrushTypeEditor))]
+        [PropertyOrder(3)]
         public virtual BrushDataBinding ForegroundInfo
         {
             get => _foregroundInfo;
@@ -78,7 +80,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ControlDsShapeBorderThickness)]
-        //[PropertyOrder(4)]
+        [PropertyOrder(4)]
         public virtual Thickness BorderThickness
         {
             get => _borderThickness;
@@ -87,7 +89,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ControlDsShapePadding)]
-        //[PropertyOrder(5)]
+        [PropertyOrder(5)]
         public virtual Thickness Padding
         {
             get => _padding;
@@ -96,11 +98,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ControlDsShapeBorderBrushInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(BrushTypeEditor), typeof(BrushTypeEditor))]
-        //[PropertyOrder(6)]
+        [Editor(typeof(BrushTypeEditor), typeof(BrushTypeEditor))]
+        [PropertyOrder(6)]
         public virtual BrushDataBinding BorderBrushInfo
         {
             get => _borderBrushInfo;
@@ -109,7 +111,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ControlDsShapeHorizontalContentAlignment)]
-        //[PropertyOrder(7)]
+        [PropertyOrder(7)]
         public virtual HorizontalAlignment HorizontalContentAlignment
         {
             get => _horizontalContentAlignment;
@@ -118,7 +120,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ControlDsShapeVerticalContentAlignment)]
-        //[PropertyOrder(8)]
+        [PropertyOrder(8)]
         public virtual VerticalAlignment VerticalContentAlignment
         {
             get => _verticalContentAlignment;
@@ -133,8 +135,8 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.ToolTipCategory)]
         [DsDisplayName(ResourceStrings.ControlDsShapeToolTipFileRelativePath)]
-        //[PropertyOrder(1)]
-        //[Editor(typeof(FileNameTypeEditor), typeof(FileNameTypeEditor))]
+        [PropertyOrder(1)]
+        [Editor(typeof(FileNameTypeEditor), typeof(FileNameTypeEditor))]
         [DefaultValue(@"")] // For XAML serialization
         public string ToolTipFileRelativePath
         {
@@ -144,11 +146,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.ToolTipCategory)]
         [DsDisplayName(ResourceStrings.ControlDsShapeToolTipTextInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(2)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(2)]
         [DefaultValue(typeof(TextDataBinding), @"")] // For XAML serialization
         public TextDataBinding ToolTipTextInfo
         {
@@ -158,7 +160,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.ToolTipCategory)]
         [DsDisplayName(ResourceStrings.ControlDsShapeToolTipPlacement)]        
-        //[PropertyOrder(3)]        
+        [PropertyOrder(3)]
         public PlacementMode ToolTipPlacement
         {
             get => _toolTipPlacement;

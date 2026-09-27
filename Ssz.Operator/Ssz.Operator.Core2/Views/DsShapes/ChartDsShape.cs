@@ -8,7 +8,7 @@ using Avalonia;
 using Ssz.Operator.Core.CustomAttributes;
 
 using Ssz.Operator.Core.Properties;
-//using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using Ssz.Operator.Core.Utils.Serialization;
 using Ssz.Utils.MonitoredUndo;
 using Avalonia.Layout;
@@ -102,8 +102,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.ChartDsShapeDsChartItemsCollection)]
-        //[Editor(//typeof(MiscTypeCloneableObjectsCollectionTypeEditor),
-            //typeof(MiscTypeCloneableObjectsCollectionTypeEditor))]
+        [Editor(typeof(MiscTypeCloneableObjectsCollectionTypeEditor), typeof(MiscTypeCloneableObjectsCollectionTypeEditor))]
         //[NewItemTypes(typeof(DsChartItem))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         // For XAML serialization of collections

@@ -275,5 +275,50 @@ namespace Ssz.Operator.Core.Properties {
                 return ResourceManager.GetString("Loading_ProjectOpenFailed", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes.
+        /// </summary>
+        public static string MessageBox_Yes {
+            get {
+                return ResourceManager.GetString("MessageBox_Yes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No.
+        /// </summary>
+        public static string MessageBox_No {
+            get {
+                return ResourceManager.GetString("MessageBox_No", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes for all.
+        /// </summary>
+        public static string MessageBox_YesForAll {
+            get {
+                return ResourceManager.GetString("MessageBox_YesForAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No for all.
+        /// </summary>
+        public static string MessageBox_NoForAll {
+            get {
+                return ResourceManager.GetString("MessageBox_NoForAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string MessageBox_Cancel {
+            get {
+                return ResourceManager.GetString("MessageBox_Cancel", resourceCulture);
+            }
+        }
     }
 }

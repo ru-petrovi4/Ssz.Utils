@@ -4,9 +4,8 @@ using System;
 namespace Ssz.Operator.Core.ControlsPlay.VirtualKeyboards;
 
 /// <summary>
-/// Abstracts OS-level key press/release injection.
-/// Windows: uses Win32 SendInput via WinApi.KeyboardKey.
-/// Linux/other: raises Avalonia routed events on the focused TopLevel.
+/// Abstracts key press/release injection: the implementation raises Avalonia routed events on the
+/// focused TopLevel, which works on every platform the editor and the player run on.
 /// </summary>
 public interface IKeyboardSender : IDisposable
 {

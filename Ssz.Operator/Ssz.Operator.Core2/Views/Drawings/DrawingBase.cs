@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
+using Ssz.Operator.Core.VisualEditors;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,7 +18,7 @@ using Ssz.Operator.Core.ControlsPlay;
 using Ssz.Operator.Core.CustomAttributes;
 using Ssz.Operator.Core.DsShapes;
 using Ssz.Operator.Core.Properties;
-//using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors.DsConstantsCollection;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors.DsConstantsCollection;
 using Ssz.Operator.Core.Utils;
 using Ssz.Utils;
 using Ssz.Utils.MonitoredUndo;
@@ -167,7 +169,7 @@ namespace Ssz.Operator.Core.Drawings
         [DsCategory(ResourceStrings.DrawingCategory)]
         [DsDisplayName(ResourceStrings.DrawingGuid)]
         //[ReadOnlyInEditor]
-        //[PropertyOrder(0)]
+        [PropertyOrder(0)]
         public Guid Guid { get; set; }
 
         public virtual string Name
@@ -204,7 +206,7 @@ namespace Ssz.Operator.Core.Drawings
 
         [DsCategory(ResourceStrings.DrawingCategory)]
         [DsDisplayName(ResourceStrings.DrawingWidth)]
-        //[PropertyOrder(4)]
+        [PropertyOrder(4)]
         public virtual double Width
         {
             get => _width;
@@ -219,7 +221,7 @@ namespace Ssz.Operator.Core.Drawings
 
         [DsCategory(ResourceStrings.DrawingCategory)]
         [DsDisplayName(ResourceStrings.DrawingHeight)]
-        //[PropertyOrder(5)]
+        [PropertyOrder(5)]
         public virtual double Height
         {
             get => _height;
@@ -332,8 +334,7 @@ namespace Ssz.Operator.Core.Drawings
         [DsCategory(ResourceStrings.DataCategory)]
         [DsDisplayName(ResourceStrings.DrawingDsConstantsCollection)]
         [LocalizedDescription(ResourceStrings.DsConstantsCollectionDescription)]
-        //[Editor(//typeof(CollectionWithAddRemoveTypeEditor),
-            //typeof(CollectionWithAddRemoveTypeEditor))]
+        [Editor(typeof(CollectionWithAddRemoveTypeEditor), typeof(CollectionWithAddRemoveTypeEditor))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [field: Searchable(false)]
         // For XAML serialization of collections

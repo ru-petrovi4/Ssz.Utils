@@ -1,3 +1,4 @@
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -34,7 +35,7 @@ namespace Ssz.Operator.Core
 
         #region public functions
 
-        //[Editor(typeof(BrushConverterTypeEditor), typeof(BrushConverterTypeEditor))]
+        [Editor(typeof(BrushConverterTypeEditor), typeof(BrushConverterTypeEditor))]
         public override ValueConverterBase? Converter
         {
             get => base.Converter;

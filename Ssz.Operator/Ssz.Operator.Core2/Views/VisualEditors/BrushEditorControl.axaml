@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:res="using:Ssz.Operator.Core.Properties"
+             xmlns:colorEditor="using:Ssz.Operator.Core.VisualEditors.ColorEditor"
+             xmlns:gradient="using:Ssz.Operator.Core.VisualEditors.GradientBrushEditor"
+             mc:Ignorable="d"
+             x:Class="Ssz.Operator.Core.VisualEditors.BrushEditorControl">
+
+  <UserControl.Styles>
+    <!-- The tabs of Fluent are drawn for a phone; here they name the kinds of a brush. -->
+    <Style Selector="TabItem">
+      <Setter Property="FontSize" Value="14" />
+      <Setter Property="MinHeight" Value="28" />
+      <Setter Property="Padding" Value="10,2" />
+    </Style>
+  </UserControl.Styles>
+
+  <TabControl Name="MainTabControl">
+    <TabItem Name="SolidBrushTabItem" Header="{x:Static res:Resources.SolidColorBrushTabItem}">
+      <colorEditor:ColorEditorControl Name="SolidColorPicker" />
+    </TabItem>
+
+    <TabItem Name="GradientBrushTabItem" Header="{x:Static res:Resources.GradientBrushTabItem}">
+      <gradient:GradientBrushEditorControl Name="GradientBrushEditor" />
+    </TabItem>
+
+    <TabItem Name="BlinkingBrushTabItem" Header="{x:Static res:Resources.BlinkingBrushTabItem}">
+      <StackPanel Orientation="Horizontal">
+        <colorEditor:ColorEditorControl Name="FirstColorPicker" />
+        <colorEditor:ColorEditorControl Name="SecondColorPicker" Margin="5,0,0,0" />
+      </StackPanel>
+    </TabItem>
+
+    <TabItem Name="ParamNumBrushTabItem" Header="{x:Static res:Resources.ParamNumBrushTabItem}">
+      <StackPanel Orientation="Horizontal">
+        <TextBlock VerticalAlignment="Center" Text="{x:Static res:Resources.ParamNumBrushTextBlock}" />
+        <TextBox Name="ParamNumBrushTextBox" Margin="5,0,0,0" Width="40" />
+      </StackPanel>
+    </TabItem>
+
+    <TabItem Name="DefaultBrushTabItem" Header="{x:Static res:Resources.DefaultBrushTabItem}" />
+  </TabControl>
+</UserControl>

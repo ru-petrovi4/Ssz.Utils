@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -84,7 +86,7 @@ namespace Ssz.Operator.Core.Drawings
         [DsDisplayName(ResourceStrings.DsPageDrawing_Name)]
         [LocalizedDescription(ResourceStrings.DsPageDrawing_NameDescription)]
         //[ReadOnlyInEditor]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public override string Name
         {
             get => base.Name;
@@ -94,7 +96,7 @@ namespace Ssz.Operator.Core.Drawings
         [DsCategory(ResourceStrings.DrawingCategory)]
         [DsDisplayName(ResourceStrings.DsPageDrawing_Desc)]
         [LocalizedDescription(ResourceStrings.DsPageDrawing_DescDescription)]
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         public override string Desc
         {
             get => base.Desc;
@@ -104,7 +106,7 @@ namespace Ssz.Operator.Core.Drawings
         [DsCategory(ResourceStrings.DrawingCategory)]
         [DsDisplayName(ResourceStrings.DsPageDrawing_Group)]
         [LocalizedDescription(ResourceStrings.DsPageDrawing_GroupDescription)]
-        //[PropertyOrder(3)]
+        [PropertyOrder(3)]
         public override string Group
         {
             get => base.Group;
@@ -114,7 +116,7 @@ namespace Ssz.Operator.Core.Drawings
         [DsCategory(ResourceStrings.DrawingCategory)]
         [DsDisplayName(ResourceStrings.DsPageStretchMode)]
         [LocalizedDescription(ResourceStrings.DsPageStretchModeDescription)]
-        //[PropertyOrder(6)]
+        [PropertyOrder(6)]
         public DsPageStretchMode StretchMode
         {
             get => _dsPageStretchMode;
@@ -124,7 +126,7 @@ namespace Ssz.Operator.Core.Drawings
         [DsCategory(ResourceStrings.DrawingCategory)]
         [DsDisplayName(ResourceStrings.DsPageDrawing_HorizontalAlignment)]
         [LocalizedDescription(ResourceStrings.DsPageDrawing_HorizontalAlignment_Description)]
-        //[PropertyOrder(7)]
+        [PropertyOrder(7)]
         public DsPageHorizontalAlignment HorizontalAlignment
         {
             get => _dsPageHorizontalAlignment;
@@ -134,7 +136,7 @@ namespace Ssz.Operator.Core.Drawings
         [DsCategory(ResourceStrings.DrawingCategory)]
         [DsDisplayName(ResourceStrings.DsPageDrawing_VerticalAlignment)]
         [LocalizedDescription(ResourceStrings.DsPageDrawing_VerticalAlignment_Description)]
-        //[PropertyOrder(8)]
+        [PropertyOrder(8)]
         public DsPageVerticalAlignment VerticalAlignment
         {
             get => _dsPageVerticalAlignment;
@@ -144,8 +146,8 @@ namespace Ssz.Operator.Core.Drawings
         [DsCategory(ResourceStrings.DrawingCategory)]
         [DsDisplayName(ResourceStrings.DsPageBackground)]
         [LocalizedDescription(ResourceStrings.DsPageBackgroundDescription)]
-        //[Editor(typeof(SolidBrushOrNullTypeEditor), typeof(SolidBrushOrNullTypeEditor))]
-        //[PropertyOrder(9)]
+        [Editor(typeof(SolidBrushOrNullTypeEditor), typeof(SolidBrushOrNullTypeEditor))]
+        [PropertyOrder(9)]
         public SolidDsBrush? Background
         {
             get => _background;
@@ -155,7 +157,7 @@ namespace Ssz.Operator.Core.Drawings
         [DsCategory(ResourceStrings.DrawingCategory)]
         [DsDisplayName(ResourceStrings.DsPageDrawing_ExcludeFromTagSearch)]
         [LocalizedDescription(ResourceStrings.DsPageDrawing_ExcludeFromTagSearchDescription)]
-        //[PropertyOrder(10)]
+        [PropertyOrder(10)]
         public bool ExcludeFromTagSearch
         {
             get => _excludeFromTagSearch;
@@ -164,7 +166,7 @@ namespace Ssz.Operator.Core.Drawings
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.DsPageDrawing_UnderlyingXaml)]
-        //[Editor(typeof(XamlTypeEditor), typeof(XamlTypeEditor))]
+        [Editor(typeof(XamlTypeEditor), typeof(XamlTypeEditor))]
         public DsXaml UnderlyingXaml
         {
             get => _underlyingDsXaml;
@@ -224,7 +226,7 @@ namespace Ssz.Operator.Core.Drawings
 
         [DsCategory(ResourceStrings.DsPageTypeCategory)]
         [DsDisplayName(ResourceStrings.DsPageDrawing_DsPageTypeObject)]
-        //[Editor(typeof(CloneableObjectTypeEditor), typeof(CloneableObjectTypeEditor))]
+        [Editor(typeof(CloneableObjectTypeEditor), typeof(CloneableObjectTypeEditor))]
         public DsPageTypeBase? DsPageTypeObject
         {
             get => _dsPageTypeObject;

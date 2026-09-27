@@ -19,6 +19,7 @@ using Ssz.Operator.Core.Properties;
 
 using Ssz.Operator.Core.Utils;
 using Ssz.Operator.Core.Utils.Serialization;
+using Avalonia.Platform.Storage;
 using Ssz.Utils;
 //using Ssz.Utils.Wpf;
 using GuidAndName = Ssz.Operator.Core.Utils.GuidAndName;
@@ -916,7 +917,7 @@ namespace Ssz.Operator.Core
                         case IfFileExistsActions.AskNewFileName:
                             if (onDriveDrawingInfo.Guid != drawing.Guid)
                             {
-                                var cancelled = AskAndSetNewFileName(drawing,
+                                var cancelled = await AskAndSetNewFileNameAsync(drawing,
                                     Path.GetFileName(drawing.FileFullName));
                                 if (cancelled) return true;
                             }
@@ -1059,51 +1060,56 @@ namespace Ssz.Operator.Core
             return false;
         }
 
-        public bool AskAndSetNewFileName(DrawingBase? drawing, string initialFileName)
+        /// <summary>
+        ///     Asks the author where to save a drawing, and gives the drawing that name.
+        ///     <para>
+        ///         Ported from the WPF project file. It was a blocking SaveFileDialog there; here the
+        ///         file is picked through the storage provider and the call is awaited.
+        ///     </para>
+        /// </summary>
+        /// <returns>True when the author cancelled.</returns>
+        public async Task<bool> AskAndSetNewFileNameAsync(DrawingBase? drawing, string initialFileName)
         {
-            //var dlg = new SaveFileDialog
-            //{
-            //    FileName = initialFileName
-            //};
+            if (drawing is null) return true;
 
-            //if (drawing is DsPageDrawing)
-            //{
-            //    var dsPagesDirectoryInfo = DsPagesDirectoryFullName;
-            //    if (dsPagesDirectoryInfo is null) return true;
+            string directoryFullName;
+            string extension;
+            if (drawing is DsPageDrawing)
+            {
+                directoryFullName = DsPagesDirectoryFullName;
+                extension = DsPageFileExtension;
+            }
+            else if (drawing is DsShapeDrawing)
+            {
+                directoryFullName = DsShapesDirectoryFullName;
+                extension = DsShapeFileExtension;
+            }
+            else
+            {
+                return true;
+            }
 
-            //    dlg.InitialDirectory = dsPagesDirectoryInfo.FullName;
-            //    dlg.Filter = @"Save file (*" + DsPageFileExtension + ")|*" + DsPageFileExtension + "|All files (*.*)|*.*";
-            //}
-            //else if (drawing is DsShapeDrawing)
-            //{
-            //    var dsShapesDirectoryInfo = DsShapesDirectoryFullName;
-            //    if (dsShapesDirectoryInfo is null) return true;
+            IStorageFile? storageFile = await FileDialogHelper.SaveFileAsync(
+                initialFileName,
+                initialFileName,
+                new FilePickerFileType(@"*" + extension)
+                {
+                    Patterns = new[] { @"*" + extension }
+                },
+                FileDialogHelper.AllFilesFileType);
+            if (storageFile is null) return true;
 
-            //    dlg.InitialDirectory = dsShapesDirectoryInfo.FullName;
-            //    dlg.Filter = @"Save file (*" + DsProject.DsShapeFileExtension + ")|*" + DsProject.DsShapeFileExtension + "|All files (*.*)|*.*";
-            //}
-            //else
-            //{
-            //    return true;
-            //}
+            var fileFullName = storageFile.TryGetLocalPath();
+            if (String.IsNullOrEmpty(fileFullName)) return true;
 
-            //if (dlg.ShowDialog() != true) return true;
+            // A drawing belongs to the project, so it has to be saved inside its directory.
+            if (!StringHelper.StartsWithIgnoreCase(fileFullName, directoryFullName))
+            {
+                MessageBoxHelper.ShowError(Resources.FileMustBeInDsProjectDir);
+                return true;
+            }
 
-            //if (!StringHelper.StartsWithIgnoreCase(dlg.FileName, DsPagesDirectoryFullName + @"\"))
-            //{
-            //    MessageBoxHelper.ShowError(Resources.FileMustBeInDsProjectDir);
-            //    return true;
-            //}
-
-            ///*
-            //        if (String.Compare(dlg.FileName, drawing.FileInfo.FullName, true,
-            //            CultureInfo.InvariantCulture) == 0)
-            //        {
-            //            File.Copy(drawing.FileInfo.FullName, drawing.FileInfo.FullName + ".backup", true);
-            //            MessageBoxHelper.ShowInfo(Properties.Resources.BackupDrawingWasCreated + " " + drawing.FileInfo.FullName + ".backup");
-            //        }*/
-
-            //drawing.FileFullName = new FileInfo(dlg.FileName).FullName;
+            drawing.FileFullName = new FileInfo(fileFullName).FullName;
 
             return false;
         }        

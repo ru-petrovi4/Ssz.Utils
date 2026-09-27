@@ -1,0 +1,153 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:res="using:Ssz.Operator.Core.Properties"
+             xmlns:valueConverters="using:Ssz.Operator.Core.VisualEditors.ValueConverters"
+             xmlns:editors="using:Ssz.Operator.Core.VisualEditors"
+             mc:Ignorable="d"
+             x:Class="Ssz.Operator.Core.VisualEditors.StructConverterControl">
+  <UserControl.Resources>
+    <valueConverters:ExpressionIsValidToTextBrushConverter x:Key="ExpressionIsValidToTextBrushConverter" />
+  </UserControl.Resources>
+
+  <Grid RowDefinitions="*,5,*" ColumnDefinitions="Auto,5,*">
+
+    <!-- What can be done to the whole converter. -->
+    <Border Grid.RowSpan="3" Grid.Column="0" Background="White">
+      <StackPanel Orientation="Vertical" VerticalAlignment="Top" Margin="5">
+        <Button Name="HelpButton" Width="100" Height="50" Foreground="Black"
+                HorizontalContentAlignment="Center"
+                Content="{x:Static res:Resources.ConverterHelp}" Click="HelpButtonOnClick" />
+        <Button Name="ClearButton" Width="100" Height="50" Foreground="Black" Margin="0,5,0,0"
+                HorizontalContentAlignment="Center"
+                Content="{x:Static res:Resources.ConverterClear}" Click="ClearButtonOnClick" />
+        <Button Name="SaveButton" Width="100" Height="50" Foreground="Black" Margin="0,5,0,0"
+                HorizontalContentAlignment="Center"
+                Content="{x:Static res:Resources.ConverterSave}" Click="SaveButtonOnClick" />
+        <Button Name="LoadButton" Width="100" Height="50" Foreground="Black" Margin="0,5,0,0"
+                HorizontalContentAlignment="Center"
+                Content="{x:Static res:Resources.ConverterLoad}" Click="LoadButtonOnClick" />
+      </StackPanel>
+    </Border>
+
+    <!-- From the data source to what the shape shows. -->
+    <Grid Grid.Row="0" Grid.Column="2" Name="DataSourceToUiGrid" Background="White"
+          RowDefinitions="Auto,*" ColumnDefinitions="*,Auto">
+      <TextBlock Grid.Row="0" Grid.Column="0" Margin="5"
+                 Text="{x:Static res:Resources.ConverterWindowDataSourceToUi}" />
+      <DataGrid Grid.Row="1" Grid.Column="0" Name="DataSourceToUiConverterDataGrid"
+                Margin="5,0,0,5" AutoGenerateColumns="False"
+                CanUserReorderColumns="False" CanUserSortColumns="False"
+                SelectionMode="Single">
+        <DataGrid.Columns>
+          <DataGridTemplateColumn Width="*"
+                                  Header="{x:Static res:Resources.StructConverterWindowIfExpression}">
+            <DataGridTemplateColumn.CellTemplate>
+              <DataTemplate DataType="editors:StatementViewModel">
+                <TextBox Text="{Binding Condition.ExpressionString, Mode=TwoWay}"
+                         Foreground="{Binding Condition.IsValid,
+                                      Converter={StaticResource ExpressionIsValidToTextBrushConverter}}" />
+              </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+          </DataGridTemplateColumn>
+          <DataGridTemplateColumn MinWidth="91"
+                                  Header="{x:Static res:Resources.ConverterWindowDataSourceToUiValueExpression}">
+            <DataGridTemplateColumn.CellTemplate>
+              <DataTemplate DataType="editors:StatementViewModel">
+                <TextBox Text="{Binding Value.ExpressionString, Mode=TwoWay}"
+                         Foreground="{Binding Value.IsValid,
+                                      Converter={StaticResource ExpressionIsValidToTextBrushConverter}}" />
+              </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+          </DataGridTemplateColumn>
+        </DataGrid.Columns>
+      </DataGrid>
+      <StackPanel Grid.Row="1" Grid.Column="1" Margin="5,0,5,5" Orientation="Vertical">
+        <Button Name="DataSourceToUiUpButton" Width="30" Height="30"
+                HorizontalContentAlignment="Center"
+                ToolTip.Tip="{x:Static res:Resources.ConverterMoveUp}"
+                Click="DataSourceToUiUpButtonClick">
+          <Polygon Points="20,0 40,40 0,40" Stretch="Fill" Width="20" Height="20" Fill="Black" />
+        </Button>
+        <Button Name="DataSourceToUiDownButton" Width="30" Height="30" Margin="0,5,0,0"
+                HorizontalContentAlignment="Center"
+                ToolTip.Tip="{x:Static res:Resources.ConverterMoveDown}"
+                Click="DataSourceToUiDownButtonClick">
+          <Polygon Points="20,40 0,0 40,0" Stretch="Fill" Width="20" Height="20" Fill="Black" />
+        </Button>
+        <Button Name="DataSourceToUiNewButton" Width="30" Height="30" Margin="0,20,0,0" Padding="0"
+                Foreground="Green" HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Click="DataSourceToUiNewButtonClick">
+          <TextBlock Text="+" FontSize="24" FontFamily="Arial" />
+        </Button>
+        <Button Name="DataSourceToUiDeleteButton" Width="30" Height="30" Margin="0,5,0,0"
+                Foreground="Red" FontFamily="Arial" FontWeight="ExtraBold" FontSize="18"
+                HorizontalContentAlignment="Center" Content="X"
+                Click="DataSourceToUiDeleteButtonClick" />
+      </StackPanel>
+    </Grid>
+
+    <!-- And back, from what the author does to the data source. -->
+    <Grid Grid.Row="2" Grid.Column="2" Name="UiToDataSourceGrid" Background="White"
+          RowDefinitions="Auto,*" ColumnDefinitions="*,Auto">
+      <TextBlock Grid.Row="0" Grid.Column="0" Margin="5"
+                 Text="{x:Static res:Resources.ConverterWindowUiToDataSource}" />
+      <DataGrid Grid.Row="1" Grid.Column="0" Name="UiToDataSourceConverterDataGrid"
+                Margin="5,0,0,5" AutoGenerateColumns="False"
+                CanUserReorderColumns="False" CanUserSortColumns="False"
+                SelectionMode="Single">
+        <DataGrid.Columns>
+          <DataGridTemplateColumn Width="*"
+                                  Header="{x:Static res:Resources.ConverterWindowUiToDataSourceIfExpression}">
+            <DataGridTemplateColumn.CellTemplate>
+              <DataTemplate DataType="editors:StatementViewModel">
+                <TextBox Text="{Binding Condition.ExpressionString, Mode=TwoWay}"
+                         Foreground="{Binding Condition.IsValid,
+                                      Converter={StaticResource ExpressionIsValidToTextBrushConverter}}" />
+              </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+          </DataGridTemplateColumn>
+          <DataGridTemplateColumn MinWidth="91"
+                                  Header="{x:Static res:Resources.ConverterWindowUiToDataSourceValueExpression}">
+            <DataGridTemplateColumn.CellTemplate>
+              <DataTemplate DataType="editors:StatementViewModel">
+                <TextBox Text="{Binding Value.ExpressionString, Mode=TwoWay}"
+                         Foreground="{Binding Value.IsValid,
+                                      Converter={StaticResource ExpressionIsValidToTextBrushConverter}}" />
+              </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+          </DataGridTemplateColumn>
+          <DataGridTemplateColumn MinWidth="40"
+                                  Header="{x:Static res:Resources.ConverterWindowUiToDataSourceParamNum}">
+            <DataGridTemplateColumn.CellTemplate>
+              <DataTemplate DataType="editors:StatementViewModel">
+                <TextBox Text="{Binding ParamNum, Mode=TwoWay}" />
+              </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+          </DataGridTemplateColumn>
+        </DataGrid.Columns>
+      </DataGrid>
+      <StackPanel Grid.Row="1" Grid.Column="1" Margin="5,0,5,5" Orientation="Vertical">
+        <Button Name="UiToDataSourceUpButton" Width="30" Height="30"
+                HorizontalContentAlignment="Center" Click="UiToDataSourceUpButtonClick">
+          <Polygon Points="20,0 40,40 0,40" Stretch="Fill" Width="20" Height="20" Fill="Black" />
+        </Button>
+        <Button Name="UiToDataSourceDownButton" Width="30" Height="30" Margin="0,5,0,0"
+                HorizontalContentAlignment="Center" Click="UiToDataSourceDownButtonClick">
+          <Polygon Points="20,40 0,0 40,0" Stretch="Fill" Width="20" Height="20" Fill="Black" />
+        </Button>
+        <Button Name="UiToDataSourceNewButton" Width="30" Height="30" Margin="0,20,0,0" Padding="0"
+                Foreground="Green" HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center" Click="UiToDataSourceNewButtonClick">
+          <TextBlock Text="+" FontSize="24" FontFamily="Arial" />
+        </Button>
+        <Button Name="UiToDataSourceDeleteButton" Width="30" Height="30" Margin="0,5,0,0"
+                Foreground="Red" FontFamily="Arial" FontWeight="ExtraBold" FontSize="18"
+                HorizontalContentAlignment="Center" Content="X"
+                Click="UiToDataSourceDeleteButtonClick" />
+      </StackPanel>
+    </Grid>
+  </Grid>
+</UserControl>

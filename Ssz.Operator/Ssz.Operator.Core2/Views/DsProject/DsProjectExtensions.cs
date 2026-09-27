@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Platform.Storage;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
@@ -384,45 +385,55 @@ namespace Ssz.Operator.Core
             }
         }
 
-        public static List<DrawingInfo>? GetDrawingInfosListFromUser(this DsProject dsProject)
+        /// <summary>
+        ///     Asks the author which drawings a toolkit operation is to run over.
+        ///     <para>
+        ///         The WPF editor showed a blocking multi-select OpenFileDialog; here the picker is
+        ///         awaited, which is also what lets it work in the browser.
+        ///     </para>
+        /// </summary>
+        /// <returns>The drawings that were picked and could be read, or null when nothing was picked.</returns>
+        public static async Task<List<DrawingInfo>?> GetDrawingInfosListFromUserAsync(this DsProject dsProject)
         {
-            //if (!dsProject.IsInitialized) 
-            //    return null;
+            if (!dsProject.IsInitialized)
+                return null;
 
-            //var dlg = new OpenFileDialog
-            //{
-            //    Title = Resources.GetDsPageDrawingsListDialogTitle,
-            //    Multiselect = true,
-            //    Filter = @"All Drawing Types|*" + DsProject.DsPageFileExtension + ";*" + DsProject.DsShapeFileExtension,
-            //    InitialDirectory = dsProject.DsPagesDirectoryFullName
-            //};
+            IReadOnlyList<IStorageFile> files = await FileDialogHelper.OpenFilesAsync(
+                Resources.GetDsPageDrawingsListDialogTitle,
+                dsProject.DsPagesDirectoryFullName,
+                new FilePickerFileType(@"All Drawing Types")
+                {
+                    Patterns = new[] { @"*" + DsProject.DsPageFileExtension, @"*" + DsProject.DsShapeFileExtension }
+                });
+            if (files.Count == 0)
+                return null;
 
-            //if (dlg.ShowDialog() != true) return null;
+            try
+            {
+                var result = new List<DrawingInfo>();
+                var errorMessages = new List<string>();
 
-            //try
-            //{
-            //    var result = new List<DrawingInfo>();
+                foreach (IStorageFile file in files)
+                {
+                    var path = file.TryGetLocalPath();
+                    if (String.IsNullOrEmpty(path))
+                        continue;
 
-            //    var errorMessages = new List<string>();
+                    DrawingInfo? drawingInfo = await DsProject.ReadDrawingInfoAsync(path, false, errorMessages);
+                    if (drawingInfo is not null)
+                        result.Add(drawingInfo);
+                }
 
-            //    foreach (string fileName in dlg.FileNames)
-            //    {
-            //        var fi = new FileInfo(fileName);
-            //        var drawingInfo = DsProject.ReadDrawingInfo(fi, false, errorMessages);
-            //        if (drawingInfo is not null) result.Add(drawingInfo);
-            //    }
+                if (errorMessages.Count > 0)
+                    MessageBoxHelper.ShowWarning(String.Join(Environment.NewLine, errorMessages));
 
-            //    if (errorMessages.Count > 0) MessageBoxHelper.ShowWarning(string.Join("\n", errorMessages));
-
-            //    return result;
-            //}
-            //catch (Exception ex)
-            //{
-            //    DsProject.LoggersSet.Logger.LogError(ex, @"");
-            //    return null;
-            //}
-
-            return null;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                DsProject.LoggersSet.Logger.LogError(ex, @"");
+                return null;
+            }
         }
 
         public static PlayWindowClassOptions GetPlayWindowClassOptions(this DsProject dsProject, IPlayWindow playWindow)

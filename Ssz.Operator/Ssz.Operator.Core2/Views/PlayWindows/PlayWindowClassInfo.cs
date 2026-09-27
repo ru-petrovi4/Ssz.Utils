@@ -1,4 +1,5 @@
 ﻿using Ssz.Operator.Core.Addons;
+using Ssz.Operator.Core.VisualEditors;
 using Ssz.Operator.Core.CustomAttributes;
 using Ssz.Operator.Core.DsPageTypes;
 using Ssz.Operator.Core.Properties;
@@ -19,12 +20,12 @@ namespace Ssz.Operator.Core
 
         [DsDisplayName(ResourceStrings.PlayWindowClassInfo_WindowCategory)]
         [LocalizedDescription(ResourceStrings.PlayWindowClassInfo_WindowCategory_Description)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public string WindowCategory { get; set; } = @"";
 
         [DsDisplayName(ResourceStrings.DsPageDrawing_DsPageTypeGuid)]
         //[ItemsSource(typeof(WindowDsPageTypeGuid_ItemsSource))]
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         public Guid WindowDsPageTypeGuid { get; set; }
 
         public override void SerializeOwnedData(SerializationWriter writer, object context)

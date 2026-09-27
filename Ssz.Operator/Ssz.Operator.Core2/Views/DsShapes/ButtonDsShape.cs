@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.ComponentModel;
 using Avalonia;
@@ -70,7 +72,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ButtonDsShape_ContentHorizontalAlignment)]
-        //[PropertyOrder(1001)]
+        [PropertyOrder(1001)]
         public HorizontalAlignment ContentHorizontalAlignment
         {
             get => _contentHorizontalAlignment;
@@ -79,7 +81,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ButtonDsShape_ContentVerticalAlignment)]
-        //[PropertyOrder(1002)]
+        [PropertyOrder(1002)]
         public VerticalAlignment ContentVerticalAlignment
         {
             get => _contentVerticalAlignment;
@@ -88,11 +90,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ButtonDsShape_ContentInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(XamlTypeEditor), typeof(XamlTypeEditor))]
-        //[PropertyOrder(1003)]
+        [Editor(typeof(XamlTypeEditor), typeof(XamlTypeEditor))]
+        [PropertyOrder(1003)]
         public XamlDataBinding ContentInfo
         {
             get => _contentInfo;
@@ -101,11 +103,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ButtonDsShape_PressedContentInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(XamlTypeEditor), typeof(XamlTypeEditor))]
-        //[PropertyOrder(1004)]
+        [Editor(typeof(XamlTypeEditor), typeof(XamlTypeEditor))]
+        [PropertyOrder(1004)]
         public XamlDataBinding PressedContentInfo
         {
             get => _pressedContentInfo;
@@ -114,7 +116,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ButtonDsShape_TextMargin)]
-        //[PropertyOrder(1005)]
+        [PropertyOrder(1005)]
         public Thickness TextMargin
         {
             get => _textMargin;
@@ -123,7 +125,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ButtonDsShape_TextStretch)]
-        //[PropertyOrder(1006)]
+        [PropertyOrder(1006)]
         public Stretch TextStretch
         {
             get => _textStretch;
@@ -132,7 +134,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ButtonDsShape_TextHorizontalAlignment)]
-        //[PropertyOrder(1007)]
+        [PropertyOrder(1007)]
         public TextAlignment TextHorizontalAlignment
         {
             get => _textHorizontalAlignment;
@@ -141,7 +143,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ButtonDsShape_TextVerticalAlignment)]
-        //[PropertyOrder(1008)]
+        [PropertyOrder(1008)]
         public VerticalAlignment TextVerticalAlignment
         {
             get => _textVerticalAlignment;
@@ -150,7 +152,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ButtonDsShape_TextWrapping)]
-        //[PropertyOrder(1009)]
+        [PropertyOrder(1009)]
         public TextWrapping TextWrapping
         {
             get => _textWrapping;
@@ -159,11 +161,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ButtonDsShape_TextInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(1010)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(1010)]
         public TextDataBinding TextInfo
         {
             get => _textInfo;

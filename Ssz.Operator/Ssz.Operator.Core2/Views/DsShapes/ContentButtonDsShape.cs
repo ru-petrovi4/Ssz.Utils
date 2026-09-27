@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.ComponentModel;
 using Avalonia;
@@ -54,10 +56,10 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ButtonDsShape_ContentInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(XamlTypeEditor), typeof(XamlTypeEditor))]
+        [Editor(typeof(XamlTypeEditor), typeof(XamlTypeEditor))]
         public XamlDataBinding ContentInfo
         {
             get => _contentInfo;
@@ -66,10 +68,10 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.AppearanceCategory)]
         [DsDisplayName(ResourceStrings.ButtonDsShape_PressedContentInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(XamlTypeEditor), typeof(XamlTypeEditor))]
+        [Editor(typeof(XamlTypeEditor), typeof(XamlTypeEditor))]
         public XamlDataBinding PressedContentInfo
         {
             get => _pressedContentInfo;

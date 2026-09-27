@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -39,7 +41,7 @@ namespace Ssz.Operator.Core.DataEngines
 
         [DsCategory(ResourceStrings.SystemCategory)]
         [DsDisplayName(ResourceStrings.DataEngineBaseDescription)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public abstract string Description { get; }
 
         [Browsable(false)]
@@ -55,74 +57,73 @@ namespace Ssz.Operator.Core.DataEngines
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DataEngineBase_Constant)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public string TagConstant_ => TagConstant;        
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DataEngineBase_TagNameToDisplayInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(2)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(2)]
         public TextDataBinding TagNameToDisplayInfo { get; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DataEngineBase_TagDescriptionInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(3)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(3)]
         public TextDataBinding TagDescInfo { get; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DataEngineBase_ModelTagPropertyInfosCollection)]
-        //[Editor(//typeof(MiscTypeCloneableObjectsCollectionTypeEditor),
-            //typeof(MiscTypeCloneableObjectsCollectionTypeEditor))]
-        //[PropertyOrder(4)]
+        [Editor(typeof(MiscTypeCloneableObjectsCollectionTypeEditor), typeof(MiscTypeCloneableObjectsCollectionTypeEditor))]
+        [PropertyOrder(4)]
         public List<ProcessModelPropertyInfo> ModelTagPropertyInfosCollection { get; private set; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DataEngineBase_TagsFileName)]
         [LocalizedDescription(ResourceStrings.DataEngineBase_TagsFileName_Description)]
-        //[PropertyOrder(5)]
+        [PropertyOrder(5)]
         public string TagsFileName => @"Tags.csv";
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DataEngineBase_TagTypesFileName)]
         [LocalizedDescription(ResourceStrings.DataEngineBase_TagTypesFileName_Description)]
-        //[PropertyOrder(6)]
+        [PropertyOrder(6)]
         public string TagTypesFileName => @"TagTypes.csv";        
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DataEngineBase_ElementIdsMapFileName)]
         [LocalizedDescription(ResourceStrings.DataEngineBase_ElementIdsMapFileName_Description)]
-        //[PropertyOrder(7)]
+        [PropertyOrder(7)]
         public string ElementIdsMapFileName => @"Map.csv";
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DataEngineBase_ReverseElementIdsMapFileName)]
         [LocalizedDescription(ResourceStrings.DataEngineBase_ReverseElementIdsMapFileName_Description)]
-        //[PropertyOrder(8)]
+        [PropertyOrder(8)]
         public string ReverseElementIdsMapFileName => @"ReverseMap.csv";
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DataEngineBase_GlobalVariablesFileName)]
         [LocalizedDescription(ResourceStrings.DataEngineBase_GlobalVariablesFileName_Description)]
-        //[PropertyOrder(9)]
+        [PropertyOrder(9)]
         public string GlobalVariablesFileName => @"GlobalVariables.csv";
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DataEngineBase_FontsMapFileName)]
         [LocalizedDescription(ResourceStrings.DataEngineBase_FontsMapFileName_Description)]
-        //[PropertyOrder(10)]
+        [PropertyOrder(10)]
         public string FontsMapFileName => @"FontsMap.csv";
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DataEngineBase_TagAndPropertySeparator)]
         [LocalizedDescription(ResourceStrings.DataEngineBase_TagAndPropertySeparator_Description)]
-        //[PropertyOrder(11)]
+        [PropertyOrder(11)]
         public string TagAndPropSeparator
         {
             get => DsProject.Instance.ElementIdsMap.TagAndPropSeparator;
@@ -131,7 +132,7 @@ namespace Ssz.Operator.Core.DataEngines
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DataEngineBase_TagTypeSeparator)]
         [LocalizedDescription(ResourceStrings.DataEngineBase_TagTypeSeparator_Description)]
-        //[PropertyOrder(12)]
+        [PropertyOrder(12)]
         public string TagTypeSeparator
         {
             get => DsProject.Instance.ElementIdsMap.TagTypeSeparator;
@@ -139,15 +140,14 @@ namespace Ssz.Operator.Core.DataEngines
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DataEngineBase_TagAlarmsInfosCollection)]
-        //[Editor(//typeof(MiscTypeCloneableObjectsCollectionTypeEditor),
-            //typeof(MiscTypeCloneableObjectsCollectionTypeEditor))]
-        //[PropertyOrder(13)]
+        [Editor(typeof(MiscTypeCloneableObjectsCollectionTypeEditor), typeof(MiscTypeCloneableObjectsCollectionTypeEditor))]
+        [PropertyOrder(13)]
         public List<TagAlarmsInfo> TagAlarmsInfosCollection { get; set; }
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DataEngineBase_SymbolsToRemoveFromTagInAlarmMessage)]
         [LocalizedDescription(ResourceStrings.DataEngineBase_SymbolsToRemoveFromTagInAlarmMessage_Description)]
-        //[PropertyOrder(14)]
+        [PropertyOrder(14)]
         public string SymbolsToRemoveFromTagInAlarmMessage
         {
             get { return _symbolsToRemoveFromTagInAlarmMessage; }
@@ -165,7 +165,7 @@ namespace Ssz.Operator.Core.DataEngines
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DataEngineBase_AlarmMessages_ElementIdsMapFileName)]
         [LocalizedDescription(ResourceStrings.DataEngineBase_AlarmMessages_ElementIdsMapFileNameDescription)]
-        //[PropertyOrder(15)]
+        [PropertyOrder(15)]
         public string AlarmMessages_ElementIdsMapFileName => @"AlarmMessagesMap.csv";        
 
         public void RefreshForPropertyGrid()

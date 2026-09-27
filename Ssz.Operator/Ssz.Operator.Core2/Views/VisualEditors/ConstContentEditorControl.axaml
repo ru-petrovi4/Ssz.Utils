@@ -1,0 +1,49 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:res="using:Ssz.Operator.Core.Properties"
+             xmlns:editors="using:Ssz.Operator.Core.VisualEditors"
+             mc:Ignorable="d"
+             x:Class="Ssz.Operator.Core.VisualEditors.ConstContentEditorControl"
+             x:DataType="editors:ConstContentEditorViewModel">
+  <Grid ColumnDefinitions="170,*">
+
+    <StackPanel Grid.Column="0">
+      <Button Height="30" Padding="5" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
+              Content="{x:Static res:Resources.ContentEditorClearContentButtonText}"
+              Click="ClearContentButtonOnClick" />
+
+      <Button Height="60" Margin="0,5,0,0" Padding="5" HorizontalAlignment="Stretch"
+              HorizontalContentAlignment="Left" Click="SelectFileButtonOnClick">
+        <TextBlock TextWrapping="Wrap" Text="{x:Static res:Resources.ContentEditorSelectFileButtonText}" />
+      </Button>
+
+      <Button Height="30" Margin="0,5,0,0" Padding="5" HorizontalAlignment="Stretch"
+              HorizontalContentAlignment="Left" Click="SelectFileFromLibraryButtonOnClick">
+        <TextBlock TextWrapping="Wrap"
+                   Text="{x:Static res:Resources.ContentEditorSelectFileFromLibraryButtonText}" />
+      </Button>
+
+      <TextBlock Margin="0,5,0,0" Padding="5" Text="{x:Static res:Resources.ContentEditorContentStretch}" />
+      <ComboBox Name="ContentStretchComboBox" Height="30" Margin="0,5,0,0" Padding="5"
+                HorizontalAlignment="Stretch" VerticalContentAlignment="Center"
+                SelectedItem="{Binding ContentStretchComboBoxSelectedItem, Mode=TwoWay}" />
+
+      <Button Height="30" Margin="0,5,0,0" Padding="5" HorizontalAlignment="Stretch"
+              HorizontalContentAlignment="Left"
+              Content="{x:Static res:Resources.SaveOriginalContentToFileButtonText}"
+              Click="SaveOriginalContentToFileButtonOnClick" />
+      <Button Height="30" Margin="0,5,0,0" Padding="5" HorizontalAlignment="Stretch"
+              HorizontalContentAlignment="Left"
+              Content="{x:Static res:Resources.SaveAsPngFileButtonText}"
+              Click="SaveAsPngFileButtonOnClick" />
+
+      <TextBlock Margin="0,5,0,0" Padding="5" Text="{x:Static res:Resources.ContentEditorCurrentContentDesc}" />
+      <TextBlock Margin="0,5,0,0" Padding="5" TextWrapping="Wrap" Text="{Binding ContentDesc}" />
+    </StackPanel>
+
+    <ContentControl Grid.Column="1" Name="PreviewContentControl" Margin="5,0,0,0"
+                    Content="{Binding ContentPreview}" />
+  </Grid>
+</UserControl>

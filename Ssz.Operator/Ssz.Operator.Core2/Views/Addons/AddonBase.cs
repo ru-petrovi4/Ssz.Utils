@@ -1,3 +1,4 @@
+using Ssz.Operator.Core.VisualEditors;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,23 +30,23 @@ namespace Ssz.Operator.Core.Addons
 
         [DsCategory(ResourceStrings.SystemCategory)]
         [DsDisplayName(ResourceStrings.AddonBaseDescription)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public abstract string Desc { get; }
 
         [DsCategory(ResourceStrings.SystemCategory)]
         [DsDisplayName(ResourceStrings.AddonBaseVersion)]
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         public abstract string Version { get; }
 
         [DsCategory(ResourceStrings.SystemCategory)]
         [DsDisplayName(ResourceStrings.AddonBaseSszOperatorVersion)]
-        //[PropertyOrder(3)]
+        [PropertyOrder(3)]
         public abstract string CoreLibraryVersion { get; }
 
         [DsCategory(ResourceStrings.SystemCategory)]
         [DsDisplayName(ResourceStrings.AddonBaseDllFileFullName)]
         //[ReadOnlyInEditor]
-        //[PropertyOrder(4)]
+        [PropertyOrder(4)]
         public string DllFileFullName { get; set; } = @"";
 
         [Browsable(false)] public virtual bool Is64BitProcessSupported => true;

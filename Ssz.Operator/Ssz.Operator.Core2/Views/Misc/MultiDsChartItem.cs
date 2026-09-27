@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Avalonia.Media;
@@ -83,78 +85,77 @@ namespace Ssz.Operator.Core
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.MultiDsChartItem_TitleInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(1)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(1)]
         public TextDataBinding TitleInfo { get; set; }
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.MultiDsChartItem_AppearanceType)]
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         public AppearanceType Type { get; set; }
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.MultiDsChartItem_PointsIsVisible)]
-        //[PropertyOrder(3)]
+        [PropertyOrder(3)]
         public bool PointsIsVisible { get; set; }
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.MultiDsChartItem_LineIsVisible)]
-        //[PropertyOrder(4)]
+        [PropertyOrder(4)]
         public bool LineIsVisible { get; set; }
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.MultiDsChartItem_FillIsVisible)]
-        //[PropertyOrder(5)]
+        [PropertyOrder(5)]
         public bool FillIsVisible { get; set; }
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.MultiDsChartItem_PointGeometryInfo)]
-        //[Editor(//typeof(DsUIElementPropertyTypeEditor<ChartItemPointGeometryInfoSupplier>),
-            //typeof(DsUIElementPropertyTypeEditor<ChartItemPointGeometryInfoSupplier>))]
-        //[PropertyOrder(6)]
+        [Editor(typeof(DsUIElementPropertyTypeEditor<ChartItemPointGeometryInfoSupplier>), typeof(DsUIElementPropertyTypeEditor<ChartItemPointGeometryInfoSupplier>))]
+        [PropertyOrder(6)]
         public DsUIElementProperty PointGeometryInfo { get; set; }
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.MultiDsChartItem_PointDsBrush)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(BrushTypeEditor), typeof(BrushTypeEditor))]
-        //[PropertyOrder(7)]
+        [Editor(typeof(BrushTypeEditor), typeof(BrushTypeEditor))]
+        [PropertyOrder(7)]
         public BrushDataBinding PointDsBrush { get; set; }
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.MultiDsChartItem_PointStrokeThickness)]
-        //[PropertyOrder(8)]
+        [PropertyOrder(8)]
         public double PointStrokeThickness { get; set; }
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.MultiDsChartItem_LineDsBrush)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(BrushTypeEditor), typeof(BrushTypeEditor))]
-        //[PropertyOrder(9)]
+        [Editor(typeof(BrushTypeEditor), typeof(BrushTypeEditor))]
+        [PropertyOrder(9)]
         public BrushDataBinding LineDsBrush { get; set; }
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.MultiDsChartItem_LineStrokeThickness)]
-        //[PropertyOrder(10)]
+        [PropertyOrder(10)]
         public double LineStrokeThickness { get; set; }
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.MultiDsChartItem_LineStrokeDashLength)]
         [DefaultValue(null)] // For XAML serialization
-        //[PropertyOrder(11)]
+        [PropertyOrder(11)]
         public double? LineStrokeDashLength { get; set; }
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.MultiDsChartItem_LineStrokeGapLength)]
         [DefaultValue(null)] // For XAML serialization
-        //[PropertyOrder(12)]
+        [PropertyOrder(12)]
         public double? LineStrokeGapLength { get; set; }
 
 
@@ -162,59 +163,59 @@ namespace Ssz.Operator.Core
         [DsDisplayName(ResourceStrings.MultiDsChartItem_LineStrokeDashArray)]
         [LocalizedDescription(ResourceStrings.MultiDsChartItem_LineStrokeDashArrayDescription)]
         [DefaultValue(null)] // For XAML serialization
-        //[PropertyOrder(13)]
+        [PropertyOrder(13)]
         public string LineStrokeDashArray { get; set; } = @"";
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.MultiDsChartItem_FillDsBrush)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(BrushTypeEditor), typeof(BrushTypeEditor))]
-        //[PropertyOrder(14)]
+        [Editor(typeof(BrushTypeEditor), typeof(BrushTypeEditor))]
+        [PropertyOrder(14)]
         public BrushDataBinding FillDsBrush { get; set; }
 
         [DsCategory(ResourceStrings.DataCategory)]
         [DsDisplayName(ResourceStrings.MultiDsChartItem_PointNumberConstant)]
         [LocalizedDescription(ResourceStrings.MultiDsChartItem_PointNumberConstantDescription)]
-        //[PropertyOrder(0)]
+        [PropertyOrder(0)]
         public string PointNumberConstant => PointNumberConstantConst;
 
         [DsCategory(ResourceStrings.DataCategory)]
         [DsDisplayName(ResourceStrings.MultiDsChartItem_PointsStartNumber)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public int PointsStartNumber { get; set; }
 
         [DsCategory(ResourceStrings.DataCategory)]
         [DsDisplayName(ResourceStrings.MultiDsChartItem_PointNumberFormat)]
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         public string PointNumberFormat { get; set; }
 
         [DsCategory(ResourceStrings.DataCategory)]
         [DsDisplayName(ResourceStrings.MultiDsChartItem_PointsCountInfo)]
-        //[PropertyOrder(3)]
-        //[ExpandableObject]
+        [PropertyOrder(3)]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
         public Int32DataBinding PointsCountInfo { get; set; }
 
         [DsCategory(ResourceStrings.DataCategory)]
         [DsDisplayName(ResourceStrings.MultiDsChartItem_PointValueXInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(4)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(4)]
         public DoubleDataBinding PointValueXInfo { get; set; }
 
         [DsCategory(ResourceStrings.DataCategory)]
         [DsDisplayName(ResourceStrings.MultiDsChartItem_PointValueYInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(5)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(5)]
         public DoubleDataBinding PointValueYInfo { get; set; }
 
         [Browsable(false)]

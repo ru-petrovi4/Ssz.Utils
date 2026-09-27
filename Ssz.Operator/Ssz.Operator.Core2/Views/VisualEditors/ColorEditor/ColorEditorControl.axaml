@@ -1,0 +1,69 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:res="using:Ssz.Operator.Core.Properties"
+             xmlns:colorEditor="using:Ssz.Operator.Core.VisualEditors.ColorEditor"
+             mc:Ignorable="d"
+             x:Class="Ssz.Operator.Core.VisualEditors.ColorEditor.ColorEditorControl"
+             x:DataType="colorEditor:ColorEditorViewModel">
+
+  <UserControl.Resources>
+    <!-- A swatch of a palette: the colour over the chequerboard, so that transparency shows. -->
+    <DataTemplate x:Key="ColorItemTemplate" DataType="colorEditor:ColorItem">
+      <Border BorderBrush="Gray" BorderThickness="1" Margin="2"
+              ToolTip.Tip="{Binding Name}"
+              Background="{Binding Source={x:Static colorEditor:ColorEditorControl.CheckerBrush}}">
+        <Rectangle Width="14" Height="14" Fill="{Binding Brush}" />
+      </Border>
+    </DataTemplate>
+  </UserControl.Resources>
+
+  <StackPanel Name="MainStackPanel" Orientation="Horizontal">
+    <Grid RowDefinitions="Auto,Auto,Auto">
+
+      <Grid Grid.Row="0" RowDefinitions="Auto,Auto">
+        <TextBlock Background="AliceBlue" Padding="2" Margin="0,0,0,1" Text="Available Colors" />
+        <ListBox Grid.Row="1" Width="200" Background="Transparent" BorderThickness="0"
+                 SelectionMode="Single"
+                 ItemsSource="{Binding AvailableColors}"
+                 SelectedItem="{Binding SelectedAvailableColors, Mode=TwoWay}"
+                 ItemTemplate="{StaticResource ColorItemTemplate}">
+          <ListBox.ItemsPanel>
+            <ItemsPanelTemplate>
+              <WrapPanel Width="200" />
+            </ItemsPanelTemplate>
+          </ListBox.ItemsPanel>
+        </ListBox>
+      </Grid>
+
+      <Grid Grid.Row="1" RowDefinitions="Auto,Auto">
+        <TextBlock Background="AliceBlue" Padding="2" Margin="0,1" Text="Standard Colors" />
+        <ListBox Grid.Row="1" Width="200" Background="Transparent" BorderThickness="0"
+                 SelectionMode="Single"
+                 ItemsSource="{Binding StandardColors}"
+                 SelectedItem="{Binding SelectedStandardColors, Mode=TwoWay}"
+                 ItemTemplate="{StaticResource ColorItemTemplate}">
+          <ListBox.ItemsPanel>
+            <ItemsPanelTemplate>
+              <WrapPanel Width="200" />
+            </ItemsPanelTemplate>
+          </ListBox.ItemsPanel>
+        </ListBox>
+      </Grid>
+
+      <!-- A colour may also be named by a constant of the project, and then it is only known when
+           the project runs. -->
+      <StackPanel Grid.Row="2" Margin="5,5,0,0" Orientation="Vertical"
+                  ToolTip.Tip="{x:Static res:Resources.ColorFromConstantToolTip}">
+        <TextBlock Name="ConstantTextBlock" HorizontalAlignment="Left"
+                   Text="{x:Static res:Resources.ColorFromConstant}" />
+        <TextBox Name="ConstantTextBox" Margin="0,5,0,0" Width="120" HorizontalAlignment="Left"
+                 KeyUp="ConstantTextBoxOnKeyUp" />
+      </StackPanel>
+    </Grid>
+
+    <ColorView Name="MainColorView" Margin="5,0,0,0"
+               Color="{Binding SelectedColor, Mode=TwoWay}" />
+  </StackPanel>
+</UserControl>

@@ -1,3 +1,4 @@
+using Ssz.Operator.Core.VisualEditors;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -38,7 +39,7 @@ namespace Ssz.Operator.Core.Addons
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.ShowNavigationPanel)]
         [LocalizedDescription(ResourceStrings.ShowNavigationPanelDescription)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         [DefaultValue(DefaultFalseTrue.Default)] // For XAML serialization
         public DefaultFalseTrue ShowNavigationPanel { get; set; }
 

@@ -1,3 +1,4 @@
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System.ComponentModel;
 using System.Globalization;
 using Avalonia;
@@ -110,7 +111,7 @@ namespace Ssz.Operator.Core
 
         #region public functions
 
-        //[Editor(typeof(StructConverterTypeEditor), typeof(StructConverterTypeEditor))]
+        [Editor(typeof(StructConverterTypeEditor), typeof(StructConverterTypeEditor))]
         public override ValueConverterBase? Converter
         {
             get => base.Converter;

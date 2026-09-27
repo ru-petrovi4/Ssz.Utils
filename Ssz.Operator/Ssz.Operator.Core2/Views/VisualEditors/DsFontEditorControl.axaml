@@ -1,0 +1,46 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:res="using:Ssz.Operator.Core.Properties"
+             mc:Ignorable="d"
+             x:Class="Ssz.Operator.Core.VisualEditors.DsFontEditorControl">
+  <Grid RowDefinitions="25,*,Auto" ColumnDefinitions="180,200,*">
+
+    <TextBlock Grid.Row="0" Grid.Column="0" Padding="5" FontStyle="Italic" Text="Font Family" />
+    <ListBox Grid.Row="1" Grid.Column="0" Name="FontFamilyListBox" Margin="0,5,0,0"
+             SelectionChanged="FontFamilyListBoxOnSelectionChanged" />
+
+    <TextBlock Grid.Row="0" Grid.Column="1" Padding="5,0,0,0" FontStyle="Italic" Margin="5"
+               Text="Style Weight Stretch" />
+    <!-- Avalonia does not say which faces a family was drawn in, so the three things a face is
+         made of are each picked on their own. -->
+    <Grid Grid.Row="1" Grid.Column="1" Margin="5,5,0,0" ColumnDefinitions="*,*,*">
+      <ListBox Grid.Column="0" Name="FontStyleListBox"
+               SelectionChanged="FaceListBoxOnSelectionChanged" />
+      <ListBox Grid.Column="1" Name="FontWeightListBox" Margin="2,0,0,0"
+               SelectionChanged="FaceListBoxOnSelectionChanged" />
+      <ListBox Grid.Column="2" Name="FontStretchListBox" Margin="2,0,0,0"
+               SelectionChanged="FaceListBoxOnSelectionChanged" />
+    </Grid>
+
+    <TextBlock Grid.Row="0" Grid.Column="2" Padding="5" FontStyle="Italic" Margin="5,0,0,0"
+               Text="Sample Text" />
+    <TextBox Grid.Row="1" Grid.Column="2" Name="SampleTextTextBox" Margin="5,5,0,0"
+             AcceptsReturn="True" TextAlignment="Left" TextWrapping="Wrap"
+             Background="#FFFFFFF7"
+             Text="Verba volant, scripta manent" />
+
+    <Grid Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" ColumnDefinitions="*,Auto">
+      <Slider Grid.Column="0" Name="FontSizeSlider" Maximum="60" Minimum="0"
+              SmallChange="0.5" LargeChange="2"
+              HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="5,5,0,0"
+              TickPlacement="BottomRight"
+              ValueChanged="FontSizeSliderOnValueChanged" />
+      <TextBox Grid.Column="1" Name="FontSizeTextBox" Margin="5,5,0,0" Width="80"
+               TextAlignment="Right" Text="10"
+               TextChanged="FontSizeTextBoxOnTextChanged"
+               ToolTip.Tip="{x:Static res:Resources.FontSizeTextBoxToolTip}" />
+    </Grid>
+  </Grid>
+</UserControl>

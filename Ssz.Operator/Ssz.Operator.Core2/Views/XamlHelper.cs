@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Avalonia.Platform.Storage;
 using Avalonia.Svg.Skia;
 using Avalonia.Threading;
 using Microsoft.Extensions.Logging;
@@ -387,57 +388,57 @@ namespace Ssz.Operator.Core
             }
         }
 
-        //public static string SetXamlContentStretch(string xaml, Stretch stretch)
-        //{
-        //    if (string.IsNullOrWhiteSpace(xaml)) return xaml;
+        /// <summary>
+        ///     Says how the content of a shape is to fill it, by writing the choice into the XAML
+        ///     itself: an image carries its own stretch, and anything else is wrapped in a viewbox.
+        /// </summary>
+        public static string SetXamlContentStretch(string xaml, Stretch stretch)
+        {
+            if (String.IsNullOrWhiteSpace(xaml)) return xaml;
 
-        //    try
-        //    {
-        //        var desc = GetXamlDesc(xaml);
+            try
+            {
+                CaseInsensitiveOrderedDictionary<string?> desc = GetXamlDesc(xaml);
 
-        //        desc["Stretch"] = new Any(stretch).ValueAsString(false);
+                desc[@"Stretch"] = new Any(stretch).ValueAsString(false);
 
-        //        var previewContent = Load(xaml) as UIElement;
+                var previewContent = Load(xaml) as Control;
+                if (previewContent is null) return xaml;
 
-        //        if (previewContent is Image)
-        //        {
-        //            ((Image) previewContent).Stretch = stretch;
-        //            xaml = AddXamlDesc(Save(previewContent), desc);
-        //        }
-        //        //else if (previewContent is BrowserControl)
-        //        //{
-        //        //    ((BrowserControl) previewContent).Stretch = stretch;
-        //        //    xaml = AddXamlDesc(Save(previewContent), desc);
-        //        //}
-        //        else if (previewContent is Viewbox)
-        //        {
-        //            if (stretch == Stretch.None)
-        //            {
-        //                xaml = AddXamlDesc(Save(((Viewbox)previewContent).Child), desc);
-        //            }
-        //            else
-        //            {
-        //                ((Viewbox)previewContent).Stretch = stretch;
-        //                xaml = AddXamlDesc(Save(previewContent), desc);
-        //            }
-        //        }
-        //        else if (stretch != Stretch.None)
-        //        {
-        //            var viewBox = new Viewbox
-        //            {
-        //                Child = previewContent
-        //            };
-        //            viewBox.Stretch = stretch;
-        //            xaml = AddXamlDesc(Save(viewBox), desc);
-        //        }                
+                if (previewContent is Image image)
+                {
+                    image.Stretch = stretch;
+                    xaml = AddXamlDesc(Save(image), desc);
+                }
+                else if (previewContent is Viewbox viewbox)
+                {
+                    if (stretch == Stretch.None)
+                    {
+                        xaml = AddXamlDesc(Save(viewbox.Child!), desc);
+                    }
+                    else
+                    {
+                        viewbox.Stretch = stretch;
+                        xaml = AddXamlDesc(Save(viewbox), desc);
+                    }
+                }
+                else if (stretch != Stretch.None)
+                {
+                    var newViewbox = new Viewbox
+                    {
+                        Child = previewContent,
+                        Stretch = stretch
+                    };
+                    xaml = AddXamlDesc(Save(newViewbox), desc);
+                }
 
-        //        return xaml;
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return xaml;
-        //    }
-        //}
+                return xaml;
+            }
+            catch (Exception)
+            {
+                return xaml;
+            }
+        }
 
         public static string Save(Brush? brush)
         {
@@ -550,63 +551,57 @@ namespace Ssz.Operator.Core
             //    });
         }
 
-        //public static object? GetContentPreview(string xaml, out string contentDesc, out Stretch contentStretch)
-        //{
-        //    if (string.IsNullOrWhiteSpace(xaml))
-        //    {
-        //        contentDesc = "<null>";
-        //        contentStretch = Stretch.None;
-        //        return null;
-        //    }
+        /// <summary>
+        ///     What the content of a shape looks like, for the dialog that edits it: the content
+        ///     itself, what to call it, and how it fills the shape.
+        /// </summary>
+        public static object? GetContentPreview(string xaml, out string contentDesc, out Stretch contentStretch)
+        {
+            if (String.IsNullOrWhiteSpace(xaml))
+            {
+                contentDesc = @"<null>";
+                contentStretch = Stretch.None;
+                return null;
+            }
 
-        //    var desc = NameValueCollectionHelper.GetNameValueCollectionStringToDisplay(GetXamlDesc(xaml));
+            var desc = NameValueCollectionHelper.GetNameValueCollectionStringToDisplay(GetXamlDesc(xaml));
 
-        //    try
-        //    {
-        //        var contentPreview = Load(xaml) as UIElement;
+            try
+            {
+                var contentPreview = Load(xaml) as Control;
 
-        //        if (contentPreview is null)
-        //        {
-        //            contentDesc = @"<null>";
-        //            contentStretch = Stretch.None;
-        //            return null;
-        //        }
+                if (contentPreview is null)
+                {
+                    contentDesc = @"<null>";
+                    contentStretch = Stretch.None;
+                    return null;
+                }
 
-        //        if (contentPreview is Image)
-        //        {
-        //            contentDesc = "Image File" + (!string.IsNullOrWhiteSpace(desc) ? @": " + desc : "");
-        //            contentStretch = ((Image) contentPreview).Stretch;
-        //            return contentPreview;
-        //        }
-        //        //if (contentPreview is BrowserControl)
-        //        //{
-        //        //    contentDesc = "HTML" + (!String.IsNullOrWhiteSpace(desc) ? @": " + desc : "");
-        //        //    contentStretch = ((BrowserControl) contentPreview).Stretch;
-        //        //    return contentPreview;
-        //        //}
+                if (contentPreview is Image image)
+                {
+                    contentDesc = @"Image File" + (!String.IsNullOrWhiteSpace(desc) ? @": " + desc : @"");
+                    contentStretch = image.Stretch;
+                    return image;
+                }
 
-        //        var border = new Border();
-        //        border.Background = (Brush) border.FindResource("CheckerBrush");
-        //        border.Child = contentPreview;
+                // Anything else is shown over a chequerboard, so that what is transparent in it shows.
+                var border = new Border
+                {
+                    Background = VisualEditors.PropertyGridTypeEditors.BrushAndNameControl.CheckerBrush,
+                    Child = contentPreview
+                };
 
-        //        if (contentPreview is Viewbox)
-        //        {
-        //            contentDesc = "XAML" + (!string.IsNullOrWhiteSpace(desc) ? @": " + desc : "");
-        //            contentStretch = ((Viewbox) contentPreview).Stretch;
-        //            return border;
-        //        }
-
-        //        contentDesc = "XAML" + (!string.IsNullOrWhiteSpace(desc) ? @": " + desc : "");
-        //        contentStretch = Stretch.None;
-        //        return border;
-        //    }
-        //    catch (Exception)
-        //    {
-        //        contentDesc = "XAML with Error" + (!string.IsNullOrWhiteSpace(desc) ? @": " + desc : "");
-        //        contentStretch = Stretch.None;
-        //        return null;
-        //    }
-        //}
+                contentDesc = @"XAML" + (!String.IsNullOrWhiteSpace(desc) ? @": " + desc : @"");
+                contentStretch = contentPreview is Viewbox viewbox ? viewbox.Stretch : Stretch.None;
+                return border;
+            }
+            catch (Exception)
+            {
+                contentDesc = @"XAML with Error" + (!String.IsNullOrWhiteSpace(desc) ? @": " + desc : @"");
+                contentStretch = Stretch.None;
+                return null;
+            }
+        }
 
         public static object? GetContentPreviewSmall(string? xamlWithAbsolutePaths)
         {
@@ -771,129 +766,129 @@ namespace Ssz.Operator.Core
         //    return result;
         //}
 
-        //public static void SaveToXamlOrImageFile(string xaml)
-        //{
-        //    try
-        //    {
-        //        var image = Load(xaml) as Image;
+        /// <summary>
+        ///     Writes the content of a shape back out: the picture it came from when it is a picture,
+        ///     and otherwise the XAML itself.
+        ///     <para>
+        ///         Ported from the WPF editor; the dialogs are awaited, which is also what lets this
+        ///         work in the browser.
+        ///     </para>
+        /// </summary>
+        public static async Task SaveToXamlOrImageFileAsync(string xaml)
+        {
+            try
+            {
+                var image = Load(xaml) as Image;
+                var bitmap = image?.Source as Bitmap;
 
-        //        if (image is not null && image.Source is not null)
-        //        {
-        //            string imageAbsolutePath =
-        //                Uri.UnescapeDataString(
-        //                    new Uri(((BitmapFrame) image.Source).Decoder.ToString(), UriKind.Absolute).AbsolutePath);
-        //            var imageFileName =
-        //                new FileInfo(imageAbsolutePath);
+                if (bitmap is not null)
+                {
+                    IStorageFile? pictureFile = await FileDialogHelper.SaveFileAsync(
+                        Resources.SaveOriginalContentToFileButtonText, null,
+                        FileDialogHelper.AllFilesFileType);
+                    if (pictureFile is null) return;
 
-        //            var dlg = new SaveFileDialog
-        //            {
-        //                Filter =
-        //                    imageFileName.Extension + @" files (*" + imageFileName.Extension + @")|*" +
-        //                    imageFileName.Extension,
-        //                FileName = imageFileName.Name
-        //            };
-        //            if (dlg.ShowDialog() != true)
-        //                return;
-        //            var newFileInfo = new FileInfo(dlg.FileName);
+                    var picturePath = pictureFile.TryGetLocalPath();
+                    if (String.IsNullOrEmpty(picturePath)) return;
 
-        //            try
-        //            {
-        //                File.Copy(imageFileName.FullName, newFileInfo.FullName, true);
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                DsProject.LoggersSet.Logger.LogError(ex, Resources.CannotSaveFileMessage);
-        //                MessageBoxHelper.ShowError(Resources.CannotSaveFileMessage + @" " +
-        //                                           Resources.SeeErrorLogForDetails);
-        //            }
+                    try
+                    {
+                        bitmap.Save(picturePath);
+                    }
+                    catch (Exception ex)
+                    {
+                        DsProject.LoggersSet.Logger.LogError(ex, Resources.CannotSaveFileMessage);
+                        MessageBoxHelper.ShowError(Resources.CannotSaveFileMessage + @" " +
+                                                   Resources.SeeErrorLogForDetails);
+                    }
 
-        //            return;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        DsProject.LoggersSet.Logger.LogError(ex, @"");
-        //    }
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                DsProject.LoggersSet.Logger.LogError(ex, @"");
+            }
 
-        //    var desc = GetXamlDesc(xaml).TryGetValue(@"");
+            var desc = GetXamlDesc(xaml).TryGetValue(@"");
 
-        //    var dlg2 = new SaveFileDialog
-        //    {
-        //        Filter = @"XAML files (*.axaml)|*.axaml"
-        //    };
-        //    if (desc is not null && desc.EndsWith(@".axaml"))
-        //        dlg2.FileName = desc;
-        //    if (dlg2.ShowDialog() != true)
-        //        return;
-        //    var file2 = new FileInfo(dlg2.FileName);
+            IStorageFile? xamlFile = await FileDialogHelper.SaveFileAsync(
+                Resources.SaveOriginalContentToFileButtonText,
+                desc is not null && desc.EndsWith(@".axaml") ? desc : null,
+                new FilePickerFileType(@"XAML files") { Patterns = new[] { @"*.axaml" } });
+            if (xamlFile is null) return;
 
-        //    try
-        //    {
-        //        using (var textWriter = new StreamWriter(File.Create(file2.FullName), Encoding.UTF8))
-        //        {
-        //            textWriter.Write(xaml);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        DsProject.LoggersSet.Logger.LogError(ex, @"");
-        //    }
-        //}
+            var xamlPath = xamlFile.TryGetLocalPath();
+            if (String.IsNullOrEmpty(xamlPath)) return;
 
-        //public static void SaveAsPngFile(string xaml)
-        //{
-        //    var dlg = new SaveFileDialog
-        //    {
-        //        Filter = @"PNG files (*.png)|*.png"
-        //    };
-        //    if (dlg.ShowDialog() != true)
-        //        return;
-        //    var file = new FileInfo(dlg.FileName);
+            try
+            {
+                using (var textWriter = new StreamWriter(File.Create(xamlPath), Encoding.UTF8))
+                {
+                    textWriter.Write(xaml);
+                }
+            }
+            catch (Exception ex)
+            {
+                DsProject.LoggersSet.Logger.LogError(ex, @"");
+            }
+        }
 
-        //    var content = Load(xaml) as Control;
-        //    var width = double.NaN;
-        //    var height = double.NaN;
+        /// <summary>
+        ///     Draws the content of a shape into a picture file. A content that does not say how big it
+        ///     is is asked about.
+        /// </summary>
+        public static async Task SaveAsPngFileAsync(string xaml)
+        {
+            IStorageFile? file = await FileDialogHelper.SaveFileAsync(
+                Resources.SaveAsPngFileButtonText, null,
+                new FilePickerFileType(@"PNG files") { Patterns = new[] { @"*.png" } });
+            if (file is null) return;
 
-        //    var viewBox = content as Viewbox;
-        //    if (viewBox is not null)
-        //    {
-        //        var fe = viewBox.Child as Control;
-        //        if (fe is not null)
-        //        {
-        //            width = fe.Width;
-        //            height = fe.Height;
-        //        }
-        //    }
+            var path = file.TryGetLocalPath();
+            if (String.IsNullOrEmpty(path)) return;
 
-        //    if (double.IsNaN(width) || double.IsNaN(height))
-        //    {
-        //        string widthHeight = Interaction.InputBox(Resources.SaveAsImageFileInputImageDimensions,
-        //            "", "1024,768");
-        //        if (string.IsNullOrWhiteSpace(widthHeight)) return;
-        //        string[] widthHeightArray = widthHeight.Split(',');
-        //        if (widthHeightArray.Length != 2) return;
-        //        if (!double.TryParse(widthHeightArray[0], NumberStyles.Any, CultureInfo.InvariantCulture,
-        //            out width)) return;
-        //        if (width < 1 || width > 65534) return;
-        //        if (!double.TryParse(widthHeightArray[1], NumberStyles.Any, CultureInfo.InvariantCulture,
-        //            out height)) return;
-        //        if (height < 1 || height > 65534) return;
-        //    }
+            var content = Load(xaml) as Control;
+            var width = Double.NaN;
+            var height = Double.NaN;
 
-        //    var bytes = CreatePreviewImageBytes(content, width, height);
-        //    if (bytes is not null)
-        //        try
-        //        {
-        //            using (FileStream fileStream = File.Create(file.FullName))
-        //            {
-        //                fileStream.Write(bytes, 0, bytes.Length);
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            DsProject.LoggersSet.Logger.LogError(ex, @"");
-        //        }
-        //}
+            if (content is Viewbox viewBox && viewBox.Child is Control child)
+            {
+                width = child.Width;
+                height = child.Height;
+            }
+
+            if (Double.IsNaN(width) || Double.IsNaN(height))
+            {
+                string? widthHeight = await InputBoxHelper.ShowAsync(
+                    Resources.SaveAsImageFileInputImageDimensions, @"", @"1024,768");
+                if (String.IsNullOrWhiteSpace(widthHeight)) return;
+
+                string[] widthHeightArray = widthHeight.Split(',');
+                if (widthHeightArray.Length != 2) return;
+                if (!Double.TryParse(widthHeightArray[0], NumberStyles.Any, CultureInfo.InvariantCulture,
+                        out width)) return;
+                if (width < 1 || width > 65534) return;
+                if (!Double.TryParse(widthHeightArray[1], NumberStyles.Any, CultureInfo.InvariantCulture,
+                        out height)) return;
+                if (height < 1 || height > 65534) return;
+            }
+
+            byte[]? bytes = PreviewImageHelper.CreatePreviewImageBytes(content, width, height);
+            if (bytes is null) return;
+
+            try
+            {
+                using (FileStream fileStream = File.Create(path))
+                {
+                    fileStream.Write(bytes, 0, bytes.Length);
+                }
+            }
+            catch (Exception ex)
+            {
+                DsProject.LoggersSet.Logger.LogError(ex, @"");
+            }
+        }
 
         //public static void SaveAsEmfFile(string xaml)
         //{

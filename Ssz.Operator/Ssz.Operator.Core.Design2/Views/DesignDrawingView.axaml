@@ -1,0 +1,21 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controlsDesign="using:Ssz.Operator.Core.ControlsDesign"
+             mc:Ignorable="d"
+             x:Class="Ssz.Operator.Core.Design.Views.DesignDrawingView"
+             x:DataType="controlsDesign:DesignDrawingViewModel">
+  <ScrollViewer Name="MainScrollViewer"
+                HorizontalScrollBarVisibility="Auto"
+                VerticalScrollBarVisibility="Auto">
+    <!-- The viewbox is what the zoom acts on: the drawing keeps its own size and is shown larger
+         or smaller. -->
+    <Viewbox Width="{Binding ViewboxWidth}"
+             Height="{Binding ViewboxHeight}">
+      <controlsDesign:DesignDrawingBorder Name="DesignDrawingBorder"
+                                          Width="{Binding BorderWidth}"
+                                          Height="{Binding BorderHeight}" />
+    </Viewbox>
+  </ScrollViewer>
+</UserControl>

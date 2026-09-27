@@ -1,0 +1,14 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:res="using:Ssz.Operator.Core.Properties"
+             xmlns:editors="using:Ssz.Operator.Core.VisualEditors"
+             mc:Ignorable="d"
+             x:Class="Ssz.Operator.Core.VisualEditors.ObjectPropertiesControl">
+  <Grid RowDefinitions="*,Auto">
+    <editors:PropertyGrid Grid.Row="0" Name="ObjectPropertyGrid" ShowTitle="False" />
+    <TextBlock Grid.Row="1" Margin="0,5,0,0" TextAlignment="Left" TextWrapping="Wrap"
+               Text="{x:Static res:Resources.PropertyGridHint}" />
+  </Grid>
+</UserControl>

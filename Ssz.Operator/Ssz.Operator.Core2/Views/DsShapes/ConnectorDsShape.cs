@@ -1,3 +1,4 @@
+using Ssz.Operator.Core.VisualEditors;
 using System;
 using Ssz.Operator.Core.CustomAttributes;
 
@@ -37,7 +38,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.ConnectorDsShape_Type)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public string Type
         {
             get => _type;
@@ -47,7 +48,7 @@ namespace Ssz.Operator.Core.DsShapes
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.ConnectorDsShape_Begin)]
         //[ReadOnlyInEditor]
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         public string Begin
         {
             get => _begin;
@@ -57,7 +58,7 @@ namespace Ssz.Operator.Core.DsShapes
         [DsCategory(ResourceStrings.MainCategory)]
         [DsDisplayName(ResourceStrings.ConnectorDsShape_End)]
         //[ReadOnlyInEditor]
-        //[PropertyOrder(3)]
+        [PropertyOrder(3)]
         public string End
         {
             get => _end;

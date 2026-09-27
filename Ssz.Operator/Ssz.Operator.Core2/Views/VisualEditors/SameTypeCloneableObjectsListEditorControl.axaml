@@ -1,0 +1,44 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:res="using:Ssz.Operator.Core.Properties"
+             xmlns:editors="using:Ssz.Operator.Core.VisualEditors"
+             mc:Ignorable="d"
+             x:Class="Ssz.Operator.Core.VisualEditors.SameTypeCloneableObjectsListEditorControl">
+  <editors:BusyWithStopControl Name="BusyIndicator" Stopped="BusyIndicatorOnStopped">
+    <Grid Name="MainGrid" Margin="5" RowDefinitions="Auto,*,Auto">
+      <TextBlock Grid.Row="0" TextWrapping="Wrap"
+                 Text="{x:Static res:Resources.SameTypeCloneableObjectsEditorControlHint}" />
+
+      <DataGrid Grid.Row="1" Name="MainDataGrid" Margin="0,5,0,0"
+                AutoGenerateColumns="True"
+                CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="False">
+        <DataGrid.ContextMenu>
+          <ContextMenu>
+            <MenuItem Header="Copy" Click="CopyMenuItemOnClick" />
+            <MenuItem Header="Paste" Click="PasteMenuItemOnClick" />
+          </ContextMenu>
+        </DataGrid.ContextMenu>
+      </DataGrid>
+
+      <WrapPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left">
+        <Button Width="160" Margin="0,5,5,0" HorizontalContentAlignment="Center"
+                Content="{x:Static res:Resources.ImportFromCsvButtonText}"
+                Click="ImportFromCsvButtonOnClickAsync" />
+        <Button Width="160" Margin="0,5,5,0" HorizontalContentAlignment="Center"
+                Content="{x:Static res:Resources.ExportToCsvButtonText}"
+                Click="ExportToCsvButtonOnClickAsync" />
+        <Button Width="160" Margin="0,5,5,0" HorizontalContentAlignment="Center"
+                Content="{x:Static res:Resources.ClearAllButtonText}"
+                Click="ClearAllButtonOnClick" />
+        <Button Width="160" Margin="0,5,5,0" HorizontalContentAlignment="Center"
+                Content="{x:Static res:Resources.FindButtonText}"
+                Click="FindButtonOnClick" />
+        <Button Width="160" Margin="0,5,5,0" HorizontalContentAlignment="Center"
+                Content="{x:Static res:Resources.FindNextButtonText}"
+                Click="FindNextButtonOnClick" />
+      </WrapPanel>
+    </Grid>
+  </editors:BusyWithStopControl>
+</UserControl>

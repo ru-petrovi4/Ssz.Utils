@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors;
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -297,7 +299,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DsShapeName)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public string Name
         {
             get => _name;
@@ -321,7 +323,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.GeometryCategory)]
         [DsDisplayName(ResourceStrings.DsShapeCenterInitialPosition)]
-        //[PropertyOrder(0)]
+        [PropertyOrder(0)]
         public Point CenterInitialPosition
         {
             get => new(Math.Round(_centerInitialPosition.X, 1), Math.Round(_centerInitialPosition.Y, 1));
@@ -340,7 +342,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.GeometryAdvancedCategory)]
         [DsDisplayName(ResourceStrings.DsShapeCenterInitialPositionAdvanced)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] // For XAML serialization
         public Point CenterInitialPositionAdvanced
         {
@@ -350,11 +352,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.GeometryAdvancedCategory)]
         [DsDisplayName(ResourceStrings.DsShapeCenterDeltaPositionXInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(2)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(2)]
         [DefaultValue(typeof(DoubleDataBinding), "0.0")] // For XAML serialization
         public DoubleDataBinding CenterDeltaPositionXInfo
         {
@@ -364,11 +366,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.GeometryAdvancedCategory)]
         [DsDisplayName(ResourceStrings.DsShapeCenterDeltaPositionYInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(3)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(3)]
         [DefaultValue(typeof(DoubleDataBinding), "0.0")] // For XAML serialization
         public DoubleDataBinding CenterDeltaPositionYInfo
         {
@@ -378,7 +380,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.GeometryAdvancedCategory)]
         [DsDisplayName(ResourceStrings.DsShapeCenterFinalPosition)]
-        //[PropertyOrder(4)]
+        [PropertyOrder(4)]
         [DefaultValue(typeof(Point), "0, 0")] // For XAML serialization
         public Point CenterFinalPosition
         {
@@ -392,7 +394,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.GeometryCategory)]
         [DsDisplayName(ResourceStrings.DsShapeCenterRelativePosition)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public Point CenterRelativePosition
         {
             get => _centerRelativePosition;
@@ -407,7 +409,7 @@ namespace Ssz.Operator.Core.DsShapes
         [DsCategory(ResourceStrings.GeometryCategory)]
         [DsDisplayName(ResourceStrings.DsShape_ResizeMode)]
         [LocalizedDescription(ResourceStrings.DsShape_ResizeModeDescription)]
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         public DsShapeResizeMode ResizeMode
         {
             get => _resizeMode;
@@ -416,7 +418,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.GeometryCategory)]
         [DsDisplayName(ResourceStrings.DsShapeWidthInitial)]
-        //[PropertyOrder(3)]
+        [PropertyOrder(3)]
         public virtual double WidthInitial
         {
             get => Math.Round(_widthInitial, 1);
@@ -437,7 +439,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.GeometryAdvancedCategory)]
         [DsDisplayName(ResourceStrings.DsShapeWidthInitialAdvanced)]
-        //[PropertyOrder(5)]
+        [PropertyOrder(5)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] // For XAML serialization
         public double WidthInitialAdvanced
         {
@@ -447,11 +449,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.GeometryAdvancedCategory)]
         [DsDisplayName(ResourceStrings.DsShapeWidthDeltaInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(6)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(6)]
         [DefaultValue(typeof(DoubleDataBinding), "0.0")] // For XAML serialization
         public DoubleDataBinding WidthDeltaInfo
         {
@@ -461,7 +463,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.GeometryAdvancedCategory)]
         [DsDisplayName(ResourceStrings.DsShapeWidthFinal)]
-        //[PropertyOrder(7)]
+        [PropertyOrder(7)]
         [DefaultValue(0.0)] // For XAML serialization
         public double WidthFinal
         {
@@ -480,7 +482,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.GeometryCategory)]
         [DsDisplayName(ResourceStrings.DsShapeHeightInitial)]
-        //[PropertyOrder(4)]
+        [PropertyOrder(4)]
         public virtual double HeightInitial
         {
             get => Math.Round(_heightInitial, 1);
@@ -501,7 +503,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.GeometryAdvancedCategory)]
         [DsDisplayName(ResourceStrings.DsShapeHeightInitialAdvanced)]
-        //[PropertyOrder(8)]
+        [PropertyOrder(8)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] // For XAML serialization
         public double HeightInitialAdvanced
         {
@@ -511,11 +513,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.GeometryAdvancedCategory)]
         [DsDisplayName(ResourceStrings.DsShapeHeightDeltaInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(9)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(9)]
         [DefaultValue(typeof(DoubleDataBinding), "0.0")] // For XAML serialization
         public DoubleDataBinding HeightDeltaInfo
         {
@@ -525,7 +527,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.GeometryAdvancedCategory)]
         [DsDisplayName(ResourceStrings.DsShapeHeightFinal)]
-        //[PropertyOrder(10)]
+        [PropertyOrder(10)]
         [DefaultValue(0.0)] // For XAML serialization
         public double HeightFinal
         {
@@ -554,7 +556,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.GeometryCategory)]
         [DsDisplayName(ResourceStrings.DsShapeAngleInitial)]
-        //[PropertyOrder(5)]
+        [PropertyOrder(5)]
         [DefaultValue(0.0)] // For XAML serialization
         public double AngleInitial
         {
@@ -576,7 +578,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.GeometryAdvancedCategory)]
         [DsDisplayName(ResourceStrings.DsShapeAngleInitialAdvanced)]
-        //[PropertyOrder(11)]
+        [PropertyOrder(11)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] // For XAML serialization
         public double AngleInitialAdvanced
         {
@@ -586,11 +588,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.GeometryAdvancedCategory)]
         [DsDisplayName(ResourceStrings.DsShapeAngleDeltaInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(12)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(12)]
         [DefaultValue(typeof(DoubleDataBinding), "0.0")] // For XAML serialization
         public DoubleDataBinding AngleDeltaInfo
         {
@@ -600,7 +602,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.GeometryAdvancedCategory)]
         [DsDisplayName(ResourceStrings.DsShapeAngleFinal)]
-        //[PropertyOrder(13)]
+        [PropertyOrder(13)]
         [DefaultValue(0.0)] // For XAML serialization
         public double AngleFinal
         {
@@ -614,7 +616,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.GeometryCategory)]
         [DsDisplayName(ResourceStrings.DsShapeIsFlipped)]
-        //[PropertyOrder(6)]
+        [PropertyOrder(6)]
         [DefaultValue(false)] // For XAML serialization
         public bool IsFlipped
         {
@@ -629,7 +631,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.Geometry3DCategory)]
         [DsDisplayName(ResourceStrings.DsShape_RotationX)]
-        //[PropertyOrder(6)]
+        [PropertyOrder(6)]
         [DefaultValue(0.0)] // For XAML serialization
         public double RotationX
         {
@@ -643,7 +645,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.Geometry3DCategory)]
         [DsDisplayName(ResourceStrings.DsShape_RotationY)]
-        //[PropertyOrder(7)]
+        [PropertyOrder(7)]
         [DefaultValue(0.0)] // For XAML serialization
         public double RotationY
         {
@@ -657,7 +659,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.Geometry3DCategory)]
         [DsDisplayName(ResourceStrings.DsShape_RotationZ)]
-        //[PropertyOrder(8)]
+        [PropertyOrder(8)]
         [DefaultValue(0.0)] // For XAML serialization
         public double RotationZ
         {
@@ -671,7 +673,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.Geometry3DCategory)]
         [DsDisplayName(ResourceStrings.DsShape_FieldOfView)]
-        //[PropertyOrder(9)]
+        [PropertyOrder(9)]
         [DefaultValue(45.0)] // For XAML serialization
         public double FieldOfView
         {
@@ -741,11 +743,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DsShapeOpacityInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
-        //[PropertyOrder(4)]
+        [Editor(typeof(TextBoxEditor), typeof(TextBoxEditor))]
+        [PropertyOrder(4)]
         [DefaultValue(typeof(DoubleDataBinding), @"1.0")] // For XAML serialization
         public virtual DoubleDataBinding OpacityInfo
         {
@@ -755,11 +757,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DsShapeIsVisibleInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(CheckBoxEditor), typeof(CheckBoxEditor))]
-        //[PropertyOrder(5)]
+        [Editor(typeof(CheckBoxEditor), typeof(CheckBoxEditor))]
+        [PropertyOrder(5)]
         [DefaultValue(typeof(BooleanDataBinding), "True")] // For XAML serialization
         public virtual BooleanDataBinding IsVisibleInfo
         {
@@ -769,11 +771,11 @@ namespace Ssz.Operator.Core.DsShapes
 
         [DsCategory(ResourceStrings.BasicCategory)]
         [DsDisplayName(ResourceStrings.DsShapeIsEnabledInfo)]
-        //[ExpandableObject]
+        [ExpandableObject]
         //[ValuePropertyPath(@"ConstValue")]
         //[IsValueEditorEnabledPropertyPath(@"IsConst")]
-        //[Editor(typeof(CheckBoxEditor), typeof(CheckBoxEditor))]
-        //[PropertyOrder(6)]
+        [Editor(typeof(CheckBoxEditor), typeof(CheckBoxEditor))]
+        [PropertyOrder(6)]
         [DefaultValue(typeof(BooleanDataBinding), "True")] // For XAML serialization
         public virtual BooleanDataBinding IsEnabledInfo
         {

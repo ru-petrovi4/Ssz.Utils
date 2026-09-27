@@ -1,3 +1,5 @@
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
+using Ssz.Operator.Core.VisualEditors;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -154,14 +156,14 @@ namespace Ssz.Operator.Core
         public bool IsConst => DataBindingItemsCollection.Count == 0;
 
         [DsDisplayName(ResourceStrings.ValueDataBindingBaseDataBindingItemsCollection)]
-        //[Editor(typeof(DataBindingItemsCollectionTypeEditor), typeof(DataBindingItemsCollectionTypeEditor))]
-        //[PropertyOrder(0)]
+        [Editor(typeof(DataBindingItemsCollectionTypeEditor), typeof(DataBindingItemsCollectionTypeEditor))]
+        [PropertyOrder(0)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility
             .Content)] // For XAML serialization of collections
         public ObservableCollection<DataBindingItem> DataBindingItemsCollection { get; } = new();
 
         [DsDisplayName(ResourceStrings.ValueDataBindingBaseFormat)]
-        //[PropertyOrder(1)]
+        [PropertyOrder(1)]
         public virtual string Format
         {
             get => _format;
@@ -176,7 +178,7 @@ namespace Ssz.Operator.Core
         }
 
         [DsDisplayName(ResourceStrings.ValueDataBindingBaseConverter)]
-        //[PropertyOrder(2)]
+        [PropertyOrder(2)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] // For XAML serialization
         public virtual ValueConverterBase? Converter
         {

@@ -1,3 +1,4 @@
+using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -36,7 +37,7 @@ namespace Ssz.Operator.Core
         #region public functions
 
         [DsDisplayName(ResourceStrings.ValueDataBindingBaseConverter)]
-        //[Editor(typeof(XamlConverterTypeEditor), typeof(XamlConverterTypeEditor))]
+        [Editor(typeof(XamlConverterTypeEditor), typeof(XamlConverterTypeEditor))]
         public override ValueConverterBase? Converter
         {
             get => base.Converter;
