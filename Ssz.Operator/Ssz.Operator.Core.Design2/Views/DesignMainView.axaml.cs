@@ -38,6 +38,8 @@ public partial class DesignMainView : UserControl
         AddCommandBindings();
         AddKeyBindings();
 
+        InitializeDocking();
+
         DesignDsProjectViewModel.Instance.PropertyChanged += DesignDsProjectViewModelOnPropertyChanged;
 
         DesignDsProjectViewModel.Instance.OpenedDesignDrawingViewModels.CollectionChanged +=
@@ -102,7 +104,7 @@ public partial class DesignMainView : UserControl
                     .FirstOrDefault(i => FileSystemHelper.Compare(i.DrawingInfo.FileFullName, drawingFileFullName));
             if (drawingInfoViewModel is not null)
             {
-                ListsTabControl.SelectedIndex = 0;
+                ShowListTool(true);
                 DsPagesListView.ViewModel.DsPageDrawingInfosSelectionService.SelectOne(drawingInfoViewModel);
             }
         }
@@ -113,7 +115,7 @@ public partial class DesignMainView : UserControl
                     .FirstOrDefault(i => FileSystemHelper.Compare(i.DrawingInfo.FileFullName, drawingFileFullName));
             if (drawingInfoViewModel is not null)
             {
-                ListsTabControl.SelectedIndex = 1;
+                ShowListTool(false);
                 DsShapesListView.ViewModel.DsShapeDrawingInfosSelectionService.SelectOne(drawingInfoViewModel);
             }
         }
@@ -155,7 +157,7 @@ public partial class DesignMainView : UserControl
         }
         else
         {
-            ListsTabControl.SelectedIndex = 0;
+            ShowListTool(true);
         }
     }
 
@@ -224,7 +226,11 @@ public partial class DesignMainView : UserControl
     private void DesignDsProjectViewModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(DesignDsProjectViewModel.FocusedDesignDrawingViewModel))
+        {
+            UpdateSelectedDrawing();
+            SyncActiveDocument();
             RoutedCommand.InvalidateRequerySuggested();
+        }
     }
 
     private void OpenedDrawingViewModelsOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -271,6 +277,15 @@ public partial class DesignMainView : UserControl
         if (ScaleComboBox.SelectedItem is ComboBoxItem item)
             ScaleTextBox.Text = item.Content as string;
         ScaleComboBox.SelectedItem = null;
+    }
+
+    /// <summary>
+    ///     The Stop of the busy notice is the Stop command of the editor, which is what the WPF
+    ///     editor bound it to.
+    /// </summary>
+    private void BusyIndicatorOnStopped(object? sender, EventArgs e)
+    {
+        if (Stop.CanExecute(null)) Stop.Execute(null);
     }
 
     private void RefreshTitle()

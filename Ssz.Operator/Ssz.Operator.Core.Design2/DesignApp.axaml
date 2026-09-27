@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="using:Ssz.Operator.Core"
 			 xmlns:classic="clr-namespace:Classic.Avalonia;assembly=Classic.Avalonia"
+             xmlns:dockFluent="using:Dock.Avalonia.Themes.Fluent"
              x:Class="Ssz.Operator.Core.Design.DesignApp"
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
@@ -24,6 +25,10 @@
         <FluentTheme />
 
 		<StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+
+		<!-- The panes of the editor. The content of a tab is kept while another tab is looked at,
+		     so that going back to a drawing shows it as it was left. -->
+		<dockFluent:DockFluentTheme CacheDocumentTabContent="True" />
 
 		<!-- Needed by ColorView in the trend color dialog (ColorDialogHelper). -->
 		<StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml"/>

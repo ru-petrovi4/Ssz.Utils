@@ -19,6 +19,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Dock.Avalonia" Version="12.1.0.6" />
+    <PackageReference Include="Dock.Avalonia.Themes.Fluent" Version="12.1.0.6" />
+    <PackageReference Include="Dock.Model.Mvvm" Version="12.1.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Ssz.DataAccessGrpc.Client\Ssz.DataAccessGrpc.Client.csproj" />
     <ProjectReference Include="..\..\Ssz.Utils\Ssz.Utils.csproj" />
     <ProjectReference Include="..\Ssz.Operator.Core2\Ssz.Operator.Core.csproj" />

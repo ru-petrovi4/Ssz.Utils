@@ -28,6 +28,9 @@ public partial class DrawingDsShapesView : UserControl
 
         DataContext = ViewModel;
 
+        // The list follows the drawing being edited for as long as the editor is open, and not only
+        // while it is on show, because the pane it is in may be behind another pane while the author
+        // moves from one drawing to another.
         DesignDsProjectViewModel.Instance.PropertyChanged += OnDesignDsProjectViewModelPropertyChanged;
 
         Refresh();
@@ -38,17 +41,6 @@ public partial class DrawingDsShapesView : UserControl
     #region public functions
 
     public DrawingDsShapesViewModel ViewModel { get; } = new();
-
-    #endregion
-
-    #region protected functions
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        DesignDsProjectViewModel.Instance.PropertyChanged -= OnDesignDsProjectViewModelPropertyChanged;
-
-        base.OnDetachedFromVisualTree(e);
-    }
 
     #endregion
 

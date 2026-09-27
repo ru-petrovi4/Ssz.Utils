@@ -19,9 +19,8 @@ namespace Ssz.Operator.Core.Design.Views;
 ///     The list of the pages of the opened project, grouped by page type and then by the group the
 ///     author gave them.
 ///     <para>
-///         Ported from the WPF editor's DsPagesListDockControl. It is a plain view for now: it moves
-///         into a dock pane when the docking layout is ported, and opening a page on a double click
-///         arrives with the drawing surface.
+///         Ported from the WPF editor's DsPagesListDockControl, and as there it is a pane of the
+///         layout the author may move, tab or float.
 ///     </para>
 /// </summary>
 public partial class DsPagesListView : UserControl
@@ -34,6 +33,9 @@ public partial class DsPagesListView : UserControl
 
         DataContext = ViewModel;
 
+        // The list listens for as long as the editor is open, and not only while it is on show: the
+        // pane it is in may be behind another pane when the project is opened or its pages change,
+        // and it has to have them when the author brings it to the front.
         DsProject.Instance.DsPageDrawingsListChanged += OnDsPageDrawingsListChanged;
 
         _ = RefreshAsync(DsProject.Instance.DsProjectFileFullName);
@@ -64,17 +66,6 @@ public partial class DsPagesListView : UserControl
                 FileSystemHelper.Compare(dsPageDrawingInfoViewModel.DrawingInfo.FileFullName,
                     startDsPageFileFullName);
         }
-    }
-
-    #endregion
-
-    #region protected functions
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        DsProject.Instance.DsPageDrawingsListChanged -= OnDsPageDrawingsListChanged;
-
-        base.OnDetachedFromVisualTree(e);
     }
 
     #endregion

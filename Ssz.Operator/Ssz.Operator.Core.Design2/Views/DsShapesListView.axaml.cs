@@ -33,6 +33,9 @@ public partial class DsShapesListView : UserControl
 
         DataContext = ViewModel;
 
+        // The palette listens for as long as the editor is open, and not only while it is on show:
+        // the pane it is in may be behind another pane when the project is opened, and it has to
+        // have its shapes when the author brings it to the front.
         DsProject.Instance.DsShapeDrawingsListChanged += OnDsShapeDrawingsListChanged;
 
         _ = RefreshAsync(DsProject.Instance.DsProjectFileFullName);
@@ -43,17 +46,6 @@ public partial class DsShapesListView : UserControl
     #region public functions
 
     public DsShapesListViewModel ViewModel { get; } = new();
-
-    #endregion
-
-    #region protected functions
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        DsProject.Instance.DsShapeDrawingsListChanged -= OnDsShapeDrawingsListChanged;
-
-        base.OnDetachedFromVisualTree(e);
-    }
 
     #endregion
 

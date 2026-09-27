@@ -7,9 +7,18 @@
              xmlns:ribbon="using:Ssz.Operator.Core.Design.Controls.Ribbon"
              xmlns:core="using:Ssz.Operator.Core"
              xmlns:controlsDesign="using:Ssz.Operator.Core.ControlsDesign"
+             xmlns:visualEditors="using:Ssz.Operator.Core.VisualEditors"
+             xmlns:dock="using:Dock.Avalonia.Controls"
              mc:Ignorable="d"
              x:Class="Ssz.Operator.Core.Design.Views.DesignMainView"
              x:DataType="core:DesignDsProjectViewModel">
+  <!-- Everything the editor does that takes a while is said over the whole of it, with a way to
+       stop it, as the WPF editor did with its busy indicator. -->
+  <visualEditors:BusyWithStopControl IsBusy="{Binding IsBusy}"
+                                     Text1="{Binding BusyHeader}"
+                                     Text2="{Binding BusyDescription}"
+                                     ProgressPercent="{Binding BusyProgressBarPercent}"
+                                     Stopped="BusyIndicatorOnStopped">
   <Grid RowDefinitions="Auto,*,Auto">
 
     <ribbon:Ribbon Grid.Row="0" Name="MainRibbon"
@@ -338,45 +347,9 @@
     </ribbon:Ribbon>
 
     <!-- The drawing area, and beside it the one pane that holds the three lists. This is the
-         layout of the WPF editor; the docking library replaces the fixed split later. -->
-    <Grid Grid.Row="1" ColumnDefinitions="*,4,400">
-
-      <!-- The opened drawings, one tab each. -->
-      <Border Grid.Column="0" Name="DrawingsPane" BorderThickness="1"
-              BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
-        <TabControl Name="DrawingsTabControl"
-                    ItemsSource="{Binding OpenedDesignDrawingViewModels}"
-                    SelectedItem="{Binding FocusedDesignDrawingViewModel, Mode=TwoWay}">
-          <TabControl.ItemTemplate>
-            <DataTemplate DataType="controlsDesign:DesignDrawingViewModel">
-              <TextBlock Text="{Binding Title}" />
-            </DataTemplate>
-          </TabControl.ItemTemplate>
-          <TabControl.ContentTemplate>
-            <DataTemplate DataType="controlsDesign:DesignDrawingViewModel">
-              <views:DesignDrawingView />
-            </DataTemplate>
-          </TabControl.ContentTemplate>
-        </TabControl>
-      </Border>
-
-      <GridSplitter Grid.Column="1" ResizeDirection="Columns" />
-
-      <Border Grid.Column="2" BorderThickness="1"
-              BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
-        <TabControl Name="ListsTabControl" TabStripPlacement="Bottom" Classes="lists">
-          <TabItem Header="{x:Static p:Resources.DsPagesTabItemHeader}">
-            <views:DsPagesListView Name="DsPagesListView" />
-          </TabItem>
-          <TabItem Header="{x:Static p:Resources.DsShapesTabItemHeader}">
-            <views:DsShapesListView Name="DsShapesListView" />
-          </TabItem>
-          <TabItem Header="{x:Static p:Resources.DrawingTabItemHeader}">
-            <views:DrawingDsShapesView Name="DrawingDsShapesView" />
-          </TabItem>
-        </TabControl>
-      </Border>
-    </Grid>
+         layout the WPF editor started with, and as there the author may drag the panes elsewhere,
+         tab them together or float them off. -->
+    <dock:DockControl Grid.Row="1" Name="MainDockControl" InitializeLayout="False" />
 
     <Border Grid.Row="2" Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
       <Grid ColumnDefinitions="*,Auto,Auto,Auto">
@@ -397,12 +370,5 @@
       </Grid>
     </Border>
   </Grid>
-
-  <UserControl.Styles>
-    <Style Selector="TabControl.lists > TabItem">
-      <Setter Property="FontSize" Value="12" />
-      <Setter Property="MinHeight" Value="0" />
-      <Setter Property="Padding" Value="8,3" />
-    </Style>
-  </UserControl.Styles>
+  </visualEditors:BusyWithStopControl>
 </UserControl>

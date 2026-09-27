@@ -1,0 +1,173 @@
+<controlsCommon:LocationMindfulWindow
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:p="using:Ssz.Operator.Core.Properties"
+    xmlns:findReplace="using:Ssz.Operator.Core.FindReplace"
+    xmlns:visualEditors="using:Ssz.Operator.Core.VisualEditors"
+    xmlns:controlsCommon="using:Ssz.Operator.Core.ControlsCommon"
+    mc:Ignorable="d"
+    x:Class="Ssz.Operator.Core.FindReplace.FindReplaceDialog"
+    x:DataType="findReplace:FindReplaceViewModel"
+    ShowInTaskbar="False"
+    Title="{x:Static p:Resources.FindButtonText}"
+    KeyDown="WindowOnKeyDown">
+
+  <Window.Styles>
+    <!-- The tabs of Fluent are drawn for a phone; here they only say Find or Replace. -->
+    <Style Selector="TabItem">
+      <Setter Property="FontSize" Value="14" />
+      <Setter Property="MinHeight" Value="28" />
+      <Setter Property="Padding" Value="10,2" />
+    </Style>
+  </Window.Styles>
+
+  <Grid ColumnDefinitions="300,*">
+
+    <TabControl Grid.Column="0" Name="MainTab" IsEnabled="{Binding IsNotBusy}">
+      <TabItem Name="FindTabItem" Header="Find">
+        <ScrollViewer>
+          <StackPanel Margin="5">
+            <TextBlock Text="{x:Static p:Resources.TextToFindLabel}" />
+            <TextBox Name="FindTextBox" Margin="0,5,0,0"
+                     AcceptsReturn="{Binding AcceptsReturn}"
+                     Text="{Binding TextToFind, Mode=TwoWay}" />
+
+            <ContentControl Margin="0,5,0,0" Content="{Binding}"
+                            ContentTemplate="{StaticResource SearchScopeTemplate}" />
+
+            <Button Name="FindButton" Margin="0,5,0,0" Width="200" IsDefault="True"
+                    HorizontalAlignment="Left" HorizontalContentAlignment="Left" Padding="10,2,0,2"
+                    Content="{x:Static p:Resources.FindButton}"
+                    Click="FindButtonOnClickAsync" />
+            <Button Name="ExportResultsButton" Margin="0,5,0,0" Width="200"
+                    HorizontalAlignment="Left" HorizontalContentAlignment="Left" Padding="10,2,0,2"
+                    Content="{x:Static p:Resources.ExportResultsButton}"
+                    Click="ExportResultsOnClick" />
+            <Button Name="CopyResultsButton" Margin="0,5,0,0" Width="200"
+                    HorizontalAlignment="Left" HorizontalContentAlignment="Left" Padding="10,2,0,2"
+                    Content="{x:Static p:Resources.CopyResultsButton}"
+                    Click="CopyResultsOnClick" />
+            <TextBlock Margin="0,5,0,0" TextWrapping="Wrap" TextAlignment="Left"
+                       Text="{x:Static p:Resources.FindReplaceDialogHint}" />
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+
+      <TabItem Name="ReplaceTabItem" Header="Replace"
+               IsVisible="{Binding AllowReplace}">
+        <ScrollViewer>
+          <StackPanel Margin="5">
+            <TextBlock Text="{x:Static p:Resources.TextToFindLabel}" />
+            <TextBox Name="Find2TextBox" Margin="0,5,0,0"
+                     AcceptsReturn="{Binding AcceptsReturn}"
+                     Text="{Binding TextToFind, Mode=TwoWay}" />
+            <TextBlock Margin="0,5,0,0" Text="{x:Static p:Resources.ReplaceWith}" />
+            <TextBox Name="ReplaceTextBox" Margin="0,5,0,0"
+                     AcceptsReturn="{Binding AcceptsReturn}"
+                     Text="{Binding ReplacementText, Mode=TwoWay}" />
+
+            <ContentControl Margin="0,5,0,0" Content="{Binding}"
+                            ContentTemplate="{StaticResource SearchScopeTemplate}" />
+
+            <StackPanel Margin="0,5,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
+              <Button Margin="5,0,0,0" Width="100" HorizontalContentAlignment="Center"
+                      Content="{x:Static p:Resources.ReplaceAll}"
+                      Click="ReplaceAllClickAsync" />
+            </StackPanel>
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+    </TabControl>
+
+    <visualEditors:BusyWithStopControl Grid.Column="1" Name="MainBusyWithStopControl"
+                                       IsBusy="{Binding IsBusy}"
+                                       Text1="{x:Static p:Resources.FindReplaceBusyText}"
+                                       Text2="{Binding ProgressString}"
+                                       ProgressPercent="{Binding ProgressPercent}"
+                                       Stopped="BusyControlOnStopped">
+      <Grid RowDefinitions="*,Auto">
+        <TreeView Grid.Row="0" Name="SearchResultsTreeView" Margin="5,5,5,0"
+                  ItemsSource="{Binding SearchResultGroupsCollection}">
+          <TreeView.ItemContainerTheme>
+            <ControlTheme TargetType="TreeViewItem" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+              <Setter Property="IsExpanded" Value="True" />
+            </ControlTheme>
+          </TreeView.ItemContainerTheme>
+          <TreeView.DataTemplates>
+            <TreeDataTemplate DataType="findReplace:SearchResultGroupViewModel"
+                              ItemsSource="{Binding SearchResults}">
+              <TextBlock Text="{Binding Header}" />
+            </TreeDataTemplate>
+            <DataTemplate DataType="findReplace:SearchResultViewModel">
+              <TextBlock Background="Transparent" Text="{Binding Header}"
+                         DoubleTapped="SearchResultOnDoubleTapped" />
+            </DataTemplate>
+          </TreeView.DataTemplates>
+        </TreeView>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+          <Button Margin="0,5,5,5" Width="180" HorizontalContentAlignment="Center"
+                  IsVisible="{Binding ShowDsShapePropertiesButtonIsVisible}"
+                  Content="{x:Static p:Resources.ShowDsShapePropertiesButtonText}"
+                  Click="ShowDsShapePropertiesButtonOnClick" />
+          <Button Margin="0,5,5,5" Width="180" HorizontalContentAlignment="Center"
+                  IsVisible="{Binding GoToDsPageButtonIsVisible}"
+                  Content="{x:Static p:OperatorUIResources.GoToDsPageButtonText}"
+                  Click="GoToDsPageButtonOnClick" />
+          <Button Margin="0,5,5,5" Width="180" HorizontalContentAlignment="Center"
+                  IsVisible="{Binding FindPathButtonIsVisible}"
+                  Content="{x:Static p:OperatorUIResources.FindPathButtonText}"
+                  Click="FindPathButtonOnClick" />
+        </StackPanel>
+      </Grid>
+    </visualEditors:BusyWithStopControl>
+  </Grid>
+
+  <Window.Resources>
+    <!-- Where to look, and how. Both tabs show the same thing, as they did in the WPF dialog. -->
+    <DataTemplate x:Key="SearchScopeTemplate" DataType="findReplace:FindReplaceViewModel">
+      <StackPanel>
+        <TextBlock IsVisible="{Binding ShowSearchIn}" Text="Search in:" />
+        <ComboBox Margin="0,5,0,0" HorizontalAlignment="Stretch"
+                  IsVisible="{Binding ShowSearchIn}"
+                  SelectedItem="{Binding SearchIn, Mode=TwoWay}"
+                  ItemsSource="{x:Static findReplace:FindReplaceDialog.SearchScopes}">
+          <ComboBox.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Converter={x:Static findReplace:SearchScopeToTextConverter.Instance}}" />
+            </DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
+        <ComboBox Margin="0,5,0,0" HorizontalAlignment="Stretch"
+                  IsVisible="{Binding ShowSearchInProps}"
+                  SelectedItem="{Binding SearchInProps, Mode=TwoWay}"
+                  ItemsSource="{x:Static findReplace:FindReplaceDialog.SearchScopesProps}">
+          <ComboBox.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Converter={x:Static findReplace:SearchScopeToTextConverter.Instance}}" />
+            </DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <Expander Header="Options" IsExpanded="True" Margin="0,5,0,0"
+                  IsVisible="{Binding OptionsExpanderIsVisible}">
+          <StackPanel>
+            <CheckBox Margin="1" Name="CaseSensitiveCheckBox" Content="Case Sensitive"
+                      IsChecked="{Binding CaseSensitive, Mode=TwoWay}" />
+            <CheckBox Margin="1" Name="WholeStringCheckBox"
+                      Content="{x:Static p:Resources.WholeStringCheckBox}"
+                      IsChecked="{Binding WholeString, Mode=TwoWay}" />
+            <CheckBox Margin="1" Name="RegexCheckBox" Content="Regular Expression"
+                      IsChecked="{Binding UseRegEx, Mode=TwoWay}" />
+            <CheckBox Margin="1" Name="WildcardsCheckBox"
+                      Content="{x:Static p:Resources.WildcardsCheckBox}"
+                      ToolTip.Tip="{x:Static p:Resources.WildcardsCheckBoxToolTip}"
+                      IsChecked="{Binding UseWildcards, Mode=TwoWay}" />
+          </StackPanel>
+        </Expander>
+      </StackPanel>
+    </DataTemplate>
+  </Window.Resources>
+</controlsCommon:LocationMindfulWindow>

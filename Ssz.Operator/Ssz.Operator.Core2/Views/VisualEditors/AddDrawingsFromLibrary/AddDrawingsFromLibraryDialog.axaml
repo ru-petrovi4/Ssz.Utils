@@ -1,0 +1,54 @@
+<controlsCommon:LocationMindfulWindow
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:properties="using:Ssz.Operator.Core.Properties"
+    xmlns:libraryPath="using:Ssz.Operator.Core.VisualEditors.LibraryPath"
+    xmlns:library="using:Ssz.Operator.Core.VisualEditors.AddDrawingsFromLibrary"
+    xmlns:controlsCommon="using:Ssz.Operator.Core.ControlsCommon"
+    mc:Ignorable="d"
+    x:Class="Ssz.Operator.Core.VisualEditors.AddDrawingsFromLibrary.AddDrawingsFromLibraryDialog"
+    x:DataType="library:AddDrawingsFromLibraryViewModel"
+    FontSize="13"
+    ShowInTaskbar="False"
+    Title="{x:Static properties:Resources.AddDrawingsFromLibraryDialogTitle}">
+
+  <Grid Name="MainGrid" Margin="5" RowDefinitions="Auto,*,Auto">
+    <libraryPath:LibraryPathControl Grid.Row="0" Name="LibraryPathControl"
+                                    LibraryDirectoryInfoChanged="OnLibraryDirectoryInfoChanged" />
+
+    <TreeView Grid.Row="1" Name="MainTreeView" Margin="0,5,0,0"
+              ItemsSource="{Binding MainTreeViewItemsSource}">
+      <TreeView.ItemContainerTheme>
+        <ControlTheme TargetType="TreeViewItem" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+          <Setter Property="IsExpanded" Value="True" />
+        </ControlTheme>
+      </TreeView.ItemContainerTheme>
+      <TreeView.ItemTemplate>
+        <TreeDataTemplate DataType="library:ItemViewModel" ItemsSource="{Binding Children}">
+          <StackPanel Orientation="Horizontal">
+            <!-- The tick of a folder follows what is in it, and says so when they disagree. -->
+            <CheckBox Focusable="False" VerticalAlignment="Center" IsThreeState="True"
+                      IsChecked="{Binding IsChecked, Mode=TwoWay}" />
+            <Image Margin="5,0,0,0" Width="32" Height="32"
+                   IsVisible="{Binding HasPreviewImage}"
+                   Source="{Binding PreviewImage}" />
+            <TextBlock Margin="5,0,0,0" VerticalAlignment="Center" Text="{Binding Header}" />
+          </StackPanel>
+        </TreeDataTemplate>
+      </TreeView.ItemTemplate>
+    </TreeView>
+
+    <Grid Grid.Row="2" ColumnDefinitions="Auto,*,Auto,Auto">
+      <Button Grid.Column="0" Name="UncheckAllButton" Margin="0,5,0,0" Padding="8,0"
+              Content="Uncheck All" Click="UncheckAllButtonOnClick" />
+      <Button Grid.Column="2" Name="OkButton" Width="80" Margin="5,5,0,0" IsDefault="True"
+              Focusable="False" HorizontalContentAlignment="Center" Content="OK"
+              Click="OkButtonOnClick" />
+      <Button Grid.Column="3" Name="CancelButton" Width="80" Margin="5,5,0,0" IsCancel="True"
+              Focusable="False" HorizontalContentAlignment="Center" Content="Cancel"
+              Click="CancelButtonOnClick" />
+    </Grid>
+  </Grid>
+</controlsCommon:LocationMindfulWindow>

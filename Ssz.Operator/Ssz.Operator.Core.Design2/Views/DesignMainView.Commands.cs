@@ -11,6 +11,8 @@ using Microsoft.Extensions.Logging;
 using Ssz.Operator.Core.ControlsDesign;
 using Ssz.Operator.Core.Design.Controls;
 using Ssz.Operator.Core.Drawings;
+using Ssz.Operator.Core.FindReplace;
+using Ssz.Operator.Core.VisualEditors.AddDrawingsFromLibrary;
 using Ssz.Operator.Core.Utils;
 using Ssz.Operator.Core.VisualEditors.Windows;
 using Ssz.Utils;
@@ -141,7 +143,43 @@ public partial class DesignMainView
         CommandBindings.Add(new CommandBinding(Run, RunExecuted, DsProjectLoaded));
         CommandBindings.Add(new CommandBinding(RunCurrent, RunCurrentExecuted, RunCurrentEnabled));
 
+        CommandBindings.Add(new CommandBinding(ExportToXaml,
+            (sender, e) => DoToolkitOperationAsync(ExportToXamlToolkitOperation, true), DsProjectLoaded));
+        CommandBindings.Add(new CommandBinding(ImportFromXaml,
+            (sender, e) => DoToolkitOperationAsync(ImportFromXamlToolkitOperation, true), DsProjectLoaded));
+        CommandBindings.Add(new CommandBinding(AddDsPagesAndDsShapesFromLibrary,
+            AddDsPagesAndDsShapesFromLibraryExecutedAsync, DsProjectLoaded));
+        CommandBindings.Add(new CommandBinding(CreateDsPages,
+            (sender, e) => DoToolkitOperationAsync(CreateDsPagesToolkitOperation, false), DsProjectLoaded));
+        CommandBindings.Add(new CommandBinding(UpdateDsPages,
+            (sender, e) => DoToolkitOperationAsync(UpdateDsPagesToolkitOperation, true), DsProjectLoaded));
+        CommandBindings.Add(new CommandBinding(UpdateComplexDsShapesExtended,
+            (sender, e) => DoToolkitOperationAsync(UpdateComplexDsShapesExtendedToolkitOperation, true),
+            DsProjectLoaded));
+
+        // The WPF editor told its own play from the cross platform one; this editor has only the
+        // cross platform play, so the two pairs of commands do the same thing.
+        CommandBindings.Add(new CommandBinding(RunMultiPlatform, RunExecuted, DsProjectLoaded));
+        CommandBindings.Add(new CommandBinding(RunCurrentMultiPlatform, RunCurrentExecuted,
+            RunCurrentEnabled));
+
+        CommandBindings.Add(new CommandBinding(Find, FindExecuted, DsProjectLoaded));
+        CommandBindings.Add(new CommandBinding(Replace, ReplaceExecuted, DsProjectLoaded));
+
+        CommandBindings.Add(new CommandBinding(DebugFindDuplicates,
+            (sender, e) => ShowDebugFind(FindReplaceViewModel.DuplicatesQueryString), DsProjectLoaded));
+        CommandBindings.Add(new CommandBinding(DebugFindIncorrectDsPagesRefs,
+            (sender, e) => ShowDebugFind(FindReplaceViewModel.IncorrectDsPagesRefsQueryString),
+            DsProjectLoaded));
+        CommandBindings.Add(new CommandBinding(DebugFindIncorrectOpcTags,
+            (sender, e) => ShowDebugFind(FindReplaceViewModel.IncorrectOpcTagsQueryString), DsProjectLoaded));
+        CommandBindings.Add(new CommandBinding(DebugFindIncorrectExpressions,
+            (sender, e) => ShowDebugFind(FindReplaceViewModel.IncorrectExpressionsQueryString),
+            DsProjectLoaded));
+
         CommandBindings.Add(new CommandBinding(RenameDsPage, RenameDsPageExecutedAsync, DsProjectLoaded));
+        CommandBindings.Add(new CommandBinding(RenameComplexDsShape, RenameComplexDsShapeExecuted,
+            DsProjectLoaded));
         CommandBindings.Add(new CommandBinding(DeleteDsPages, DeleteDsPagesExecutedAsync, DsProjectLoaded));
         CommandBindings.Add(new CommandBinding(DeleteComplexDsShapes, DeleteComplexDsShapesExecutedAsync,
             DsProjectLoaded));
@@ -546,6 +584,208 @@ public partial class DesignMainView
 
     #endregion
 
+    #region Library and toolkit
+
+    /// <summary>
+    ///     Copies pages and shapes the author picks from a library into the project.
+    /// </summary>
+    private async void AddDsPagesAndDsShapesFromLibraryExecutedAsync(object? sender, ExecutedRoutedEventArgs e)
+    {
+        Window? ownerWindow = OwnerWindow;
+        if (ownerWindow is null) return;
+
+        var dialog = new AddDrawingsFromLibraryDialog();
+        await dialog.ShowDialog(ownerWindow);
+        if (!dialog.DialogResult) return;
+
+        DrawingInfo[] drawingInfos = dialog.DrawingInfos.ToArray();
+
+        string? filesExists = null;
+        string? filesNotCopied = null;
+
+        foreach (DrawingInfo drawingInfo in drawingInfos)
+            try
+            {
+                await DsProject.Instance.CopyDrawingToDsProjectAsync(new FileInfo(drawingInfo.FileFullName));
+            }
+            catch (ArgumentException)
+            {
+                filesExists += drawingInfo.Name + @"; ";
+            }
+            catch (Exception)
+            {
+                filesNotCopied += drawingInfo.Name + @"; ";
+            }
+
+        DsProject.Instance.OnDsShapeDrawingsListChanged();
+        DsProject.Instance.OnDsPageDrawingsListChanged();
+
+        string? errorString = null;
+        if (filesExists is not null)
+            errorString += Design.Properties.Resources.FilesExists + @" " + filesExists + Environment.NewLine;
+        if (filesNotCopied is not null)
+            errorString += Design.Properties.Resources.UncknownReason + @" " + filesNotCopied +
+                           Environment.NewLine;
+
+        if (errorString is not null)
+            MessageBoxHelper.ShowWarning(Core.Properties.Resources.DoneWithErrors + @". " +
+                                         Design.Properties.Resources.CannotCopyFiles + @"." +
+                                         Environment.NewLine + errorString);
+        else
+            MessageBoxHelper.ShowInfo(Core.Properties.Resources.Done);
+    }
+
+    /// <summary>
+    ///     Writes the pages the author picks out as one XAML file.
+    /// </summary>
+    private async Task<ToolkitOperationResult> ExportToXamlToolkitOperation(IProgressInfo progressInfo,
+        object? parameter)
+    {
+        IStorageFile? file = await FileDialogHelper.SaveFileAsync(
+            Design.Properties.Resources.ExportToXamlSaveAsDialogTitle, null,
+            XamlFileType, FileDialogHelper.AllFilesFileType);
+        if (file is null) return ToolkitOperationResult.Cancelled;
+
+        var xamlFileName = file.TryGetLocalPath();
+        if (String.IsNullOrEmpty(xamlFileName)) return ToolkitOperationResult.Cancelled;
+
+        MessageBoxHelper.ShowInfo(Design.Properties.Resources.ExportToXamlGetDsPageDrawingInfosListFromUser);
+
+        List<DrawingInfo>? drawingInfos = await DsProject.Instance.GetDrawingInfosListFromUserAsync();
+        if (drawingInfos is null || drawingInfos.Count == 0) return ToolkitOperationResult.Cancelled;
+
+        return await DsProject.Instance.ExportToXamlAsync(xamlFileName, drawingInfos, progressInfo);
+    }
+
+    /// <summary>
+    ///     Reads pages back in from a XAML file written that way.
+    /// </summary>
+    private async Task<ToolkitOperationResult> ImportFromXamlToolkitOperation(IProgressInfo progressInfo,
+        object? parameter)
+    {
+        IReadOnlyList<IStorageFile> files = await FileDialogHelper.OpenFilesAsync(
+            Design.Properties.Resources.ImportFromXamlDialogTitle, DsProject.Instance.DsProjectPath,
+            XamlFileType, FileDialogHelper.AllFilesFileType);
+        if (files.Count == 0) return ToolkitOperationResult.Cancelled;
+
+        var xamlFileName = files[0].TryGetLocalPath();
+        if (String.IsNullOrEmpty(xamlFileName)) return ToolkitOperationResult.Cancelled;
+
+        return await DsProject.Instance.ImportFromXamlAsync(xamlFileName, progressInfo);
+    }
+
+    /// <summary>
+    ///     Makes a page out of each picture the author chooses.
+    /// </summary>
+    private async Task<ToolkitOperationResult> CreateDsPagesToolkitOperation(IProgressInfo progressInfo,
+        object? parameter)
+    {
+        var toolkitOperationOptions = await ToolkitOperationOptionsDialog.ShowDialogAsync(
+            new DsProjectExtensions.CreateDsPagesToolkitOperationOptions(),
+            Core.Properties.Resources.SpecifyToolkitOperationOptionsMessage)
+            as DsProjectExtensions.CreateDsPagesToolkitOperationOptions;
+        if (toolkitOperationOptions is null) return ToolkitOperationResult.Cancelled;
+
+        MessageBoxHelper.ShowInfo(Design.Properties.Resources.CreateDsPagesSelectImageFilesMessageBox);
+
+        string[] fileNames = await PickFilesAsync();
+        if (fileNames.Length == 0) return ToolkitOperationResult.Cancelled;
+
+        return await DsProject.Instance.CreateDsPagesToolkitOperationAsync(fileNames, toolkitOperationOptions,
+            progressInfo);
+    }
+
+    /// <summary>
+    ///     Brings the pages made that way up to date with the pictures they came from.
+    /// </summary>
+    private async Task<ToolkitOperationResult> UpdateDsPagesToolkitOperation(IProgressInfo progressInfo,
+        object? parameter)
+    {
+        var toolkitOperationOptions = await ToolkitOperationOptionsDialog.ShowDialogAsync(
+            new DsProjectExtensions.UpdateDsPagesToolkitOperationOptions(),
+            Core.Properties.Resources.SpecifyToolkitOperationOptionsMessage)
+            as DsProjectExtensions.UpdateDsPagesToolkitOperationOptions;
+        if (toolkitOperationOptions is null) return ToolkitOperationResult.Cancelled;
+
+        MessageBoxHelper.ShowInfo(Design.Properties.Resources.UpdateDsPagesSelectImageFilesMessageBox);
+
+        string[] fileNames = await PickFilesAsync();
+        if (fileNames.Length == 0) return ToolkitOperationResult.Cancelled;
+
+        return await DsProject.Instance.UpdateDsPagesToolkitOperationAsync(fileNames, toolkitOperationOptions,
+            progressInfo);
+    }
+
+    /// <summary>
+    ///     Brings the complex shapes up to date with options the author gives, over the pages they
+    ///     pick or over all of them.
+    /// </summary>
+    private async Task<ToolkitOperationResult> UpdateComplexDsShapesExtendedToolkitOperation(
+        IProgressInfo progressInfo, object? parameter)
+    {
+        var toolkitOperationOptions = await ToolkitOperationOptionsDialog.ShowDialogAsync(
+            new DsProjectExtensions.UpdateComplexDsShapesToolkitOperationOptions(),
+            Core.Properties.Resources.SpecifyToolkitOperationOptionsMessage)
+            as DsProjectExtensions.UpdateComplexDsShapesToolkitOperationOptions;
+        if (toolkitOperationOptions is null) return ToolkitOperationResult.Cancelled;
+
+        DrawingInfo[]? updatingDrawingInfos = null;
+        if (!toolkitOperationOptions.UpdateOnAllDsPages)
+        {
+            MessageBoxHelper.ShowInfo(
+                Design.Properties.Resources.UpdateComplexDsShapes_GetDsPageDrawingInfosListFromUser);
+
+            List<DrawingInfo>? drawingInfos = await DsProject.Instance.GetDrawingInfosListFromUserAsync();
+            if (drawingInfos is null || drawingInfos.Count == 0) return ToolkitOperationResult.Cancelled;
+
+            updatingDrawingInfos = drawingInfos.ToArray();
+        }
+
+        return await DsProject.Instance.UpdateComplexDsShapesAsync(updatingDrawingInfos,
+            toolkitOperationOptions, progressInfo);
+    }
+
+    private static async Task<string[]> PickFilesAsync()
+    {
+        IReadOnlyList<IStorageFile> files = await FileDialogHelper.OpenFilesAsync(
+            Core.Properties.Resources.SpecifyToolkitOperationOptionsMessage,
+            DsProject.Instance.DsProjectPath, FileDialogHelper.AllFilesFileType);
+
+        return files.Select(f => f.TryGetLocalPath()).OfType<string>().ToArray();
+    }
+
+    private static FilePickerFileType XamlFileType => new(@"XAML files")
+    {
+        Patterns = new[] { @"*.xaml", @"*.axaml" }
+    };
+
+    #endregion
+
+    #region Find and replace
+
+    private void FindExecuted(object? sender, ExecutedRoutedEventArgs e)
+    {
+        FindReplaceDialog.ShowAsFind(OwnerWindow);
+    }
+
+    private void ReplaceExecuted(object? sender, ExecutedRoutedEventArgs e)
+    {
+        FindReplaceDialog.ShowAsReplace(OwnerWindow);
+    }
+
+    /// <summary>
+    ///     One of the four searches of the Debug tab. They are the find dialog with a query it knows
+    ///     by name, which is what the WPF editor did.
+    /// </summary>
+    private void ShowDebugFind(string queryString)
+    {
+        FindReplaceDialog.ShowAsDebugFind(queryString, OwnerWindow);
+    }
+
+    private Window? OwnerWindow => TopLevel.GetTopLevel(this) as Window;
+
+    #endregion
+
     #region Pages and shapes lists
 
     /// <summary>
@@ -597,6 +837,15 @@ public partial class DesignMainView
         }
 
         DsProject.Instance.OnDsPageDrawingsListChanged();
+    }
+
+    /// <summary>
+    ///     Renaming a complex shape does nothing, as in the WPF editor: its note there says the
+    ///     picture of the shape stays in memory after the drawing is closed, so the renamed file
+    ///     would go on being drawn under its old name.
+    /// </summary>
+    private void RenameComplexDsShapeExecuted(object? sender, ExecutedRoutedEventArgs e)
+    {
     }
 
     private async void DeleteDsPagesExecutedAsync(object? sender, ExecutedRoutedEventArgs e)

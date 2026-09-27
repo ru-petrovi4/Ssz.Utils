@@ -84,7 +84,14 @@ public partial class DesignDrawingView : UserControl
         base.OnAttachedToVisualTree(e);
 
         DesignDrawingViewModel? designDrawingViewModel = _designDrawingViewModel;
-        if (designDrawingViewModel is null || designDrawingViewModel.DesignControlsInfo is not null) return;
+        if (designDrawingViewModel is null) return;
+
+        // The tab of a drawing may be moved, tabbed or floated, which takes the surface out of the
+        // tree and puts it back, so the zoom is listened to again here.
+        designDrawingViewModel.ViewScaleChanging -= OnViewScaleChanging;
+        designDrawingViewModel.ViewScaleChanging += OnViewScaleChanging;
+
+        if (designDrawingViewModel.DesignControlsInfo is not null) return;
 
         DesignDrawingBorder.DesignDrawingCanvas.Initialize();
 
