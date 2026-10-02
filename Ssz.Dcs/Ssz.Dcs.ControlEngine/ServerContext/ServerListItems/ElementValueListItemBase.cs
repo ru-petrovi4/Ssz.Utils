@@ -31,22 +31,15 @@ namespace Ssz.Dcs.ControlEngine.ServerListItems
         /// <param name="valueStatusTimestamp"></param>
         public void UpdateValueStatusTimestamp(ValueStatusTimestamp valueStatusTimestamp)
         {
-            if (StatusCodes.IsUncertain(valueStatusTimestamp.StatusCode))
+            if (!StatusCodes.IsGood(valueStatusTimestamp.StatusCode) &&
+                    valueStatusTimestamp.StatusCode == ValueStatusTimestamp.StatusCode)
+                return;
+
+            if (!valueStatusTimestamp.Equals(ValueStatusTimestamp, 0.0))
             {
-                if (!StatusCodes.IsUncertain(ValueStatusTimestamp.StatusCode))
-                {
-                    ValueStatusTimestamp = valueStatusTimestamp;
-                    Changed = true;
-                }
+                ValueStatusTimestamp = valueStatusTimestamp;
+                Changed = true;
             }
-            else
-            {
-                if (!valueStatusTimestamp.Equals(ValueStatusTimestamp, 0.0))
-                {
-                    ValueStatusTimestamp = valueStatusTimestamp;
-                    Changed = true;
-                }                
-            }            
         }
 
         public void Touch()

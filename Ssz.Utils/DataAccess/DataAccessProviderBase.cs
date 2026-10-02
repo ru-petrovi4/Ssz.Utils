@@ -62,7 +62,8 @@ namespace Ssz.Utils.DataAccess
         public ElementIdsMap? ElementIdsMap { get; private set; }
 
         /// <summary>
-        ///     DataAccessGrpc Server connection string.
+        ///     <para>DataAccessGrpc Server connection string.</para>
+        ///     <para>Can be changed at any time.</para>
         /// </summary>
         public string ServerAddress { get; set; } = @"";
 

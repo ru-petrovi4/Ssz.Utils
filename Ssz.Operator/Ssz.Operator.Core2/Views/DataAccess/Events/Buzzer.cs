@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Media;
 using Microsoft.Extensions.Logging;
 using Ssz.Operator.Core.Properties;
 using Ssz.Operator.Core.Utils;
@@ -60,12 +59,12 @@ namespace Ssz.Operator.Core.DataAccess
         private void Refresh()
         {
             // Stop previous player
-            //if (_soundPlayer is not null)
-            //{
-            //    _soundPlayer.Stop();
-            //    _soundPlayer.Dispose();
-            //    _soundPlayer = null;
-            //}
+            if (_soundPlayer is not null)
+            {
+                _soundPlayer.Stop();
+                _soundPlayer.Dispose();
+                _soundPlayer = null;
+            }
 
             if (DsProject.Instance.NoAlarmsSound ||
                     _buzzerState == BuzzerStateEnum.Silent ||
@@ -83,24 +82,24 @@ namespace Ssz.Operator.Core.DataAccess
                 else
                 {
                     // play custom sound
-                    //try
-                    //{
-                    //    _soundPlayer = new SoundPlayer(config.SoundFileName);
-                    //    if (config.PlayLooping)
-                    //        _soundPlayer.PlayLooping();
-                    //    else
-                    //        _soundPlayer.Play();
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    DsProject.LoggersSet.Logger.LogWarning(ex, "Cannot play sound file: " + config.SoundFileName);
-                    //    if (_soundPlayer is not null)
-                    //    {
-                    //        _soundPlayer.Stop();
-                    //        _soundPlayer.Dispose();
-                    //        _soundPlayer = null;
-                    //    }
-                    //}
+                    try
+                    {
+                        _soundPlayer = new SoundPlayer(config.SoundFileName);
+                        if (config.PlayLooping)
+                            _soundPlayer.PlayLooping();
+                        else
+                            _soundPlayer.Play();
+                    }
+                    catch (Exception ex)
+                    {
+                        DsProject.LoggersSet.Logger.LogWarning(ex, "Cannot play sound file: " + config.SoundFileName);
+                        if (_soundPlayer is not null)
+                        {
+                            _soundPlayer.Stop();
+                            _soundPlayer.Dispose();
+                            _soundPlayer = null;
+                        }
+                    }
                 }
             }            
         }
@@ -109,7 +108,7 @@ namespace Ssz.Operator.Core.DataAccess
 
         #region private fields
 
-        //private SoundPlayer? _soundPlayer;
+        private SoundPlayer? _soundPlayer;
         private bool _isEnabled = true;
         private BuzzerStateEnum _buzzerState = BuzzerStateEnum.Silent;
 

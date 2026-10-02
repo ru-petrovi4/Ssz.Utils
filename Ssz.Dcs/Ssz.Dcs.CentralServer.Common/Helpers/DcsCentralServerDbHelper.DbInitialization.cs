@@ -18,109 +18,108 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Ssz.Dcs.CentralServer.Common.Helpers
+namespace Ssz.Dcs.CentralServer.Common.Helpers;
+
+public static partial class DcsCentralServerDbHelper
 {
-    public static partial class DcsCentralServerDbHelper
+    #region public functions        
+
+    public static void InitializeOrUpdateDb(IServiceProvider serviceProvider, IConfiguration configuration, ILoggersSet loggersSet)
     {
-        #region public functions        
-
-        public static void InitializeOrUpdateDb(IServiceProvider serviceProvider, IConfiguration configuration, ILoggersSet loggersSet)
+        string dbType = ConfigurationHelper.GetValue(configuration, DbConstants.ConfigurationKey_DbType, @"");
+        if (String.Equals(dbType, DbConstants.ConfigurationValue_DbType_Postgres, StringComparison.InvariantCultureIgnoreCase))
         {
-            string dbType = ConfigurationHelper.GetValue(configuration, DbConstants.ConfigurationKey_DbType, @"");
-            if (String.Equals(dbType, DbConstants.ConfigurationValue_DbType_Postgres, StringComparison.InvariantCultureIgnoreCase))
-            {
-                using var dbContext = serviceProvider.GetRequiredService<IDbContextFactory<NpgsqlDcsCentralServerDbContext>>()
-                    .CreateDbContext();
-
-                // Applies any pending migrations for the context to the database. Will create the database
-                // if it does not already exist.
-                try
-                {
-                    dbContext.Database.Migrate();
-                }
-                catch
-                {
-                }
-
-                InitializePostgresCrypto(dbContext);
-            }
-            else if (String.Equals(dbType, DbConstants.ConfigurationValue_DbType_Sqlite, StringComparison.InvariantCultureIgnoreCase))
-            {
-                using var dbContext = serviceProvider.GetRequiredService<IDbContextFactory<SqliteDcsCentralServerDbContext>>()
-                    .CreateDbContext();
-
-                // Applies any pending migrations for the context to the database. Will create the database
-                // if it does not already exist.
-                try
-                {
-                    dbContext.Database.Migrate();
-                }
-                catch
-                {
-                }
-            }
-            else
-            {
-                Console.WriteLine(Properties.Resources.DbTypeIsNotConfigured);
-            }
-
-            //var licenseFileInfo = new LicenseFileInfo
-            //{
-            //    LicenseOwner = @"TestUser",
-            //    ModuleOrAddonLicenses = new[] { new ModuleOrAddonLicense
-            //        {
-            //            ModuleOrAddonGuid = new Guid(""),
-            //            ModuleOrAddonIdentifier = @"Core",
-            //            ModuleOrAddonDesc = @"Основной модуль",
-            //            StartTimeUtc = DateTime.UtcNow,
-            //            EndTimeUtc = DateTime.MaxValue,
-            //            MaxUsers = 25,
-            //        }
-            //    }
-            //};
-
-            using var dbContext2 = serviceProvider.GetRequiredService<IDbContextFactory<DcsCentralServerDbContext>>()
+            using var dbContext = serviceProvider.GetRequiredService<IDbContextFactory<NpgsqlDcsCentralServerDbContext>>()
                 .CreateDbContext();
 
-            if (dbContext2.IsConfigured) 
-            {
-                if (!dbContext2.Users.Any())
-                {
-                    var user = new User
-                    {
-                        UserName = DbConstants.UserName_DefaultInstructor,
-                    };
-                    dbContext2.Users.Add(user);
-
-                    user = new User
-                    {
-                        UserName = DbConstants.UserName_DefaultTrainee,
-                    };
-                    dbContext2.Users.Add(user);
-                }
-
-                dbContext2.SaveChanges();
-            }                      
-
-            Console.WriteLine(Properties.Resources.DbInitializationSuccess);            
-        }        
-
-        #endregion
-
-        #region private fields
-
-        private static void InitializePostgresCrypto(DcsCentralServerDbContext dbContext)
-        {
+            // Applies any pending migrations for the context to the database. Will create the database
+            // if it does not already exist.
             try
             {
-                // SQL injection safe
-                //dbContext.Database.ExecuteSql($"CREATE EXTENSION pgcrypto SCHEMA public");
+                dbContext.Database.Migrate();
             }
             catch
             {
-            }            
-        }       
+            }
 
-        #endregion
-    }
+            InitializePostgresCrypto(dbContext);
+        }
+        else if (String.Equals(dbType, DbConstants.ConfigurationValue_DbType_Sqlite, StringComparison.InvariantCultureIgnoreCase))
+        {
+            using var dbContext = serviceProvider.GetRequiredService<IDbContextFactory<SqliteDcsCentralServerDbContext>>()
+                .CreateDbContext();
+
+            // Applies any pending migrations for the context to the database. Will create the database
+            // if it does not already exist.
+            try
+            {
+                dbContext.Database.Migrate();
+            }
+            catch
+            {
+            }
+        }
+        else
+        {
+            Console.WriteLine(Properties.Resources.DbTypeIsNotConfigured);
+        }
+
+        //var licenseFileInfo = new LicenseFileInfo
+        //{
+        //    LicenseOwner = @"TestUser",
+        //    ModuleOrAddonLicenses = new[] { new ModuleOrAddonLicense
+        //        {
+        //            ModuleOrAddonGuid = new Guid(""),
+        //            ModuleOrAddonIdentifier = @"Core",
+        //            ModuleOrAddonDesc = @"Основной модуль",
+        //            StartTimeUtc = DateTime.UtcNow,
+        //            EndTimeUtc = DateTime.MaxValue,
+        //            MaxUsers = 25,
+        //        }
+        //    }
+        //};
+
+        using var dbContext2 = serviceProvider.GetRequiredService<IDbContextFactory<DcsCentralServerDbContext>>()
+            .CreateDbContext();
+
+        if (dbContext2.IsConfigured) 
+        {
+            if (!dbContext2.Users.Any())
+            {
+                var user = new User
+                {
+                    UserName = DbConstants.UserName_DefaultInstructor,
+                };
+                dbContext2.Users.Add(user);
+
+                user = new User
+                {
+                    UserName = DbConstants.UserName_DefaultTrainee,
+                };
+                dbContext2.Users.Add(user);
+            }
+
+            dbContext2.SaveChanges();
+        }                      
+
+        Console.WriteLine(Properties.Resources.DbInitializationSuccess);            
+    }        
+
+    #endregion
+
+    #region private fields
+
+    private static void InitializePostgresCrypto(DcsCentralServerDbContext dbContext)
+    {
+        try
+        {
+            // SQL injection safe
+            //dbContext.Database.ExecuteSql($"CREATE EXTENSION pgcrypto SCHEMA public");
+        }
+        catch
+        {
+        }            
+    }       
+
+    #endregion
 }

@@ -49,19 +49,19 @@ public class WindowsManager
 
         if (String.IsNullOrWhiteSpace(rootWindowProps.FileRelativePath))
         {
-            // TODO
-            //if (DsProject.Instance.Review) MessageBoxHelper.ShowError(PlayResources.StartDsPageIsNotDefinedMessage);
+            // The project names no page to start with, so the first one is shown instead - as in the
+            // WPF version, which also told the author about it when Play was started from the editor.
+            if (DsProject.Instance.Review)
+                MessageBoxHelper.ShowError(OperatorUIResources.Play_StartDsPageIsNotDefined);
 
-            //var firstDsPageDrawing = DsProject.Instance.AllDsPagesCache.Values.OrderBy(p => p.IsFaceplate).FirstOrDefault();
+            var firstDsPageDrawing = DsProject.Instance.AllDsPagesCache.Values
+                .OrderBy(p => p.IsFaceplate).FirstOrDefault();
 
-            //if (firstDsPageDrawing != null)
-            //{
-            //    rootWindowProps.FileRelativePath = DsProject.Instance.GetFileRelativePath(firstDsPageDrawing.FileFullName);
-            //}
-            //else
-            //{
-            //    MessageBoxHelper.ShowError(PlayResources.NoDsPageToDispalyMessage);
-            //}
+            if (firstDsPageDrawing is not null)
+                rootWindowProps.FileRelativePath =
+                    DsProject.Instance.GetFileRelativePath(firstDsPageDrawing.FileFullName);
+            else
+                MessageBoxHelper.ShowError(OperatorUIResources.Play_NoDsPageToDisplay);
         }
 
         //Rect? touchScreenNullable;

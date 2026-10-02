@@ -2,6 +2,7 @@
   "profiles": {
     "Ssz.Dcs.ControlEngine": {
       "commandName": "Project",
+      "commandLineArgs": "-d \"C:\\CDT.CentralServer_Client\\FilesStore\\CDT.2024.SaratovPCNiDCS\" --CentralServerAddress=\"https://localhost:60060\"",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

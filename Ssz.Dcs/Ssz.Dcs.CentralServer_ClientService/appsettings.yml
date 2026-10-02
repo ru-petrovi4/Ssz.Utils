@@ -23,7 +23,7 @@ Logging:
 # Задается язык сообщений в журналах событий которые доступны через веб интерфейс ИТ-решения возможные значения RU EN
 UICulture: "RU"
 MainCentralServerAddress: "https://localhost:60060"
-# Address to connect to engines. * to use System.Environment.MachineName
+# Address to connect to engines. * to auto
 ControlEngineServerAddress: "https://*:60061"
 FilesStoreSyncWithCentralServer: "true"
 ShowPlatInstructor: "false"

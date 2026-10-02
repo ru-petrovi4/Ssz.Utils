@@ -238,12 +238,14 @@ namespace Ssz.DataAccessGrpc.Client
                     catch (Exception ex)
                     {
                         ProcessRemoteMethodCallException(ex);
+                        ContextIsOperational = false;
                     }
 
                     uint timeDiffInMs = (uint)(DateTime.UtcNow - LastServerContextCallbackMessage).TotalMilliseconds;
                     if (timeDiffInMs >= _negotiatedServerContextTimeoutMs)
                     {
                         ProcessRemoteMethodCallException(new RpcException(new Status(StatusCode.DeadlineExceeded, @"STATE_OPERATIONAL ContextMessage DeadlineExceeded")));
+                        ContextIsOperational = false;
                     }
                 }
             }            
@@ -302,9 +304,7 @@ namespace Ssz.DataAccessGrpc.Client
         private void ProcessRemoteMethodCallException(Exception ex)
         {
             if (!ContextIsOperational)
-                return;
-
-            ContextIsOperational = false;
+                return;            
 
             _logger.LogDebug(ex, "Exception when server method call.");
         }   

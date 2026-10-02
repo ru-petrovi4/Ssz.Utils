@@ -51,6 +51,12 @@ public partial class PlayApp : Application
 
     public static string EnvironmentName { get; private set; } = null!;
 
+    /// <summary>
+    ///     What the startup writes to. Its category is the one appsettings.yml lets through at
+    ///     Information, so the trace reaches the console of a desktop that has no window yet.
+    /// </summary>
+    public static ILogger StartupLogger { get; private set; } = NullLogger.Instance;
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -90,6 +96,20 @@ public partial class PlayApp : Application
             // Nothing observes this task, so without this a startup failure would leave the
             // loading overlay on screen with no explanation.
             AppLoadingInterop.ShowErrorSafe(ex.ToString());
+
+            // Said on the console as well as in the log: a failure this early can be a failure to
+            // set the log up, and on Linux this is usually run from a terminal.
+            Console.Error.WriteLine(@"The application failed to start." + Environment.NewLine + ex);
+            DsProject.LoggersSet?.Logger.LogCritical(ex, @"The application failed to start.");
+
+            // On the desktop there is no overlay and there is no window yet either, so without this
+            // the application would sit there invisible and the operator would be none the wiser.
+            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime)
+            {
+                await MessageBoxHelper.ShowErrorAsync(
+                    OperatorUIResources.Play_StartFailed + Environment.NewLine + Environment.NewLine + ex.Message);
+                SafeShutdown();
+            }
         }
     }
 
@@ -100,15 +120,24 @@ public partial class PlayApp : Application
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            // Play has no window of its own until a project is open, and asking the operator which
+            // project to run puts up a window that is then taken down again, so the application is
+            // ended by SafeShutdown rather than by its last window closing.
+            desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
             Host = CreateHostBuilder(desktop.Args ?? []).Build();
 
             DsDataAccessProvider.ServiceProvider = Host.Services;            
 
             var logger = Host.Services.GetRequiredService<ILogger<PlayApp>>();
+            // The category that appsettings.yml lets through at Information: the startup trace below
+            // is what tells an operator with no window yet how far the application has got.
+            StartupLogger = Host.Services.GetRequiredService<ILoggerFactory>()
+                .CreateLogger(@"Ssz.Operator.Play.App");
             IConfiguration configuration = Host.Services.GetRequiredService<IConfiguration>();
             CultureHelper.InitializeUICulture(configuration, logger);
 
-            logger.LogInformation($"App starting with args: \"{String.Join(" ", desktop.Args ?? [])}\"; Environment: {EnvironmentName}; Working Directory: \"{Directory.GetCurrentDirectory()}\"; Workstation Name: {ConfigurationHelper.GetWorkstationName(configuration)}");
+            StartupLogger.LogInformation($"App starting with args: \"{String.Join(" ", desktop.Args ?? [])}\"; Environment: {EnvironmentName}; Working Directory: \"{Directory.GetCurrentDirectory()}\"; Workstation Name: {ConfigurationHelper.GetWorkstationName(configuration)}");
 
             _ = Host.RunAsync();
 
@@ -207,31 +236,27 @@ public partial class PlayApp : Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop2)
         {
 #if !TEST_BROWSER_IN_DESKTOP
-            //if (String.IsNullOrEmpty(dsProjectFileFullName))
-            //{
-            //    var files = await desktop2.MainWindow?.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
-            //    {
-            //        Title = "Выберите файлы",
-            //        AllowMultiple = false,
-            //        FileTypeFilter = new[]
-            //        {
-            //            new FilePickerFileType("Project")
-            //            {
-            //                Patterns = new[] { "*" + DsProject.DsProjectFileExtension }
-            //            }
-            //        }
-            //    });
-            //    if (files.Count > 0)
-            //    {
-            //        dsProjectFileFullName = await files[0].Path;
-            //        // Теперь у вас есть поток файла
-            //    }
-            //}            
             fileProvider = null;
+
+            // Started without a project - from a shortcut or a file manager, say - so the operator
+            // is asked which one to run. Windows and the desktops of Linux each open their own
+            // dialog for it.
+            if (String.IsNullOrEmpty(dsProjectFileFullName))
+                dsProjectFileFullName = await FileDialogHelper.AskForFileFullNameAtStartupAsync(
+                    OperatorUIResources.Play_SelectDsProjectFileDialogTitle,
+                    FileDialogHelper.DsProjectFileType,
+                    FileDialogHelper.AllFilesFileType) ?? @"";
+
+            if (String.IsNullOrEmpty(dsProjectFileFullName))
+            {
+                // The operator dismissed the dialog: there is nothing to run.
+                SafeShutdown();
+                return;
+            }
+
             isReadOnly = !FileSystemHelper.IsDirectoryWritable(Path.GetDirectoryName(dsProjectFileFullName));
 #else
-            fileProvider = await UpdateFilesCacheAsync(options, jobProgress);
-            isReadOnly = true;
+            fileProvider = await UpdateFilesCacheAsync(options, jobProgress);            isReadOnly = true;
 
             dsProjectFileFullName = options.ProjectFile.Substring(options.ProjectFile.LastIndexOf(Path.DirectorySeparatorChar) + 1);
 #endif
@@ -255,9 +280,16 @@ public partial class PlayApp : Application
         if (String.IsNullOrEmpty(dsProjectFileFullName))
         {
             SafeShutdown();
+            return;
         }
+
         
         AppLoadingInterop.SetStatusSafe(OperatorUIResources.Loading_OpeningProject);
+
+        // These say how far the start has got. The desktop Play shows nothing at all until its
+        // first window is up, so without them a start that stops halfway looks like a hang. Run
+        // with --Logging:LogLevel:Default=Information to see them.
+        StartupLogger?.LogInformation(@"Opening the project: {0}", dsProjectFileFullName);
 
         bool failed = await DsProject.ReadDsProjectFromBinFileAsync(
                 dsProjectFileFullName,
@@ -287,6 +319,8 @@ public partial class PlayApp : Application
             return;
         }
 
+        StartupLogger?.LogInformation(@"The project is open.");
+
         if (!String.IsNullOrEmpty(options.UserTagsFile))
         {
             // TODO
@@ -313,6 +347,9 @@ public partial class PlayApp : Application
             contextParams = new CaseInsensitiveOrderedDictionary<string?>();
             contextParams[@"OperatorSessionId"] = operatorSessionId;
         }
+        StartupLogger?.LogInformation(
+            @"Connecting to the server: {0}, system: {1}.", serverAddress, systemNameToConnect);
+
         await DsDataAccessProvider.StaticInitialize(
             mode,
             DsProject.Instance.ElementIdsMap,
@@ -327,6 +364,8 @@ public partial class PlayApp : Application
         DataAccessProviderOnConnectedOrDisconnected();
 
         #endregion
+
+        StartupLogger?.LogInformation(@"The data access provider is initialized.");
 
         PlayDsProjectView.Initialize();
 
@@ -363,6 +402,8 @@ public partial class PlayApp : Application
 
         #endregion
 
+        StartupLogger?.LogInformation(@"Showing the windows.");
+
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopFinal)
         {
 #if !TEST_BROWSER_IN_DESKTOP
@@ -378,9 +419,28 @@ public partial class PlayApp : Application
             // The project is loaded and the start page is shown - drop the HTML overlay.
             AppLoadingInterop.HideSafe();
         }
+
+        StartupLogger?.LogInformation(@"The application has started.");
     }    
 
     public async void SafeShutdown()
+    {
+        try
+        {
+            await CloseEverythingAsync();
+        }
+        catch (Exception ex)
+        {
+            DsProject.LoggersSet?.Logger.LogError(ex, @"The application failed to close cleanly.");
+        }
+
+        // The shutdown mode is explicit - see where it is set - so this is what ends the desktop
+        // application, whether a project was ever opened or not.
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            desktop.Shutdown();
+    }
+
+    private async Task CloseEverythingAsync()
     {
         ReturnConsumedLicenses();
 
@@ -411,9 +471,7 @@ public partial class PlayApp : Application
 
         if (DsProject.Instance.Mode == DsProject.DsProjectModeEnum.DesktopPlayMode)
             await Host.StopAsync();
-
-        //Current.Shutdown(0);
-    }        
+    }
 
     private bool ConsumeSszOperatorLicense()
     {
@@ -456,10 +514,7 @@ public partial class PlayApp : Application
                 new CaseInsensitiveOrderedDictionary<string?>
                 {
                 },
-                new DataAccessProviderOptions
-                {
-                    DangerousAcceptAnyServerCertificate = false, // needed for Browser security
-                },
+                new DataAccessProviderOptions(),
                 DispatcherHelper.GetUiDispatcher());
 
         string projectDirectoryInvariantPathRelativeToRootDirectory = options.ProjectFile.Replace(Path.DirectorySeparatorChar, '/');

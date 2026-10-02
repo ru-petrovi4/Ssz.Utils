@@ -50,6 +50,20 @@ namespace Ssz.Operator.Core
         }
 
         /// <summary>
+        ///     Says what went wrong and waits until it has been read, for where what follows - ending
+        ///     the application, say - would otherwise take the message off the screen.
+        /// </summary>
+        public static async Task ShowErrorAsync(string messageBoxText)
+        {
+            var box = MessageBoxManager.GetMessageBoxStandard(
+                Resources.ErrorMessageBoxCaption,
+                messageBoxText,
+                ButtonEnum.Ok,
+                Icon.Error);
+            await box.ShowAsync();
+        }
+
+        /// <summary>
         ///     Asks the author a yes-or-no question and waits for the answer.
         ///     <para>
         ///         The WPF editor used WpfMessageBox.Show, which blocked until the author clicked.

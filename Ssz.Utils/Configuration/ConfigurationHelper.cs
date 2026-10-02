@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -285,8 +287,28 @@ namespace Ssz.Utils
         {
             string workstationName = GetValue<string>(configuration, ConfigurationKey_ThisWorkstationName, @"");
             if (String.IsNullOrEmpty(workstationName))
-                workstationName = Environment.MachineName;
+                workstationName = GetFqdn();
             return workstationName;
+        }
+
+        public static string GetFqdn()
+        {
+            var p = IPGlobalProperties.GetIPGlobalProperties();
+            string host = p.HostName;
+            string domain = p.DomainName; // Windows в домене: "corp.local"; Linux: "" или "(none)"
+
+            if (!string.IsNullOrEmpty(domain) && domain != "(none)")
+                return host.EndsWith("." + domain, StringComparison.OrdinalIgnoreCase) ? host : $"{host}.{domain}";
+
+            // Linux / Windows вне домена: пробуем каноническое имя через резолвер (/etc/hosts, DNS)
+            try
+            {
+                string fq = Dns.GetHostEntry(host).HostName;
+                if (fq.Contains('.')) return fq;
+            }
+            catch (Exception) { }
+
+            return host;
         }
 
         #endregion

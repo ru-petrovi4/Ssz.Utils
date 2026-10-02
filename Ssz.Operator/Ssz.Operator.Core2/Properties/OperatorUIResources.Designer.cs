@@ -320,5 +320,50 @@ namespace Ssz.Operator.Core.Properties {
                 return ResourceManager.GetString("MessageBox_Cancel", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Select the project to run.
+        /// </summary>
+        public static string Play_SelectDsProjectFileDialogTitle {
+            get {
+                return ResourceManager.GetString("Play_SelectDsProjectFileDialogTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Operator project.
+        /// </summary>
+        public static string Play_DsProjectFileType {
+            get {
+                return ResourceManager.GetString("Play_DsProjectFileType", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Project startup dsPage isn't defined! Please, specify it in "Project Properties -> Start Page".
+        /// </summary>
+        public static string Play_StartDsPageIsNotDefined {
+            get {
+                return ResourceManager.GetString("Play_StartDsPageIsNotDefined", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Project doesn't contain any dsPage to display!.
+        /// </summary>
+        public static string Play_NoDsPageToDisplay {
+            get {
+                return ResourceManager.GetString("Play_NoDsPageToDisplay", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The application could not be started.
+        /// </summary>
+        public static string Play_StartFailed {
+            get {
+                return ResourceManager.GetString("Play_StartFailed", resourceCulture);
+            }
+        }
     }
 }

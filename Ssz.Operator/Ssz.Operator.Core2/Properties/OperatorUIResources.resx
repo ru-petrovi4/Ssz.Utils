@@ -205,4 +205,19 @@
   <data name="MessageBox_Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <data name="Play_SelectDsProjectFileDialogTitle" xml:space="preserve">
+    <value>Select the project to run</value>
+  </data>
+  <data name="Play_DsProjectFileType" xml:space="preserve">
+    <value>Operator project</value>
+  </data>
+  <data name="Play_StartDsPageIsNotDefined" xml:space="preserve">
+    <value>Project startup dsPage isn&apos;t defined! Please, specify it in &quot;Project Properties -&gt; Start Page&quot;</value>
+  </data>
+  <data name="Play_NoDsPageToDisplay" xml:space="preserve">
+    <value>Project doesn&apos;t contain any dsPage to display!</value>
+  </data>
+  <data name="Play_StartFailed" xml:space="preserve">
+    <value>The application could not be started</value>
+  </data>
 </root>

@@ -7,9 +7,14 @@
 	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	<Platforms>AnyCPU</Platforms>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+  <!-- Makes the desktop application take the browser path: it downloads the project from the
+       central server instead of reading it from disc. It is for trying that path out without a
+       browser, so it is asked for on the command line (dotnet build -p:TestBrowserInDesktop=true)
+       and is off otherwise - with it on, the desktop Play waits for a server that is not there. -->
+  <PropertyGroup Condition="'$(TestBrowserInDesktop)'=='true'">
     <DefineConstants>$(DefineConstants);TEST_BROWSER_IN_DESKTOP</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" />
  
   <ItemGroup>
     <!-- The compass of a panorama is a model that is read at run time, as it was in WPF. -->
@@ -45,7 +50,6 @@
 	  <PackageReference Include="Svg.Controls.Avalonia" Version="12.0.0.17" />
 	  <PackageReference Include="Svg.Controls.Skia.Avalonia" Version="12.0.0.17" />
     <PackageReference Include="OxyPlot.Core" Version="2.2.0" />
-    <PackageReference Include="System.Windows.Extensions" Version="10.0.12" />
 	  <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.3">
 		  <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
 		  <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>

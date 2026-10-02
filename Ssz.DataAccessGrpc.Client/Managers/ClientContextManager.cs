@@ -56,7 +56,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
         public DateTime LastFailedConnectionDateTimeUtc { get; protected set; } = DateTime.MinValue;
 
-        public DateTime LastSuccessfulConnectionDateTimeUtc { get; protected set; }
+        public DateTime LastContextIsOperationalDateTimeUtc { get; protected set; }
 
         public event EventHandler<ContextStatusChangedEventArgs> ServerContextStatusChanged = delegate { };
         
@@ -91,7 +91,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                     if (dangerousAcceptAnyServerCertificate)
                     {
                         if (OperatingSystem.IsBrowser())
-                            throw new InvalidOperationException("In WebAssembly dangerousAcceptAnyServerCertificate MUST be False");
+                            dangerousAcceptAnyServerCertificate = false;
                         else
                             httpClientHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
                     }
@@ -335,10 +335,8 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             if (_disposed) 
                 throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
 
-            if (_clientContext is null) 
-                throw new ConnectionDoesNotExistException();
-
-            LastSuccessfulConnectionDateTimeUtc = nowUtc;              
+            if (ContextIsOperational)
+                LastContextIsOperationalDateTimeUtc = nowUtc;
         }
 
         #endregion

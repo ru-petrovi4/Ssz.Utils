@@ -42,7 +42,7 @@ namespace Ssz.DataAccessGrpc.Client
 
         public override DateTime LastFailedConnectionDateTimeUtc => _clientContextManager.LastFailedConnectionDateTimeUtc;
 
-        public override DateTime LastSuccessfulConnectionDateTimeUtc => _clientContextManager.LastSuccessfulConnectionDateTimeUtc;
+        public override DateTime LastSuccessfulConnectionDateTimeUtc => _clientContextManager.LastContextIsOperationalDateTimeUtc;
 
         public GrpcChannel? GrpcChannel
         {

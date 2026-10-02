@@ -105,10 +105,6 @@ namespace Ssz.Operator.Core.DataAccess
                 UnsubscribeValueListItemsFromServer = false
             };
 
-            if (dsProjectModeEnum == DsProject.DsProjectModeEnum.BrowserDesignMode ||
-                    dsProjectModeEnum == DsProject.DsProjectModeEnum.BrowserPlayMode)
-                dataAccessProviderOptions.DangerousAcceptAnyServerCertificate = false;  // needed for Browser security
-
             Instance.Initialize(
                 elementIdsMap,
                 serverAddress,

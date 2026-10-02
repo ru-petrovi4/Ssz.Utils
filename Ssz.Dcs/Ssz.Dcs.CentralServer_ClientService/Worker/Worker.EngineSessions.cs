@@ -2,6 +2,7 @@ using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using Ssz.Dcs.CentralServer.Common;
+using Ssz.Dcs.CentralServer.Common.Helpers;
 using Ssz.Dcs.CentralServer.Common.Passthrough;
 using Ssz.Utils;
 using Ssz.Utils.DataAccess;
@@ -66,14 +67,9 @@ namespace Ssz.Dcs.CentralServer_ClientService
                     case DsFilesStoreDirectoryType.ControlEngineBin:
                         {
                             string controlEngineServerAddress = ConfigurationHelper.GetValue<string>(Configuration, @"ControlEngineServerAddress", @"");
-                            controlEngineServerAddress = controlEngineServerAddress.Replace(@"*", System.Environment.MachineName);                                                    
                             
                             if (_runningControlEngineServerAddresses.Count > 0)
-                            {                                                                 
-                                UriBuilder uriBuilder = new(controlEngineServerAddress);
-                                uriBuilder.Port = _runningControlEngineServerAddresses.Max(s => new Uri(s).Port) + 1;
-                                controlEngineServerAddress = uriBuilder.ToString();
-                            }
+                                controlEngineServerAddress = ServerUrl.ReplacePort(controlEngineServerAddress, _runningControlEngineServerAddresses.Max(s => new Uri(s).Port) + 1);
 
                             RunControlEngineExe(processModelingSessionId, workingDirectories.ProcessModelDirectoryInfo, workingDirectories.BinDirectoryInfo, controlEngineServerAddress, utilityDataAccessProvider, instanceInfo);
                         }

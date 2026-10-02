@@ -205,4 +205,19 @@
   <data name="MessageBox_Cancel" xml:space="preserve">
     <value>Отмена</value>
   </data>
+  <data name="Play_SelectDsProjectFileDialogTitle" xml:space="preserve">
+    <value>Выберите проект для запуска</value>
+  </data>
+  <data name="Play_DsProjectFileType" xml:space="preserve">
+    <value>Проект оператора</value>
+  </data>
+  <data name="Play_StartDsPageIsNotDefined" xml:space="preserve">
+    <value>Стартовая мнемосхема проекта не задана! Укажите её в &quot;Свойства проекта -&gt; Стартовая страница&quot;</value>
+  </data>
+  <data name="Play_NoDsPageToDisplay" xml:space="preserve">
+    <value>В проекте нет ни одной мнемосхемы для показа!</value>
+  </data>
+  <data name="Play_StartFailed" xml:space="preserve">
+    <value>Не удалось запустить приложение</value>
+  </data>
 </root>

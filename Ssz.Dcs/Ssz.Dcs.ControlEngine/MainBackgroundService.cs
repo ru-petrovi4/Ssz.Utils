@@ -1,11 +1,15 @@
+using Google.Protobuf.WellKnownTypes;
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Ssz.Dcs.CentralServer.Common;
-using Ssz.Dcs.ControlEngine;
-using Ssz.DataAccessGrpc.ServerBase;
 using Ssz.DataAccessGrpc.Client;
+using Ssz.DataAccessGrpc.ServerBase;
+using Ssz.Dcs.CentralServer.Common;
+using Ssz.Dcs.CentralServer.Common.Helpers;
+using Ssz.Dcs.ControlEngine;
 using Ssz.Utils;
 using Ssz.Utils.DataAccess;
 using System;
@@ -27,12 +31,14 @@ namespace Ssz.Dcs.ControlEngine
             IConfiguration configuration, 
             IServiceProvider serviceProvider, 
             DataAccessServerWorkerBase serverWorker,
+            IServer server,
             IHostLifetime hostLifetime)
         {
             Logger = logger;
             Configuration = configuration;
             ServiceProvider = serviceProvider;
             _serverWorker = serverWorker;
+            _server = server;
             _hostLifetime = hostLifetime;
 
             _serverWorker.ShutdownRequested += ShutdownRequested;
@@ -59,8 +65,8 @@ namespace Ssz.Dcs.ControlEngine
         {
             Logger.LogDebug("ExecuteAsync begin.");
 
-            string controlEngineServerAddress = ConfigurationHelper.GetValue<string>(Configuration, @"Kestrel:Endpoints:HttpsDefaultCert:Url", @"");
-            controlEngineServerAddress = controlEngineServerAddress.Replace(@"*", System.Environment.MachineName);
+            var addresses = _server.Features.Get<IServerAddressesFeature>()!.Addresses;
+            string controlEngineServerAddress = ServerUrl.Resolve(addresses.First(a => a.StartsWith("https", StringComparison.OrdinalIgnoreCase)));
 
             //_utilityDataAccessProvider.EventMessagesCallback += UtilityDataAccessProviderOnEventMessagesCallback;
             _utilityDataAccessProvider.Initialize(null,                
@@ -115,8 +121,10 @@ namespace Ssz.Dcs.ControlEngine
 
                     DateTime nowUtc = DateTime.UtcNow;
 
+                    // TODO shutdown when session unexpected ends
                     if (nowUtc - _processDataAccessProvider.InitializedDateTimeUtc > DataAccessConstants.UnrecoverableTimeout &&
-                            nowUtc - _processDataAccessProvider.LastSuccessfulConnectionDateTimeUtc > DataAccessConstants.UnrecoverableTimeout)
+                            (_processDataAccessProvider.LastSuccessfulConnectionDateTimeUtc == default(DateTime) ||
+                            nowUtc - _processDataAccessProvider.LastSuccessfulConnectionDateTimeUtc > DataAccessConstants.UnrecoverableTimeout))
                         break;
 
                     await _serverWorker.DoWorkAsync(nowUtc, cancellationToken);
@@ -159,6 +167,8 @@ namespace Ssz.Dcs.ControlEngine
         #region private fields
 
         private readonly DataAccessServerWorkerBase _serverWorker;
+
+        private readonly IServer _server;
 
         private readonly IHostLifetime _hostLifetime;
 
