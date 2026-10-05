@@ -15,6 +15,7 @@ using Ssz.Operator.Core.Utils.Serialization;
 //using Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 //using Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Editors;
 using Ssz.Utils;
+using System.IO;
 
 namespace Ssz.Operator.Core.Commands.DsCommandOptions
 {
@@ -220,6 +221,12 @@ namespace Ssz.Operator.Core.Commands.DsCommandOptions
                             ContentHeight = reader.ReadNullableDouble();
                             reader.ReadOwnedData(TitleInfo, context);
                             FileRelativePath = reader.ReadString();
+                            // Obsolete
+                            if (System.String.Equals(Path.GetExtension(FileRelativePath), DsProject.DsPageFileExtension, System.StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                FileRelativePath = Path.ChangeExtension(FileRelativePath, DsProject.DsPageFileExtension);
+                            }
+
                             WindowCategory = reader.ReadString();
                             FrameName = reader.ReadString();
                             WindowShowInTaskbar = (DefaultFalseTrue)reader.ReadInt32();

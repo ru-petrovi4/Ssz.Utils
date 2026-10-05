@@ -6,15 +6,7 @@
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
 	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	<Platforms>AnyCPU</Platforms>
-  </PropertyGroup>
-  <!-- Makes the desktop application take the browser path: it downloads the project from the
-       central server instead of reading it from disc. It is for trying that path out without a
-       browser, so it is asked for on the command line (dotnet build -p:TestBrowserInDesktop=true)
-       and is off otherwise - with it on, the desktop Play waits for a server that is not there. -->
-  <PropertyGroup Condition="'$(TestBrowserInDesktop)'=='true'">
-    <DefineConstants>$(DefineConstants);TEST_BROWSER_IN_DESKTOP</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" />
+  </PropertyGroup>  
  
   <ItemGroup>
     <!-- The compass of a panorama is a model that is read at run time, as it was in WPF. -->

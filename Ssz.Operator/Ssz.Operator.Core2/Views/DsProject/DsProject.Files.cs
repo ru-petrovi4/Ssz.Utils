@@ -88,8 +88,16 @@ namespace Ssz.Operator.Core
                 {
                     if (!File.Exists(fileFullName))
                     {
-                        LoggersSet.Logger.LogDebug("File doesn't exist. " + fileFullName);
-                        return null;
+                        // A project written where the case of a name means nothing may ask for
+                        // T3_MENU.dsPage while the file on disc is T3_MENU.dspage. On Linux those are
+                        // two different names, and reading the start page this way is what decides
+                        // whether the application gets a window at all.
+                        fileFullName = FindFileFullNameIgnoringCaseOrNull(fileFullName);
+                        if (fileFullName is null)
+                        {
+                            LoggersSet.Logger.LogDebug("File doesn't exist. " + fileFullName);
+                            return null;
+                        }
                     }
 
                     return new MemoryStream(File.ReadAllBytes(fileFullName));
@@ -751,15 +759,95 @@ namespace Ssz.Operator.Core
             if (FileProvider is not null)
             {
                 if (!FileProvider.GetFileInfo(fileFullName).Exists)
-                    fileFullName = null;                
+                    fileFullName = null;
             }
             else
             {
                 if (!File.Exists(fileFullName))
-                    fileFullName = null;
+                    fileFullName = FindFileFullNameIgnoringCaseOrNull(DsPagesDirectoryFullName, fileRelativePath);
             }
 
             return fileFullName;
+        }
+
+        /// <summary>
+        ///     Finds a file of the project when its name differs only in the case of its letters.
+        ///     <para>
+        ///         Projects are written where the case of a name means nothing, so a project may name
+        ///         its start page T3_MENU.dsPage while the file on disc is T3_MENU.dspage. On Linux
+        ///         those are two different names: the page is not found, nothing is shown, and the
+        ///         application sits there with no window - which is what opening a project on Astra
+        ///         did.
+        ///     </para>
+        /// </summary>
+        /// <param name="directoryFullName">Where the relative path starts.</param>
+        private static string? FindFileFullNameIgnoringCaseOrNull(string directoryFullName, string fileRelativePath)
+        {
+            return FindFileFullNameIgnoringCaseOrNull(Path.Combine(directoryFullName, fileRelativePath));
+        }
+
+        /// <summary>
+        ///     The same, for a file named in full.
+        /// </summary>
+        private static string? FindFileFullNameIgnoringCaseOrNull(string? fileFullName)
+        {
+            if (String.IsNullOrEmpty(fileFullName)) return null;
+
+            try
+            {
+                var directoryFullName = Path.GetDirectoryName(fileFullName);
+                var fileName = Path.GetFileName(fileFullName);
+                if (String.IsNullOrEmpty(directoryFullName) || String.IsNullOrEmpty(fileName)) return null;
+
+                if (!Directory.Exists(directoryFullName))
+                {
+                    directoryFullName = FindDirectoryFullNameIgnoringCaseOrNull(directoryFullName);
+                    if (directoryFullName is null) return null;
+                }
+
+                foreach (string candidateFullName in Directory.EnumerateFiles(directoryFullName))
+                    if (StringHelper.CompareIgnoreCase(Path.GetFileName(candidateFullName), fileName))
+                        return candidateFullName;
+
+                return null;
+            }
+            catch (Exception)
+            {
+                // The directory is not there, or cannot be read: the file is not found either.
+                return null;
+            }
+        }
+
+        /// <summary>
+        ///     A directory of the project whose name differs only in the case of its letters, looked
+        ///     for from the nearest parent that is there.
+        /// </summary>
+        private static string? FindDirectoryFullNameIgnoringCaseOrNull(string? directoryFullName)
+        {
+            if (String.IsNullOrEmpty(directoryFullName)) return null;
+
+            try
+            {
+                var parentFullName = Path.GetDirectoryName(directoryFullName);
+                var directoryName = Path.GetFileName(directoryFullName);
+                if (String.IsNullOrEmpty(parentFullName) || String.IsNullOrEmpty(directoryName)) return null;
+
+                if (!Directory.Exists(parentFullName))
+                {
+                    parentFullName = FindDirectoryFullNameIgnoringCaseOrNull(parentFullName);
+                    if (parentFullName is null) return null;
+                }
+
+                foreach (string candidateFullName in Directory.EnumerateDirectories(parentFullName))
+                    if (StringHelper.CompareIgnoreCase(Path.GetFileName(candidateFullName), directoryName))
+                        return candidateFullName;
+
+                return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -782,7 +870,7 @@ namespace Ssz.Operator.Core
             else
             {
                 if (!File.Exists(fileFullName))
-                    fileFullName = null;                
+                    fileFullName = FindFileFullNameIgnoringCaseOrNull(DsShapesDirectoryFullName, fileRelativePath);
             }
 
             return fileFullName;
