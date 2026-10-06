@@ -12,12 +12,15 @@ using Avalonia.Media;
 using Avalonia.Platform;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
+using ExCSS;
+using Grpc.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using OxyPlot.Utilities;
 using Ssz.DataAccessGrpc.Client;
 using Ssz.Dcs.CentralServer.Common;
 using Ssz.Dcs.CentralServer.Common.Passthrough;
@@ -40,6 +43,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -85,6 +89,10 @@ public partial class PlayApp : Application
     private async Task StartAsync()
     {
         await AppLoadingInterop.InitializeInteropAsync();
+
+        // The host page sends the user's access token right after this, and again on every
+        // session renewal (see AccessTokenInterop).
+        await AccessTokenInterop.InitializeInteropAsync();
 
         try
         {
@@ -753,6 +761,29 @@ public partial class PlayApp : Application
         #endregion
     }
 }
+
+
+//Ssz.Operator.Play.Browser/wwwroot/_framework/accessTokenInterop.js — слушатель message ставится при загрузке модуля, а не в subscribe: если токен успеет прийти раньше, чем подпишется управляемый код, он не потеряется, а будет отдан при подписке.Токен принимается только от globalThis.parent.
+
+//Ssz.Operator.Core2/Helpers/AccessTokenInterop.cs — по образцу AppLoadingInterop:
+
+
+//public static string? AccessToken { get; private set; }          // null, пока токен не пришёл
+//public static event Action<string>? AccessTokenChanged;          // главный (UI) поток
+//public static Task<string> WaitForAccessTokenAsync(CancellationToken ct = default);
+//Ssz.Operator.Core2/PlayApp.axaml.cs — инициализация сразу после AppLoadingInterop.InitializeInteropAsync() в StartAsync().
+
+//Как подшить в вызовы — на вашей стороне, самый прямой вариант:
+
+
+//// первый вызов не стоит делать раньше, чем придёт токен
+//string accessToken = await AccessTokenInterop.WaitForAccessTokenAsync(cancellationToken);
+
+//// дальше — брать свежее значение перед каждым вызовом, оно обновляется само
+//var headers = new Metadata();
+//if (AccessTokenInterop.AccessToken is { } currentAccessToken)
+//    headers.Add(@"Authorization", @"Bearer " + currentAccessToken);
+//Подписка на AccessTokenChanged нужна, если канал/клиент кэширует заголовки и его надо пересоздать — для Metadata на каждый вызов достаточно читать свойство.
 
 
 //string dataSourceString = @"aaa";
