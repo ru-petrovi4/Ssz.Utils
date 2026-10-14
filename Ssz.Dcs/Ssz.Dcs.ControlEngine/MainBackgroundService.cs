@@ -14,6 +14,7 @@ using Ssz.Utils;
 using Ssz.Utils.DataAccess;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -64,15 +65,14 @@ namespace Ssz.Dcs.ControlEngine
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             Logger.LogDebug("ExecuteAsync begin.");
-
-            var addresses = _server.Features.Get<IServerAddressesFeature>()!.Addresses;
-            string controlEngineServerAddress = ServerUrl.Resolve(addresses.First(a => a.StartsWith("https", StringComparison.OrdinalIgnoreCase)));
+            
+            string controlEngineServerAddress = Configuration.GetSection(@"Kestrel:Endpoints:HttpsDefaultCert:Url")?.Value ?? @"";
 
             //_utilityDataAccessProvider.EventMessagesCallback += UtilityDataAccessProviderOnEventMessagesCallback;
             _utilityDataAccessProvider.Initialize(null,                
                 Program.Options.GetCentralServerAddress(),
                 DataAccessConstants.ControlEngine_ClientApplicationName,
-                ConfigurationHelper.GetWorkstationName(Configuration),
+                ConfigurationHelper.GetThisWorkstationName(Configuration),
                 @"", // Utility context
                 new CaseInsensitiveOrderedDictionary<string?>
                 {
@@ -105,7 +105,7 @@ namespace Ssz.Dcs.ControlEngine
             _processDataAccessProvider.Initialize(device.ElementIdsMap,                
                 Program.Options.GetCentralServerAddress(),
                 DataAccessConstants.ControlEngine_ClientApplicationName,
-                ConfigurationHelper.GetWorkstationName(Configuration),
+                ConfigurationHelper.GetThisWorkstationName(Configuration),
                 Program.Options.CentralServerSystemName,
                 new CaseInsensitiveOrderedDictionary<string?>(),
                 new DataAccessProviderOptions(),

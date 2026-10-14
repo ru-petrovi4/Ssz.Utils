@@ -17,6 +17,6 @@ public static class LoggerHelper
         string environmentName
         )
     {
-        logger.LogInformation($"App starting with args: \"{String.Join(" ", args)}\"; Environment: {environmentName}; Working Directory: \"{Directory.GetCurrentDirectory()}\"; Workstation Name: {ConfigurationHelper.GetWorkstationName(configuration)}");
+        logger.LogInformation($"App starting with args: \"{String.Join(" ", args)}\"; Environment: {environmentName}; Working Directory: \"{Directory.GetCurrentDirectory()}\"; Workstation Name: {ConfigurationHelper.GetThisWorkstationName(configuration)}");
     }
 }

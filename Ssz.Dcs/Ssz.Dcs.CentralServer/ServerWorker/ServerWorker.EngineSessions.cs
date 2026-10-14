@@ -74,42 +74,6 @@ namespace Ssz.Dcs.CentralServer
             return dataAccessClient_Addon;
         }
 
-
-        #endregion        
-
-        private class ControlEngine_TrainingEngineSession : EngineSession
-        {
-            #region construction and destruction
-
-            public ControlEngine_TrainingEngineSession(string engineSessionId, DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon) :
-                base(engineSessionId, dataAccessProviderGetter_Addon)
-            {
-            }
-
-            #endregion
-
-            #region public functions            
-
-            #endregion            
-        }  
+        #endregion
     }
 }
-
-
-//private class AddonEngineSession : EngineSession
-//{
-//    #region construction and destruction
-
-//    public AddonEngineSession(IServiceProvider serviceProvider, IDispatcher? callbackDispatcher, string serverAddress, string systemNameToConnect, CaseInsensitiveDictionary<string?> contextParams) :
-//        base(serviceProvider, callbackDispatcher, serverAddress, systemNameToConnect, contextParams)
-//    {
-//    }
-
-//    #endregion
-
-//    #region public functions
-
-
-
-//    #endregion
-//}

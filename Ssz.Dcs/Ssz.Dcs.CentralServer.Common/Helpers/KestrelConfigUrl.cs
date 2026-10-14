@@ -7,9 +7,9 @@ using System.Text;
 
 namespace Ssz.Dcs.CentralServer.Common.Helpers;
 
-public static class ServerUrl
+public static class KestrelConfigUrl
 {
-    public static string Resolve(string boundAddress)
+    public static string ReplaceHost(string boundAddress, string newHost, string thisHost)
     {
         // Kestrel может вернуть "https://[::]:5001", "https://0.0.0.0:5001", "https://*:5001", "https://+:5001"
         int schemeEnd = boundAddress.IndexOf("://", StringComparison.Ordinal) + 3;
@@ -18,13 +18,15 @@ public static class ServerUrl
         string host = boundAddress[schemeEnd..portSep].Trim('[', ']');
         string port = boundAddress[(portSep + 1)..].TrimEnd('/');
 
-        if (host is "*" or "+" or "0.0.0.0" or "::")
-            host = ConfigurationHelper.GetFqdn();
+        //if (host is "*" or "+" or "0.0.0.0" or "::")       
+        if (String.Equals(host, "localhost", StringComparison.InvariantCultureIgnoreCase) ||
+                String.Equals(newHost, thisHost, StringComparison.InvariantCultureIgnoreCase))
+            newHost = "localhost";        
 
-        return $"{scheme}://{host}:{port}";
+        return $"{scheme}://{newHost}:{port}";
     }
 
-    public static string ReplacePort(string url, int port)
+    public static string ReplacePort(string url, int newPort)
     {
         // "https://[::]:5001", "https://0.0.0.0", "https://*:5001/", "http://+:80", "https://myhost:5001/path", "https://[::1]"
         int schemeSep = url.IndexOf("://", StringComparison.Ordinal);
@@ -49,6 +51,6 @@ public static class ServerUrl
             host = colon < 0 ? authority : authority[..colon];
         }
 
-        return $"{prefix}{host}:{port}{rest}";
+        return $"{prefix}{host}:{newPort}{rest}";
     }
 }

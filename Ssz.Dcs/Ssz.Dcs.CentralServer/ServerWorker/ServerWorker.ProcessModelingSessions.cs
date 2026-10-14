@@ -328,6 +328,8 @@ namespace Ssz.Dcs.CentralServer
 
             if (processModelingSession.LaunchEnginesJobId is null) // Operation not started yet.
             {
+                string thisWorkstationName = ConfigurationHelper.GetThisWorkstationName(Configuration);
+
                 jobId = Guid.NewGuid().ToString();
                 processModelingSession.LaunchEnginesJobId = jobId;                
 
@@ -363,16 +365,16 @@ namespace Ssz.Dcs.CentralServer
                         true);
                 }
 
-                var enginesHostInfosCollection = _enginesHostInfosCollection.Values.Where(ehi =>                
+                var enginesForProcessModel_HostInfosCollection = _enginesHostInfosCollection.Values.Where(ehi =>                
                     ehi.ProcessModelNames.Contains(@"*", StringComparer.InvariantCultureIgnoreCase) ||
                     ehi.ProcessModelNames.Contains(processModelingSession.ProcessModelName, StringComparer.InvariantCultureIgnoreCase)
                 );
-                processModelingSession.EnginesHostInfo = enginesHostInfosCollection
+                processModelingSession.EnginesHostInfo = enginesForProcessModel_HostInfosCollection
                     .FirstOrDefault(ehi => String.Equals(ehi.WorkstationName, processModelingSession.InitiatorClientWorkstationName, StringComparison.InvariantCultureIgnoreCase));
                 if (processModelingSession.EnginesHostInfo is null)
                 {
                     int minEnginesCount = Int32.MaxValue;
-                    foreach (var ehi in enginesHostInfosCollection)
+                    foreach (var ehi in enginesForProcessModel_HostInfosCollection)
                     {
                         if (ehi.EnginesCount < minEnginesCount)
                         {
@@ -382,7 +384,13 @@ namespace Ssz.Dcs.CentralServer
                     }
                 }
                 if (processModelingSession.EnginesHostInfo is null)
-                    processModelingSession.EnginesHostInfo = _localEnginesHostInfo;
+                {                    
+                    processModelingSession.EnginesHostInfo = _enginesHostInfosCollection.Values
+                        .FirstOrDefault(ehi => String.Equals(ehi.WorkstationName, @"localhost", StringComparison.InvariantCultureIgnoreCase) ||
+                            String.Equals(ehi.WorkstationName, thisWorkstationName, StringComparison.InvariantCultureIgnoreCase));                    
+                }
+                if (processModelingSession.EnginesHostInfo is null)
+                    return @"";
 
                 // Launch DscEngine 
 
@@ -402,7 +410,7 @@ namespace Ssz.Dcs.CentralServer
                         @"PROCESS",
                         new CaseInsensitiveOrderedDictionary<string?>(),
                         ThreadSafeDispatcher);
-                var controlEngineSession = new ControlEngine_TrainingEngineSession(engineSessionId, dataAccessProviderGetter_Addon);
+                var controlEngineSession = new EngineSession(engineSessionId, dataAccessProviderGetter_Addon);
                 processModelingSession.EngineSessions.Add(controlEngineSession);
                 processModelingSession.SubscribeToMainControlEngine((GrpcDataAccessProvider)controlEngineSession.DataAccessProvider);
 
@@ -422,8 +430,9 @@ namespace Ssz.Dcs.CentralServer
                         Generate_LaunchEngine_SystemEvent(processModelingSession.EnginesHostInfo.WorkstationName, processModelingSession, DsFilesStoreDirectoryType.PlatInstructorBin, DsFilesStoreDirectoryType.PlatInstructorData, mvDsFileInfo.Name, xiSystemName);
 
                         DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon2;
-                        if (String.Equals(processModelingSession.EnginesHostInfo.WorkstationName, @"localhost", StringComparison.InvariantCultureIgnoreCase))
-                        {
+                        if (String.Equals(processModelingSession.EnginesHostInfo.WorkstationName, @"localhost", StringComparison.InvariantCultureIgnoreCase) ||
+                                String.Equals(processModelingSession.EnginesHostInfo.WorkstationName, thisWorkstationName, StringComparison.InvariantCultureIgnoreCase))
+                        { 
                             dataAccessProviderGetter_Addon2 = GetNewInitializedDataAccessProviderAddon(
                                 ServiceProvider,
                                 $"http://localhost:60080/PlatServer/ServerDiscovery",

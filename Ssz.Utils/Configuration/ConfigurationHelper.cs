@@ -283,12 +283,12 @@ namespace Ssz.Utils
 #endif
         }
 
-        public static string GetWorkstationName(IConfiguration? configuration)
+        public static string GetThisWorkstationName(IConfiguration? configuration)
         {
-            string workstationName = GetValue<string>(configuration, ConfigurationKey_ThisWorkstationName, @"");
-            if (String.IsNullOrEmpty(workstationName))
-                workstationName = GetFqdn();
-            return workstationName;
+            string thisWorkstationName = GetValue<string>(configuration, ConfigurationKey_ThisWorkstationName, @"");
+            if (String.IsNullOrEmpty(thisWorkstationName))
+                thisWorkstationName = GetFqdn();
+            return thisWorkstationName;
         }
 
         public static string GetFqdn()

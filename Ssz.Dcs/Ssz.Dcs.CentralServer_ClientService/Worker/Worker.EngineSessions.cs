@@ -69,7 +69,7 @@ namespace Ssz.Dcs.CentralServer_ClientService
                             string controlEngineServerAddress = ConfigurationHelper.GetValue<string>(Configuration, @"ControlEngineServerAddress", @"");
                             
                             if (_runningControlEngineServerAddresses.Count > 0)
-                                controlEngineServerAddress = ServerUrl.ReplacePort(controlEngineServerAddress, _runningControlEngineServerAddresses.Max(s => new Uri(s).Port) + 1);
+                                controlEngineServerAddress = KestrelConfigUrl.ReplacePort(controlEngineServerAddress, _runningControlEngineServerAddresses.Max(s => new Uri(s).Port) + 1);
 
                             RunControlEngineExe(processModelingSessionId, workingDirectories.ProcessModelDirectoryInfo, workingDirectories.BinDirectoryInfo, controlEngineServerAddress, utilityDataAccessProvider, instanceInfo);
                         }

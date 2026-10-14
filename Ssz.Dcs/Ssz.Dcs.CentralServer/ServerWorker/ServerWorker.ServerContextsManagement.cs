@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ssz.Utils.Addons;
 using Ssz.DataAccessGrpc.Client;
+using Ssz.Dcs.CentralServer.Common.Helpers;
 
 namespace Ssz.Dcs.CentralServer
 {
@@ -33,8 +34,7 @@ namespace Ssz.Dcs.CentralServer
                 {
                     if (serverContext.ClientApplicationName == DataAccessConstants.CentralServer_ClientService_ClientApplicationName)
                     {
-                        if (!String.IsNullOrEmpty(serverContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_Engine_ProcessModelNames)))
-                            On_EnginesHost_AddedOrRemoved(serverContext, args.Added);
+                        On_EnginesHost_AddedOrRemoved(serverContext, args.Added);
                     }                    
                     else if (serverContext.ClientApplicationName == DataAccessConstants.Launcher_ClientApplicationName)
                     {
@@ -159,7 +159,10 @@ namespace Ssz.Dcs.CentralServer
                     {
                         EngineSession? engineSession = processModelingSession.EngineSessions.FirstOrDefault(es => es.EngineSessionId == engineSessionId);
                         if (engineSession is not null)
-                            engineSession.DataAccessProvider.ServerAddress = utilityServerContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_ControlEngineServerAddress)!;
+                        {
+                            string thisWorkstationName = ConfigurationHelper.GetThisWorkstationName(Configuration);
+                            engineSession.DataAccessProvider.ServerAddress = KestrelConfigUrl.ReplaceHost(utilityServerContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_ControlEngineServerAddress)!, utilityServerContext.ClientWorkstationName, thisWorkstationName);
+                        }
                     }                    
                 }                
             }
@@ -178,15 +181,10 @@ namespace Ssz.Dcs.CentralServer
         private readonly CaseInsensitiveOrderedDictionary<AdditionalCentralServerInfo> _additionalCentralServerInfosCollection = new();
 
         /// <summary>
-        ///     [ClientWorkstationName, EnginesHostInfo]
+        ///     All ServerClients Services.
+        ///     [ClientWorkstationName, EnginesHostInfo]        
         /// </summary>
         private readonly CaseInsensitiveOrderedDictionary<EnginesHostInfo> _enginesHostInfosCollection = new();
-
-        private readonly EnginesHostInfo _localEnginesHostInfo = new()
-        {
-            WorkstationName = @"localhost",
-            ProcessModelNames = [@"*"]
-        };
 
         #endregion
 
@@ -205,7 +203,7 @@ namespace Ssz.Dcs.CentralServer
         public class EnginesHostInfo
         {
             /// <summary>
-            ///     Obtained from ClientWorkstationName
+            ///     Obtained from utilityServerContext.ClientWorkstationName
             /// </summary>
             public string WorkstationName { get; set; } = null!;            
             

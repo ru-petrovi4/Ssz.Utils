@@ -47,12 +47,7 @@ namespace Ssz.Dcs.CentralServer
             else if (String.Equals(targetWorkstationName, ServerContext.ClientWorkstationName, StringComparison.InvariantCultureIgnoreCase))
             {
                 send = true;
-            }
-            else if (String.Equals(targetWorkstationName, @"localhost", StringComparison.InvariantCultureIgnoreCase) &&
-                        String.Equals(ServerContext.ClientWorkstationName, Environment.MachineName, StringComparison.InvariantCultureIgnoreCase))                
-            {
-                send = true;
-            }
+            }            
 
             if (send)
                 EventMessagesCollections.Add(
