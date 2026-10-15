@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="OpcUaServerAddon_Desc" xml:space="preserve">
+    <value>OPC UA сервер</value>
+  </data>
+  <data name="EndpointUrl_Option" xml:space="preserve">
+    <value>Адрес конечной точки OPC UA (opc.tcp://localhost:4840/SszDcsCentralServer; localhost заменяется на имя компьютера)</value>
+  </data>
+  <data name="SystemNameToConnect_Option" xml:space="preserve">
+    <value>Имя системы для подключения (DCS или имя сессии моделирования)</value>
+  </data>
+  <data name="ContextParams_Option" xml:space="preserve">
+    <value>Параметры контекста</value>
+  </data>
+  <data name="SecurityPolicies_Option" xml:space="preserve">
+    <value>Политики безопасности через запятую (None, Basic256Sha256, Aes128_Sha256_RsaOaep, Aes256_Sha256_RsaPss)</value>
+  </data>
+  <data name="AllowAnonymous_Option" xml:space="preserve">
+    <value>Разрешить анонимных клиентов (true/false)</value>
+  </data>
+  <data name="UserName_Option" xml:space="preserve">
+    <value>Имя пользователя для аутентификации по имени/паролю (пусто - отключено)</value>
+  </data>
+  <data name="Password_Option" xml:space="preserve">
+    <value>Пароль для аутентификации по имени/паролю</value>
+  </data>
+  <data name="AutoAcceptClientCertificates_Option" xml:space="preserve">
+    <value>Автоматически доверять сертификатам клиентов (true/false)</value>
+  </data>
+  <data name="PkiDirectory_Option" xml:space="preserve">
+    <value>Каталог хранилищ сертификатов (own, trusted, issuer, rejected)</value>
+  </data>
+  <data name="IdleUnsubscribeSeconds_Option" xml:space="preserve">
+    <value>Секунды бездействия, после которых тег без подписок клиентов отписывается от источника</value>
+  </data>
+  <data name="Status_ServerStarting" xml:space="preserve">
+    <value>OPC UA сервер запускается</value>
+  </data>
+  <data name="Status_ServerFailed" xml:space="preserve">
+    <value>OPC UA сервер не удалось запустить</value>
+  </data>
+  <data name="Status_DataAccessProviderIsNotConnected" xml:space="preserve">
+    <value>OPC UA сервер работает, источник данных не подключен</value>
+  </data>
+  <data name="Status_Operational" xml:space="preserve">
+    <value>OPC UA сервер работает</value>
+  </data>
+</root>

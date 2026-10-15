@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="OpcUaServerAddon_Desc" xml:space="preserve">
+    <value>OPC UA Server</value>
+  </data>
+  <data name="EndpointUrl_Option" xml:space="preserve">
+    <value>OPC UA endpoint URL (opc.tcp://localhost:4840/SszDcsCentralServer; localhost is replaced by the host name)</value>
+  </data>
+  <data name="SystemNameToConnect_Option" xml:space="preserve">
+    <value>System name to connect (DCS or process modeling session name)</value>
+  </data>
+  <data name="ContextParams_Option" xml:space="preserve">
+    <value>Context params</value>
+  </data>
+  <data name="SecurityPolicies_Option" xml:space="preserve">
+    <value>Security policies, comma separated (None, Basic256Sha256, Aes128_Sha256_RsaOaep, Aes256_Sha256_RsaPss)</value>
+  </data>
+  <data name="AllowAnonymous_Option" xml:space="preserve">
+    <value>Allow anonymous clients (true/false)</value>
+  </data>
+  <data name="UserName_Option" xml:space="preserve">
+    <value>User name for username/password authentication (empty - disabled)</value>
+  </data>
+  <data name="Password_Option" xml:space="preserve">
+    <value>Password for username/password authentication</value>
+  </data>
+  <data name="AutoAcceptClientCertificates_Option" xml:space="preserve">
+    <value>Automatically trust client certificates (true/false)</value>
+  </data>
+  <data name="PkiDirectory_Option" xml:space="preserve">
+    <value>Certificate stores directory (own, trusted, issuer, rejected)</value>
+  </data>
+  <data name="IdleUnsubscribeSeconds_Option" xml:space="preserve">
+    <value>Seconds of inactivity after which a tag without monitored items is unsubscribed</value>
+  </data>
+  <data name="Status_ServerStarting" xml:space="preserve">
+    <value>OPC UA server is starting</value>
+  </data>
+  <data name="Status_ServerFailed" xml:space="preserve">
+    <value>OPC UA server failed to start</value>
+  </data>
+  <data name="Status_DataAccessProviderIsNotConnected" xml:space="preserve">
+    <value>OPC UA server is running, data source is not connected</value>
+  </data>
+  <data name="Status_Operational" xml:space="preserve">
+    <value>OPC UA server is running</value>
+  </data>
+</root>

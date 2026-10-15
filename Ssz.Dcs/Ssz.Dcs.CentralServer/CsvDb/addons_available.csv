@@ -14,3 +14,14 @@ ExperionEventsJournalFilesImporter.%(JournalFiles_Type),"Тип файлов ж�
 ExperionEventsJournalFilesImporter.%(JournalFilesDeleteScanPeriodSeconds),Период сканирования для удаления ненужных файлов журналов (секунды),3600
 ExperionEventsJournalFilesImporter.%(RptFiles_Encoding),Кодировка RPT файлов журналов,windows-1251
 ExperionEventsJournalFilesImporter.%(ScanPeriodSeconds),Период сканирования файлов журналов (секунды),3600
+OpcUaServer,OPC UA сервер,True,False
+OpcUaServer.%(OpcUaServer_AllowAnonymous),Разрешить анонимных клиентов (true/false),true
+OpcUaServer.%(OpcUaServer_AutoAcceptClientCertificates),Автоматически доверять сертификатам клиентов (true/false),true
+OpcUaServer.%(OpcUaServer_ContextParams),Параметры контекста,""
+OpcUaServer.%(OpcUaServer_EndpointUrl),Адрес конечной точки OPC UA (opc.tcp://localhost:4840/SszDcsCentralServer; localhost заменяется на имя компьютера),opc.tcp://localhost:4840/SszDcsCentralServer
+OpcUaServer.%(OpcUaServer_IdleUnsubscribeSeconds),"Секунды бездействия, после которых тег без подписок клиентов отписывается от источника",120
+OpcUaServer.%(OpcUaServer_Password),Пароль для аутентификации по имени/паролю,""
+OpcUaServer.%(OpcUaServer_PkiDirectory),"Каталог хранилищ сертификатов (own, trusted, issuer, rejected)","OpcUa\pki"
+OpcUaServer.%(OpcUaServer_SecurityPolicies),"Политики безопасности через запятую (None, Basic256Sha256, Aes128_Sha256_RsaOaep, Aes256_Sha256_RsaPss)","None,Basic256Sha256,Aes128_Sha256_RsaOaep,Aes256_Sha256_RsaPss"
+OpcUaServer.%(OpcUaServer_SystemNameToConnect),Имя системы для подключения (DCS или имя сессии моделирования),DCS
+OpcUaServer.%(OpcUaServer_UserName),Имя пользователя для аутентификации по имени/паролю (пусто - отключено),""
