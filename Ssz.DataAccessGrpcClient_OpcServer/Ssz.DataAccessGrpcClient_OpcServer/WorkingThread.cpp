@@ -66,18 +66,6 @@ void WorkingThread::Run()
 	CoUninitialize();
 }
 
-generic <typename T>
-System::Threading::Tasks::Task<T>^ WorkingThread::InvokeAsync(System::Func<System::Threading::CancellationToken, T>^ action)
-{
-	throw gcnew NotImplementedException();
-}
-
-generic <typename T>
-System::Threading::Tasks::Task<T>^ WorkingThread::InvokeExAsync(System::Func<System::Threading::CancellationToken, System::Threading::Tasks::Task<T>^>^ action)
-{
-	throw gcnew NotImplementedException();
-}
-
 void WorkingThread::BeginInvoke(Action<CancellationToken>^ action)
 {
 	Monitor::Enter(_actionsForWorkingThreadQueueSyncRoot);
@@ -87,7 +75,17 @@ void WorkingThread::BeginInvoke(Action<CancellationToken>^ action)
 	Monitor::Exit(_actionsForWorkingThreadQueueSyncRoot);
 }
 
-void WorkingThread::BeginInvokeEx(Func<System::Threading::CancellationToken, System::Threading::Tasks::Task^>^ action)
+void WorkingThread::BeginInvoke(Func<System::Threading::CancellationToken, System::Threading::Tasks::Task^>^ asyncAction)
+{
+	/*Monitor::Enter(_actionsForWorkingThreadQueueSyncRoot);
+	{
+		_actionsForWorkingThreadQueue->Add(action);
+	}
+	Monitor::Exit(_actionsForWorkingThreadQueueSyncRoot);*/
+	throw gcnew NotImplementedException();
+}
+
+void WorkingThread::BeginInvokeEx(Func<System::Threading::CancellationToken, System::Threading::Tasks::Task^>^ asyncAction)
 {
 	/*Monitor::Enter(_actionsForWorkingThreadQueueSyncRoot);
 	{

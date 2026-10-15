@@ -14,15 +14,11 @@ public:
 
 	~WorkingThread(void);
 
-	generic <typename T>
-	virtual System::Threading::Tasks::Task<T>^ InvokeAsync(System::Func<System::Threading::CancellationToken, T>^ action);
-
-	generic <typename T>
-	virtual System::Threading::Tasks::Task<T>^ InvokeExAsync(System::Func<System::Threading::CancellationToken, System::Threading::Tasks::Task<T>^>^ action);
-
 	virtual void BeginInvoke(Action<System::Threading::CancellationToken>^ action);
 
-	virtual void BeginInvokeEx(Func<System::Threading::CancellationToken, System::Threading::Tasks::Task^>^ action);
+	virtual void BeginInvoke(Func<System::Threading::CancellationToken, System::Threading::Tasks::Task^>^ asyncAction);
+
+	virtual void BeginInvokeEx(Func<System::Threading::CancellationToken, System::Threading::Tasks::Task^>^ asyncAction);
 
 private:
 	void Run();
