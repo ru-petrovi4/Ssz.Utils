@@ -3,3 +3,4 @@ DataAccessClient.1,DataAccessClient,false
 DcsCentralServer.1,DcsCentralServer,true
 ExperionEventsJournalFilesImporter.1,ExperionEventsJournalFilesImporter,false
 OpcUaServer.1,OpcUaServer,false
+OpcUaClient.1,OpcUaClient,false

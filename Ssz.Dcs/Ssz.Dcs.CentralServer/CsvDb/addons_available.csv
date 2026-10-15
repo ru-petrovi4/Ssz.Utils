@@ -25,3 +25,17 @@ OpcUaServer.%(OpcUaServer_PkiDirectory),"Каталог хранилищ сер�
 OpcUaServer.%(OpcUaServer_SecurityPolicies),"Политики безопасности через запятую (None, Basic256Sha256, Aes128_Sha256_RsaOaep, Aes256_Sha256_RsaPss)","None,Basic256Sha256,Aes128_Sha256_RsaOaep,Aes256_Sha256_RsaPss"
 OpcUaServer.%(OpcUaServer_SystemNameToConnect),Имя системы для подключения (DCS или имя сессии моделирования),DCS
 OpcUaServer.%(OpcUaServer_UserName),Имя пользователя для аутентификации по имени/паролю (пусто - отключено),""
+OpcUaClient,OPC UA клиент,True,False
+OpcUaClient.%(OpcUaClient_AutoAcceptServerCertificate),Автоматически доверять сертификату сервера (true/false),true
+OpcUaClient.%(OpcUaClient_DefaultNamespaceIndex),"Индекс пространства имён для идентификаторов, не являющихся полными NodeId",2
+OpcUaClient.%(OpcUaClient_DefaultNamespaceUri),"URI пространства имён для идентификаторов, не являющихся полными NodeId (пусто - используется индекс)",""
+OpcUaClient.%(OpcUaClient_EndpointUrl),Адрес конечной точки OPC UA сервера (opc.tcp://host:4840/...),opc.tcp://localhost:4840
+OpcUaClient.%(OpcUaClient_EventNotifierNodeId),NodeId объекта-источника событий (i=2253 - Server),i=2253
+OpcUaClient.%(OpcUaClient_Password),Пароль,""
+OpcUaClient.%(OpcUaClient_PkiDirectory),"Каталог хранилищ сертификатов (own, trusted, issuer, rejected)","OpcUa\pki"
+OpcUaClient.%(OpcUaClient_PublishingIntervalMs),"Интервал публикации подписки, мс",500
+OpcUaClient.%(OpcUaClient_SamplingIntervalMs),"Интервал опроса элементов подписки, мс",250
+OpcUaClient.%(OpcUaClient_SessionTimeoutMs),"Таймаут сессии, мс",60000
+OpcUaClient.%(OpcUaClient_SubscribeToEvents),Подписываться на события и алармы (true/false),true
+OpcUaClient.%(OpcUaClient_UserName),Имя пользователя (пусто - анонимно),""
+OpcUaClient.%(OpcUaClient_UseSecurity),Использовать самую защищённую конечную точку сервера (true/false),true

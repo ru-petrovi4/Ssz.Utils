@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>Latest</LangVersion>
+    <Platforms>AnyCPU;x86</Platforms>
+    <BaseOutputPath>..\..\Ssz.Dcs.CentralServer\bin\</BaseOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Client" Version="1.5.378.182" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Configuration" Version="1.5.378.182" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="10.0.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Ssz.Dcs.CentralServer.Common\Ssz.Dcs.CentralServer.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\Resources.ru.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <!--
+    The addon is loaded by the central server from its bin directory. Library projects do not copy NuGet
+    assemblies to the output, so the OPC UA stack assemblies are copied explicitly. Only Opc.Ua.* files are
+    copied: all other dependencies are already provided by the central server or by the shared framework.
+  -->
+  <Target Name="CopyOpcUaAssembliesToOutput" AfterTargets="Build">
+    <ItemGroup>
+      <_OpcUaRuntimeAssembly Include="@(RuntimeCopyLocalItems)" Condition="$([System.String]::new('%(Filename)').StartsWith('Opc.Ua'))" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_OpcUaRuntimeAssembly)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>

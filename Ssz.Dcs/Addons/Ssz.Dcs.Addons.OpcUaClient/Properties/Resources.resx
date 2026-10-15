@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="OpcUaClientAddon_Desc" xml:space="preserve">
+    <value>OPC UA Client</value>
+  </data>
+  <data name="EndpointUrl_Option" xml:space="preserve">
+    <value>OPC UA server endpoint URL (opc.tcp://host:4840/...)</value>
+  </data>
+  <data name="UseSecurity_Option" xml:space="preserve">
+    <value>Use the most secure endpoint offered by the server (true/false)</value>
+  </data>
+  <data name="UserName_Option" xml:space="preserve">
+    <value>User name (empty - anonymous)</value>
+  </data>
+  <data name="Password_Option" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="AutoAcceptServerCertificate_Option" xml:space="preserve">
+    <value>Automatically trust the server certificate (true/false)</value>
+  </data>
+  <data name="PkiDirectory_Option" xml:space="preserve">
+    <value>Certificate stores directory (own, trusted, issuer, rejected)</value>
+  </data>
+  <data name="DefaultNamespaceUri_Option" xml:space="preserve">
+    <value>Namespace URI for element ids that are not full NodeIds (empty - use namespace index)</value>
+  </data>
+  <data name="DefaultNamespaceIndex_Option" xml:space="preserve">
+    <value>Namespace index for element ids that are not full NodeIds</value>
+  </data>
+  <data name="PublishingIntervalMs_Option" xml:space="preserve">
+    <value>Subscription publishing interval, ms</value>
+  </data>
+  <data name="SamplingIntervalMs_Option" xml:space="preserve">
+    <value>Monitored items sampling interval, ms</value>
+  </data>
+  <data name="SubscribeToEvents_Option" xml:space="preserve">
+    <value>Subscribe to events and alarms (true/false)</value>
+  </data>
+  <data name="EventNotifierNodeId_Option" xml:space="preserve">
+    <value>NodeId of the event notifier object (i=2253 - Server)</value>
+  </data>
+  <data name="SessionTimeoutMs_Option" xml:space="preserve">
+    <value>Session timeout, ms</value>
+  </data>
+</root>

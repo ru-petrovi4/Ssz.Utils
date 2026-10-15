@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="OpcUaClientAddon_Desc" xml:space="preserve">
+    <value>OPC UA клиент</value>
+  </data>
+  <data name="EndpointUrl_Option" xml:space="preserve">
+    <value>Адрес конечной точки OPC UA сервера (opc.tcp://host:4840/...)</value>
+  </data>
+  <data name="UseSecurity_Option" xml:space="preserve">
+    <value>Использовать самую защищённую конечную точку сервера (true/false)</value>
+  </data>
+  <data name="UserName_Option" xml:space="preserve">
+    <value>Имя пользователя (пусто - анонимно)</value>
+  </data>
+  <data name="Password_Option" xml:space="preserve">
+    <value>Пароль</value>
+  </data>
+  <data name="AutoAcceptServerCertificate_Option" xml:space="preserve">
+    <value>Автоматически доверять сертификату сервера (true/false)</value>
+  </data>
+  <data name="PkiDirectory_Option" xml:space="preserve">
+    <value>Каталог хранилищ сертификатов (own, trusted, issuer, rejected)</value>
+  </data>
+  <data name="DefaultNamespaceUri_Option" xml:space="preserve">
+    <value>URI пространства имён для идентификаторов, не являющихся полными NodeId (пусто - используется индекс)</value>
+  </data>
+  <data name="DefaultNamespaceIndex_Option" xml:space="preserve">
+    <value>Индекс пространства имён для идентификаторов, не являющихся полными NodeId</value>
+  </data>
+  <data name="PublishingIntervalMs_Option" xml:space="preserve">
+    <value>Интервал публикации подписки, мс</value>
+  </data>
+  <data name="SamplingIntervalMs_Option" xml:space="preserve">
+    <value>Интервал опроса элементов подписки, мс</value>
+  </data>
+  <data name="SubscribeToEvents_Option" xml:space="preserve">
+    <value>Подписываться на события и алармы (true/false)</value>
+  </data>
+  <data name="EventNotifierNodeId_Option" xml:space="preserve">
+    <value>NodeId объекта-источника событий (i=2253 - Server)</value>
+  </data>
+  <data name="SessionTimeoutMs_Option" xml:space="preserve">
+    <value>Таймаут сессии, мс</value>
+  </data>
+</root>
