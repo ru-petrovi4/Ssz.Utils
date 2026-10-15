@@ -60,7 +60,8 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
         public event EventHandler<ContextStatusChangedEventArgs> ServerContextStatusChanged = delegate { };
         
-        public async Task InitiateConnectionAsync(string serverAddress,
+        public async Task InitiateConnectionAsync(
+            string serverAddress,
             string clientApplicationName,
             string clientWorkstationName,
             string systemNameToConnect,

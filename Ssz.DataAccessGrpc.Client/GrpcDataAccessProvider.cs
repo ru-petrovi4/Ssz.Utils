@@ -812,7 +812,8 @@ namespace Ssz.DataAccessGrpc.Client
                         //        //NameValueCollectionHelper.GetNameValueCollectionString(_dataGrpcContextParams.OfType<string?>()));
                         //}
 
-                        await _clientContextManager.InitiateConnectionAsync(ServerAddress, 
+                        await _clientContextManager.InitiateConnectionAsync(
+                            ServerAddress, 
                             ClientApplicationName,
                             ClientWorkstationName, 
                             SystemNameToConnect, 

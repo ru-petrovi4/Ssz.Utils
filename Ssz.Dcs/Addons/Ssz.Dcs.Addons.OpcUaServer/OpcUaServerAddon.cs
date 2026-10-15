@@ -74,10 +74,12 @@ namespace Ssz.Dcs.Addons.OpcUaServer
 
         public override bool IsMultiInstance => true;
 
+        public override bool IsSwitchedOnByDefault => true;
+
         public override (string, string, string)[] OptionsInfo => new (string, string, string)[]
         {
             (EndpointUrl_OptionName, Properties.Resources.EndpointUrl_Option, @"opc.tcp://localhost:4840/SszDcsCentralServer"),
-            (SystemNameToConnect_OptionName, Properties.Resources.SystemNameToConnect_Option, DataAccessConstants.Dcs_SystemName),
+            (SystemNameToConnect_OptionName, Properties.Resources.SystemNameToConnect_Option, DataAccessConstants.DefaultProcessModelingSessionId),
             (ContextParams_OptionName, Properties.Resources.ContextParams_Option, @""),
             (SecurityPolicies_OptionName, Properties.Resources.SecurityPolicies_Option, @"None,Basic256Sha256,Aes128_Sha256_RsaOaep,Aes256_Sha256_RsaPss"),
             (AllowAnonymous_OptionName, Properties.Resources.AllowAnonymous_Option, @"true"),
@@ -106,6 +108,15 @@ namespace Ssz.Dcs.Addons.OpcUaServer
 
                 _serverHost = new OpcUaServerHost(options, dataAccessProvider, Dispatcher!, ServiceProvider.GetRequiredService<ILoggerFactory>());
                 _ = _serverHost.StartAsync();
+
+                CsvDb.CsvFileChanged += (sender, args) =>
+                {
+                    if (args.CsvFileName == @"" ||
+                            String.Equals(args.CsvFileName, NodesCsvFileName, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        Dispatcher!.BeginInvoke(ct => OnNodesCsvChanged(options));
+                    }
+                };
             }
             catch (Exception ex)
             {
@@ -250,6 +261,15 @@ namespace Ssz.Dcs.Addons.OpcUaServer
                 idleUnsubscribeSeconds = 120;
             options.IdleUnsubscribeTimeout = TimeSpan.FromSeconds(idleUnsubscribeSeconds);
 
+            options.StaticNodes.AddRange(ReadStaticNodes());
+
+            return options;
+        }
+
+        private List<StaticNodeInfo> ReadStaticNodes()
+        {
+            var result = new List<StaticNodeInfo>();
+
             foreach (var kvp in CsvDb.GetData(NodesCsvFileName))
             {
                 if (kvp.Key.StartsWith('!'))
@@ -259,7 +279,7 @@ namespace Ssz.Dcs.Addons.OpcUaServer
                 if (elementId == @"")
                     continue;
 
-                options.StaticNodes.Add(new StaticNodeInfo
+                result.Add(new StaticNodeInfo
                 {
                     ElementId = elementId,
                     Path = CsvDb.GetValue(kvp.Value, 1) ?? @"",
@@ -268,7 +288,31 @@ namespace Ssz.Dcs.Addons.OpcUaServer
                 });
             }
 
-            return options;
+            return result;
+        }
+
+        /// <summary>
+        ///     Called in the addon dispatcher when nodes.csv changes.
+        /// </summary>
+        private void OnNodesCsvChanged(OpcUaServerOptions options)
+        {
+            List<StaticNodeInfo> staticNodes = ReadStaticNodes();
+
+            // Keeps the options current for an address space that is not created yet (server still starting).
+            lock (options.StaticNodes)
+            {
+                options.StaticNodes.Clear();
+                options.StaticNodes.AddRange(staticNodes);
+            }
+
+            try
+            {
+                _serverHost?.NodeManager?.UpdateStaticNodes(staticNodes);
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "OPC UA static nodes update error.");
+            }
         }
 
         /// <summary>
@@ -292,13 +336,9 @@ namespace Ssz.Dcs.Addons.OpcUaServer
             // In-process connection to the central server, when hosted by it.
             DataAccessServerWorkerBase? localDataAccessServerWorker = ServiceProvider.GetService<DataAccessServerWorkerBase>();
 
-            string serverAddress = ConfigurationHelper.GetValue<string>(Configuration, @"Kestrel:Endpoints:HttpsDefaultCert:Url", @"")
-                .Replace(@"*", @"localhost");
-            if (serverAddress == @"")
-                serverAddress = @"https://localhost:60060";
-
-            dataAccessProvider.Initialize(elementIdsMap,
-                serverAddress,
+            dataAccessProvider.Initialize(
+                elementIdsMap,
+                @"local", // Any non empty
                 @"Ssz.Dcs.Addons.OpcUaServer",
                 ConfigurationHelper.GetThisWorkstationName(Configuration),
                 options.SystemNameToConnect,

@@ -106,24 +106,103 @@ namespace Ssz.Dcs.Addons.OpcUaServer.OpcUa
                 _dynamicFolder = CreateFolder(root, DynamicFolderName, DynamicFolderName);
                 _alarmsFolder = CreateFolder(root, AlarmsFolderName, AlarmsFolderName);
 
-                foreach (StaticNodeInfo staticNode in _options.StaticNodes)
+                List<StaticNodeInfo> staticNodes;
+                lock (_options.StaticNodes)
                 {
-                    string elementId = staticNode.ElementId.Trim();
-                    if (!IsValidElementId(elementId) || _tagNodes.ContainsKey(elementId))
-                        continue;
-
+                    staticNodes = _options.StaticNodes.ToList();
+                }
+                foreach (var kvp in NormalizeStaticNodes(staticNodes))
+                {
+                    StaticNodeInfo staticNode = kvp.Value;
                     FolderState parent = GetOrCreateFolder(staticNode.Path);
-                    string displayName = String.IsNullOrWhiteSpace(staticNode.DisplayName) ? elementId : staticNode.DisplayName.Trim();
-                    CreateTagNode(parent, elementId, displayName, staticNode.Description ?? @"", false);
+                    CreateTagNode(parent, kvp.Key, staticNode.DisplayName, staticNode.Description, false);
                 }
 
                 AddPredefinedNode(SystemContext, root);
                 AddRootNotifier(root);
+
+                _addressSpaceCreated = true;
             }
 
             _dataAccessProvider.EventMessagesCallback += OnDataAccessProvider_EventMessagesCallback;
 
             _logger.LogInformation("OPC UA address space created. System: {SystemName}, static tags: {StaticTagsCount}", _options.SystemNameToConnect, _tagNodes.Count);
+        }
+
+        /// <summary>
+        ///     Must be called in the addon dispatcher. Applies a new nodes.csv content to the running address space:
+        ///     new tags and folders are added, display names and descriptions are updated, tags are moved between folders,
+        ///     tags removed from the file are deleted (or, if clients monitor them, turned into dynamic tags),
+        ///     empty folders are removed.
+        /// </summary>
+        public void UpdateStaticNodes(IEnumerable<StaticNodeInfo> staticNodes)
+        {
+            lock (Lock)
+            {
+                if (!_addressSpaceCreated || _root is null || _dynamicFolder is null)
+                    return;
+
+                Dictionary<string, StaticNodeInfo> desiredNodes = NormalizeStaticNodes(staticNodes);
+                int added = 0, updated = 0, removed = 0;
+
+                // Tags that are no longer in the file.
+                foreach (TagNode tagNode in _tagNodes.Values.Where(t => !t.IsDynamic).ToList())
+                {
+                    if (desiredNodes.ContainsKey(tagNode.ElementId))
+                        continue;
+
+                    if (tagNode.MonitoredItemsCount > 0)
+                    {
+                        // Clients still monitor the tag: keep it alive as a dynamic tag, cleanup removes it when it becomes idle.
+                        MoveTagNode(tagNode, _dynamicFolder);
+                        tagNode.IsDynamic = true;
+                        UpdateTagNodeAttributes(tagNode, tagNode.ElementId, @"");
+                    }
+                    else
+                    {
+                        Unsubscribe(tagNode, true);
+                    }
+                    removed += 1;
+                }
+
+                // New, moved and changed tags.
+                foreach (var kvp in desiredNodes)
+                {
+                    string elementId = kvp.Key;
+                    StaticNodeInfo staticNode = kvp.Value;
+                    FolderState parent = GetOrCreateFolder(staticNode.Path);
+
+                    if (_tagNodes.TryGetValue(elementId, out TagNode? tagNode))
+                    {
+                        bool changed = false;
+                        if (!ReferenceEquals(tagNode.Variable.Parent, parent))
+                        {
+                            MoveTagNode(tagNode, parent);
+                            changed = true;
+                        }
+                        if (tagNode.IsDynamic)
+                        {
+                            tagNode.IsDynamic = false;
+                            changed = true;
+                        }
+                        if (UpdateTagNodeAttributes(tagNode, staticNode.DisplayName, staticNode.Description))
+                            changed = true;
+                        if (changed)
+                            updated += 1;
+                    }
+                    else
+                    {
+                        tagNode = CreateTagNode(parent, elementId, staticNode.DisplayName, staticNode.Description, false);
+                        AddPredefinedNode(SystemContext, tagNode.Variable);
+                        added += 1;
+                    }
+                }
+
+                RemoveEmptyFolders();
+
+                _logger.LogInformation("OPC UA static nodes updated. System: {SystemName}; added: {Added}, updated: {Updated}, removed: {Removed}, static tags: {StaticTagsCount}",
+                    _options.SystemNameToConnect, added, updated, removed, _tagNodes.Values.Count(t => !t.IsDynamic));
+            }
         }
 
         public override void DeleteAddressSpace()
@@ -352,7 +431,92 @@ namespace Ssz.Dcs.Addons.OpcUaServer.OpcUa
 
             parent?.AddChild(folder);
             _folders[path] = folder;
+            if (_addressSpaceCreated)
+                AddPredefinedNode(SystemContext, folder);
             return folder;
+        }
+
+        /// <summary>
+        ///     Validates nodes.csv rows: trims, drops invalid and duplicate element ids, fills default display names.
+        /// </summary>
+        private static Dictionary<string, StaticNodeInfo> NormalizeStaticNodes(IEnumerable<StaticNodeInfo> staticNodes)
+        {
+            var result = new Dictionary<string, StaticNodeInfo>();
+            foreach (StaticNodeInfo staticNode in staticNodes)
+            {
+                string elementId = (staticNode.ElementId ?? @"").Trim();
+                if (!IsValidElementId(elementId) || result.ContainsKey(elementId))
+                    continue;
+
+                result[elementId] = new StaticNodeInfo
+                {
+                    ElementId = elementId,
+                    Path = NormalizePath(staticNode.Path),
+                    DisplayName = String.IsNullOrWhiteSpace(staticNode.DisplayName) ? elementId : staticNode.DisplayName.Trim(),
+                    Description = (staticNode.Description ?? @"").Trim()
+                };
+            }
+            return result;
+        }
+
+        /// <summary>
+        ///     Must be called under Lock. Moves the variable to another folder, the NodeId does not change.
+        /// </summary>
+        private void MoveTagNode(TagNode tagNode, FolderState newParent)
+        {
+            BaseDataVariableState variable = tagNode.Variable;
+            variable.Parent?.RemoveChild(variable);
+            newParent.AddChild(variable);
+        }
+
+        /// <summary>
+        ///     Must be called under Lock. Returns true if something changed.
+        /// </summary>
+        private bool UpdateTagNodeAttributes(TagNode tagNode, string displayName, string description)
+        {
+            BaseDataVariableState variable = tagNode.Variable;
+            bool changed = false;
+
+            if (variable.DisplayName?.Text != displayName)
+            {
+                variable.DisplayName = new LocalizedText(displayName);
+                variable.BrowseName = new QualifiedName(displayName, NamespaceIndex);
+                changed = true;
+            }
+
+            string currentDescription = variable.Description?.Text ?? @"";
+            if (currentDescription != description)
+            {
+                variable.Description = description == @"" ? null : new LocalizedText(description);
+                changed = true;
+            }
+
+            if (changed)
+                variable.ClearChangeMasks(SystemContext, false);
+
+            return changed;
+        }
+
+        /// <summary>
+        ///     Must be called under Lock. Removes folders without children, deepest first. Root, Dynamic and Alarms folders stay.
+        /// </summary>
+        private void RemoveEmptyFolders()
+        {
+            foreach (string path in _folders.Keys.OrderByDescending(p => p.Length).ToList())
+            {
+                if (path == @"" || path == DynamicFolderName || path == AlarmsFolderName)
+                    continue;
+
+                FolderState folder = _folders[path];
+                var children = new List<BaseInstanceState>();
+                folder.GetChildren(SystemContext, children);
+                if (children.Count > 0)
+                    continue;
+
+                folder.Parent?.RemoveChild(folder);
+                _folders.Remove(path);
+                DeleteNode(SystemContext, folder.NodeId);
+            }
         }
 
         /// <summary>
@@ -609,6 +773,8 @@ namespace Ssz.Dcs.Addons.OpcUaServer.OpcUa
 
         private FolderState? _alarmsFolder;
 
+        private bool _addressSpaceCreated;
+
         /// <summary>
         ///     [Normalized path, Folder]
         /// </summary>
@@ -638,7 +804,7 @@ namespace Ssz.Dcs.Addons.OpcUaServer.OpcUa
             /// <summary>
             ///     Created on demand by a client request (not from nodes.csv).
             /// </summary>
-            public bool IsDynamic { get; }
+            public bool IsDynamic { get; set; }
 
             public bool IsDeleted { get; set; }
 
