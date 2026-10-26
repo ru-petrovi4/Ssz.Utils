@@ -15,6 +15,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Ssz.Dcs.CentralServer_ClientService
@@ -328,7 +329,7 @@ namespace Ssz.Dcs.CentralServer_ClientService
             };
 
             uint statusCode = await await utilityDataAccessProvider.LongrunningPassthroughAsync("", LongrunningPassthroughConstants.SaveFiles,
-                SerializationHelper.GetOwnedData(request), null);
+                SerializationHelper.GetOwnedData(request), null, CancellationToken.None);
 
             return statusCode;
         }

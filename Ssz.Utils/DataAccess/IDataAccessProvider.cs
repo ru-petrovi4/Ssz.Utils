@@ -17,7 +17,15 @@ namespace Ssz.Utils.DataAccess
     {
         ElementIdsMap? ElementIdsMap { get; }
 
+        /// <summary>
+        ///     You can set the value before or after Initialize(...).
+        /// </summary>
         string ServerAddress { get; set; }
+
+        /// <summary>
+        ///     You must set the value before Initialize(...).
+        /// </summary>
+        string AccessToken { get; set; }
 
         string ServerHost { get; }
 
@@ -137,8 +145,9 @@ namespace Ssz.Utils.DataAccess
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <param name="progressCallbackAction"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<Task<uint>> LongrunningPassthroughAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend, Action<LongrunningPassthroughCallback>? progressCallbackAction);
+        Task<Task<uint>> LongrunningPassthroughAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend, Action<LongrunningPassthroughCallback>? progressCallbackAction, CancellationToken cancellationToken);
 
         void JournalAddItem(string elementId, object valueJournalSubscription);
 

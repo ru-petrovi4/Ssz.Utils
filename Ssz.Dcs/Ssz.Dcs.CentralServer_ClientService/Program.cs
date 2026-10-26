@@ -34,7 +34,7 @@ namespace Ssz.Dcs.CentralServer_ClientService
             IConfiguration configuration = host.Services.GetRequiredService<IConfiguration>();
             CultureHelper.InitializeUICulture(configuration, logger);
 
-            LoggerHelper.LogProgramInformation(logger, configuration, args, EnvironmentName);
+            ConfigurationHelper.LogProgramInformation(logger, configuration, args, EnvironmentName);
 
             host.Run();
         }

@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Ssz.Dcs.CentralServer_ClientService
@@ -56,7 +57,7 @@ namespace Ssz.Dcs.CentralServer_ClientService
                         [ operatorSessionId, 
                         workingDirectoriesOptional.Value.BinDirectoryInfo.FullName, 
                         workingDirectoriesOptional.Value.DataDirectoryInfo.FullName,
-                        utilityDataAccessProvider.ServerAddress ])), null);
+                        utilityDataAccessProvider.ServerAddress ])), null, CancellationToken.None);
                       
             }
             catch (NotifyProgressException ex)

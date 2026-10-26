@@ -67,6 +67,8 @@ namespace Ssz.Utils.DataAccess
         /// </summary>
         public string ServerAddress { get; set; } = @"";
 
+        public virtual string AccessToken { get; set; } = @"";
+
         public string ServerHost
         {
             get
@@ -273,8 +275,9 @@ namespace Ssz.Utils.DataAccess
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <param name="progressCallbackAction"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public virtual Task<Task<uint>> LongrunningPassthroughAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend, Action<LongrunningPassthroughCallback>? progressCallbackAction)
+        public virtual Task<Task<uint>> LongrunningPassthroughAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend, Action<LongrunningPassthroughCallback>? progressCallbackAction, CancellationToken cancellationToken)
         {            
             return Task.FromResult(Task.FromResult(StatusCodes.Good));
         }

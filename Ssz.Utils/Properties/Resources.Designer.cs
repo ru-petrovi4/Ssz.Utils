@@ -19,7 +19,7 @@ namespace Ssz.Utils.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -196,6 +196,15 @@ namespace Ssz.Utils.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to *yml files sections successfully decrypted..
+        /// </summary>
+        public static string DecryptAppsettingsSuccess {
+            get {
+                return ResourceManager.GetString("DecryptAppsettingsSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Desired addon {0} failed..
         /// </summary>
         public static string DesiredAddonFailed {
@@ -210,6 +219,15 @@ namespace Ssz.Utils.Properties {
         public static string DuplicateAddonsMessage {
             get {
                 return ResourceManager.GetString("DuplicateAddonsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to *.yml files sections successfully encrypted..
+        /// </summary>
+        public static string EncryptAppsettingsSuccess {
+            get {
+                return ResourceManager.GetString("EncryptAppsettingsSuccess", resourceCulture);
             }
         }
         
@@ -309,6 +327,15 @@ namespace Ssz.Utils.Properties {
         public static string PrepareLambdaExpressionError {
             get {
                 return ResourceManager.GetString("PrepareLambdaExpressionError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string String1 {
+            get {
+                return ResourceManager.GetString("String1", resourceCulture);
             }
         }
     }

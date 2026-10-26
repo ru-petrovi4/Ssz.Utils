@@ -447,7 +447,7 @@ namespace Ssz.Xi.Client
         /// <param name="progressCallbackAction"></param>
         /// <returns></returns>
         public override async Task<Task<uint>> LongrunningPassthroughAsync(string recipientId, string passthroughName, ReadOnlyMemory<byte> dataToSend, 
-            Action<LongrunningPassthroughCallback>? progressCallbackAction)
+            Action<LongrunningPassthroughCallback>? progressCallbackAction, CancellationToken cancellationToken)
         {
             // Early exception
             if (!_xiServerProxy!.ContextExists)

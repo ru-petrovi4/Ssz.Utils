@@ -40,6 +40,12 @@ namespace Ssz.DataAccessGrpc.Client
 
         #region public functions
 
+        public override string AccessToken
+        {
+            get { return _clientContextManager.AccessToken; }
+            set { _clientContextManager.AccessToken = value; }
+        }
+
         public override DateTime LastFailedConnectionDateTimeUtc => _clientContextManager.LastFailedConnectionDateTimeUtc;
 
         public override DateTime LastSuccessfulConnectionDateTimeUtc => _clientContextManager.LastContextIsOperationalDateTimeUtc;
@@ -618,9 +624,10 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <param name="progressCallbackAction"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public override async Task<Task<uint>> LongrunningPassthroughAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend,
-            Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? progressCallbackAction)
+            Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? progressCallbackAction, CancellationToken cancellationToken)
         {
             // Early exception
             if (!_clientContextManager.ContextIsOperational)
@@ -683,7 +690,7 @@ namespace Ssz.DataAccessGrpc.Client
                 try
                 {
                     statusCodeTask = await _clientContextManager.LongrunningPassthrough_FireAndForgetAsync(recipientPath, passthroughName,
-                        dataToSend, callbackActionDispatched);
+                        dataToSend, callbackActionDispatched, cancellationToken);
                 }
                 catch (RpcException ex)
                 {

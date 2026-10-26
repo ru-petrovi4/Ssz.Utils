@@ -263,8 +263,18 @@ namespace Ssz.DataAccessGrpc.Client
                 {
                     lock (_longrunningPassthroughRequestsCollection)
                     {
+                        _longrunningPassthroughRequestsCollection.TryGetValue(jobId, out List<LongrunningPassthroughRequest>? longrunningPassthroughRequests);
                         _longrunningPassthroughRequestsCollection.Remove(jobId);
-                    }                    
+                        if (longrunningPassthroughRequests is not null)
+                            longrunningPassthroughRequestsArray = longrunningPassthroughRequests.ToArray();
+                    }
+                    if (longrunningPassthroughRequestsArray is not null)
+                    {
+                        foreach (var longrunningPassthroughRequest in longrunningPassthroughRequestsArray)
+                        {
+                            longrunningPassthroughRequest.Dispose();
+                        }
+                    }
                 }
             }                          
         }

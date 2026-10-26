@@ -1,21 +1,22 @@
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
-using Ssz.Dcs.CentralServer.Common;
-using Ssz.Dcs.CentralServer.Common.Passthrough;
-using Ssz.Dcs.CentralServer.Common.EntityFramework;
 using Ssz.DataAccessGrpc.ServerBase;
-using Ssz.Utils.DataAccess;
+using Ssz.DataAccessGrpc.ServerBase.Properties;
+using Ssz.Dcs.CentralServer.Common;
+using Ssz.Dcs.CentralServer.Common.EntityFramework;
+using Ssz.Dcs.CentralServer.Common.Passthrough;
 using Ssz.Utils;
+using Ssz.Utils.Addons;
+using Ssz.Utils.DataAccess;
 using Ssz.Utils.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Text;
-using Ssz.DataAccessGrpc.ServerBase.Properties;
-using System.Collections.ObjectModel;
-using Ssz.Utils.Addons;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Ssz.Dcs.CentralServer
 {
@@ -200,14 +201,14 @@ namespace Ssz.Dcs.CentralServer
                 if (engineSession is not null)
                 {
                     Logger.LogDebug("dataAccessProvider.LongrunningPassthrough passthroughName=" + passthroughName);
-                    statusCodeTasks.Add(await engineSession.DataAccessProvider.LongrunningPassthroughAsync(remainingRecipientPath, passthroughName, dataToSend, null));
+                    statusCodeTasks.Add(await engineSession.DataAccessProvider.LongrunningPassthroughAsync(remainingRecipientPath, passthroughName, dataToSend, null, CancellationToken.None));
                 }
             }
             if (statusCodeTasks.Count == 0)
                 foreach (EngineSession engineSession in engineSessions)
                 {
                     Logger.LogDebug("dataAccessProvider.LongrunningPassthrough passthroughName=" + passthroughName);
-                    statusCodeTasks.Add(await engineSession.DataAccessProvider.LongrunningPassthroughAsync(recipientPath, passthroughName, dataToSend, null));
+                    statusCodeTasks.Add(await engineSession.DataAccessProvider.LongrunningPassthroughAsync(recipientPath, passthroughName, dataToSend, null, CancellationToken.None));
                 }
 
             bool allSucceeded = true;

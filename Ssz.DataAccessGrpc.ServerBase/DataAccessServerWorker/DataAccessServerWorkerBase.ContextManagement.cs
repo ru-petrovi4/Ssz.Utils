@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,13 +18,15 @@ namespace Ssz.DataAccessGrpc.ServerBase
     {
         #region public functions
         
-        public ServerContext AddServerContext(ILogger logger,            
+        public ServerContext AddServerContext(
+            ILogger logger,            
             string clientApplicationName,
             string clientWorkstationName,
             uint requestedServerContextTimeoutMs,
             string requestedCultureName,
             string systemNameToConnect,
-            CaseInsensitiveOrderedDictionary<string?> contextParams)
+            CaseInsensitiveOrderedDictionary<string?> contextParams,
+            ClaimsPrincipal? user)
         {
             var serverContext = new ServerContext(
                         logger,
@@ -33,7 +36,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
                         requestedServerContextTimeoutMs,
                         requestedCultureName,
                         systemNameToConnect,
-                        contextParams
+                        contextParams,
+                        user
                         );
 
             _serverContexts_ImmutableDictionary = _serverContexts_ImmutableDictionary.Add(serverContext.ContextId, serverContext);
@@ -48,7 +52,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// </summary>
         /// <param name="contextId"></param>
         /// <returns></returns>
-        public ServerContext LookupServerContext(string contextId)
+        public ServerContext LookupServerContext(string contextId, ServerCallContext? callContext)
         {
             ServerContext? serverContext;
             _serverContexts_ImmutableDictionary.TryGetValue(contextId, out serverContext);
@@ -70,15 +74,23 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     Logger.LogWarning("Invalid contextId: '{0}'; Call Stack: {1}", contextId, callStack);
                 }
 
-                throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid contextId."));
+                throw new RpcException(new Status(StatusCode.PermissionDenied, "Context belongs to another user."));
             }
+            
+            if (!serverContext.UserIsValid(callContext?.GetHttpContext()?.User))
+                throw new RpcException(new Status(StatusCode.PermissionDenied, @"Context belongs to another user."));
+
             return serverContext;
         }
 
-        public ServerContext? TryLookupServerContext_ThreadSafe(string contextId)
+        public ServerContext? TryLookupServerContext_ThreadSafe(string contextId, ServerCallContext? callContext)
         {
             ServerContext? serverContext;
-            _serverContexts_ImmutableDictionary.TryGetValue(contextId, out serverContext);            
+            _serverContexts_ImmutableDictionary.TryGetValue(contextId, out serverContext);
+
+            if (serverContext is not null && !serverContext.UserIsValid(callContext?.GetHttpContext()?.User))
+                serverContext = null;
+
             return serverContext;
         }        
 
@@ -95,17 +107,17 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         IDataAccessServerContext IDataAccessServerWorker.AddServerContext(ILogger logger, string clientApplicationName, string clientWorkstationName, uint requestedServerContextTimeoutMs, string requestedCultureName, string systemNameToConnect, CaseInsensitiveOrderedDictionary<string?> contextParams)
         {
-            return AddServerContext(logger, clientApplicationName, clientWorkstationName, requestedServerContextTimeoutMs, requestedCultureName, systemNameToConnect, contextParams);
+            return AddServerContext(logger, clientApplicationName, clientWorkstationName, requestedServerContextTimeoutMs, requestedCultureName, systemNameToConnect, contextParams, null);
         }
 
         IDataAccessServerContext IDataAccessServerWorker.LookupServerContext(string contextId)
         {
-            return LookupServerContext(contextId);
+            return LookupServerContext(contextId, null);
         }
 
         IDataAccessServerContext? IDataAccessServerWorker.TryLookupServerContext_ThreadSafe(string contextId)
         {
-            return TryLookupServerContext_ThreadSafe(contextId);
+            return TryLookupServerContext_ThreadSafe(contextId, null);
         }        
 
         #endregion

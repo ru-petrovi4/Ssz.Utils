@@ -162,11 +162,17 @@
   <data name="CsvHelper_CsvFileReadingError" xml:space="preserve">
     <value>File reading error</value>
   </data>
+  <data name="DecryptAppsettingsSuccess" xml:space="preserve">
+    <value>*yml files sections successfully decrypted.</value>
+  </data>
   <data name="DesiredAddonFailed" xml:space="preserve">
     <value>Desired addon {0} failed.</value>
   </data>
   <data name="DuplicateAddonsMessage" xml:space="preserve">
     <value>Duplicate addons</value>
+  </data>
+  <data name="EncryptAppsettingsSuccess" xml:space="preserve">
+    <value>*.yml files sections successfully encrypted.</value>
   </data>
   <data name="Error_CannotDetermineFileEncoding" xml:space="preserve">
     <value>Cannot determine file encoding.</value>
@@ -200,5 +206,8 @@
   </data>
   <data name="PrepareLambdaExpressionError" xml:space="preserve">
     <value>Expression error</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
   </data>
 </root>

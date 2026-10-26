@@ -15,7 +15,7 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="textFileFullName"></param>
         /// <returns></returns>
-        public static StreamReader GetStreamReader(string textFileFullName, Encoding defaultEncoding, ILoggersSet? loggersSet = null)
+        public static StreamReader GetStreamReader(string textFileFullName, Encoding defaultEncoding, ILogger? logger = null)
         {            
             byte[] bytes;
             using (FileStream fileStream = File.Open(textFileFullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
@@ -36,9 +36,9 @@ namespace Ssz.Utils
                     encoding = encoding2;
                 
                 if (encoding is null)
-                    loggersSet?.LoggerAndUserFriendlyLogger.LogError(Properties.Resources.Error_CannotDetermineFileEncoding);
+                    logger?.LogError(Properties.Resources.Error_CannotDetermineFileEncoding);
                 else
-                    loggersSet?.Logger.LogDebug(@"Detected Encoding: " + encoding.EncodingName);
+                    logger?.LogDebug(@"Detected Encoding: " + encoding.EncodingName);
             }
 
             return new StreamReader(new MemoryStream(bytes), encoding ?? defaultEncoding, false);
@@ -49,7 +49,7 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="csvFileFullName"></param>
         /// <returns></returns>
-        public static StreamReader GetStreamReader(Stream textStream, Encoding defaultEncoding, ILoggersSet? loggersSet = null)
+        public static StreamReader GetStreamReader(Stream textStream, Encoding defaultEncoding, ILogger? logger = null)
         {
             using MemoryStream memoryStream = new();
             textStream.CopyTo(memoryStream);
@@ -66,9 +66,9 @@ namespace Ssz.Utils
                     encoding = encoding2;
 
                 if (encoding is null)
-                    loggersSet?.LoggerAndUserFriendlyLogger.LogError(Properties.Resources.Error_CannotDetermineFileEncoding);
+                    logger?.LogError(Properties.Resources.Error_CannotDetermineFileEncoding);
                 else
-                    loggersSet?.Logger.LogDebug(@"Detected Encoding: " + encoding.EncodingName);
+                    logger?.LogDebug(@"Detected Encoding: " + encoding.EncodingName);
             }
             textStream.Position = 0;
             return new StreamReader(textStream, encoding ?? defaultEncoding, false);

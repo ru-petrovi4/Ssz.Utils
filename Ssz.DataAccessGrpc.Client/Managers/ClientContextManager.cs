@@ -1,23 +1,24 @@
+using Grpc.Core;
+using Grpc.Core.Interceptors;
+using Grpc.Net.Client;
+using Grpc.Net.Client.Web;
+using Microsoft.Extensions.Logging;
+using Ssz.DataAccessGrpc.Client.ClientLists;
+using Ssz.DataAccessGrpc.Client.LocalServer;
+using Ssz.DataAccessGrpc.Common;
+using Ssz.Utils;
+using Ssz.Utils.DataAccess;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
+using System.Globalization;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using Ssz.Utils;
-using Ssz.DataAccessGrpc.Client.ClientLists;
-using Ssz.DataAccessGrpc.Common;
-using Grpc.Net.Client;
-using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
-using Grpc.Core;
-using System.Linq;
-using System.Globalization;
-using Ssz.Utils.DataAccess;
-using Grpc.Net.Client.Web;
-using System.Net.Http;
-using System.Net;
-using System.Runtime.InteropServices;
-using System.Diagnostics.Eventing.Reader;
-using Ssz.DataAccessGrpc.Client.LocalServer;
 
 namespace Ssz.DataAccessGrpc.Client.Managers
 {
@@ -51,6 +52,8 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         #endregion
 
         #region public functions
+
+        public string AccessToken { get; set; }
 
         public GrpcChannel? GrpcChannel => _clientContext?.GrpcChannel;        
 
@@ -135,7 +138,15 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                             });
                     }
 
-                    dataAccessService = new RemoteDataAccessService(new DataAccess.DataAccessClient(grpcChannel));
+                    dataAccessService = new RemoteDataAccessService(new DataAccess.DataAccessClient(
+                        grpcChannel.Intercept(metadata =>
+                        {
+                            var token = AccessToken;
+                            if (!String.IsNullOrEmpty(token)) 
+                                metadata.Add(@"authorization", @"Bearer " + token);
+                            return metadata;
+                        })
+                        ));
                 }
 
                 var clientContext = new ClientContext(_logger,
@@ -269,14 +280,14 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         }
 
         public async Task<Task<uint>> LongrunningPassthrough_FireAndForgetAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend,
-            Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackAction)
+            Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackAction, CancellationToken cancellationToken)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
 
             if (_clientContext is null) throw new ConnectionDoesNotExistException();
 
             return await _clientContext.LongrunningPassthrough_FireAndForgetAsync(recipientPath,
-                                      passthroughName, dataToSend, callbackAction);
+                                      passthroughName, dataToSend, callbackAction, cancellationToken);
         }
 
         /// <summary>

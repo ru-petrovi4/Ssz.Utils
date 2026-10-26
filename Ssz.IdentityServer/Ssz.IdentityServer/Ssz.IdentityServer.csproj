@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Kerberos.NET" Version="4.6.168" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="10.0.12" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="10.0.13" />
   </ItemGroup>
 
   <ItemGroup>

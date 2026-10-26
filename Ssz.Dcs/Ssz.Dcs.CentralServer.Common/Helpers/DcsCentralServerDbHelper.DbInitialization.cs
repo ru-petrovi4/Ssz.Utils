@@ -24,7 +24,7 @@ public static partial class DcsCentralServerDbHelper
 {
     #region public functions        
 
-    public static void InitializeOrUpdateDb(IServiceProvider serviceProvider, IConfiguration configuration, ILoggersSet loggersSet)
+    public static void InitializeOrUpdateDb(IServiceProvider serviceProvider, IConfiguration configuration, ILogger logger)
     {
         string dbType = ConfigurationHelper.GetValue(configuration, DbConstants.ConfigurationKey_DbType, @"");
         if (String.Equals(dbType, DbConstants.ConfigurationValue_DbType_Postgres, StringComparison.InvariantCultureIgnoreCase))
@@ -61,7 +61,7 @@ public static partial class DcsCentralServerDbHelper
         }
         else
         {
-            Console.WriteLine(Properties.Resources.DbTypeIsNotConfigured);
+            logger.LogWarning(Properties.Resources.DbTypeIsNotConfigured);
         }
 
         //var licenseFileInfo = new LicenseFileInfo
@@ -100,9 +100,9 @@ public static partial class DcsCentralServerDbHelper
             }
 
             dbContext2.SaveChanges();
-        }                      
+        }
 
-        Console.WriteLine(Properties.Resources.DbInitializationSuccess);            
+        logger.LogInformation(Properties.Resources.DbInitializationSuccess);            
     }        
 
     #endregion

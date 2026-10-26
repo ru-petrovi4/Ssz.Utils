@@ -306,6 +306,7 @@ namespace Ssz.Dcs.ControlEngine
         public async Task LoadStateAsync(string filePathRelativeToProcessDrectory)
         {
             _deviceDsBlock.MODEL_TIME_MS.Value.Set(0);
+            _deviceDsBlock.MODEL_SESSION_ID.Value.Set(Guid.NewGuid().ToString("N"));
 
             if (_processDirectoryInfo is null || !_processDirectoryInfo.Exists) return;
 

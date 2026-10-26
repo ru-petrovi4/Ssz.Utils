@@ -1,13 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Ssz.DataAccessGrpc.Common;
 using Ssz.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Ssz.DataAccessGrpc.Client
 {
@@ -142,11 +143,12 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <param name="callbackAction"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         /// <exception cref="ObjectDisposedException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
         public async Task<Task<uint>> LongrunningPassthrough_FireAndForgetAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend,
-            Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackAction)
+            Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackAction, CancellationToken cancellationToken)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed Context.");
 
@@ -161,7 +163,8 @@ namespace Ssz.DataAccessGrpc.Client
 
                 var longrunningPassthroughRequest = new LongrunningPassthroughRequest
                 {
-                    CallbackAction = callbackAction
+                    CallbackAction = callbackAction,
+                    CancellationToken = cancellationToken
                 };
                 lock (_longrunningPassthroughRequestsCollection)
                 {
@@ -172,6 +175,21 @@ namespace Ssz.DataAccessGrpc.Client
                     }
                     longrunningPassthroughRequestsList.Add(longrunningPassthroughRequest);
                 }
+
+                longrunningPassthroughRequest.CancellationTokenRegistration = cancellationToken.Register(() =>
+                {
+                    try
+                    {
+                        _ = _dataAccessService.LongrunningPassthroughCancelAsync(new LongrunningPassthroughCancelRequest
+                        {
+                            JobId = jobId,
+                            ContextId = _serverContextId
+                        });
+                    }
+                    catch
+                    {
+                    }
+                });
 
                 return longrunningPassthroughRequest.TaskCompletionSource.Task;
             }
@@ -195,9 +213,18 @@ namespace Ssz.DataAccessGrpc.Client
 
         private class LongrunningPassthroughRequest
         {
+            public void Dispose()
+            {
+                CancellationTokenRegistration.Dispose();
+            }
+
             public readonly TaskCompletionSource<uint> TaskCompletionSource = new();
 
             public Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? CallbackAction;
+
+            public CancellationToken CancellationToken;
+
+            public CancellationTokenRegistration CancellationTokenRegistration;           
         }
     }
 }

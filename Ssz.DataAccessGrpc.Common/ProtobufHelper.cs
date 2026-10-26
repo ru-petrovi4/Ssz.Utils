@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -178,6 +179,16 @@ namespace Ssz.DataAccessGrpc.Common
             {
                 return new Timestamp();
             }
+        }
+
+        public static string GetOwnerId(ClaimsPrincipal? user)
+        {
+            if (user?.Identity?.IsAuthenticated != true) 
+                return @"";          // контекст без аутентификации
+            var issuer = user.FindFirst(@"iss")?.Value ?? @"";
+            var subject = user.FindFirst(@"sub")?.Value
+                          ?? user.FindFirst(@"client_id")?.Value ?? @"";
+            return issuer + @"|" + subject;
         }
     }
 }

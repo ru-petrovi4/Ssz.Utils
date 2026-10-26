@@ -11,11 +11,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics.Arm;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace Ssz.DataAccessGrpc.ServerBase
@@ -42,6 +43,10 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public override async Task<InitiateReply> Initiate(InitiateRequest request, ServerCallContext context)
         {
+            var user = context.GetHttpContext().User;          // заполнено UseAuthentication
+            //var subject = user.FindFirst("sub")?.Value;        // кто
+            //var expiresUtc = user.FindFirst("exp")?.Value;     // до какого момента токен годен
+
             return await GetReplyAsync(() =>
                 {
                     CaseInsensitiveOrderedDictionary<string?> contextParams = new CaseInsensitiveOrderedDictionary<string?>(request.ContextParams
@@ -77,7 +82,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
                         request.RequestedServerContextTimeoutMs,
                         request.RequestedCultureName ?? @"",
                         request.SystemNameToConnect ?? @"",
-                        contextParams);
+                        contextParams,
+                        user);
                     SetResourceManagementLastCallUtc();
                     var reply = new InitiateReply
                     {
@@ -94,7 +100,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             IDataAccessServerContext serverContext = await GetReplyAsync(() =>
                 {
-                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"");
+                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"", context);
                     SetResourceManagementLastCallUtc();
                     ((ServerContext)serverContext).SetResponseStream(responseStream);
                     return Task.FromResult(serverContext);
@@ -112,7 +118,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     CaseInsensitiveOrderedDictionary<string?> contextParams = new CaseInsensitiveOrderedDictionary<string?>(request.ContextParams
                             .Select(cp => KeyValuePair.Create(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)));
 
-                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"");
+                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"", context);
                     SetResourceManagementLastCallUtc();
                     serverContext.UpdateContextParams(contextParams);                
 
@@ -124,13 +130,13 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public override async Task<ConcludeReply> Conclude(ConcludeRequest request, ServerCallContext context)
         {
-            IDataAccessServerContext? serverContext = _dataAccessServerWorker.TryLookupServerContext_ThreadSafe(request.ContextId ?? @"");
+            ServerContext? serverContext = _dataAccessServerWorker.TryLookupServerContext_ThreadSafe(request.ContextId ?? @"", context);
             if (serverContext is null)
                 return new ConcludeReply();
             serverContext.IsConcludeCalledByClient = true; // Optimization
             return await GetReplyAsync(() =>
                 {
-                    IDataAccessServerContext? serverContext = _dataAccessServerWorker.TryLookupServerContext_ThreadSafe(request.ContextId ?? @"");
+                    IDataAccessServerContext? serverContext = _dataAccessServerWorker.TryLookupServerContext_ThreadSafe(request.ContextId ?? @"", context);
                     if (serverContext is not null)
                     {
                         _dataAccessServerWorker.RemoveServerContext(serverContext);
@@ -143,10 +149,12 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public override Task<ClientKeepAliveReply> ClientKeepAlive(ClientKeepAliveRequest request, ServerCallContext context)
         {
-            IDataAccessServerContext? serverContext = _dataAccessServerWorker.TryLookupServerContext_ThreadSafe(request.ContextId ?? @"");
+            ServerContext? serverContext = _dataAccessServerWorker.TryLookupServerContext_ThreadSafe(request.ContextId ?? @"", context);
             if (serverContext is not null)
             {
                 serverContext.LastClientKeepAlive = DateTime.UtcNow;
+                var user = context.GetHttpContext().User;          // заполнено UseAuthentication
+                serverContext.User = user;
             }
             return Task.FromResult(new ClientKeepAliveReply());
         }
@@ -155,7 +163,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             return await GetReplyAsync(() =>
                 {
-                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"");
+                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"", context);
                     SetResourceManagementLastCallUtc();                    
                     var reply = new DefineListReply();
                     reply.Result = new Common.AliasResult(serverContext.DefineList(request.ListClientAlias, request.ListType,
@@ -170,7 +178,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             return await GetReplyAsync(() =>
                 {
-                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"");
+                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"", context);
                     SetResourceManagementLastCallUtc();
                     var reply = new DeleteListsReply();
                     reply.Results.Add(serverContext.DeleteLists(request.ListServerAliases.ToList()).Select(ar => new Common.AliasResult(ar)));
@@ -183,7 +191,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             return await GetReplyAsync(async () =>
                 {
-                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"");
+                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"", context);
                     SetResourceManagementLastCallUtc();
                     var reply = new AddItemsToListReply();
                     reply.Results.Add((await serverContext.AddItemsToListAsync(request.ListServerAlias, request.ItemsToAdd.Select(i => i.ToListItemInfoMessage()).ToList()))
@@ -197,7 +205,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             return await GetReplyAsync(async () =>
                 {
-                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"");
+                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"", context);
                     SetResourceManagementLastCallUtc();
                     var reply = new RemoveItemsFromListReply();
                     reply.Results.Add((await serverContext.RemoveItemsFromListAsync(request.ListServerAlias, request.ServerAliasesToRemove.ToList()))
@@ -211,7 +219,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             return await GetReplyAsync(() =>
                 {
-                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"");
+                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"", context);
                     SetResourceManagementLastCallUtc();
                     bool isEnabled = request.Enable;
                     var reply = new EnableListCallbackReply();                    
@@ -226,7 +234,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             return await GetReplyAsync(() =>
                 { 
-                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"");
+                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"", context);
                     SetResourceManagementLastCallUtc();
                     var reply = new TouchListReply();
                     serverContext.TouchList(request.ListServerAlias);
@@ -239,7 +247,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             await GetReplyAsync(async () =>
                 {
-                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"");
+                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"", context);
                     SetResourceManagementLastCallUtc();                    
                     ElementValuesCallbackMessage? elementValuesCallbackMessage = await serverContext.PollElementValuesChangesAsync(request.ListServerAlias);
                     if (elementValuesCallbackMessage is not null)
@@ -258,7 +266,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             await GetReplyAsync(async () =>
                 {
-                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"");
+                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"", context);
                     SetResourceManagementLastCallUtc();
                     List<EventMessagesCallbackMessage>? eventMessagesCallbackMessages = await serverContext.PollEventsChangesAsync(request.ListServerAlias);
                     if (eventMessagesCallbackMessages is not null)
@@ -280,7 +288,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {            
             await GetReplyAsync(async () =>
                 {
-                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"");
+                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"", context);
                     SetResourceManagementLastCallUtc();                    
                     byte[] bytes = await serverContext.ReadElementValuesJournalsAsync(
                             request.ListServerAlias,
@@ -306,7 +314,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             await GetReplyAsync(async () =>
                 {
-                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"");
+                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"", context);
                     SetResourceManagementLastCallUtc();                                        
                     EventMessagesCallbackMessage? fullEventMessagesCallbackMessage = await serverContext.ReadEventMessagesJournalAsync(
                             request.ListServerAlias,
@@ -343,7 +351,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             return await GetReplyAsync(async () =>
                 {
                     var reply = new WriteElementValuesReply();
-                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"");
+                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"", context);
                     SetResourceManagementLastCallUtc();
                     var aliasResults = await serverContext.WriteElementValuesAsync(request.ListServerAlias, elementValuesCollectionBytes);
                     if (aliasResults is not null)
@@ -357,7 +365,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             return await GetReplyAsync(() =>
                 {
-                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"");
+                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"", context);
                     SetResourceManagementLastCallUtc();
                     var reply = new AckAlarmsReply();
                     reply.Results.Add(serverContext.AckAlarms(request.ListServerAlias, 
@@ -384,7 +392,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
             await GetReplyAsync(async () =>
                 {
-                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"");
+                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"", context);
                     SetResourceManagementLastCallUtc();                    
                     ReadOnlyMemory<byte> returnData = await serverContext.PassthroughAsync(request.RecipientPath ?? @"", request.PassthroughName ?? @"", dataToSend);
                     foreach (var dataChunk in ProtobufHelper.SplitForCorrectGrpcMessageSize(returnData))
@@ -413,7 +421,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             return await GetReplyAsync(() =>
                 {
                     var reply = new LongrunningPassthroughReply();
-                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"");
+                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"", context);
                     SetResourceManagementLastCallUtc();
                     reply.JobId = serverContext.LongrunningPassthrough(request.RecipientPath ?? @"", request.PassthroughName ?? @"", dataToSend);
                     return Task.FromResult(reply);
@@ -426,7 +434,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             return await GetReplyAsync(() =>
                 {
                     var reply = new LongrunningPassthroughCancelReply();
-                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"");
+                    IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"", context);
                     SetResourceManagementLastCallUtc();
                     serverContext.LongrunningPassthroughCancel(request.JobId ?? @"");
                     return Task.FromResult(reply);
@@ -436,7 +444,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         #endregion
 
-        #region private functions
+        #region private functions        
 
         /// <summary>
         ///     func is NOT awaited

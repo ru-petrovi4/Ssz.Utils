@@ -14,15 +14,16 @@ namespace Ssz.Dcs.ControlEngine
         {            
             _paramInfos = new[]
             {
-                new DsParamInfo { Name = @"DEVICE_VENDOR", Desc = @"Company name of the manufacturer", IsConst = true },
-                new DsParamInfo { Name = @"DEVICE_MODEL", Desc = @"Name of the device model", IsConst = true },
-                new DsParamInfo { Name = @"DEVICE_REVISION", Desc = @"Device revision number", IsConst = true },
-                new DsParamInfo { Name = @"DEVICE_STATUS", Desc = @"Status of the device" },
-                new DsParamInfo { Name = @"MODEL_TIME", Desc = @"Already calculated Model Time (seconds)" },
-                new DsParamInfo { Name = @"MODEL_TIME_MS", Desc = @"Currently calculating Model Time (milliseconds)" },
-                new DsParamInfo { Name = @"SCENARIO_NAME", Desc = @"Currently running scenario name" },
-                new DsParamInfo { Name = @"SCENARIO_STEP_DONE", Desc = @"Currently completed scenario step" },
-                new DsParamInfo { Name = @"MODEL_IS_RUNNING", Desc = @"Model is running now" },
+                new DsParamInfo { Name = nameof(DEVICE_VENDOR), Desc = @"Company name of the manufacturer", IsConst = true },
+                new DsParamInfo { Name = nameof(DEVICE_MODEL), Desc = @"Name of the device model", IsConst = true },
+                new DsParamInfo { Name = nameof(DEVICE_REVISION), Desc = @"Device revision number", IsConst = true },
+                new DsParamInfo { Name = nameof(DEVICE_STATUS), Desc = @"Status of the device" },
+                new DsParamInfo { Name = nameof(MODEL_TIME), Desc = @"Already calculated Model Time (seconds)" },
+                new DsParamInfo { Name = nameof(MODEL_TIME_MS), Desc = @"Currently calculating Model Time (milliseconds)" },
+                new DsParamInfo { Name = nameof(SCENARIO_NAME), Desc = @"Currently running scenario name" },
+                new DsParamInfo { Name = nameof(SCENARIO_STEP_DONE), Desc = @"Currently completed scenario step" },
+                new DsParamInfo { Name = nameof(MODEL_IS_RUNNING), Desc = @"Model is running now" },
+                new DsParamInfo { Name = nameof(MODEL_SESSION_ID), Desc = @"Model session ID. Unique for each model state loading." },
             };
             _paramInfosVersion = 1;
         }
@@ -71,6 +72,8 @@ namespace Ssz.Dcs.ControlEngine
         public ref DsParam SCENARIO_STEP_DONE => ref Params[7];
 
         public ref DsParam MODEL_IS_RUNNING => ref Params[8];
+
+        public ref DsParam MODEL_SESSION_ID => ref Params[9];
 
         //public override void Compute(int dtMs)
         //{

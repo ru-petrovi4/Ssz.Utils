@@ -62,21 +62,26 @@ namespace Ssz.Dcs.CentralServer
             IConfiguration configuration = Host.Services.GetRequiredService<IConfiguration>();
             CultureHelper.InitializeUICulture(configuration, logger);
 
-            LoggerHelper.LogProgramInformation(logger, configuration, args, EnvironmentName);
+            ConfigurationHelper.LogProgramInformation(logger, configuration, args, EnvironmentName);
 
             try
-            {
-                ILoggersSet loggersSet = new LoggersSet(new UserFriendlyLogger((logLevel, eventId, line) => Console.WriteLine(line)), null);
+            {                
                 if (args.Any(a => a == @"-e"))
-                    EncryptAppsettings(loggersSet);
+                {
+                    ConfigurationHelper.EncryptAppsettings(ConfigurationCrypterCertificateFileName, GetKeysToEncrypt().ToHashSet(), logger);
+                }
                 else if (args.Any(a => a == @"-d"))
-                    DecryptAppsettings(loggersSet);
+                {
+                    ConfigurationHelper.DecryptAppsettings(ConfigurationCrypterCertificateFileName, GetKeysToEncrypt().ToHashSet(), logger);
+                }
                 else if (args.Any(a => a == @"-u"))
-                    DcsCentralServerDbHelper.InitializeOrUpdateDb(Host.Services, configuration, loggersSet);
+                {
+                    DcsCentralServerDbHelper.InitializeOrUpdateDb(Host.Services, configuration, logger);
+                }
                 else
                 {
                     if (ConfigurationHelper.IsMainProcess(configuration))
-                        DcsCentralServerDbHelper.InitializeOrUpdateDb(Host.Services, configuration, loggersSet);
+                        DcsCentralServerDbHelper.InitializeOrUpdateDb(Host.Services, configuration, logger);
                     Host.Run();
                 }
             }
@@ -132,27 +137,7 @@ namespace Ssz.Dcs.CentralServer
                     //});
                     services.AddHostedService<MainBackgroundService>();
                 });
-        }
-
-        private static void EncryptAppsettings(ILoggersSet loggersSet)
-        {            
-            ICertificateLoader certificateLoader = new FilesystemCertificateLoader(ConfigurationCrypterCertificateFileName);
-            IConfigurationCrypter configurationCrypter = new YamlConfigurationCrypter(new RSACrypter(certificateLoader));
-            foreach (var yamlConfigurationFilePath in ConfigurationHelper.GetYamlConfigurationFilePaths(null))
-            {
-                configurationCrypter.EncryptKeys(yamlConfigurationFilePath, GetKeysToEncrypt().ToHashSet());
-            }
-        }
-
-        private static void DecryptAppsettings(ILoggersSet loggersSet)
-        {            
-            ICertificateLoader certificateLoader = new FilesystemCertificateLoader(ConfigurationCrypterCertificateFileName);
-            IConfigurationCrypter configurationCrypter = new YamlConfigurationCrypter(new RSACrypter(certificateLoader));
-            foreach (var yamlConfigurationFilePath in ConfigurationHelper.GetYamlConfigurationFilePaths(null))
-            {
-                configurationCrypter.DecryptKeys(yamlConfigurationFilePath, GetKeysToEncrypt().ToHashSet());
-            }
-        }
+        }        
 
         private static List<string> GetKeysToEncrypt()
         {

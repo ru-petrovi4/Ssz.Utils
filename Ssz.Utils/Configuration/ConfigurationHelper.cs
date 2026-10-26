@@ -2,6 +2,10 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;
+using Ssz.Utils.ConfigurationCrypter.CertificateLoaders;
+using Ssz.Utils.ConfigurationCrypter.ConfigurationCrypters;
+using Ssz.Utils.ConfigurationCrypter.ConfigurationCrypters.Yaml;
+using Ssz.Utils.ConfigurationCrypter.Crypters;
 using Ssz.Utils.Logging;
 using System;
 using System.Collections.Generic;
@@ -143,7 +147,7 @@ namespace Ssz.Utils
         /// <param name="canWrite"></param>
         /// <param name="loggersSet"></param>
         /// <returns></returns>
-        public static string GetValue_ValidatedFileName(IConfiguration configuration, string key, string defaultFileFullName, bool canRead, bool canWrite, ILoggersSet loggersSet)            
+        public static string GetValue_ValidatedFileName(IConfiguration configuration, string key, string defaultFileFullName, bool canRead, bool canWrite, ILogger logger)            
         {
             string fileName = GetValue<string>(configuration, key, defaultFileFullName);
             if (fileName == @"")
@@ -154,8 +158,8 @@ namespace Ssz.Utils
                 bool fileExists = File.Exists(fileName);
                 if (!fileExists)
                 {
-                    using var fileNameScope = loggersSet.LoggerAndUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, fileName));
-                    loggersSet.LoggerAndUserFriendlyLogger.LogWarning(Properties.Resources.FileDoesNotExist);
+                    using var fileNameScope = logger.BeginScope((Properties.Resources.FileNameScopeName, fileName));
+                    logger.LogWarning(Properties.Resources.FileDoesNotExist);
                     return @"";
                 }
 
@@ -165,17 +169,17 @@ namespace Ssz.Utils
                     {
                         if (!fs.CanRead)
                         {
-                            using var fileNameScope = loggersSet.LoggerAndUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, fileName));
-                            loggersSet.LoggerAndUserFriendlyLogger.LogWarning(Properties.Resources.FileIsNotReadable);
+                            using var fileNameScope = logger.BeginScope((Properties.Resources.FileNameScopeName, fileName));
+                            logger.LogWarning(Properties.Resources.FileIsNotReadable);
                             return @"";
                         }                        
                     }
                 }
                 catch (Exception ex)
                 {
-                    using var fileNameScope = loggersSet.LoggerAndUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, fileName));
-                    loggersSet.Logger.LogWarning(ex, @"GetValue_FileName(...) Exception.");
-                    loggersSet.LoggerAndUserFriendlyLogger.LogWarning(Properties.Resources.FileIsNotReadable);
+                    using var fileNameScope = logger.BeginScope((Properties.Resources.FileNameScopeName, fileName));
+                    logger.LogDebug(ex, @"GetValue_FileName(...) Exception.");
+                    logger.LogWarning(Properties.Resources.FileIsNotReadable);
                     return @"";
                 }
             }
@@ -188,17 +192,17 @@ namespace Ssz.Utils
                     {
                         if (!fs.CanWrite)
                         {
-                            using var fileNameScope = loggersSet.LoggerAndUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, fileName));
-                            loggersSet.LoggerAndUserFriendlyLogger.LogWarning(Properties.Resources.FileIsNotWritable);
+                            using var fileNameScope = logger.BeginScope((Properties.Resources.FileNameScopeName, fileName));
+                            logger.LogWarning(Properties.Resources.FileIsNotWritable);
                             return @"";
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    using var fileNameScope = loggersSet.LoggerAndUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, fileName));
-                    loggersSet.Logger.LogWarning(ex, @"GetValue_FileName(...) Exception.");
-                    loggersSet.LoggerAndUserFriendlyLogger.LogWarning(Properties.Resources.FileIsNotWritable);
+                    using var fileNameScope = logger.BeginScope((Properties.Resources.FileNameScopeName, fileName));
+                    logger.LogWarning(ex, @"GetValue_FileName(...) Exception.");
+                    logger.LogWarning(Properties.Resources.FileIsNotWritable);
                     return @"";
                 }
             }
@@ -309,6 +313,40 @@ namespace Ssz.Utils
             catch (Exception) { }
 
             return host;
+        }
+
+        public static void LogProgramInformation(
+            ILogger logger,
+            IConfiguration configuration,
+            string[] args,
+            string environmentName
+            )
+        {
+            logger.LogInformation($"App starting with args: \"{String.Join(" ", args)}\"; Environment: {environmentName}; Working Directory: \"{Directory.GetCurrentDirectory()}\"; Workstation Name: {GetThisWorkstationName(configuration)}");
+        }
+
+        public static void EncryptAppsettings(string configurationCrypterCertificateFileName, HashSet<string> configKeys, ILogger logger)
+        {
+            ICertificateLoader certificateLoader = new FilesystemCertificateLoader(configurationCrypterCertificateFileName);
+            IConfigurationCrypter configurationCrypter = new YamlConfigurationCrypter(new RSACrypter(certificateLoader));
+            foreach (var yamlConfigurationFilePath in GetYamlConfigurationFilePaths(null))
+            {
+                configurationCrypter.EncryptKeys(yamlConfigurationFilePath, configKeys);
+            }
+
+            logger.LogInformation(Properties.Resources.EncryptAppsettingsSuccess);
+        }
+
+        public static void DecryptAppsettings(string configurationCrypterCertificateFileName, HashSet<string> configKeys, ILogger logger)
+        {
+            ICertificateLoader certificateLoader = new FilesystemCertificateLoader(configurationCrypterCertificateFileName);
+            IConfigurationCrypter configurationCrypter = new YamlConfigurationCrypter(new RSACrypter(certificateLoader));
+            foreach (var yamlConfigurationFilePath in GetYamlConfigurationFilePaths(null))
+            {
+                configurationCrypter.DecryptKeys(yamlConfigurationFilePath, configKeys);
+            }
+
+            logger.LogInformation(Properties.Resources.DecryptAppsettingsSuccess);
         }
 
         #endregion

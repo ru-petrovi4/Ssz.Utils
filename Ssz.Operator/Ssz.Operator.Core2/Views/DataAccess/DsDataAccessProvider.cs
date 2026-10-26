@@ -73,6 +73,16 @@ namespace Ssz.Operator.Core.DataAccess
                 Instance = new DsDataAccessProvider(ServiceProvider.GetRequiredService<ILogger<GrpcDataAccessProvider>>());
             }
 
+            if (OperatingSystem.IsBrowser())
+            {
+                string accessToken = await AccessTokenInterop.WaitForAccessTokenAsync();
+                Instance.AccessToken = accessToken;
+                if (!String.IsNullOrEmpty(accessToken))
+                {
+                    AccessTokenInterop.AccessTokenChanged += at => Instance.AccessToken = at;
+                }
+            }
+
             string userName = DsProject.Instance.UserName;
             if (string.IsNullOrEmpty(userName))
                 try

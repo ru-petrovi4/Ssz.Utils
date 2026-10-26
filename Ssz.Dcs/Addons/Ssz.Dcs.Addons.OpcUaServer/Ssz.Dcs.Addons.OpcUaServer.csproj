@@ -9,9 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <!-- !Do not update -->
     <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Server" Version="1.5.378.182" />
+	  <!-- !Do not update -->
     <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Configuration" Version="1.5.378.182" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="10.0.13" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="10.0.14" />
   </ItemGroup>
 
   <ItemGroup>

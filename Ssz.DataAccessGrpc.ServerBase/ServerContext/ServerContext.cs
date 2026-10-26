@@ -1,14 +1,16 @@
 using Google.Protobuf;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
+using Ssz.DataAccessGrpc.Common;
 using Ssz.Utils;
 using Ssz.Utils.DataAccess;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Ssz.DataAccessGrpc.ServerBase
 {
@@ -17,19 +19,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
     /// </summary>
     public partial class ServerContext : IDataAccessServerContext
     {
-        #region construction and destruction
+        #region construction and destruction        
         
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="logger"></param>
-        /// <param name="dataAccessServerWorker"></param>
-        /// <param name="clientApplicationName"></param>
-        /// <param name="clientWorkstationName"></param>
-        /// <param name="requestedServerContextTimeoutMs"></param>
-        /// <param name="requestedCultureName"></param>
-        /// <param name="systemNameToConnect"></param>
-        /// <param name="contextParams"></param>
         public ServerContext(
             ILogger logger,
             DataAccessServerWorkerBase dataAccessServerWorker,
@@ -38,7 +29,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
             uint requestedServerContextTimeoutMs, 
             string requestedCultureName, 
             string systemNameToConnect, 
-            CaseInsensitiveOrderedDictionary<string?> contextParams)
+            CaseInsensitiveOrderedDictionary<string?> contextParams,
+            ClaimsPrincipal? user)
         {
             Logger = logger;
             ServerWorker = dataAccessServerWorker;
@@ -48,6 +40,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             CultureInfo = ValidateCultureName(requestedCultureName);
             SystemNameToConnect = systemNameToConnect;
             ContextParams = contextParams;
+            User = user;
 
             ContextId = Guid.NewGuid().ToString();
 
@@ -189,6 +182,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public CaseInsensitiveOrderedDictionary<string?> ContextParams { get; private set; }
 
+        public ClaimsPrincipal? User { get; set; }
+
         public event EventHandler ContextParamsChanged = delegate { };
 
         /// <summary>
@@ -315,6 +310,16 @@ namespace Ssz.DataAccessGrpc.ServerBase
         public void LongrunningPassthroughCancel(string jobId)
         {
             ServerWorker.LongrunningPassthroughCancel(this, jobId);
+        }
+
+        public bool UserIsValid(ClaimsPrincipal? user)
+        {            
+            var contextOwnerId = ProtobufHelper.GetOwnerId(User);
+            if (String.IsNullOrEmpty(contextOwnerId))
+                return true;
+
+            var ownerId = ProtobufHelper.GetOwnerId(user);
+            return ownerId == contextOwnerId;
         }
 
         #endregion
