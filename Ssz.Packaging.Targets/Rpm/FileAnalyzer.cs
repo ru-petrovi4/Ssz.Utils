@@ -47,6 +47,12 @@ namespace Ssz.Packaging.Targets.Rpm
             {
                 return RpmFileFlags.RPMFILE_DOC;
             }
+            else if (entry.TargetPath.StartsWith("/etc/"))
+            {
+                // Same semantics as Debian 'conffiles': files modified by the user are not overwritten on upgrade
+                // (the new version is saved as *.rpmnew) and are kept as *.rpmsave on removal.
+                return RpmFileFlags.RPMFILE_CONFIG | RpmFileFlags.RPMFILE_NOREPLACE;
+            }
             else
             {
                 return RpmFileFlags.None;

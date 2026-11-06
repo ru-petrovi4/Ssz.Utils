@@ -29,9 +29,8 @@
     </PackageReference>
     <!-- BoncyCastle and SharpZipLib are included in the lib\ folder in the Packaging.Targets package (see below), so we don't need an
          explicit dependency on them, either -->
-    <PackageReference Include="Portable.BouncyCastle" Version="1.9.0">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+    <!-- Not private: RpmTask signs packages with BouncyCastle, so applications calling RpmTask directly need this assembly. -->
+    <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
     <PackageReference Include="SharpZipLib" Version="1.4.2">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

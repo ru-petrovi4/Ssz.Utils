@@ -92,6 +92,16 @@ namespace Ssz.Packaging.Targets.Rpm
         }
 
         /// <summary>
+        /// Gets or sets the SHA256 hash of the header section. Modern rpm versions rely on it
+        /// (MD5 and SHA1 digests are not accepted, for example, in FIPS mode).
+        /// </summary>
+        public byte[] Sha256Hash
+        {
+            get { return StringToByteArray((string)this.Package.Signature.Records[SignatureTag.RPMSIGTAG_SHA256].Value); }
+            set { this.SetString(SignatureTag.RPMSIGTAG_SHA256, BitConverter.ToString(value).Replace("-", string.Empty).ToLower()); }
+        }
+
+        /// <summary>
         /// Gets or sets the MD5 hash of the header section and the compressed payload.
         /// </summary>
         public byte[] MD5Hash

@@ -27,6 +27,11 @@ namespace Ssz.Packaging.Targets.Rpm
         RPMSIGTAG_SHA1 = 269,
 
         /// <summary>
+        /// This index contains the SHA256 checksum of the entire Header Section (hex string).
+        /// </summary>
+        RPMSIGTAG_SHA256 = 273,
+
+        /// <summary>
         /// This tag specifies the 128-bit MD5 checksum of the combined Header and Archive sections.
         /// </summary>
         RPMSIGTAG_MD5 = 1004,

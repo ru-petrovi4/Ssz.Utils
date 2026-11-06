@@ -325,10 +325,11 @@ namespace Ssz.Packaging.Targets.Rpm
             metadata.SourceRpm = $"{name}-{version}-{release}.src.rpm";
 
             // Scripts which run before & after installation and removal.
-            var preIn = preInstallScript ?? string.Empty;
-            var postIn = postInstallScript ?? string.Empty;
-            var preUn = preRemoveScript ?? string.Empty;
-            var postUn = postRemoveScript ?? string.Empty;
+            // Built-in parts go first, user-supplied scripts are appended (same order as in the DEB package).
+            var preIn = string.Empty;
+            var postIn = string.Empty;
+            var preUn = string.Empty;
+            var postUn = string.Empty;
 
             if (createUser)
             {
@@ -362,25 +363,35 @@ namespace Ssz.Packaging.Targets.Rpm
 
             if (installService)
             {
-                // Install and activate the service using deb-systemd-helper
+                // RPM-based distributions (RED OS, ALT, Fedora, RHEL...) have no deb-systemd-helper, systemctl is used directly.
+                // $1 in scriptlets: %post - 1 = install, 2+ = upgrade; %preun / %postun - 0 = removal, 1+ = upgrade.
+
+                // Post-Install: включение (только при первой установке, чтобы не переопределять выбор администратора) и запуск сервиса
                 postIn +=
+                    $"if [ -d /run/systemd/system ] ; then \n" +
+                    $"    systemctl --system daemon-reload >/dev/null 2>&1 || : \n" +
+                    $"fi\n" +
                     $"if [ $1 -eq 1 ] ; then \n" +
-                    $"    deb-systemd-helper unmask '{serviceName}.service' >/dev/null || true \n" +
-                    $"    if deb-systemd-helper --quiet was-enabled '{serviceName}.service'; then \n" +
-                    $"        deb-systemd-helper enable '{serviceName}.service' >/dev/null || true \n" +
-                    $"    else \n" +
-                    $"        deb-systemd-helper update-state '{serviceName}.service' >/dev/null || true \n" +
-                    $"    fi \n" +
+                    $"    systemctl unmask '{serviceName}.service' >/dev/null 2>&1 || : \n" +
+                    $"    systemctl enable '{serviceName}.service' >/dev/null 2>&1 || : \n" +
+                    $"fi\n" +
+                    $"if [ -d /run/systemd/system ] ; then \n" +
+                    $"    systemctl start '{serviceName}.service' >/dev/null 2>&1 || : \n" +
                     $"fi\n";
 
+                // Pre-Remove: остановка и отключение сервиса (только при удалении, не при обновлении)
                 preUn +=
                     $"if [ $1 -eq 0 ] ; then \n" +
-                    $"    deb-systemd-helper disable '{serviceName}.service' >/dev/null || true \n" +
+                    $"    systemctl --no-reload disable --now '{serviceName}.service' >/dev/null 2>&1 || : \n" +
                     $"fi\n";
 
+                // Post-Remove: перезапуск сервиса с новыми файлами после обновления
                 postUn +=
-                    $"if [ $1 -ge 1 ] ; then \n" +
-                    $"    deb-systemd-invoke try-restart '{serviceName}.service' >/dev/null || true \n" +
+                    $"if [ -d /run/systemd/system ] ; then \n" +
+                    $"    systemctl --system daemon-reload >/dev/null 2>&1 || : \n" +
+                    $"    if [ $1 -ge 1 ] ; then \n" +
+                    $"        systemctl try-restart '{serviceName}.service' >/dev/null 2>&1 || : \n" +
+                    $"    fi \n" +
                     $"fi\n";
             }
 
@@ -415,6 +426,11 @@ namespace Ssz.Packaging.Targets.Rpm
                     $"fi\n";
             }
 
+            preIn = AppendScript(preIn, preInstallScript);
+            postIn = AppendScript(postIn, postInstallScript);
+            preUn = AppendScript(preUn, preRemoveScript);
+            postUn = AppendScript(postUn, postRemoveScript);
+
             if (!string.IsNullOrEmpty(preIn))
             {
                 metadata.PreInProg = "/bin/sh";
@@ -443,7 +459,9 @@ namespace Ssz.Packaging.Targets.Rpm
             metadata.Description = string.IsNullOrEmpty(description)
                 ? $"{name} version {version}-{release}"
                 : description;
-            metadata.Summary = $"{name} version {version}-{release}";
+            metadata.Summary = string.IsNullOrEmpty(description)
+                ? $"{name} version {version}-{release}"
+                : description.Split('\n')[0].Trim();
             metadata.License = $"{name} License";
 
             metadata.Distribution = string.Empty;
@@ -865,6 +883,10 @@ namespace Ssz.Packaging.Targets.Rpm
                 SHA1 sha = SHA1.Create();
                 signature.Sha1Hash = sha.ComputeHash(headerStream);
 
+                headerStream.Position = 0;
+                SHA256 sha256 = SHA256.Create();
+                signature.Sha256Hash = sha256.ComputeHash(headerStream);
+
                 MD5 md5 = MD5.Create();
                 signature.MD5Hash = md5.ComputeHash(headerAndPayloadStream);
 
@@ -885,6 +907,22 @@ namespace Ssz.Packaging.Targets.Rpm
             {
                 signature.UncompressedPayloadSize = (int)payloadStream.Length;
             }
+        }
+
+        private static string AppendScript(string script, string additionalScript)
+        {
+            if (string.IsNullOrEmpty(additionalScript))
+            {
+                return script;
+            }
+
+            script += additionalScript;
+            if (!additionalScript.EndsWith("\n"))
+            {
+                script += "\n";
+            }
+
+            return script;
         }
 
         protected void CalculateSectionOffsets<T>(Section<T> section, Func<T, int> getSortOrder)
