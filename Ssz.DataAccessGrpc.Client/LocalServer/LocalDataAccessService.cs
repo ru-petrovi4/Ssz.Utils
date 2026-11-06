@@ -132,17 +132,14 @@ namespace Ssz.DataAccessGrpc.Client.LocalServer
             });
         }
 
-        public async Task<ClientKeepAliveReply> ClientKeepAliveAsync(ClientKeepAliveRequest request, CancellationToken cancellationToken)
-        {
-            return await GetReplyAsync(() =>
+        public Task<ClientKeepAliveReply> ClientKeepAliveAsync(ClientKeepAliveRequest request, CancellationToken cancellationToken)
+        {           
+            IDataAccessServerContext? serverContext = _localDataAccessServerWorker.TryLookupServerContext_ThreadSafe(request.ContextId ?? @"");
+            if (serverContext is not null)
             {
-                IDataAccessServerContext? serverContext = _localDataAccessServerWorker.TryLookupServerContext_ThreadSafe(request.ContextId ?? @"");
-                if (serverContext is not null)
-                {
-                    SetResourceManagementLastCallUtc();
-                }
-                return Task.FromResult(new ClientKeepAliveReply());
-            });
+                serverContext.LastClientKeepAlive = DateTime.UtcNow;                
+            }
+            return Task.FromResult(new ClientKeepAliveReply());
         }
 
         public async Task<DefineListReply> DefineListAsync(DefineListRequest request)

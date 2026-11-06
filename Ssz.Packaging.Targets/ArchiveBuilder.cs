@@ -269,18 +269,19 @@ namespace Ssz.Packaging.Targets
 
             using (Stream fileStream = File.OpenRead(entry))
             {
+                // VALFIX
                 // Skip hidden and empty files - this would case rpmlint errors.
-                if (fileName.StartsWith("."))
-                {
-                    this.Log.LogWarning($"Ignoring file {relativePath} because it starts with the '.' character and is considered a hidden file.");
-                    return;
-                }
+                //if (fileName.StartsWith("."))
+                //{
+                //    this.Log.LogWarning($"Ignoring file {relativePath} because it starts with the '.' character and is considered a hidden file.");
+                //    return;
+                //}
 
-                if (fileStream.Length == 0)
-                {
-                    this.Log.LogWarning($"Ignoring file {relativePath} because it is empty.");
-                    return;
-                }
+                //if (fileStream.Length == 0)
+                //{
+                //    this.Log.LogWarning($"Ignoring file {relativePath} because it is empty.");
+                //    return;
+                //}
 
                 using (var hasher = IncrementalHash.CreateHash(HashAlgorithmName.SHA256))
                 using (var md5hasher = IncrementalHash.CreateHash(HashAlgorithmName.MD5))

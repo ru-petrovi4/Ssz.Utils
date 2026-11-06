@@ -59,9 +59,9 @@ namespace Ssz.IdentityServer
                     UpdateAccessTokenClaimsOnRefresh = true,
                     AllowOfflineAccess = true, // Allow Refresh Token
                     RefreshTokenUsage = TokenUsage.ReUse,
-                    RefreshTokenExpiration = TokenExpiration.Sliding,
+                    RefreshTokenExpiration = TokenExpiration.Sliding,                    
+                    SlidingRefreshTokenLifetime = accessTokenLifetimeSeconds * 2,
                     AbsoluteRefreshTokenLifetime = refreshTokenLifetimeSeconds,
-                    SlidingRefreshTokenLifetime = accessTokenLifetimeSeconds * 2,                                        
                 }
             };
         }
