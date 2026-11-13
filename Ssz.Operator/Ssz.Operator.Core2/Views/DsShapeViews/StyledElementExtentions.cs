@@ -151,9 +151,31 @@ namespace Ssz.Operator.Core.DsShapeViews
 
         #region private functions
 
+        /// <summary>
+        ///     Puts the value a project holds into the property of the control.
+        ///     <para>
+        ///         What a project holds need not suit the property - a width that is not a number, a
+        ///         colour that is not one. WPF threw there and the caller left the property as it was.
+        ///         Here the value is awaited first, so a throw after that await reaches no caller and
+        ///         ends the editor; it is answered here instead.
+        ///     </para>
+        /// </summary>
         private static async void SetConstValue(StyledElement styledElement, AvaloniaProperty avaloniaProperty, IValueDataBinding dataSourceInfo, IDsContainer? container)
         {
-            styledElement.SetValue(avaloniaProperty, await dataSourceInfo.GetParsedConstObjectAsync(container));
+            try
+            {
+                styledElement.SetValue(avaloniaProperty, await dataSourceInfo.GetParsedConstObjectAsync(container));
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    styledElement.SetValue(avaloniaProperty, AvaloniaProperty.UnsetValue);
+                }
+                catch (Exception)
+                {
+                }
+            }
         }
 
         #endregion        

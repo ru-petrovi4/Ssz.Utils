@@ -268,8 +268,7 @@ namespace Ssz.Operator.Core.Drawings
             complexDsShape.DsShapeDrawingHeight = Height;
             complexDsShape.DsShapeDrawingCenterRelativePosition = CenterRelativePosition;
 
-            string xaml = XamlHelper.Save(DsShapesArray ?? new ArrayList());
-            complexDsShape.DsShapesArray = XamlHelper.Load(xaml);
+            complexDsShape.DsShapesArray = DsShapeBase.CloneDsShapesArray(DsShapesArray as IEnumerable);
 
             complexDsShape.TransformDsShapes(complexDsShape.WidthInitialNotRounded / Width,
                 complexDsShape.HeightInitialNotRounded / Height);

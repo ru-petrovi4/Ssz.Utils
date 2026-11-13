@@ -224,22 +224,21 @@ namespace Ssz.Operator.Core
             }
         }
 
+        /// <summary>
+        ///     The object as XAML, which <see cref="Load" /> reads back.
+        ///     <para>
+        ///         WPF wrote this with XamlWriter.Save. Avalonia has a reader and no writer, so the
+        ///         editor brings its own - see <see cref="XamlObjectWriter" />.
+        ///     </para>
+        /// </summary>
         public static string Save(object obj)
         {
-            //return WpfDispatcherInvoke(() =>
-            //{
-            //    using (var stream = new MemoryStream())
-            //    {
-            //        XamlWriter.Save(obj, stream);
-            //        return Encoding.UTF8.GetString(stream.ToArray());
-            //    }
-            //}) ?? "";
-            return @"";
+            return XamlObjectWriter.Save(obj);
         }
 
         public static void Save(object obj, XmlTextWriter xmlTextWriter)
         {
-            //WpfDispatcherInvoke(() => XamlWriter.Save(obj, xmlTextWriter));
+            XamlObjectWriter.Save(obj, xmlTextWriter);
         }
 
         public static object? Load(string? xaml)
@@ -442,27 +441,7 @@ namespace Ssz.Operator.Core
 
         public static string Save(Brush? brush)
         {
-            return "";
-
-            //if (brush is null) return "";
-            //var settings = new XmlWriterSettings();
-            ///*
-            //    settings.Indent = true;
-            //    settings.NewLineOnAttributes = true;
-            //    */
-            //settings.ConformanceLevel = ConformanceLevel.Fragment;
-            //var sb = new StringBuilder();
-            //XmlWriter writer = XmlWriter.Create(sb, settings);
-
-            //var manager = new XamlDesignerSerializationManager(writer);
-            //manager.XamlWriterMode = XamlWriterMode.Expression;
-            //XamlWriter.Save(brush, manager);
-
-            ////WpfDispatcherInvoke(() => XamlWriter.Save(brush, manager));
-
-            ////XamlWriter.Save(brush, writer);
-
-            //return sb.ToString();
+            return XamlObjectWriter.Save(brush);
         }
 
         public static string GetXamlWithAbsolutePaths(FileInfo fileInfo, Stretch stretch, out Size? contentOriginalSize)
@@ -1193,6 +1172,10 @@ namespace Ssz.Operator.Core
                 return null;            
 
             xaml = xaml.Replace("xmlns=\"http://schemas.microsoft.com/" + "winfx/2006/xaml/presentation\"", "xmlns=\"https://github.com/avaloniaui\""); // Splitted because of replace issues in VS Editor
+
+            // The drawings the WPF editor exported name the list they keep their shapes in, and that
+            // list lives in another assembly on .NET than it did on the framework.
+            xaml = xaml.Replace("assembly=mscorlib", "assembly=System.Private.CoreLib");
 
             //if (xaml.Contains("<SolidColorBrush") || 
             //    xaml.Contains("<LinearGradientBrush") || 

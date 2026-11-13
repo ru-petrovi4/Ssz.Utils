@@ -145,7 +145,9 @@ namespace Ssz.Operator.Core.MultiValueConverters
             using (writer.EnterBlock(3))
             {
                 writer.Write(Condition, context);
-                writer.Write(_constDsXaml.XamlWithRelativePaths);
+                writer.Write(ReferenceEquals(context, SerializationContext.Clipboard)
+                    ? _constDsXaml.Xaml
+                    : _constDsXaml.XamlWithRelativePaths);
             }
         }
 
@@ -158,9 +160,16 @@ namespace Ssz.Operator.Core.MultiValueConverters
                     case 3:
                         reader.ReadOwnedData(Condition, context);
                         if (LoadXamlContent)
-                            _constDsXaml.XamlWithRelativePaths = reader.ReadString();
+                        {
+                            if (ReferenceEquals(context, SerializationContext.Clipboard))
+                                _constDsXaml.Xaml = reader.ReadString();
+                            else
+                                _constDsXaml.XamlWithRelativePaths = reader.ReadString();
+                        }
                         else
+                        {
                             reader.SkipString();
+                        }
                         break;
                     default:
                         throw new BlockUnsupportedVersionException();

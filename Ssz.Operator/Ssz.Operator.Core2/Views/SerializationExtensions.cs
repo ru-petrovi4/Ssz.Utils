@@ -322,6 +322,14 @@ namespace Ssz.Operator.Core
 
         public static SerializationContext IndexFile = new();
 
+        /// <summary>
+        ///     Shapes written to be put on the clipboard, for another drawing or another editor to
+        ///     read. The names of the files a shape uses are written in full rather than against the
+        ///     drawing they came from, so that the editor reading them finds the pictures wherever it
+        ///     is and takes its own copy of them into its project.
+        /// </summary>
+        public static SerializationContext Clipboard = new();
+
         #endregion
     }
 }

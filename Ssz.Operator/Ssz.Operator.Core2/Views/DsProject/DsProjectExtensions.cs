@@ -116,8 +116,7 @@ namespace Ssz.Operator.Core
                     ? complexDsShape.DsShapeDrawingHeight
                     : complexDsShape.HeightInitialNotRounded;
 
-                string xaml = XamlHelper.Save(complexDsShape.DsShapesArray ?? new ArrayList());
-                drawing.DsShapesArray = XamlHelper.Load(xaml);
+                drawing.DsShapesArray = DsShapeBase.CloneDsShapesArray(complexDsShape.DsShapesArray as IEnumerable);
 
                 drawing.TransformDsShapes(drawing.Width / complexDsShape.WidthInitialNotRounded,
                     drawing.Height / complexDsShape.HeightInitialNotRounded);

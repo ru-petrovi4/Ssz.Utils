@@ -18,9 +18,7 @@ namespace Ssz.Operator.Core.DsShapes
                 complexDsShape.HeightInitialNotRounded * complexDsShape.CenterRelativePosition.Y;
             var complexDsShapeAngleRadians = Math.PI * complexDsShape.AngleInitial / 180;
 
-            string xaml = XamlHelper.Save(complexDsShape.DsShapesArray ?? new ArrayList());
-            DsShapeBase[] copyDsShapes =
-                ((ArrayList) (XamlHelper.Load(xaml) ?? new ArrayList())).OfType<DsShapeBase>().ToArray();
+            DsShapeBase[] copyDsShapes = DsShapeBase.CloneDsShapes(complexDsShape.DsShapesArray as IEnumerable);
 
             foreach (DsShapeBase copyDsShape in copyDsShapes)
             {

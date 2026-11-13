@@ -734,8 +734,8 @@ namespace Ssz.Operator.Core
             if (FocusedDesignDrawingViewModel is null ||
                 FocusedDesignDrawingViewModel.SelectionService.SelectedItems.Length == 0) return;
 
-            string xaml = FocusedDesignDrawingViewModel.GetCurrentSelectionAsXaml();
-            if (!String.IsNullOrWhiteSpace(xaml)) await ClipboardHelper.SetTextAsync(xaml);
+            string clipboardText = FocusedDesignDrawingViewModel.GetCurrentSelectionForClipboard();
+            if (!String.IsNullOrWhiteSpace(clipboardText)) await ClipboardHelper.SetTextAsync(clipboardText);
         }
 
         public void PasteEnabled(object? sender, CanExecuteRoutedEventArgs e)
@@ -761,10 +761,10 @@ namespace Ssz.Operator.Core
             // WPF read from the static Mouse class.
             Point position = FocusedDesignDrawingViewModel.CurrentCursorPoint;
 
-            var xaml = await ClipboardHelper.GetTextAsync();
-            if (String.IsNullOrWhiteSpace(xaml)) return;
+            var clipboardText = await ClipboardHelper.GetTextAsync();
+            if (String.IsNullOrWhiteSpace(clipboardText)) return;
 
-            FocusedDesignDrawingViewModel.Paste(xaml, position);
+            FocusedDesignDrawingViewModel.Paste(clipboardText, position);
         }
 
         public void DeleteEnabled(object? sender, CanExecuteRoutedEventArgs e)

@@ -33,8 +33,12 @@ namespace Ssz.Dcs.CentralServer
             {
                 return Dcs_EngineSessions;
             }
-            else
+            else if (String.Equals(systemNameToConnect, DataAccessConstants.DefaultProcessModelingSessionId, StringComparison.InvariantCultureIgnoreCase))
             {
+                return DefaultProcessModel_EngineSessions;
+            }
+            else
+            {                
                 ProcessModelingSession? processModelingSession = GetProcessModelingSessionOrNull(systemNameToConnect);
                 if (processModelingSession is null)
                     return new ObservableCollection<EngineSession>(); // Unknown systemNameToConnect

@@ -90,7 +90,9 @@ namespace Ssz.Operator.Core
 
             using (writer.EnterBlock(5))
             {
-                writer.Write(ConstValue.XamlWithRelativePaths);
+                writer.Write(ReferenceEquals(context, SerializationContext.Clipboard)
+                    ? ConstValue.Xaml
+                    : ConstValue.XamlWithRelativePaths);
                 writer.WriteListOfOwnedDataSerializable(DataBindingItemsCollection, context);
                 writer.Write(Format);
                 writer.WriteNullableOwnedData(Converter, context);
@@ -106,9 +108,16 @@ namespace Ssz.Operator.Core
                     case 5:
                     {
                         if (LoadXamlContent)
-                            ConstValue.XamlWithRelativePaths = reader.ReadString();
+                        {
+                            if (ReferenceEquals(context, SerializationContext.Clipboard))
+                                ConstValue.Xaml = reader.ReadString();
+                            else
+                                ConstValue.XamlWithRelativePaths = reader.ReadString();
+                        }
                         else
+                        {
                             reader.SkipString();
+                        }
                         List<DataBindingItem> dataBindingItems =
                             reader.ReadListOfOwnedDataSerializable(() => new DataBindingItem(), context);
                         DataBindingItemsCollection.Clear();

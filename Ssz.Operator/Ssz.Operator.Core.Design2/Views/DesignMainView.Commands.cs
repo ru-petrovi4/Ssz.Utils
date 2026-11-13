@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Platform.Storage;
 using Microsoft.Extensions.Logging;
 using Ssz.Operator.Core.ControlsDesign;
@@ -92,6 +93,35 @@ public partial class DesignMainView
     public static readonly RoutedCommand SetMark4 = new();
     public static readonly RoutedCommand SetMark5 = new();
     public static readonly RoutedCommand SetMark6 = new();
+
+    /// <summary>
+    ///     The keys that run the commands above.
+    ///     <para>
+    ///         In the WPF editor most of these were WPF's own application commands, and WPF gave each
+    ///         of them its usual keys - Ctrl+C to copy, Ctrl+V to paste, Delete to delete. The port
+    ///         has commands of its own, which come with no keys, so the same ones are named here. The
+    ///         keys of the commands that work on shapes are named by the view model that owns them.
+    ///     </para>
+    /// </summary>
+    static DesignMainView()
+    {
+        New.InputGestures.Add(new KeyGesture(Key.N, KeyModifiers.Control));
+        Open.InputGestures.Add(new KeyGesture(Key.O, KeyModifiers.Control));
+        Save.InputGestures.Add(new KeyGesture(Key.S, KeyModifiers.Control));
+        SaveAll.InputGestures.Add(new KeyGesture(Key.S, KeyModifiers.Control | KeyModifiers.Shift));
+        Print.InputGestures.Add(new KeyGesture(Key.P, KeyModifiers.Control));
+        Properties.InputGestures.Add(new KeyGesture(Key.F4));
+        Find.InputGestures.Add(new KeyGesture(Key.F, KeyModifiers.Control));
+        Replace.InputGestures.Add(new KeyGesture(Key.H, KeyModifiers.Control));
+        Undo.InputGestures.Add(new KeyGesture(Key.Z, KeyModifiers.Control));
+        Redo.InputGestures.Add(new KeyGesture(Key.Y, KeyModifiers.Control));
+        Cut.InputGestures.Add(new KeyGesture(Key.X, KeyModifiers.Control));
+        Copy.InputGestures.Add(new KeyGesture(Key.C, KeyModifiers.Control));
+        Paste.InputGestures.Add(new KeyGesture(Key.V, KeyModifiers.Control));
+        Delete.InputGestures.Add(new KeyGesture(Key.Delete));
+        SelectAll.InputGestures.Add(new KeyGesture(Key.A, KeyModifiers.Control));
+        Help.InputGestures.Add(new KeyGesture(Key.F1));
+    }
 
     #endregion
 

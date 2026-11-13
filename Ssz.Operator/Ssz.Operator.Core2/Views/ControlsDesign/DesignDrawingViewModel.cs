@@ -20,6 +20,7 @@ using Ssz.Operator.Core.DsShapes;
 using Ssz.Operator.Core.DsShapeViews;
 using Ssz.Operator.Core.Properties;
 using Ssz.Operator.Core.Utils;
+using Ssz.Operator.Core.Utils.Serialization;
 using Ssz.Operator.Core.VisualEditors;
 using Ssz.Utils;
 using Ssz.Utils.MonitoredUndo;
@@ -642,36 +643,71 @@ namespace Ssz.Operator.Core.ControlsDesign
                 }
         }
 
-        public string GetCurrentSelectionAsXaml()
+        /// <summary>
+        ///     What the author has selected, written so that it can be put on the clipboard and read
+        ///     back - in another drawing of this editor, or in a second editor running beside it.
+        ///     <para>
+        ///         The WPF editor wrote XAML here, which it could because WPF turns an object into
+        ///         XAML by itself. Nothing away from WPF does, so what is written is what a project
+        ///         file holds - the shapes in the editor's own serialization - put into text after a
+        ///         line saying what it is. The names of the files the shapes use are written in full
+        ///         rather than against this drawing, so that the editor reading them finds the
+        ///         pictures and takes its own copy into its project, as the WPF editor did.
+        ///     </para>
+        /// </summary>
+        public string GetCurrentSelectionForClipboard()
         {
-            using (var sw = new StringWriter())
+            DsShapeBase[] selectedDsShapes = SelectionService.SelectedItems
+                .Where(svm => svm.DsShape.Index >= 0)
+                .Select(svm => svm.DsShape).OrderBy(sh => sh.Index).ToArray();
+            if (selectedDsShapes.Length == 0) return @"";
+
+            using (var memoryStream = new MemoryStream(4096))
             {
-                using (
-                    var xmlTextWriter = new XmlTextWriter(sw)
-                )
+                using (var writer = new SerializationWriter(memoryStream))
                 {
-                    xmlTextWriter.Formatting = Formatting.Indented;
-
-                    DsShapeBase[] selectedDsShapes = SelectionService.SelectedItems
-                        .Where(svm => svm.DsShape.Index >= 0)
-                        .Select(svm => svm.DsShape).OrderBy(sh => sh.Index).ToArray();
-                    if (selectedDsShapes.Length == 0) return "";
-
-                    XamlHelper.Save(new ArrayList(selectedDsShapes), xmlTextWriter);
+                    writer.WriteDsShapes(selectedDsShapes, SerializationContext.Clipboard);
                 }
 
-                return sw.ToString();
+                return ClipboardDsShapesHeader + "\n" + Convert.ToBase64String(memoryStream.ToArray());
             }
         }
 
-        public void Paste(string? xaml, Point position)
+        /// <summary>
+        ///     The shapes of such a clipboard text, or none when the clipboard holds something else.
+        /// </summary>
+        public static DsShapeBase[] GetDsShapesFromClipboardText(string? clipboardText)
         {
-            if (string.IsNullOrWhiteSpace(xaml)) return;
+            if (String.IsNullOrWhiteSpace(clipboardText)) return new DsShapeBase[0];
+
+            var newLineIndex = clipboardText!.IndexOf('\n');
+            if (newLineIndex < 0) return new DsShapeBase[0];
+            if (!String.Equals(clipboardText.Substring(0, newLineIndex).Trim(), ClipboardDsShapesHeader,
+                    StringComparison.Ordinal))
+                return new DsShapeBase[0];
 
             try
             {
-                DsShapeBase[] pastedDsShapes =
-                    ((ArrayList) (XamlHelper.Load(xaml!) ?? new ArrayList())).OfType<DsShapeBase>().ToArray();
+                var bytes = Convert.FromBase64String(clipboardText.Substring(newLineIndex + 1).Trim());
+
+                using (var memoryStream = new MemoryStream(bytes))
+                using (var reader = new SerializationReader(memoryStream))
+                {
+                    return reader.ReadDsShapes(SerializationContext.Clipboard, true, true);
+                }
+            }
+            catch (Exception ex)
+            {
+                DsProject.LoggersSet.Logger.LogError(ex, @"Cannot read the DsShapes on the clipboard.");
+                return new DsShapeBase[0];
+            }
+        }
+
+        public void Paste(string? clipboardText, Point position)
+        {
+            try
+            {
+                DsShapeBase[] pastedDsShapes = GetDsShapesFromClipboardText(clipboardText);
 
                 if (pastedDsShapes.Length == 0) return;
 
@@ -708,6 +744,12 @@ namespace Ssz.Operator.Core.ControlsDesign
             }
         }
 
+        /// <summary>
+        ///     The first line of a clipboard text holding shapes. It tells one editor that what the
+        ///     other put there is shapes of its own and not some other text.
+        /// </summary>
+        private const string ClipboardDsShapesHeader = @"Ssz.Operator.DsShapes.V1";
+
         public void DeleteCurrentSelection()
         {
             using (new UndoBatch(Drawing, "Delete DsShapes", true))
@@ -724,9 +766,7 @@ namespace Ssz.Operator.Core.ControlsDesign
             {
                 var originalDsShapeIndex = originalDsShapes[0].Index;
 
-                string xaml = XamlHelper.Save(new ArrayList(originalDsShapes));
-                DsShapeBase[] copyDsShapes =
-                    ((ArrayList) (XamlHelper.Load(xaml) ?? new ArrayList())).OfType<DsShapeBase>().ToArray();
+                DsShapeBase[] copyDsShapes = DsShapeBase.CloneDsShapes(originalDsShapes);
 
                 Drawing.RemoveDsShapes(originalDsShapes);
                 SelectionService.ClearSelection();
@@ -799,10 +839,7 @@ namespace Ssz.Operator.Core.ControlsDesign
 
                         if (dsShapesArray.Count > 0)
                         {
-                            string xaml = XamlHelper.Save(dsShapesArray);
-                            DsShapeBase[] extractedDsShapes =
-                                ((ArrayList) (XamlHelper.Load(xaml) ?? new ArrayList())).OfType<DsShapeBase>()
-                                .ToArray();
+                            DsShapeBase[] extractedDsShapes = DsShapeBase.CloneDsShapes(dsShapesArray);
 
                             SelectionService.ClearSelection();
 

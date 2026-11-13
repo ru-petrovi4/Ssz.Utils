@@ -20,6 +20,8 @@ namespace Ssz.Dcs.CentralServer
 
         public ObservableCollection<EngineSession> Dcs_EngineSessions { get; } = new();
 
+        public ObservableCollection<EngineSession> DefaultProcessModel_EngineSessions { get; } = new();
+
         #endregion
 
         #region protected functions

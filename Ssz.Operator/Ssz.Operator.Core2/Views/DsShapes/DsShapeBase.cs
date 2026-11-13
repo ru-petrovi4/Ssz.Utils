@@ -1,7 +1,9 @@
 using Ssz.Operator.Core.VisualEditors;
 using Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.ComponentModel;
 using System.Globalization;
 using System.Reflection;
@@ -1080,6 +1082,35 @@ namespace Ssz.Operator.Core.DsShapes
                         foreach (var guid in usedAddonsInfo.GetUsedAddonGuids())
                             yield return guid;
                 }
+        }
+
+        /// <summary>
+        ///     Copies of the shapes, belonging to nothing, which is what the editor groups, ungroups
+        ///     and pastes with.
+        ///     <para>
+        ///         The WPF editor made such a copy by writing the shapes out as XAML and reading them
+        ///         back in. Away from WPF nothing turns an object into XAML, so the copy is made with
+        ///         the serialization the editor writes its files with, which carries everything of a
+        ///         shape that a file does. A shape is built for the copy through the constructor that
+        ///         took no arguments and was there for the XAML writer, so the copy starts out as the
+        ///         read back one did.
+        ///     </para>
+        /// </summary>
+        public static DsShapeBase[] CloneDsShapes(IEnumerable? dsShapes)
+        {
+            if (dsShapes is null) return new DsShapeBase[0];
+
+            return dsShapes.OfType<DsShapeBase>()
+                .Select(dsShape => (DsShapeBase) dsShape.Clone())
+                .ToArray();
+        }
+
+        /// <summary>
+        ///     The same copies, in the list a drawing and a complex shape keep their shapes in.
+        /// </summary>
+        public static ArrayList CloneDsShapesArray(IEnumerable? dsShapes)
+        {
+            return new ArrayList(CloneDsShapes(dsShapes));
         }
 
         public static Rect GetBoundingRect(IList<DsShapeBase> dsShapes)

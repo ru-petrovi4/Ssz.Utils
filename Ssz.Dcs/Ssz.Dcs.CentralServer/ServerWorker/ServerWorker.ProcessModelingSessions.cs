@@ -2,26 +2,26 @@ using Grpc.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Ssz.DataAccessGrpc.Client;
+using Ssz.DataAccessGrpc.ServerBase;
 using Ssz.Dcs.CentralServer.Common;
 using Ssz.Dcs.CentralServer.Properties;
 using Ssz.Dcs.CentralServer.ServerListItems;
-using Ssz.DataAccessGrpc.ServerBase;
-using Ssz.DataAccessGrpc.Client;
 using Ssz.Utils;
+using Ssz.Utils.Addons;
 using Ssz.Utils.DataAccess;
 using Ssz.Xi.Client;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Security.Cryptography;
-using Ssz.Utils.Addons;
 
 namespace Ssz.Dcs.CentralServer
 {
@@ -67,6 +67,8 @@ namespace Ssz.Dcs.CentralServer
                 ForTimeout_LastDateTimeUtc = DateTime.UtcNow,
             };
             _processModelingSessionsCollection.Add(processModelingSession.ProcessModelingSessionId, processModelingSession);
+
+            SetDefaultProcessModel_EngineSessions(_processModelingSessionsCollection.Values.FirstOrDefault());
 
             try
             {
@@ -152,7 +154,9 @@ namespace Ssz.Dcs.CentralServer
         {
             _processModelingSessionsCollection.Remove(processModelingSessionId, out ProcessModelingSession? processModelingSession);
             if (processModelingSession is null) 
-                return;            
+                return;
+
+            SetDefaultProcessModel_EngineSessions(_processModelingSessionsCollection.Values.FirstOrDefault());
 
             try
             {
@@ -223,7 +227,7 @@ namespace Ssz.Dcs.CentralServer
 
                 processModelingSession.Dispose();
             });            
-        }
+        }        
 
         /// <summary>
         ///     Throws RpcException if incorrect processModelingSessionId
@@ -246,71 +250,64 @@ namespace Ssz.Dcs.CentralServer
 
             if (!String.IsNullOrEmpty(processModelingSessionId))
             {
-                if (String.Equals(processModelingSessionId, DataAccessConstants.DefaultProcessModelingSessionId, StringComparison.InvariantCultureIgnoreCase))
+                processModelingSession = _processModelingSessionsCollection.TryGetValue(processModelingSessionId);
+
+                if (processModelingSession is null && processModelingSessionId.StartsWith(DataAccessConstants.PlatformXiProcessModelingSessionId, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    processModelingSession = _processModelingSessionsCollection.Values.FirstOrDefault();
+                    string systemName = processModelingSessionId.Substring(DataAccessConstants.PlatformXiProcessModelingSessionId.Length);
+
+                    processModelingSession = new ProcessModelingSession(
+                        processModelingSessionId,
+                        @"",
+                        @"",
+                        @"",
+                        @"",
+                        @"",
+                        0,
+                        @"")
+                    {
+                        ProcessModelingSessionStatus = ProcessModelingSessionConstants.Initiated
+                    };
+
+                    DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon = GetNewInitializedDataAccessProviderAddon(
+                        ServiceProvider,
+                        $"http://localhost:60080/PlatServer/ServerDiscovery",
+                        systemName,
+                        new CaseInsensitiveOrderedDictionary<string?> { { @"XiSystem", systemName } },
+                        ThreadSafeDispatcher);
+                    var platInstructorEngineSession = new EngineSession(Guid.NewGuid().ToString(), dataAccessProviderGetter_Addon);
+                    processModelingSession.EngineSessions.Add(platInstructorEngineSession);
+
+                    _processModelingSessionsCollection.Add(processModelingSession.ProcessModelingSessionId, processModelingSession);
                 }
-                else
+                else if (processModelingSession is null && processModelingSessionId.StartsWith(DataAccessConstants.UsoXiProcessModelingSessionId, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    processModelingSession = _processModelingSessionsCollection.TryGetValue(processModelingSessionId);
+                    string systemName = processModelingSessionId.Substring(DataAccessConstants.UsoXiProcessModelingSessionId.Length);
 
-                    if (processModelingSession is null && processModelingSessionId.StartsWith(DataAccessConstants.PlatformXiProcessModelingSessionId, StringComparison.InvariantCultureIgnoreCase))
+                    processModelingSession = new ProcessModelingSession(
+                        processModelingSessionId,
+                        @"",
+                        @"",
+                        @"",
+                        @"",
+                        @"",
+                        0,
+                        @"")
                     {
-                        string systemName = processModelingSessionId.Substring(DataAccessConstants.PlatformXiProcessModelingSessionId.Length);
+                        ProcessModelingSessionStatus = ProcessModelingSessionConstants.Initiated,
+                    };
 
-                        processModelingSession = new ProcessModelingSession(
-                            processModelingSessionId,
-                            @"",
-                            @"",
-                            @"",
-                            @"",
-                            @"",
-                            0,
-                            @"")
-                        {
-                            ProcessModelingSessionStatus = ProcessModelingSessionConstants.Initiated                            
-                        };
+                    DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon = GetNewInitializedDataAccessProviderAddon(
+                        ServiceProvider,
+                        $"http://localhost:60080/HoneywellUsoXiServer/ServerDiscovery",
+                        systemName,
+                        new CaseInsensitiveOrderedDictionary<string?> { { @"XiSystem", systemName } },
+                        ThreadSafeDispatcher);
+                    var platInstructorEngineSession = new EngineSession(Guid.NewGuid().ToString(), dataAccessProviderGetter_Addon);
+                    processModelingSession.EngineSessions.Add(platInstructorEngineSession);
 
-                        DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon = GetNewInitializedDataAccessProviderAddon(
-                            ServiceProvider,
-                            $"http://localhost:60080/PlatServer/ServerDiscovery",
-                            systemName,
-                            new CaseInsensitiveOrderedDictionary<string?> { { @"XiSystem", systemName } },
-                            ThreadSafeDispatcher);
-                        var platInstructorEngineSession = new EngineSession(Guid.NewGuid().ToString(), dataAccessProviderGetter_Addon);
-                        processModelingSession.EngineSessions.Add(platInstructorEngineSession);
-
-                        _processModelingSessionsCollection.Add(processModelingSession.ProcessModelingSessionId, processModelingSession);
-                    }
-                    else if (processModelingSession is null && processModelingSessionId.StartsWith(DataAccessConstants.UsoXiProcessModelingSessionId, StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        string systemName = processModelingSessionId.Substring(DataAccessConstants.UsoXiProcessModelingSessionId.Length);
-
-                        processModelingSession = new ProcessModelingSession(
-                            processModelingSessionId,
-                            @"",
-                            @"",
-                            @"",
-                            @"",
-                            @"",
-                            0,
-                            @"")
-                        {
-                            ProcessModelingSessionStatus = ProcessModelingSessionConstants.Initiated,                            
-                        };
-
-                        DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon = GetNewInitializedDataAccessProviderAddon(
-                            ServiceProvider,
-                            $"http://localhost:60080/HoneywellUsoXiServer/ServerDiscovery",
-                            systemName,
-                            new CaseInsensitiveOrderedDictionary<string?> { { @"XiSystem", systemName } },
-                            ThreadSafeDispatcher);
-                        var platInstructorEngineSession = new EngineSession(Guid.NewGuid().ToString(), dataAccessProviderGetter_Addon);
-                        processModelingSession.EngineSessions.Add(platInstructorEngineSession);
-
-                        _processModelingSessionsCollection.Add(processModelingSession.ProcessModelingSessionId, processModelingSession);
-                    }
-                }                                
+                    _processModelingSessionsCollection.Add(processModelingSession.ProcessModelingSessionId, processModelingSession);
+                }
             }
 
             return processModelingSession;
@@ -524,7 +521,26 @@ namespace Ssz.Dcs.CentralServer
             Generate_UploadChangedFiles_SystemEvent(processModelingSession.EnginesHostInfo!.WorkstationName, jobId, invariantDirectoryPathsRelativeToRootDirectory);
 
             return jobId;
-        }        
+        }
+
+        private void SetDefaultProcessModel_EngineSessions(ProcessModelingSession? processModelingSession)
+        {
+            if (processModelingSession is null || !ReferenceEquals(processModelingSession.EngineSessions, DefaultProcessModel_EngineSessions))
+            {
+                for (int collectionIndex = DefaultProcessModel_EngineSessions.Count - 1; collectionIndex >= 0; collectionIndex -= 1)
+                {
+                    DefaultProcessModel_EngineSessions.RemoveAt(collectionIndex);
+                }
+            }
+
+            if (processModelingSession is not null && !ReferenceEquals(processModelingSession.EngineSessions, DefaultProcessModel_EngineSessions))
+            {
+                for (int collectionIndex = 0; collectionIndex < processModelingSession.EngineSessions.Count; collectionIndex += 1)
+                {
+                    DefaultProcessModel_EngineSessions.Add(processModelingSession.EngineSessions[collectionIndex]);
+                }
+            }
+        }
 
         #endregion
 
