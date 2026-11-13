@@ -24,19 +24,19 @@
   </ItemGroup>
 	
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="12.1.3" />
+    <PackageReference Include="Avalonia" Version="12.1.6" />
     <!-- The panorama draws its textured mesh through a Skia lease: Avalonia has no 3D. -->
-    <PackageReference Include="Avalonia.Skia" Version="12.1.3" />
+    <PackageReference Include="Avalonia.Skia" Version="12.1.6" />
     <PackageReference Include="Avalonia.Controls.DataGrid" Version="12.1.2" />
-    <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="12.1.3" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.3" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.3" />
+    <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="12.1.6" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.6" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.6" />
 	  <PackageVersion Include="Avalonia.Browser" Version="12.1.2" />
     <PackageReference Include="Classic.Avalonia.Theme" Version="12.0.1-beta1" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
-    <PackageReference Include="Avalonia.Controls.ColorPicker" Version="12.1.3" />
-	  <PackageReference Include="MessageBox.Avalonia" Version="12.0.0" />
+    <PackageReference Include="Avalonia.Controls.ColorPicker" Version="12.1.6" />
+	  <PackageReference Include="MessageBox.Avalonia" Version="12.1.0" />
 	  <PackageReference Include="Oxyplot.Avalonia12" Version="2.1.2" />	  
 	  <PackageReference Include="PanAndZoom" Version="12.1.1" />
 	  <PackageReference Include="Svg.Controls.Avalonia" Version="12.0.0.17" />

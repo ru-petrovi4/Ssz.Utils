@@ -5,6 +5,7 @@ using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Ssz.Operator.Core.ControlsDesign;
 using Ssz.Operator.Core.Design.Controls;
@@ -39,6 +40,11 @@ public partial class DesignMainView : UserControl
         AddKeyBindings();
 
         InitializeDocking();
+
+        // The projects the author opened last, shown in the application menu. The list itself is kept
+        // by the view model, so it outlives the view and is written down between runs.
+        RecentFilesItemsControl.ItemsSource =
+            DesignDsProjectViewModel.Instance.RecentFilesCollectionManager.RecentFilesCollection;
 
         DesignDsProjectViewModel.Instance.PropertyChanged += DesignDsProjectViewModelOnPropertyChanged;
 
@@ -286,6 +292,14 @@ public partial class DesignMainView : UserControl
     private void BusyIndicatorOnStopped(object? sender, EventArgs e)
     {
         if (Stop.CanExecute(null)) Stop.Execute(null);
+    }
+
+    /// <summary>
+    ///     Forgets the projects opened last. The list is written down at once, so it stays forgotten.
+    /// </summary>
+    private void ClearRecentFilesListButtonOnClick(object? sender, RoutedEventArgs e)
+    {
+        DesignDsProjectViewModel.Instance.RecentFilesCollectionManager.ClearList();
     }
 
     private void RefreshTitle()

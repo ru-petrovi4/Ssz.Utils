@@ -46,14 +46,14 @@ public partial class DesignMainView
     {
         // What a pane or a document shows. The lists are the ones kept above, and a drawing keeps its
         // own surface, so that moving its tab does not throw away what is drawn.
-        DataTemplates.Add(new FuncDataTemplate<object>((data, _) => data switch
-        {
-            DsPagesListTool => DsPagesListView,
-            DsShapesListTool => DsShapesListView,
-            DrawingDsShapesTool => DrawingDsShapesView,
-            DrawingDocument document => GetDrawingView(document),
-            _ => null
-        }, true));
+        //
+        // One template per kind, and not one taking an object: a template of object answers for
+        // everything put in front of a content presenter, strings included, and the whole editor
+        // hangs its captions on those - the application menu button and the ribbon tabs went blank.
+        DataTemplates.Add(new FuncDataTemplate<DsPagesListTool>((_, _) => DsPagesListView, true));
+        DataTemplates.Add(new FuncDataTemplate<DsShapesListTool>((_, _) => DsShapesListView, true));
+        DataTemplates.Add(new FuncDataTemplate<DrawingDsShapesTool>((_, _) => DrawingDsShapesView, true));
+        DataTemplates.Add(new FuncDataTemplate<DrawingDocument>((document, _) => GetDrawingView(document), true));
 
         _dockFactory = new DesignDockFactory();
 

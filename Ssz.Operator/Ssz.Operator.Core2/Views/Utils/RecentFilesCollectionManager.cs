@@ -92,6 +92,16 @@ namespace Ssz.Operator.Core.Utils
         {
             if (String.IsNullOrWhiteSpace(fullFileName)) return;
 
+            // One project named two ways - with the separators of the platform and with the other
+            // ones - would otherwise sit in the list twice.
+            try
+            {
+                fullFileName = Path.GetFullPath(fullFileName);
+            }
+            catch (Exception)
+            {
+            }
+
             Remove(fullFileName);
 
             if (RecentFilesCollection.Count == _maxNumberOfFiles)
@@ -188,10 +198,27 @@ namespace Ssz.Operator.Core.Utils
             {
                 if (!File.Exists(_settingsFileFullName)) return;
 
+                var already = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
                 foreach (var line in File.ReadAllLines(_settingsFileFullName)
-                             .Where(l => !String.IsNullOrWhiteSpace(l))
-                             .Take(_maxNumberOfFiles))
-                    RecentFilesCollection.Add(new RecentFile(line, GetDisplayName(line)));
+                             .Where(l => !String.IsNullOrWhiteSpace(l)))
+                {
+                    var fullFileName = line;
+                    try
+                    {
+                        fullFileName = Path.GetFullPath(line);
+                    }
+                    catch (Exception)
+                    {
+                    }
+
+                    // A list written before the names were brought to one form may name one project
+                    // twice, once with the separators of the other platform.
+                    if (!already.Add(fullFileName)) continue;
+
+                    RecentFilesCollection.Add(new RecentFile(fullFileName, GetDisplayName(fullFileName)));
+
+                    if (RecentFilesCollection.Count == _maxNumberOfFiles) break;
+                }
             }
             catch (Exception)
             {

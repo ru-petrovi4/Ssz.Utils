@@ -118,7 +118,7 @@ public partial class DesignApp : Application
             _configuration = configuration;
             CultureHelper.InitializeUICulture(configuration, logger);
 
-            logger.LogInformation($"App starting with args: \"{String.Join(" ", desktop.Args ?? [])}\"; Environment: {EnvironmentName}; Working Directory: \"{Directory.GetCurrentDirectory()}\"; Workstation Name: {ConfigurationHelper.GetWorkstationName(configuration)}");
+            logger.LogInformation($"App starting with args: \"{String.Join(" ", desktop.Args ?? [])}\"; Environment: {EnvironmentName}; Working Directory: \"{Directory.GetCurrentDirectory()}\"; Workstation Name: {ConfigurationHelper.GetThisWorkstationName(configuration)}");
 
             _ = Host.RunAsync();
 

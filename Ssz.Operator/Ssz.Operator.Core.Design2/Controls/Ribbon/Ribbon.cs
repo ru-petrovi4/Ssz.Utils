@@ -4,6 +4,7 @@ using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
+using Avalonia.Interactivity;
 using Avalonia.Metadata;
 
 namespace Ssz.Operator.Core.Design.Controls.Ribbon;
@@ -63,6 +64,16 @@ public class Ribbon : TabControl
     /// </summary>
     public AvaloniaList<QuickAccessMenuItem> QuickAccessItems { get; } = new();
 
+    /// <summary>
+    ///     Puts the application menu away. It is done for the author when they choose something in it,
+    ///     as Fluent.Ribbon's application menu did, and the editor also calls it when opening a project
+    ///     from the menu takes over the window.
+    /// </summary>
+    public void CloseMenu()
+    {
+        _applicationMenuFlyout?.Hide();
+    }
+
     #endregion
 
     #region protected functions
@@ -75,13 +86,26 @@ public class Ribbon : TabControl
 
         var applicationMenuButton = e.NameScope.Find<Button>(@"PART_ApplicationMenuButton");
         if (applicationMenuButton is not null)
-            applicationMenuButton.Flyout = Menu is null
+        {
+            _applicationMenuFlyout = Menu is null
                 ? null
-                : new Flyout
+                : new ApplicationMenuFlyout
                 {
                     Content = Menu,
                     Placement = PlacementMode.BottomEdgeAlignedLeft
                 };
+            applicationMenuButton.Flyout = _applicationMenuFlyout;
+
+            // The items of the menu are not in a menu but in a panel of their own, so nothing puts the
+            // menu away after one of them is chosen. Anything clicked in there that is not a way into a
+            // submenu closes it, which is what the author expects of a menu.
+            if (Menu is Control menuContent && !_menuContentHandlersAdded)
+            {
+                _menuContentHandlersAdded = true;
+                menuContent.AddHandler(MenuItem.ClickEvent, MenuContentOnClick, RoutingStrategies.Bubble, true);
+                menuContent.AddHandler(Button.ClickEvent, MenuContentOnClick, RoutingStrategies.Bubble, true);
+            }
+        }
 
         var quickAccessToolBar = e.NameScope.Find<Panel>(@"PART_QuickAccessToolBar");
         if (quickAccessToolBar is not null)
@@ -91,6 +115,14 @@ public class Ribbon : TabControl
     #endregion
 
     #region private functions
+
+    private void MenuContentOnClick(object? sender, RoutedEventArgs e)
+    {
+        // A menu item that holds other items was clicked to show them, not to do something.
+        if (e.Source is MenuItem menuItem && menuItem.ItemCount > 0) return;
+
+        CloseMenu();
+    }
 
     /// <summary>
     ///     A control has one visual parent, so the buttons of the tabs cannot appear in the bar as
@@ -119,6 +151,28 @@ public class Ribbon : TabControl
     }
 
     #endregion
+
+    #region private fields
+
+    private Flyout? _applicationMenuFlyout;
+    private bool _menuContentHandlersAdded;
+
+    #endregion
+
+    /// <summary>
+    ///     A flyout as wide as what is put in it. The one of the theme stops at 456 pixels, which is
+    ///     narrower than the application menu: that has the commands on one side and the paths of the
+    ///     projects opened last on the other, as the WPF application menu did with its right pane.
+    /// </summary>
+    private sealed class ApplicationMenuFlyout : Flyout
+    {
+        protected override Control CreatePresenter()
+        {
+            Control presenter = base.CreatePresenter();
+            presenter.MaxWidth = Double.PositiveInfinity;
+            return presenter;
+        }
+    }
 }
 
 /// <summary>

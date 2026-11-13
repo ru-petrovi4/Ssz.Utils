@@ -6,6 +6,7 @@
              xmlns:views="using:Ssz.Operator.Core.Design.Views"
              xmlns:ribbon="using:Ssz.Operator.Core.Design.Controls.Ribbon"
              xmlns:core="using:Ssz.Operator.Core"
+             xmlns:utils="using:Ssz.Operator.Core.Utils"
              xmlns:controlsDesign="using:Ssz.Operator.Core.ControlsDesign"
              xmlns:visualEditors="using:Ssz.Operator.Core.VisualEditors"
              xmlns:dock="using:Dock.Avalonia.Controls"
@@ -40,7 +41,10 @@
       </ribbon:Ribbon.QuickAccessItems>
 
       <ribbon:Ribbon.Menu>
-        <StackPanel Orientation="Vertical" MinWidth="240" Margin="4">
+        <!-- The commands on the left and the projects opened last on the right, which is how the WPF
+             editor laid out its application menu and its right pane. -->
+        <Grid ColumnDefinitions="Auto,Auto" Margin="4">
+        <StackPanel Grid.Column="0" Orientation="Vertical" MinWidth="240">
           <MenuItem Command="{x:Static views:DesignMainView.New}"
                     Header="{x:Static p:Resources.NewMenu}"
                     ToolTip.Tip="{x:Static p:Resources.NewToolTip}">
@@ -100,6 +104,34 @@
             </MenuItem.Icon>
           </MenuItem>
         </StackPanel>
+
+        <!-- The list is filled in from the code behind, from the one the editor keeps of the projects
+             the author opened; picking one opens it, exactly as the Open command does with a path. -->
+        <StackPanel Grid.Column="1" Orientation="Vertical"
+                    MinWidth="240" MaxWidth="800" Margin="16,0,0,0">
+          <TextBlock Text="{x:Static p:Resources.RecentDsProjects}"
+                     FontWeight="SemiBold" Margin="6,4" />
+          <ItemsControl Name="RecentFilesItemsControl" Margin="0,1,0,0">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate DataType="utils:RecentFile">
+                <MenuItem Command="{x:Static views:DesignMainView.Open}"
+                          CommandParameter="{Binding FullFileName}"
+                          ToolTip.Tip="{Binding FullFileName}">
+                  <!-- A path, not a caption: as a string the header would lose every underscore to
+                       the keyboard mnemonic a menu item reads it as. -->
+                  <MenuItem.Header>
+                    <TextBlock Text="{Binding FileNameToDisplay}" />
+                  </MenuItem.Header>
+                </MenuItem>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+          <Separator Margin="0,4" />
+          <MenuItem Header="{x:Static p:Resources.ClearRecentFilesListButtonLabel}"
+                    HorizontalAlignment="Right"
+                    Click="ClearRecentFilesListButtonOnClick" />
+        </StackPanel>
+        </Grid>
       </ribbon:Ribbon.Menu>
 
       <!-- These buttons are not shown as a tab: they exist so that the quick access bar above has

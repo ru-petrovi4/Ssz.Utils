@@ -67,7 +67,7 @@ public partial class PlayApp : Application
 
         TypeDescriptor.AddAttributes(typeof(FontFamily), new TypeConverterAttribute(typeof(FontFamilyTypeConverter)));
         //TypeDescriptor.AddAttributes(typeof(SolidColorBrush.), new TypeConverterAttribute(typeof(SolidColorBrushTypeConverter)));
-        TypeDescriptor.AddAttributes(typeof(Color), new TypeConverterAttribute(typeof(ColorTypeConverter)));
+        TypeDescriptor.AddAttributes(typeof(Avalonia.Media.Color), new TypeConverterAttribute(typeof(ColorTypeConverter)));
         //SolidColorBrush.ColorProperty
 
 #if DEBUG
@@ -145,7 +145,7 @@ public partial class PlayApp : Application
             IConfiguration configuration = Host.Services.GetRequiredService<IConfiguration>();
             CultureHelper.InitializeUICulture(configuration, logger);
 
-            StartupLogger.LogInformation($"App starting with args: \"{String.Join(" ", desktop.Args ?? [])}\"; Environment: {EnvironmentName}; Working Directory: \"{Directory.GetCurrentDirectory()}\"; Workstation Name: {ConfigurationHelper.GetWorkstationName(configuration)}");
+            StartupLogger.LogInformation($"App starting with args: \"{String.Join(" ", desktop.Args ?? [])}\"; Environment: {EnvironmentName}; Working Directory: \"{Directory.GetCurrentDirectory()}\"; Workstation Name: {ConfigurationHelper.GetThisWorkstationName(configuration)}");
 
             _ = Host.RunAsync();
 
